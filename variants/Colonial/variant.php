@@ -56,7 +56,7 @@ class ColonialVariant extends WDVariant {
 	public $description='Diplomacy with the colonial countries sparring over the lands and riches of the Far East.';
 	public $author='Peter Hawes';
 	public $adapter='Oliver Auth, Tobias Florin (Trans-Siberian Railroad, Suez Canal)';
-	public $version='2.1';
+	public $version='2.1.1';
 	public $homepage='http://www.dipwiki.com/index.php?title=Colonial';
 
 	public $countries=array('Britain','China','France','Holland','Japan','Russia','Turkey');
