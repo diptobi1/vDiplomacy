@@ -43,7 +43,8 @@
         
 	2.0: implemented special-rules "Trans-Siberian Railroad", "Suez Canal" (new variant: "Colonial Diplomacy - Original Rules")
 	2.1: adjustments for the new interactive map directory structure
-
+	2.1.2: Errorfix standoffs now working again.
+	
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -56,7 +57,7 @@ class ColonialVariant extends WDVariant {
 	public $description='Diplomacy with the colonial countries sparring over the lands and riches of the Far East.';
 	public $author='Peter Hawes';
 	public $adapter='Oliver Auth, Tobias Florin (Trans-Siberian Railroad, Suez Canal)';
-	public $version='2.1.1';
+	public $version='2.1.2';
 	public $homepage='http://www.dipwiki.com/index.php?title=Colonial';
 
 	public $countries=array('Britain','China','France','Holland','Japan','Russia','Turkey');

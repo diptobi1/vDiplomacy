@@ -278,7 +278,7 @@ class SuezCanal_adjudicatorDiplomacy extends TSR_adjudicatorDiplomacy {
                                                 AND suezMove.gameID = ".$GLOBALS['GAMEID']);
                 
                 
-                parent::adjudicate();
+                return parent::adjudicate();
         }
         
         function adjLoadUnits(array &$units, $moveType, $objectName, $targetQuery = '', $multiTarget = false){ 
