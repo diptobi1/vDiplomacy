@@ -918,6 +918,7 @@ class User {
 					WHERE m.userID = ".$this->id."
 						AND g.phase != 'Finished'
 						AND g.anon = 'Yes'
+						AND bet != 0
 					GROUP BY status");
 		$points=0;
 		while ( list($number, $status, $bets) = $DB->tabl_row($tabl) )
@@ -926,6 +927,9 @@ class User {
 			$rankingDetails['anon'][$status] = $number;
 		}
 		$rankingDetails['anon']['points'] = $points;
+
+		list($rankingDetails['stats']['Playing']) = $DB->sql_row("SELECT COUNT(id) FROM wD_Members WHERE userID = ".$this->id." AND status='Playing'");
+		list($rankingDetails['anon']['Playing'])  = $DB->sql_row("SELECT COUNT(m.id) FROM wD_Members m INNER JOIN wD_Games AS g ON m.gameID = g.id WHERE userID = ".$this->id." AND g.anon = 'Yes' AND status='Playing'");
 
 		list($rankingDetails['takenOver']) = $DB->sql_row(
 			"SELECT COUNT(c.userID) FROM wD_CivilDisorders c
