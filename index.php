@@ -246,13 +246,15 @@ class libHome
 	{
 		global $User, $DB;
 
+		// Load all active games (without the games the player is defeated)
 		$tabl=$DB->sql_tabl("SELECT g.* FROM wD_Games g
 			INNER JOIN wD_Members m ON ( (m.userID = ".$User->id." OR g.directorUserID = ".$User->id.") AND m.gameID = g.id )
-			WHERE NOT g.phase = 'Finished'
+			WHERE NOT g.phase = 'Finished' 
 			GROUP BY g.id
 			ORDER BY g.processTime ASC");
 		$buf = '';
-
+		$bufDef = $bufPause = $bufPregame = '';
+		
 		$count=0;
 		while($game=$DB->tabl_hash($tabl))
 		{
@@ -260,10 +262,20 @@ class libHome
 			$Variant=libVariant::loadFromVariantID($game['variantID']);
 			$Game=$Variant->panelGameHome($game);
 
-			$buf .= '<div class="hr"></div>';
-			$buf .= $Game->summary();
+			if ($Game->Members->ByUserID[$User->id]->status == 'Defeated')
+				$bufDef .= '<div class="hr"></div>'.$Game->summary();
+			elseif ($Game->processStatus == 'Paused')
+				$bufPause .= '<div class="hr"></div>'.$Game->summary();
+			elseif ($Game->phase == 'Pre-game')
+				$bufPregame .= '<div class="hr"></div>'.$Game->summary();
+			else
+				$buf .= '<div class="hr"></div>' . $Game->summary();
 		}
-
+		
+		if ($bufPause != '')   $buf .= $bufPause;
+		if ($bufPregame != '') $buf .= $bufPregame;
+		if ($bufDef != '')     $buf .= '<div class="hr"></div><div><p class="notice"><br />'.l_t('Defeated:').'</p></div>'.$bufDef;
+		
 		if($count==0)
 		{
 			$buf .= '<div class="hr"></div>';
