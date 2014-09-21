@@ -246,7 +246,7 @@ class libHome
 	{
 		global $User, $DB;
 
-		// Load all active games (without the games the player is defeated)
+		// Load all active games
 		$tabl=$DB->sql_tabl("SELECT g.* FROM wD_Games g
 			INNER JOIN wD_Members m ON ( (m.userID = ".$User->id." OR g.directorUserID = ".$User->id.") AND m.gameID = g.id )
 			WHERE NOT g.phase = 'Finished' 
@@ -262,7 +262,7 @@ class libHome
 			$Variant=libVariant::loadFromVariantID($game['variantID']);
 			$Game=$Variant->panelGameHome($game);
 
-			if ($Game->Members->ByUserID[$User->id]->status == 'Defeated')
+			if (isset($Game->Members->ByUserID[$User->id]) && $Game->Members->ByUserID[$User->id]->status == 'Defeated')
 				$bufDef .= '<div class="hr"></div>'.$Game->summary();
 			elseif ($Game->processStatus == 'Paused')
 				$bufPause .= '<div class="hr"></div>'.$Game->summary();
