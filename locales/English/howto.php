@@ -20,15 +20,7 @@
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
-if(!(isset($_REQUEST['howto']))) { 
-
-	print libHTML::pageTitle(l_t('HowTos'),l_t('HowTos for some of the features that this site offers to you the player.')); ?>
-
-	<p class="intro">
-	<a href="howto.php?howto=CountrySwap">1. Country swap for sitters.</a> 
-	</p>
-	
-<?php } elseif ($_REQUEST['howto'] == 'CountrySwap') { 
+if ((isset($_REQUEST['howto'])) && $_REQUEST['howto'] == 'CountrySwap') { 
 
 	print libHTML::pageTitle(l_t('HowTo - Country swap for sitters'),l_t('So something unexpected has come up and you wont be able to access your games for a while. You need to find a sitter.')); ?>
 
@@ -109,4 +101,52 @@ if(!(isset($_REQUEST['howto']))) {
 	<p class="intro">You now know how to find sitters and swap games with them. Make sure you thank them, and if you have time to offer your help to others in need.</p>
 
 	<div class="hr" ></div>
-<?php } ?>
+
+<?php } elseif ((isset($_REQUEST['howto'])) && $_REQUEST['howto'] == 'AnonPost') { 
+
+	print libHTML::pageTitle(l_t('HowTo - Post anonymously in the forum.'),l_t("Here's how to advertise for an anonymous game.")); ?>
+
+	<p class="intro">You've made a game and you want to advertise for more players. Or a Country has gone CD in your game and you want to advertise for someone
+	who takes it over. However the game is an anonymous game, and if you advertise other players will know who you are. Here's how to advertise for an anonymous game:
+	</p>
+	
+	<div class="hr" ></div>
+	
+	<p class="intro"><strong>Step 1 - </strong>Open the game you want to advertise for. Check to make sure:
+	<ol><li>The game is <strong>anon</strong>.</li><li>You have already <strong>joined that game</strong>.</li></ol></p>
+
+	<div align="center"><img src="images/howto/AnonPost_1.png" alt=""
+		title="Open the game" /></div>
+
+	<div class="hr" ></div>
+	
+	<p class="intro"><strong>Step 2 - </strong>Copy the gameID=### section of the url :</p>
+
+	<div align="center"><img src="images/howto/AnonPost_2.png" alt=""
+		title="Copy the gameID" /></div>
+
+	<div class="hr" ></div>
+	
+	<p class="intro"><strong>Step 3 - </strong>Paste the gameID into the forum and your post will become anonymous.</p>
+
+	<div align="center"><img src="images/howto/AnonPost_3.png" alt=""
+		title="Paste the gameID" /></div>
+
+	<div class="hr" ></div>
+	
+	<p class="intro">Please note that anonymous posts are allowed only for advertise your new games and to advertise CD-Countries in your anon games.
+	We have two different threads active in the forum (one for live, and another for non-live games) for these player-requests, so please don't open your own thread. </p>
+	
+	<p class="intro">Moderators can see who has written anonymous posts, so do not abuse this function.</p>
+	
+	<div class="hr" ></div>
+<?php } else { 
+
+	print libHTML::pageTitle(l_t('HowTos'),l_t('HowTos for some of the features that this site offers to you the player.')); ?>
+
+	<p class="intro">
+	<a href="howto.php?howto=CountrySwap">1. Country swap for sitters.</a> <br>
+	<a href="howto.php?howto=AnonPost">2. Post anonymously in the forum.</a> 
+	</p>
+<?php } 
+?>
