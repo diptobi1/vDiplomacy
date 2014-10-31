@@ -446,7 +446,7 @@ if( $total || (isset($playing) && $playing) )
 		if ( !in_array($name, $includeStatus) ) continue;
 
 		print '<li>'.l_t($name.': <strong>%s</strong>',$status);
-		print ' ( '.round(($status/$total)*100).'% )';
+		if ($total > 0) print ' ( '.round(($status/$total)*100).'% )';
 		print '</li>';
 	}
 
