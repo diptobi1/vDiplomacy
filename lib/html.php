@@ -441,7 +441,9 @@ class libHTML
 		
 		<script type ="text/javascript" src="contrib/cookieWarning/warnCookies.js"></script>
 		<link href="contrib/cookieWarning/cookies.css" title="Cookies\' warning" rel="stylesheet" type="text/css" />
-		
+
+		<link href="css/chat.css" rel="stylesheet" type="text/css" />
+		<script type ="text/javascript" src="javascript/chat.js"></script>
 	</head>';
 	}
 
@@ -485,6 +487,26 @@ class libHTML
 				</div></noscript>';
 
 		print self::globalNotices();
+		
+		if ( is_object($User) && $User->type['Moderator'] )
+		{
+			print '<div class="content" id="chatresult">';
+			$data = file("msg34343434343434.html");
+			foreach ($data as $line) {
+				echo $line;
+			}
+			print '</div>
+		    <script language="javascript" type="text/javascript">
+				var nickName = "'.$User->username.'";
+				UpdateTimer();
+			</script>   
+
+			<div class="content-notice" id="chatsender" onkeyup="keypressed(event);">
+				Your message: <input type="text" name="msg" size="70" id="msg" />
+				<button onclick="doWork();">Send</button> - 
+				<button onclick="document.getElementById(\'chatresult\').style.height = \'250px\';">Expand</button>
+			</div>';
+		}
 
 		if ( is_object($User) && $User->type['User'] )
 		{
@@ -504,6 +526,7 @@ class libHTML
 			if ( $User->notifications->ForceModMessage )
 				ModForum::printModMessages();
 		}
+				
 	}
 
 	/**
