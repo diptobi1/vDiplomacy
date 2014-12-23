@@ -1022,6 +1022,7 @@ $bordersRawData=array(
 	array('Antilles (ant)','Mid North Atlantic Ocean (mna)','Yes','No'),
 	array('Antilles (ant)','Western South Atlantic Ocean - north sea lane (Nth. wsa)','Yes','No'),
 	array('Antilles (ant)','Western South Atlantic Ocean - west sea lane (Wst. wsa)','Yes','No'),
+	array('Antilles (ant)','Mid North Atlantic Ocean - south sea lane (Sth. mna)','Yes','No'),
 	array('Antilles (ant)','Sargasso Sea - south sea lane (Sth. sar)','Yes','No'),
 	array('Baja (baj)','Guatamala Basin (gub)','Yes','No'),
 	array('Baja (baj)','Sonora (son)','Yes','Yes'),
@@ -3437,6 +3438,7 @@ if (!file_exists('variants/'.$this->name.'/cache/sampleMap.png'))
 	copy ('variants/'.$this->name.'/resources/sampleMap.png','variants/'.$this->name.'/cache/sampleMap.png');
 
 ?>
+
 
 
 

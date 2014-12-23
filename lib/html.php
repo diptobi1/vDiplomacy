@@ -490,12 +490,8 @@ class libHTML
 		
 		if ( is_object($User) && $User->type['Moderator'] )
 		{
-			print '<div class="content" id="chatresult">';
-			$data = file("msg34343434343434.html");
-			foreach ($data as $line) {
-				echo $line;
-			}
-			print '</div>
+			print '
+			<div class="content" id="chatresult"></div>
 		    <script language="javascript" type="text/javascript">
 				var nickName = "'.$User->username.'";
 				UpdateTimer();
@@ -504,7 +500,7 @@ class libHTML
 			<div class="content-notice" id="chatsender" onkeyup="keypressed(event);">
 				Your message: <input type="text" name="msg" size="70" id="msg" />
 				<button onclick="doWork();">Send</button> - 
-				<button onclick="document.getElementById(\'chatresult\').style.height = \'250px\';">Expand</button>
+				<button onclick="document.getElementById(\'chatresult\').style.height=\'250px\';">Expand</button>
 			</div>';
 		}
 
