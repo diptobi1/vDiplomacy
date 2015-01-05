@@ -1327,6 +1327,7 @@ $bordersRawData=array(
 	array('Eastern North Atlantic Ocean (ena)','Western Mediterranean Sea (wmd)','Yes','No'),
 	array('Eastern North Atlantic Ocean (ena)','Mid North Atlantic Ocean (mna)','Yes','No'),
 	array('Eastern North Atlantic Ocean (ena)','Spain (spa) (South Coast)','Yes','No'),
+	array('Eastern North Atlantic Ocean (ena)','Eastern South Atlantic Ocean - west sea lane (Wst. esa)','Yes','No'),
 	array('Eastern North Atlantic Ocean (ena)','Western South Atlantic Ocean - north sea lane (Nth. wsa)','Yes','No'),
 	array('Eastern North Atlantic Ocean (ena)','Mid North Atlantic Ocean - south sea lane (Sth. mna)','Yes','No'),
 	array('Eastern North Atlantic Ocean (ena)','Mid North Atlantic Ocean - east sea lane (Est. mna)','Yes','No'),
@@ -3439,6 +3440,7 @@ if (!file_exists('variants/'.$this->name.'/cache/sampleMap.png'))
 	copy ('variants/'.$this->name.'/resources/sampleMap.png','variants/'.$this->name.'/cache/sampleMap.png');
 
 ?>
+
 
 
 
