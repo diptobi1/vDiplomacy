@@ -2385,6 +2385,7 @@ $bordersRawData=array(
 	array('Central Pacific Ocean (cpo)','Tahiti (tah)','Yes','No'),
 	array('Central Pacific Ocean (cpo)','West Central Pacific Ocean - south east sea lane (S.E. wcp)','Yes','No'),
 	array('Central Pacific Ocean (cpo)','Hawaii - west sea lane (Wst. hi)','Yes','No'),
+	array('Central Pacific Ocean (cpo)','East Central Pacific Ocean - north west sea lane (N.W. ecp)','Yes','No'),
 	array('Central Pacific Ocean (cpo)','East Central Pacific Ocean - south west sea lane (S.W. ecp)','Yes','No'),
 	array('Central Pacific Ocean (cpo)','Central Pacific Ocean - north west sea lane (N.W. cpo)','Yes','No'),
 	array('Central Pacific Ocean (cpo)','Central Pacific Ocean - north east sea lane (N.E. cpo)','Yes','No'),
@@ -3440,6 +3441,7 @@ if (!file_exists('variants/'.$this->name.'/cache/sampleMap.png'))
 	copy ('variants/'.$this->name.'/resources/sampleMap.png','variants/'.$this->name.'/cache/sampleMap.png');
 
 ?>
+
 
 
 
