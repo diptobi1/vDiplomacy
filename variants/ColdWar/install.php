@@ -89,7 +89,7 @@ $territoryRawData=array(
 	array('Baltic Sea', 'Sea', 'No', 0, 663, 552, 416, 340),
 	array('North Sea', 'Sea', 'No', 0, 594, 547, 372, 339),
 	array('Ionian Sea', 'Sea', 'No', 0, 703, 683, 428, 427),
-	array('West Mediterranean', 'Sea', 'No', 0, 0, 0, 377, 418),
+	array('West Mediterranean', 'Sea', 'No', 0, 650, 667, 377, 418),
 	array('Finland', 'Coast', 'No', 0, 671, 513, 420, 324),
 	array('Central America (West Coast)', 'Coast', 'No', 0, 63, 364, 40, 255),
 	array('Central America (East Coast)', 'Coast', 'No', 0, 70, 377, 64, 254),
