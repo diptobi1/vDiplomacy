@@ -488,6 +488,7 @@ class libHTML
 
 		print self::globalNotices();
 		
+/* Disable chat.
 		if ( is_object($User) && $User->type['Moderator'] )
 		{
 			print '
@@ -503,7 +504,7 @@ class libHTML
 				<button onclick="document.getElementById(\'chatresult\').style.height=\'250px\';">Expand</button>
 			</div>';
 		}
-
+*/
 		if ( is_object($User) && $User->type['User'] )
 		{
 			$gameNotifyBlock = libHTML::gameNotifyBlock();
