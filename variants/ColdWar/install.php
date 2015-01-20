@@ -393,6 +393,7 @@ $bordersRawData=array(
 	array('Ionian Sea','West Mediterranean','Yes','No'),
 	array('West Mediterranean','Paris (South Coast)','Yes','No'),
 	array('Finland','Leningrad (South Coast)','Yes','No'),
+	array('Central America (West Coast)','Mexico (West Coast)','Yes','No'),
 	array('Central America (East Coast)','Mexico (East Coast)','Yes','No'),
 	array('West Canada (West Coast)','Gulf of Alaska','Yes','No'),
 	array('West Canada (North Coast)','Hudson Bay','Yes','No'),
