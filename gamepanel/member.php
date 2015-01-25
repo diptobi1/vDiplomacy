@@ -171,6 +171,10 @@ class panelMember extends Member
 			return '<a href="profile.php?userID='.$this->userID.'">'.$this->username.'</a>
 				'.libHTML::loggedOn($this->userID).'
 				<span class="points">('.$this->points.libHTML::points().User::typeIcon($this->userType,false).' / <b>'.libReliability::getGrade($this).'</b>'.
+
+				(($User->type['Moderator'] && $this->ccMatch > 0) ? ' / <font color = "FF0000"><b>CC:'.$this->ccMatch.'</b></font>' : '').
+				(($User->type['Moderator'] && $this->ipMatch > 0) ? ' / <font color = "FF0000"><b>IP:'.$this->ipMatch.'</b></font>' : '').
+				
 				(($User->type['Moderator'] && $this->rlGroup != 0 && count($this->Game->Members->ByRlGroup[$this->rlGroup])>1) ? 
 				' / <img src="'.libRelations::statusIcon($this->rlGroup).'">:<b>'.abs($this->rlGroup).'/'.count($this->Game->Members->ByRlGroup[$this->rlGroup]).'</b>'
 				: '')

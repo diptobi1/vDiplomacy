@@ -634,6 +634,9 @@ class processGame extends Game
 			$this->lastProcessed = time();
 			$DB->sql_put("UPDATE wD_Games SET lastProcessed = ".$this->lastProcessed." WHERE id = ".$this->id);
 		}
+		
+		// At last update the CC and IP information
+		$this->Members->updateCCIP();
 	}
 
 	/**

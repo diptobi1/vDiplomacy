@@ -755,7 +755,10 @@ class processMembers extends Members
 			}
 			$CD->send('No','No','You took over '.$CDCountryName.'! Good luck');
 		}
-			
+
+		// Recalculate CC and IP matches if a new player joins...
+		$this->updateCCIP();
+		
 		$this->Game->gamelog(l_t('New member joined'));
 
 		$this->joinedRedirect();

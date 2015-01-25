@@ -164,6 +164,13 @@ class Member
 	public $rlGroup;
 	
 	/**
+	 * CC and IP macthes of the Member
+	 * @var int
+	 */
+	public $ccMatch;
+	public $ipMatch;
+	
+	/**
 	 * ChessTimer (Countdown timer)
 	 */
 	public $chessTime;

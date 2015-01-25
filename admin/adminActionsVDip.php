@@ -14,6 +14,11 @@ class adminActionsVDip extends adminActions
 				'description' => 'Enter the new phases played and missed and the new CD-count',
 				'params' => array('userID'=>'User ID', 'CDtakeover'=>'CD takeovers')
 			),
+			'updateCCIP' => array(
+				'name' => 'Recalculate CC and IP',
+				'description' => 'Recalculate the CC and IP matches for a given game.',
+				'params' => array('gameID'=>'Game ID')
+			),
 			'tempBan' => array(
 				'name' => 'Temporary ban a player',
 				'description' => 'How many days should the player be blocked from joining or creating new games.',
@@ -89,6 +94,20 @@ class adminActionsVDip extends adminActions
 		list($CDtakeoverOld) = $DB->sql_row("SELECT CDtakeover FROM wD_Users WHERE id=".$userID);
 
 		return 'This users CDtakeovers will be changed from <b>'.$CDtakeoverOld.'</b> to <b>'.$CDtakeover.'</b>.';
+	}
+	
+	public function updateCCIP(array $params)
+	{
+		global $DB;
+		
+		$gameID = (int)$params['gameID'];
+		
+		$Variant=libVariant::loadFromGameID($gameID);
+		$Game = $Variant->Game($gameID);
+
+		$Game->Members->updateCCIP();
+		
+		return 'Matches recalculated.';
 	}
 	
 	public function tempBan(array $params)
