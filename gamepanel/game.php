@@ -542,7 +542,10 @@ class panelGame extends Game
 		if ($User->phasesPlayed < $this->minPhases) return substr($buf,0,-3)."</div>";
 		if (libReliability::noCDrating($User)  < $this->minNoCD) return substr($buf,0,-3)."</div>";
 		if (libReliability::noNMRrating($User) < $this->minNoNMR) return substr($buf,0,-3)."</div>";
-		
+
+		// show no join button if player is blocked/tempBan
+		if ($User->tempBan > time()) return substr($buf,0,-3)."</div>";
+
 		$buf .= '<form style="display: inline;" onsubmit="return confirm(\''.$question.'\');" method="post" action="board.php?gameID='.$this->id.'">
 			<input type="hidden" name="formTicket" value="'.libHTML::formTicket().'" />';
 			

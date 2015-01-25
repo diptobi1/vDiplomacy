@@ -631,6 +631,8 @@ class processMembers extends Members
 			throw new Exception("You noCD-ratio is too low to join this game. (Required:".$this->Game->minNoCD."% / You:".libReliability::noCDrating($User)."%)");
 		if ( $this->Game->minNoNMR > libReliability::noNMRrating($User) )
 			throw new Exception("You noCD-ratio is too low to join this game. (Required:".$this->Game->minNoNMR."% / You:".libReliability::noNMRrating($User)."%)");
+		if ( $User->tempBan > time() )
+			throw new Exception("You are blocked from joining new games.");
 
 		// Handle RL-relations
 		require_once ("lib/relations.php");			

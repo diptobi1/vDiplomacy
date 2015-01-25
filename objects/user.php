@@ -224,6 +224,12 @@ class User {
 	 */
 	public $directorLicense;
 	
+	/*
+	 * The user is blocked from joining or creating new games till the given time
+	 * @var timestamp
+	 */
+	public $tempBan;
+	
 	/**
 	 * 'No' if the player can submit mod reports, 'Yes' if they are muted
 	 * @var string
@@ -598,6 +604,7 @@ class User {
 			u.greyOut,
 			u.scrollbars,
 			u.directorLicense,
+			u.tempBan,
 			IF(s.userID IS NULL,0,1) as online
 			FROM wD_Users u
 			LEFT JOIN wD_Sessions s ON ( u.id = s.userID )

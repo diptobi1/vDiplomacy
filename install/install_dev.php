@@ -1,7 +1,7 @@
 <?php
 // Current Version of install-file:
-// Webdip V1.04
-// VDip - 24
+// Webdip V1.35
+// VDip - 50
 
 $sql[]="CREATE DATABASE ".Config::$database_name;
 $sql[]="USE ".Config::$database_name;
@@ -922,9 +922,12 @@ $sql[]="ALTER TABLE `wD_Backup_Games` ADD `blockVotes` set('Draw','Pause','Cance
 $sql[]="ALTER TABLE `wD_MovesArchive` ADD `orderID` int(10) unsigned NOT NULL FIRST;";
 $sql[]="ALTER TABLE `wD_Backup_MovesArchive` ADD `orderID` int(10) unsigned NOT NULL FIRST;";
 
+// VDip: 50
+$sql[]="ALTER TABLE `wD_Users` ADD `tempBan` int(10) unsigned;";
+
 // Set the correct version-information in the database	
 $sql[]="UPDATE `wD_Misc`     SET `value` = '135' WHERE `name` = 'Version';";
-$sql[]="UPDATE `wD_vDipMisc` SET `value` = '49'  WHERE `name` = 'Version';";
+$sql[]="UPDATE `wD_vDipMisc` SET `value` = '50'  WHERE `name` = 'Version';";
 
 // Create a default Admin-Account
 require_once ('lib/auth.php');
