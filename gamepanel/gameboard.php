@@ -215,9 +215,6 @@ class panelGameBoard extends panelGame
 		$buf .= '<form onsubmit="return confirm(\''. l_t("Are you sure you want to withdraw this vote?").'\');" action="board.php?gameID='.$this->id.'#votebar" method="post">';
 		$buf .= '<input type="hidden" name="formTicket" value="'.libHTML::formTicket().'" />';
 
-		if (count($this->Variant->countries) < 4)
-			$buf = str_replace('Concede','Concede" onClick="return confirm(\'Are you sure you want to vote for Concede?\\nIn a '.count($this->Variant->countries).' player game it usually takes effect immediately.\');',$buf);
-		
 		if( $vCancel )
 		{
 			$buf .= '<div class="memberGameDetail">'.l_t('Cancel:').' ';
