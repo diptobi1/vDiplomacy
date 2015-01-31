@@ -197,10 +197,11 @@ class panelGameBoard extends panelGame
 	 */
 	function showVoteForm($vVote, $vCancel)
 	{
-		$buf = '<form action="board.php?gameID='.$this->id.'#votebar" method="post">';
+		$buf = '<form onsubmit="return confirm(\''. l_t("Are you sure you want to cast this vote?").'\');" action="board.php?gameID='.$this->id.'#votebar" method="post">';
 		$buf .= '<input type="hidden" name="formTicket" value="'.libHTML::formTicket().'" />';
 
-		$buf .= '<div class="memberUserDetail">';
+        $buf .= '<div class="memberUserDetail">';
+
 		foreach($vVote as $vote)
 		{
 			if (strpos($this->blockVotes,$vote)!== false) continue;			
@@ -210,7 +211,9 @@ class panelGameBoard extends panelGame
 
 			$buf .= '<input type="submit" class="form-submit" name="'.$vote.'" value="'.l_t($vote).'" /> ';
 		}
-		$buf .= '</div>';
+		$buf .= '</div></form>';
+		$buf .= '<form onsubmit="return confirm(\''. l_t("Are you sure you want to withdraw this vote?").'\');" action="board.php?gameID='.$this->id.'#votebar" method="post">';
+		$buf .= '<input type="hidden" name="formTicket" value="'.libHTML::formTicket().'" />';
 
 		if (count($this->Variant->countries) < 4)
 			$buf = str_replace('Concede','Concede" onClick="return confirm(\'Are you sure you want to vote for Concede?\\nIn a '.count($this->Variant->countries).' player game it usually takes effect immediately.\');',$buf);
@@ -229,7 +232,8 @@ class panelGameBoard extends panelGame
 			$buf .= '</div>';
 		}
 
-		$buf .= '</form><div style="clear:both"></div>';
+        $buf .= '</form><div style="clear:both"></div>';
+
 		return $buf;
 	}
 

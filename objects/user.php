@@ -235,6 +235,15 @@ class User {
 	 * @var string
 	 */
 	public $muteReports;
+	
+	/**
+	 * The users reliability stats; civil disorders, nmrs, civil disorders taken over, phases where moves could have been submitted, games, reliability rating.
+	 * 
+	 * Generated in libGameMaster
+	 * 
+	 * @var int/double
+	 */
+	public $cdCount, $nmrCount, $cdTakenCount, $phaseCount, $gameCount, $reliabilityRating;
 
 	/**
 	 * Give this user a supplement of points
@@ -588,6 +597,12 @@ class User {
 			u.muteReports,
 			u.silenceID,
 			u.notifications,
+			u.cdCount,
+			u.nmrCount,
+			u.cdTakenCount,
+			u.phaseCount,
+			u.gameCount,
+			u.reliabilityRating,
 			u.missedMoves,
 			u.phasesPlayed,			
 			u.gamesLeft,
@@ -729,11 +744,19 @@ class User {
 		require_once(l_r('lib/message.php'));
 		$message = message::linkify($message);
 
-		if( $this->isUserMuted($FromUser->id) )
+		if( $FromUser->isSilenced() )
+        {
+			notice::send($FromUser->id, $this->id, 'PM', 'No', 'Yes',
+                l_t('Could not deliver message, you are currently silenced.') .'('. $FromUser->getActiveSilence()->reason .')', l_t('To:') .' '. $this->username,
+                $this->id);
+            return false;
+        }
+		else if( $this->isUserMuted($FromUser->id) )
 		{
 			notice::send($FromUser->id, $this->id, 'PM', 'No', 'Yes',
 				l_t('Could not deliver message, user has muted you.'), l_t('To:').' '.$this->username,
 				$this->id);
+			return false;
 		}
 		else
 		{
@@ -745,6 +768,7 @@ class User {
 			notice::send($FromUser->id, $this->id, 'PM', 'No', 'Yes',
 				l_t('You sent:').' <em>'.$message.'</em>', l_t('To:').' '.$this->username,
 				$this->id);
+			return true;
 		}
 	}
 
@@ -913,6 +937,9 @@ class User {
 		{
 			$rankingDetails['stats'][$status] = $number;
 		}
+		$rankingDetails['stats']['Civil disorder'] = $this->cdCount;
+		$rankingDetails['stats']['Civil disorders taken over'] = $this->cdTakenCount;
+
 		
 		if (isset($rankingDetails['stats']['Resigned']))
 			unset ($rankingDetails['stats']['Resigned']);

@@ -67,7 +67,7 @@ class libHTML
 
 	static function platinum()
 	{
-		return ' <img src="'.l_s('images/icons/platinum.png').'" alt="(P)" title="'.l_t('Donator - platinum').'" />';
+		return ' <img src="'.l_s('images/icons/platinum.png').'" alt="(P)" title="'.l_t('Co - Site Owner').'" />';
 	}
 
 	static function gold()
@@ -137,7 +137,7 @@ class libHTML
 	static function unmuted($url=false)
 	{
 		$buf = '';
-		if($url) $buf .= '<a href="'.$url.'">';
+		if($url) $buf .= '<a onclick="return confirm(\''.l_t("Are you sure you want to mute the messages from this player?").'\');" href="'.$url.'">';
 		$buf .= '<img src="'.l_s('images/icons/unmute.png').'" alt="'.l_t('Mute player').'" title="'.l_t('Mute player').'" />';
 		if($url) $buf .= '</a>';
 		return $buf;
@@ -288,9 +288,10 @@ class libHTML
 	 * @param $actionName The name of the action
 	 * @param array $args The args in a $name=>$value array
 	 * @param $linkName The name to give the link, the URL is returned if no linkName is given
+	 * @param $confirm Boolean to determine whether the action needs javascript confirmation
 	 * @return string A link URL or an <a href>
 	 */
-	static function admincp($actionName, $args=null, $linkName=null)
+	static function admincp($actionName, $args=null, $linkName=null,$confirm=false)
 	{
 		$output = 'admincp.php?tab=Control%20Panel&amp;actionName='.$actionName;
 
@@ -310,7 +311,9 @@ class libHTML
 		$output .= '#'.$actionName;
 
 		if($linkName)
-			return '<a href="'.$output.'" class="light">'.$linkName.'</a>';
+			return '<a href="'.$output.'" '
+			      .($confirm ? 'onclick="return confirm(\''.$linkName.': '.l_t('Please confirm this action.').'\')"' :'')
+			      .' class="light">'.$linkName.'</a>';
 		else
 			return $output;
 	}

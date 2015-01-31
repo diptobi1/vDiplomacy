@@ -462,6 +462,11 @@ if( $total || (isset($playing) && $playing) )
 		print '<li>'.l_t($name.': <strong>%s</strong>',$status).'</li>';
 	}
 
+	print '<li>'.l_t('No moves received / received:').' <strong>'.$UserProfile->nmrCount.'/'.$UserProfile->phaseCount.'</strong></li>';
+	print '<li>'.l_t('Reliability rating:').' <strong>'.round(100*$UserProfile->reliabilityRating).'%</strong></li>';
+	
+	print '<li>'.l_t('Total (finished): <strong>%s</strong>',$total).'</li>';
+
 	if ( $rankingDetails['takenOver'] )
 		print '<li>'.l_t('Left and taken over: <strong>%s</strong>',$rankingDetails['takenOver']).
 			'(<a href="profile.php?detail=civilDisorders&userID='.$UserProfile->id.'">'.l_t('View details').'</a>)</li>';
@@ -676,18 +681,18 @@ if ( $User->type['Moderator'] && $User->id != $UserProfile->id )
 		$modActions[] = libHTML::admincp('makeDonator',array('userID'=>$UserProfile->id), l_t('Give donator benefits'));
 
 	if( $User->type['Admin'] && !$UserProfile->type['Moderator'] )
-		$modActions[] = libHTML::admincp('giveModerator',array('userID'=>$UserProfile->id), l_t('Make moderator'));
+		$modActions[] = libHTML::admincp('giveModerator',array('userID'=>$UserProfile->id), l_t('Make moderator'),true);
 
 	if( $User->type['Admin'] && ($UserProfile->type['Moderator'] && !$UserProfile->type['Admin']) )
-		$modActions[] = libHTML::admincp('takeModerator',array('userID'=>$UserProfile->id), l_t('Remove moderator'));
+		$modActions[] = libHTML::admincp('takeModerator',array('userID'=>$UserProfile->id), l_t('Remove moderator'),true);
 	
-	if( $User->type['Admin'] && $UserProfile->type['ForumModerator'] )
-		$modActions[] = libHTML::admincp('giveForumModerator',array('userID'=>$UserProfile->id), l_t('Make forum moderator'));
+	if( $User->type['Admin'] && !$UserProfile->type['ForumModerator'] )
+		$modActions[] = libHTML::admincp('giveForumModerator',array('userID'=>$UserProfile->id), l_t('Make forum moderator'),true);
 	
 	if( $User->type['Admin'] && ($UserProfile->type['ForumModerator'] && !$UserProfile->type['Admin']) )
-		$modActions[] = libHTML::admincp('takeForumModerator',array('userID'=>$UserProfile->id), l_t('Remove forum moderator'));
+		$modActions[] = libHTML::admincp('takeForumModerator',array('userID'=>$UserProfile->id), l_t('Remove forum moderator'),true);
 	
-	$modActions[] = libHTML::admincp('reportMuteToggle',array('userID'=>$UserProfile->id), l_t(($UserProfile->muteReports=='No'?'Mute':'Unmute').' mod reports'));
+	$modActions[] = libHTML::admincp('reportMuteToggle',array('userID'=>$UserProfile->id), l_t(($UserProfile->muteReports=='No'?'Mute':'Unmute').' mod reports'),true);
 
 	$modActions[] = '<a href="admincp.php?tab=Multi-accounts&aUserID='.$UserProfile->id.'" class="light">'.
 		l_t('Enter multi-account finder').'</a>';
@@ -742,9 +747,15 @@ if ( $User->type['User'] && $User->id != $UserProfile->id && !$User->notificatio
 		}
 		else
 		{
-			$UserProfile->sendPM($User, $_REQUEST['message']);
+			if ( $UserProfile->sendPM($User, $_REQUEST['message']) )
+            {
+                print '<p class="notice">'.l_t('Private message sent successfully.').'</p>';
+            }
+			else 
+            {
+                print '<p class="notice">'.l_t('Private message could not be sent. You may be silenced or muted.').'</p>';
+            }
 
-			print '<p class="notice">'.l_t('Private message sent successfully.').'</p>';
 		}
 	}
 

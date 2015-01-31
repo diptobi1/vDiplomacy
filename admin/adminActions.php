@@ -600,10 +600,6 @@ class adminActions extends adminActionsForms
 		return 'Process time set to now successfully';
 	}
 
-	public function panicConfirm(array $params)
-	{
-		return l_t('Are you sure? This should only be used if something is damaging the server');
-	}
 	public function panic(array $params)
 	{
 		global $Misc;
@@ -868,7 +864,6 @@ class adminActions extends adminActionsForms
 	}
 	public function cdUser(array $params)
 	{
-		global $DB, $Game;
 
 		require_once(l_r('gamemaster/game.php'));
 
@@ -1002,7 +997,7 @@ class adminActions extends adminActionsForms
 		}
 
 		$DB->sql_put("UPDATE wD_Members SET status = 'Left', orderStatus=CONCAT(orderStatus,',Ready')
-					WHERE userID = ".$userID." AND status = 'Playing'" );
+					WHERE userID = ".$userID." AND status = 'Playing'");
 		$DB->sql_put("UPDATE wD_Orders o INNER JOIN wD_Members m ON ( m.gameID = o.gameID AND m.countryID = o.countryID )
 					SET o.toTerrID = NULL, o.fromTerrID = NULL
 					WHERE m.userID = ".$userID);
