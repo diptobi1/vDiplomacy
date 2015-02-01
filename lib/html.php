@@ -593,7 +593,7 @@ class libHTML
 			FROM wD_Members m
 			INNER JOIN wD_Games g ON ( m.gameID = g.id )
 			WHERE m.userID = ".$User->id." AND (  ( m.status='Playing' OR m.status='Left' ) OR NOT (m.newMessagesFrom+0) = 0 )
-				AND ( ( NOT m.orderStatus LIKE '%Ready%' AND NOT m.orderStatus LIKE '%None%' ) OR NOT ( (m.newMessagesFrom+0) = 0 ) )");
+				AND ( ( NOT m.orderStatus LIKE '%Ready%' AND NOT m.orderStatus LIKE '%None%' ) OR NOT ( (m.newMessagesFrom+0) = 0 ) ) ORDER BY  g.processStatus ASC, g.processTime ASC");
 
 		$gameIDs = array();
 		$notifyGames = array();
@@ -603,8 +603,6 @@ class libHTML
 			$gameIDs[] = $id;
 			$notifyGames[$id] = $game;
 		}
-
-		sort($gameIDs);
 
 		$gameNotifyBlock = '';
 
@@ -723,8 +721,10 @@ class libHTML
 		if ( is_object($User) )
 		{
 			if ( $User->type['Admin'] or $User->type['Moderator'] )
+			{
+				$links['profile.php']=array('name'=>'Find user', 'inmenu'=>true);  // Overrides the previous one with one that appears in the menu
 				$links['admincp.php']=array('name'=>'Admin CP', 'inmenu'=>true);
-
+			}
 			$links['gamemaster.php']=array('name'=>'GameMaster', 'inmenu'=>FALSE);
 		}
 

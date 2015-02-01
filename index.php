@@ -251,7 +251,7 @@ class libHome
 			INNER JOIN wD_Members m ON ( (m.userID = ".$User->id." OR g.directorUserID = ".$User->id.") AND m.gameID = g.id )
 			WHERE NOT g.phase = 'Finished' 
 			GROUP BY g.id
-			ORDER BY g.processTime ASC");
+			ORDER BY g.processStatus ASC, g.processTime ASC");
 		$buf = '';
 		$bufDef = $bufPause = $bufPregame = '';
 		
