@@ -45,6 +45,9 @@ and the rules of webDiplomacy.</li>
 <li><a href="hof.php">vDip Hall of fame</a></li>
 <li class="formlistdesc">The pros of this server; the top 100! based on an Elo-like algorithm</li>
 
+<li><a href="recentchanges.php">Recent changes</a></li>
+<li class="formlistdesc">Recent changes to the webDiplomacy software.</li>
+
 <li><a href="halloffame.php">Hall of fame</a></li>
 <li class="formlistdesc">The pros of this server; the top 100! based on total DPoints.</li>
 
