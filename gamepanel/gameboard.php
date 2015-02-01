@@ -64,9 +64,8 @@ class panelGameBoard extends panelGame
 				<a class="mapnav" href="#" onClick="loadMap('.$this->id.','.$mapTurn.',-1); return false;">
                       <img id="Start" src="'.l_s('images/historyicons/Start_disabled.png').'" alt="'.l_t('Start').'" title="'.l_t('View the map from the first turn').'" /></a>
 				<a class="mapnav" href="#" onClick="loadMapStep('.$this->id.','.$mapTurn.',-1); return false;"><img id="Backward" src="'.l_s('images/historyicons/Backward_disabled.png').'" alt="'.l_t('Backward').'" title="'.l_t('View the map from the previous turn').'" /></a>
-                <!--    The following is the toggle for removing the movement arrows. Uncomment this section if you want the movement arrow toggle.
                 <a class="mapnav" href="#" onClick="toggleMoves('.$this->id.','.$mapTurn.'); return false;"><img id="NoMoves" src="images/historyicons/hidemoves.png" alt="NoMoves" title="Toggle movement lines" />
-                </a>                 -->
+                </a>
 			   <a id="LargeMapLink" class="mapnav" href="'.$largemapLink.'" target="_blank" class="light"><img src="'.l_s('images/historyicons/external.png').'" alt="'.l_t('Open large map').'" title="'.l_t('This button will open the large map in a new window. The large map shows all the moves, and is useful when the small map isn\'t clear enough.').'" /></a></span>
                      
 				<a class="mapnav" href="#" onClick="loadMapStep('.$this->id.','.$mapTurn.',1); return false;"><img id="Forward" src="'.l_s('images/historyicons/Forward_disabled.png').'" alt="'.l_t('Forward').'" title="'.l_t('View the map from the next turn').'" /></a>
