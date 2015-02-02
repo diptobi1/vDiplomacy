@@ -705,7 +705,8 @@ class adminMultiCheck
 		
 		print '<ul>';
 		print '<li><a href="profile.php?userID='.$bUser->id.'">'.$bUser->username.'</a> ('.$bUser->points.' '.libHTML::points().')
-					'.$info.' (<a href="?aUserID='.$bUser->id.'#viewMultiFinder" class="light">check userID='.$bUser->id.'</a>)
+			'.($bUser->type['Banned'] ? '<img src="'.l_s('images/icons/cross.png').'" alt="X" title="'.l_t('Banned').'" />' : '').'
+			(<a href="?aUserID='.$bUser->id.'#viewMultiFinder" class="light">'.l_t('check userID=%s',$bUser->id).'</a>)
 				<ul>';
 
 		list($bUserTotal) = $DB->sql_row("SELECT COUNT(ip) FROM wD_AccessLog WHERE userID = ".$bUser->id);

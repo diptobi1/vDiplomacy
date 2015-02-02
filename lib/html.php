@@ -967,11 +967,9 @@ class libHTML
 		$cookiesWarning='<div id="cookiesWarning"></div><script language="JavaScript" type="text/javascript">checkCookieExist();</script>';
 	
 		// Version, sourceforge and HTML compliance logos
-		return $cookiesWarning.l_t('based on webDiplomacy version <strong>%s</strong> vDip.%s',number_format(VERSION/100,2),VDIPVERSION.'<br />');
-//			<a href="http://sourceforge.net/projects/phpdiplomacy">
-//				<img alt="webDiplomacy @ Sourceforge"
-//					src="http://sourceforge.net/sflogo.php?group_id=125692" />
-//			</a>';
+		return $cookiesWarning.l_t('based on webDiplomacy version <strong>%s</strong> vDip.%s',number_format(VERSION/100,2),VDIPVERSION.'<br />
+			<a href="http://github.com/kestasjk/webDiplomacy" class="light">GitHub Project</a> | 
+			<a href="http://github.com/kestasjk/webDiplomacy/issues" class="light">Bug reports</a>';
 	}
 
 	/*
