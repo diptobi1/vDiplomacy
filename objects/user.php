@@ -620,7 +620,8 @@ class User {
 			u.scrollbars,
 			u.directorLicense,
 			u.tempBan,
-			IF(s.userID IS NULL,0,1) as online
+			IF(s.userID IS NULL,0,1) as online,
+			u.deletedCDs
 			FROM wD_Users u
 			LEFT JOIN wD_Sessions s ON ( u.id = s.userID )
 			WHERE ".( $username ? "u.username='".$username."'" : "u.id=".$this->id ));

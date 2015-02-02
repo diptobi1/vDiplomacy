@@ -969,7 +969,7 @@ class libHTML
 		// Version, sourceforge and HTML compliance logos
 		return $cookiesWarning.l_t('based on webDiplomacy version <strong>%s</strong> vDip.%s',number_format(VERSION/100,2),VDIPVERSION.'<br />
 			<a href="http://github.com/kestasjk/webDiplomacy" class="light">GitHub Project</a> | 
-			<a href="http://github.com/kestasjk/webDiplomacy/issues" class="light">Bug reports</a>';
+			<a href="http://github.com/kestasjk/webDiplomacy/issues" class="light">Bug reports</a>');
 	}
 
 	/*
