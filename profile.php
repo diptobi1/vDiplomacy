@@ -387,8 +387,10 @@ if ( $User->type['Moderator'])
 		else
 		{
 		
-			$notes = preg_replace('#(modforum.php.*viewthread[:= _]?)([0-9]+)#i',
+			$notes = preg_replace('#(modforum.php.viewthread[:= _]?)([0-9]+)#i',
 				'<a href="modforum.php?viewthread=\2#\2" class="light">\1\2</a>',$notes);
+			$notes = preg_replace('#(modforum.php.threadID[:= _]?)([0-9]+)#i',
+				'<a href="modforum.php?threadID=\2#\2" class="light">\1\2</a>',$notes);
 
 			$DB->sql_put("INSERT INTO wD_ModeratorNotes SET 
 				note='".$notes."',
@@ -427,7 +429,7 @@ if ( $User->type['Moderator'])
 				<span id="EditNoteBox" style="display:none;">
 					<form method="post" style="display:inline;">
 						<textarea name="EditNote" style="width:100%;height:200px">'.str_ireplace("</textarea>", "<END-TA-DO-NOT-EDIT>", str_ireplace("<br />", "\n",
-							preg_replace('#<a href..modforum.php.viewthread.*class..light.>(.*)</a>#i','\1',$notes))).'</textarea><br />
+							preg_replace('#<a href..modforum.php.viewthread.*class..light.>(.*)</a>#Ui','\1',$notes))).'</textarea><br />
 						<TABLE>
 							<TD><input type="checkbox" name="alert" value="on" '.($UserProfile->type['ModAlert'] ? 'checked="checked"':'').'> ModAlert</TD>
 							<TD align="right"><input type="Submit" value="Submit" /></TD>
