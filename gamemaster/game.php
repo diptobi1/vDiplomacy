@@ -488,6 +488,11 @@ class processGame extends Game
 	{
 		global $DB;
 		
+		// Only for VDip: Do not record NMRs for 2-player or live games
+		// Also on VDip the NMRs and phases-played do add up, even if a country is in CD. So watch your game...
+		if ( (count($Member->Game->Variant->countries) == 2) or ($Member->Game->phaseMinutes <= 30) )
+			return;
+			
 		/*
 		 * Make a note of NMRs. An NMR is where a member's orderStatus does not contain "Saved", but there are orders to
 		* be submitted and the user is playing. (Note this could be changed to require orderStatus is "Completed", if
@@ -497,7 +502,7 @@ class processGame extends Game
 				SELECT m.gameID, m.userID, m.countryID, ".$this->turn." as turn, m.bet, m.supplyCenterNo
 				FROM wD_Members m
 				WHERE m.gameID = ".$this->id." 
-					AND m.status='Playing' 
+					AND (m.status='Playing' OR m.status='Left')
 					AND EXISTS(SELECT o.id FROM wD_Orders o WHERE o.gameID = m.gameID AND o.countryID = m.countryID)
 					AND NOT m.orderStatus LIKE '%Saved%' AND NOT m.orderStatus LIKE '%Ready%'");
 		
@@ -509,7 +514,7 @@ class processGame extends Game
 				INNER JOIN wD_Members m ON m.userID = u.id
 				SET u.phaseCount = u.phaseCount + 1
 				WHERE m.gameID = ".$this->id." 
-					AND m.status='Playing' 
+					AND (m.status='Playing' OR m.status='Left')
 					AND EXISTS(SELECT o.id FROM wD_Orders o WHERE o.gameID = m.gameID AND o.countryID = m.countryID)");
 		}
 	
