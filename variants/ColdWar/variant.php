@@ -10,7 +10,7 @@ class ColdWarVariant extends WDVariant {
 	public $description= 'vDip\'s best in 2-player action!';
 	public $adapter    = 'Firehawk & Safari';
 	public $version    = '1';
-	public $codeVersion= '1.0.2';
+	public $codeVersion= '1.0.3';
 
 	public $countries=array('USSR','NATO');
 
