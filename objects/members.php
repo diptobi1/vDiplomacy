@@ -218,6 +218,7 @@ class Members
 				m.ipMatch AS ipMatch,
 				u.username AS username,
 				u.points AS points,
+				u.vpoints AS vpoints,
 				u.rlGroup AS rlGroup,
 				u.missedMoves AS missedMoves,
 				u.phasesPlayed AS phasesPlayed,			

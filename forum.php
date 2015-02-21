@@ -366,7 +366,7 @@ if( file_exists($cacheHTML) )
 
 $tabl = $DB->sql_tabl("SELECT
 	f.id, f.fromUserID, f.timeSent, f.message, f.subject, f.replies,
-		u.username as fromusername, u.points as points, f.latestReplySent, IF(s.userID IS NULL,0,1) as online, u.type as userType, 
+		u.username as fromusername, u.vpoints as points, f.latestReplySent, IF(s.userID IS NULL,0,1) as online, u.type as userType, 
 		f.likeCount as likeCount, 
 		f.silenceID,
 		f.anon,
@@ -467,7 +467,7 @@ while( $message = $DB->tabl_hash($tabl) )
 		(($message['points'] == '??') ? '<a href="features.php#2_7">' : '<a href="profile.php?userID='.$message['fromUserID'].'">').
 			$message['fromusername'].
 			' '.libHTML::loggedOn($message['fromUserID']).
-				' ('.$message['points'].' '.libHTML::points().User::typeIcon($message['userType']).')</a>'.
+				' ('.$message['points'].' '.libHTML::vpoints().User::typeIcon($message['userType']).')</a>'.
 			'<br />
 			<strong><em>'.libTime::text($message['timeSent']).'</em></strong>'.$muteLink.'<br />
 			'.$User->likeMessageToggleLink($message['id'],$message['fromUserID']).libHTML::likeCount($message['likeCount']).
@@ -525,7 +525,7 @@ while( $message = $DB->tabl_hash($tabl) )
 		}
 		// We are viewing the thread; print replies
 		$replytabl = $DB->sql_tabl(
-			"SELECT f.id, fromUserID, f.timeSent, f.message, u.points as points, IF(s.userID IS NULL,0,1) as online,
+			"SELECT f.id, fromUserID, f.timeSent, f.message, u.vpoints as points, IF(s.userID IS NULL,0,1) as online,
 					u.username as fromusername, f.toID, u.type as userType, 
 					f.likeCount, 
 					f.silenceID,
@@ -594,7 +594,7 @@ while( $message = $DB->tabl_hash($tabl) )
 
 			print '<strong><a href="profile.php?userID='.$reply['fromUserID'].'">'.$reply['fromusername'].' '.
 			libHTML::loggedOn($reply['fromUserID']).
-					' ('.$reply['points'].' '.libHTML::points().User::typeIcon($reply['userType']).')</a>'.
+					' ('.$reply['points'].' '.libHTML::vpoints().User::typeIcon($reply['userType']).')</a>'.
 				'</strong><br />';
 
 			print libHTML::forumMessage($message['id'],$reply['id']);

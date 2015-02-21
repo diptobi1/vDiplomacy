@@ -177,6 +177,12 @@ class User {
 	public $points;
 
 	/**
+	 * Number of vPoints
+	 * @var int
+	 */
+	public $vpoints;
+
+	/**
 	 * Number of Missed moves and phases played by the user...
 	 * @var int
 	 */
@@ -620,6 +626,7 @@ class User {
 			u.scrollbars,
 			u.directorLicense,
 			u.tempBan,
+			u.vpoints,
 			IF(s.userID IS NULL,0,1) as online,
 			u.deletedCDs
 			FROM wD_Users u
@@ -679,7 +686,7 @@ class User {
 			if ( !$welcome and $this->online )
 				$buffer.= libHTML::loggedOn($this->id);
 
-			$buffer.=' ('.$this->points.libHTML::points().$this->typeIcon($this->type).')</a>';
+			$buffer.=' ('.$this->vpoints.libHTML::vpoints().$this->typeIcon($this->type).')</a>';
 		}
 		else
 		{
@@ -925,6 +932,9 @@ class User {
 
 		list($rankingDetails['position']) = $DB->sql_row("SELECT COUNT(id)+1
 			FROM wD_Users WHERE points > ".$this->points);
+			
+		list($rankingDetails['vPosition']) = $DB->sql_row("SELECT COUNT(id)+1
+			FROM wD_Users WHERE vpoints > ".$this->vpoints);
 
 		list($rankingDetails['worth']) = $DB->sql_row(
 			"SELECT SUM(bet) FROM wD_Members WHERE userID = ".$this->id." AND status = 'Playing'");
@@ -983,6 +993,9 @@ class User {
 
 		// Calculate the percentile of the player. Smaller is better.
 		$rankingDetails['percentile'] = ceil(100.0*$rankingDetails['position'] / $rankingPlayers);
+
+		// Calculate the percentile of the player. Smaller is better.
+		$rankingDetails['vpercentile'] = ceil(100.0*$rankingDetails['vPosition'] / $rankingPlayers);
 
 		$rankingDetails['rank'] = 'Political puppet';
 

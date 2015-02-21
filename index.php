@@ -301,7 +301,7 @@ class libHome
 			SELECT m.id as postID, t.id as threadID, m.type, m.timeSent, IF(t.replies IS NULL,m.replies,t.replies) as replies,
 				IF(t.subject IS NULL,m.subject,t.subject) as subject,
 				m.anon,
-				u.id as userID, u.username, u.points, IF(s.userID IS NULL,0,1) as online, u.type as userType,
+				u.id as userID, u.username, u.vpoints, IF(s.userID IS NULL,0,1) as online, u.type as userType,
 				SUBSTRING(m.message,1,100) as message, m.latestReplySent, t.fromUserID as threadStarterUserID
 			FROM wD_ForumMessages m
 			INNER JOIN wD_Users u ON ( m.fromUserID = u.id )
@@ -389,7 +389,7 @@ class libHome
 
 					<div class="homeForumPostTime">'.libTime::text($post['timeSent']).' '.$post['iconMessage'].'</div>
 					<a href="profile.php?userID='.$post['userID'].'" class="light">'.$post['username'].'</a>
-						'.libHTML::loggedOn($post['userID']) . ' ('.$post['points'].libHTML::points().
+						'.libHTML::loggedOn($post['userID']) . ' ('.$post['points'].libHTML::vpoints().
 						User::typeIcon($post['userType']).')
 
 					<div style="clear:both"></div>

@@ -71,6 +71,7 @@ class Member
 	 * @var int
 	 */
 	var $points;
+	var $vpoints;
 	/**
 	 * The amount the user bet into the game
 	 * @var int
@@ -233,7 +234,7 @@ class Member
 
 			$output .= 'href="profile.php?userID='.$this->userID.'">'.$this->username;
 		}
-		return $output.' ('.$this->points.User::typeIcon($this->userType).'/'.$this->missedMoves.')</a>';
+		return $output.' ('.$this->vpoints.User::typeIcon($this->userType).'/'.$this->missedMoves.')</a>';
 	}
 
 	/**

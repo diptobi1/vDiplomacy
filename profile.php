@@ -342,10 +342,11 @@ print '<ul class="formlist">';
 
 print '<li><strong>'.l_t('Rank:').'</strong> '.$rankingDetails['rank'].'</li>';
 
-if ( $rankingDetails['position'] < $rankingDetails['rankingPlayers'] )
-	print '<li><strong>'.l_t('Position:').'</strong> '.$rankingDetails['position'].' / '.
-		$rankingDetails['rankingPlayers'].' '.l_t('(top %s%%)',$rankingDetails['percentile']).'</li>';
+if ( $rankingDetails['vPosition'] < $rankingDetails['rankingPlayers'] )
+	print '<li><strong>'.l_t('Position:').'</strong> '.$rankingDetails['vPosition'].' / '.
+		$rankingDetails['rankingPlayers'].' '.l_t('(top %s%%)',$rankingDetails['vpercentile']).'</li>';
 
+print '<li><strong>'.l_t('vPoints:').'</strong> '.$UserProfile->vpoints.' '.libHTML::vpoints().'</li>';
 print '<li><strong>'.l_t('Available points:').'</strong> '.$UserProfile->points.' '.libHTML::points().'</li>';
 
 print '<li><strong>'.l_t('Points in play:').'</strong> '.($rankingDetails['worth']-$UserProfile->points-($showAnon ? 0 : $rankingDetails['anon']['points'])).' '.libHTML::points().'</li>';
