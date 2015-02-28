@@ -16,8 +16,6 @@
 
 	You should have received a copy of the GNU Affero General Public License
 	along with webDiplomacy. If not, see <http://www.gnu.org/licenses/>.
-	
-	If you have questions or suggestions send me a mail: Oliver.Auth@rhoen.de
 
 	---
 
@@ -35,6 +33,10 @@
 	1.6.4: smallmap color-fix
 	1.7:   new: rules.html added to explain the rule-change for the Baleares.
 	1.7.2: New icons
+	1.8:   Code cleanup
+	1.6.3: borderfix
+	1.6.4: smallmap color-fix
+	1.7:   new: rules.html added to explain the rule-change for the Baleares.
 	1.8:   Code cleanup
 */
 
@@ -62,14 +64,14 @@ class AncMedVariant extends WDVariant {
 	}
 
 	public function turnAsDate($turn) {
-		if ( $turn==-1 ) return "Pre-game";
-		else return ( $turn % 2 ? "Autumn, " : "Spring, " ).(floor($turn/2) + 1);
+		if ( $turn==-1 ) return l_t("Pre-game");
+		else return ( $turn % 2 ? l_t("Autumn").", " : l_t("Spring").", " ).(floor($turn/2) + 1);
 	}
 
 	public function turnAsDateJS() {
 		return 'function(turn) {
-			if( turn==-1 ) return "Pre-game";
-			else return ( turn%2 ? "Autumn, " : "Spring, " )+(Math.floor(turn/2) + 1);
+			if( turn==-1 ) return l_t("Pre-game");
+			else return ( turn%2 ? l_t("Autumn")+", " : l_t("Spring")+", " )+(Math.floor(turn/2) + 1);
 		};';
 	}
 }
