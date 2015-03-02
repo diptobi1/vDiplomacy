@@ -352,11 +352,13 @@ class libRelations {
 					throw new Exception("Invalid phase to set CD");
 
 				$usersHTML='';
+				$ignore = ( (count($this->Game->Variant->countries) > 2) ? 1 : 0);
+				
 				foreach ($Game->Members->ByID as $Member)
 				{
 					if ($Member->rlGroup == $groupID)
 					{
-						$Member->setLeft();
+						$Member->setLeft($ignore);
 						$usersHTML .= '<a href="profile.php?userID='.$Member->userID.'">'.$Member->username.'</a>, ';
 					}
 				}

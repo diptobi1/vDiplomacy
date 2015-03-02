@@ -148,16 +148,16 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 		}
 	
 		$input['minPhases'] = (int)$input['minPhases'];
-		if ( $input['minPhases'] > $User->phasesPlayed )
+		if ( $input['minPhases'] > $User->phaseCount )
 		{
-			throw new Exception("You didn't play enough phases (".$User->phasesPlayed.") for your own requirement (".$input['minPhases'].")");
+			throw new Exception("You didn't play enough phases (".$User->phaseCount.") for your own requirement (".$input['minPhases'].")");
 		}
 		
 		require_once(l_r('lib/reliability.php'));		 
 		$input['minRating'] = (int)$input['minRating'];		
-		if ( $input['minRating'] > libReliability::getReliability($User) )
+		if ( $input['minRating'] > $User->reliabilityRating )
 		{
-			throw new Exception("Your reliability-rating is to low (".abs(libReliability::getReliability($User)).") for your own requirement (".$input['minRating'].").");
+			throw new Exception("Your reliability-rating is to low (".abs($User->reliabilityRating).") for your own requirement (".$input['minRating'].").");
 		}
 		
 		$input['minNoCD'] = (int)$input['minNoCD'];		

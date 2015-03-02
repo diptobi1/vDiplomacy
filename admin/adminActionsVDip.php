@@ -12,7 +12,7 @@ class adminActionsVDip extends adminActions
 			'changeReliability' => array(
 				'name' => 'Change reliability',
 				'description' => 'Enter the new phases played and missed and the new CD-count',
-				'params' => array('userID'=>'User ID', 'CDtakeover'=>'CD takeovers')
+				'params' => array('userID'=>'User ID', 'integrityBalance'=>'Integrity Balance')
 			),
 			'updateCCIP' => array(
 				'name' => 'Recalculate CC and IP',
@@ -75,13 +75,13 @@ class adminActionsVDip extends adminActions
 		global $DB;
 		
 		$userID = (int)$params['userID'];
-		$CDtakeover = (int)$params['CDtakeover'];
+		$integrityBalance = (int)$params['integrityBalance'];
 
-		list($CDtakeoverOld) = $DB->sql_row("SELECT CDtakeover FROM wD_Users WHERE id=".$userID);
+		list($integrityBalanceOld) = $DB->sql_row("SELECT integrityBalance FROM wD_Users WHERE id=".$userID);
 
-		$DB->sql_put("UPDATE wD_Users SET CDtakeover = ".$CDtakeover." WHERE id=".$userID);
+		$DB->sql_put("UPDATE wD_Users SET integrityBalance = ".$integrityBalance." WHERE id=".$userID);
 
-		return 'This users CDtakeovers got changed from <b>'.$CDtakeoverOld.'</b> to <b>'.$CDtakeover.'</b>.';
+		return 'This users integrityBalance got changed from <b>'.$integrityBalanceOld.'</b> to <b>'.$integrityBalance.'</b>.';
 	}
 	
 	public function changeReliabilityConfirm(array $params)
@@ -89,11 +89,11 @@ class adminActionsVDip extends adminActions
 		global $DB;
 		
 		$userID = (int)$params['userID'];
-		$CDtakeover = (int)$params['CDtakeover'];
+		$integrityBalance = (int)$params['integrityBalance'];
 		
-		list($CDtakeoverOld) = $DB->sql_row("SELECT CDtakeover FROM wD_Users WHERE id=".$userID);
+		list($integrityBalanceOld) = $DB->sql_row("SELECT integrityBalance FROM wD_Users WHERE id=".$userID);
 
-		return 'This users CDtakeovers will be changed from <b>'.$CDtakeoverOld.'</b> to <b>'.$CDtakeover.'</b>.';
+		return 'This users integrityBalance will be changed from <b>'.$integrityBalanceOld.'</b> to <b>'.$integrityBalance.'</b>.';
 	}
 	
 	public function updateCCIP(array $params)
@@ -233,7 +233,7 @@ class adminActionsVDip extends adminActions
 
 			// Check for additional requirements:
 			require_once(l_r('lib/reliability.php'));		 
-			if ( $Game->minRating > libReliability::getReliability($SendToUser) )
+			if ( $Game->minRating > $SendToUser->reliabilityRating )
 				$ret .= '<b>Error:</b> The reliability of '.$SendToUser->username.' is not high enough to join the game <a href="board.php?gameID='.$Game->id.'">'.$Game->name.'</a>.<br>';
 			elseif ( array_key_exists ( $SendToUser->id , $Game->Members->ByUserID))
 				$ret .= '<b>Error:</b> '.$SendToUser->username.' is already a member of the game <a href="board.php?gameID='.$Game->id.'">'.$Game->name.'</a>.<br>';

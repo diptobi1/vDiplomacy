@@ -22,65 +22,45 @@ class libReliability
 {
 	/**
 	 * Get a user's or members noNMRrating rating.	 
-	 * This is ( missedMoves / phasesPlayed )
+	 * This is ( nmrCount / phaseCount )
 	 * @return noNMRrating
 	 */
 	static function noNMRrating($User)
 	{
-		if ($User->phasesPlayed == 0) return 100;
-		return round (100 * ( 1 - $User->missedMoves / $User->phasesPlayed ) , 2);
+		if ($User->phaseCount == 0) return 100;
+		return round (100 * ( 1 - $User->nmrCount / $User->phaseCount ) , 2);
 	}
 	
 	/**
 	 * Get a user's or members noCDrating rating.	 
-	 * This is ( gamesLeft / gamesPlayed )
+	 * This is ( cdCount / gameCount )
 	 * @return noNMRrating
 	 */
 	static function noCDrating($User)
 	{
-		if ($User->gamesPlayed == 0) return 100;
-		return round (100 * ( 1 - $User->gamesLeft / $User->gamesPlayed ) , 2);
+		if ($User->gameCount == 0) return 100;
+		return round (100 * ( 1 - $User->cdCount / $User->gameCount ) , 2);
 	}
 
 	/**
-	 * Get a user's or members noCDrating rating.	 
-	 * This is ( gamesLeft / gamesPlayed )
-	 * @return noNMRrating
+	 * Get a user's or members integrity rating.	 
+	 * This is cdTakenCount + integrityBalance - (nmrCount * 0.2 + cdCount * 0.6);
+	 * @return integrityRating
 	 */
 	static function integrityRating($User)
 	{
-		if ($User->gamesPlayed == 0) return 0;
-		return $User->CDtakeover - (($User->missedMoves * 0.2) + ($User->gamesLeft * 0.6));
-	}
-
-	/**
-	 * Get a user's or members reliability rating.	 
-	 * This is ( (noCD + noNMR) /2 ) ^3
-	 * @return reliability
-	 */
-	static public function getReliability($User)
-	{
-		$cleanRR = ((self::noNMRrating($User) + self::noCDrating($User)) / 2);
-		$adjustedRR = 100 * pow (($cleanRR / 100), 3);
-		return round ($adjustedRR , 2);
-	}
-	
-	/**
-	 * Display the Grade to the given reliability
-	 */
-	static public function Grade($reliability)
-	{
-		return "R".floor($reliability);
+		if ($User->gameCount == 0) return 0;
+		return $User->cdTakenCount + $User->integrityBalance - (($User->nmrCount * 0.2) + ($User->cdCount * 0.6));
 	}
 	
 	/**
 	 * Get a user's Grade... 
-	 * @return grade as string...
+	 * @return grade as string... (or Rookie if < 99 phases played)
 	 */
 	static public function getGrade($User)
 	{
-		if ($User->phasesPlayed > 99 && $User->gamesPlayed > 2)
-			return self::Grade(self::getReliability($User));
+		if ($User->phaseCount > 99 && $User->gameCount > 2)
+			return "R".round($User->reliabilityRating);
 		else
 			return 'Rookie';
 	}
@@ -89,9 +69,9 @@ class libReliability
 	{
 		$gLp = $gLi = 999;
 		
-		if ($User->phasesPlayed < 100) {$gLp = 7;}
-		if ($User->phasesPlayed < 50)  {$gLp = 4;}
-		if ($User->phasesPlayed < 20)  {$gLp = 2;}
+		if ($User->phaseCount < 100) {$gLp = 7;}
+		if ($User->phaseCount < 50)  {$gLp = 4;}
+		if ($User->phaseCount < 20)  {$gLp = 2;}
 		
 		$integrity = self::integrityRating($User);
 		if ($integrity <= -1) { $gLi =  6; }
@@ -101,7 +81,6 @@ class libReliability
 		
 		return min($gLp,$gLi);		
 	}
-	
 	
 	/**
 	 * Return how many games a user can join.
@@ -178,45 +157,7 @@ class libReliability
 				<p>Read more about this <a href='reliability.php'>here</a>.</p>";
 		}
 	}
-	
-	/**
-	 * Update a members reliability-stats
-	 */
-	static function updateReliability($Member, $type, $calc)
-	{
-		global $DB;
-		
-		if ( (count($Member->Game->Variant->countries) > 2) && ($Member->Game->phaseMinutes > 30) )
-			$DB->sql_put("UPDATE wD_Users SET ".$type." = ".$type." ".$calc." WHERE id=".$Member->userID);		
-	}
 
-	/**
-	 * Adjust the missed turns of each member and update the phase counter
-	 * for games with more then 2 players and not live games...
-	 * "Left" users are included (for civil disorder to total phases ratio calculating)
-	 */
-	static function updateNMRreliabilities($Members)
-	{
-		foreach($Members->ByStatus['Playing'] as $Member)
-		{
-			self::updateReliability($Member, 'phasesPlayed', '+ 1');
-			if ($Member->orderStatus == '')
-				self::updateReliability($Member, 'missedMoves', '+ 1');
-		}
-		
-		foreach($Members->ByStatus['Left'] as $Member)
-		{
-			self::updateReliability($Member, 'phasesPlayed', '+ 1');
-			self::updateReliability($Member, 'missedMoves' , '+ 1');
-		}
-	}
-	
-	static function updateCDReliabilities($Members)
-	{
-		foreach($Members->ByID as $Member)
-			self::updateReliability($Member, 'gamesPlayed', '+ 1');
-	}
-	
 }
 
 ?>

@@ -182,16 +182,6 @@ class User {
 	 */
 	public $vpoints;
 
-	/**
-	 * Number of Missed moves and phases played by the user...
-	 * @var int
-	 */
-	public $missedMoves;
-	public $phasesPlayed;
-	public $gamesLeft;
-	public $CDtakeover;
-	public $gamesPlayed;
-	
 	public $lastMessageIDViewed;
 	public $lastModMessageIDViewed;
 
@@ -250,6 +240,13 @@ class User {
 	 * @var int/double
 	 */
 	public $cdCount, $nmrCount, $cdTakenCount, $phaseCount, $gameCount, $reliabilityRating;
+	
+	/**
+	 * integrityBalance
+	 * Changeable by a mod to improve a players integrety rating, so he can join more games...
+	 * @var int
+	 */
+	public $integrityBalance;
 
 	/**
 	 * Give this user a supplement of points
@@ -609,17 +606,12 @@ class User {
 			u.phaseCount,
 			u.gameCount,
 			u.reliabilityRating,
-			u.missedMoves,
-			u.phasesPlayed,			
-			u.gamesLeft,
-			u.gamesPlayed,
 			u.rlGroup,
 			u.showCountryNames,
 			u.showCountryNamesMap,
 			u.colorCorrect,
 			u.unitOrder,
 			u.sortOrder,			
-			u.CDtakeover,
 			u.pointNClick,
 			u.terrGrey,
 			u.greyOut,
@@ -627,6 +619,7 @@ class User {
 			u.directorLicense,
 			u.tempBan,
 			u.vpoints,
+			u.integrityBalance,
 			IF(s.userID IS NULL,0,1) as online,
 			u.deletedCDs
 			FROM wD_Users u
@@ -952,13 +945,12 @@ class User {
 		}
 		$rankingDetails['stats']['Civil disorder'] = $this->cdCount;
 		$rankingDetails['stats']['Civil disorders taken over'] = $this->cdTakenCount;
-
 		
 		if (isset($rankingDetails['stats']['Resigned']))
 			unset ($rankingDetails['stats']['Resigned']);
 	
-		if ($this->gamesLeft > 0)
-			$rankingDetails['stats']['Abandoned'] = $this->gamesLeft;
+		if ($this->cdCount > 0)
+			$rankingDetails['stats']['Abandoned'] = $this->cdCount;
 		
 		$tabl = $DB->sql_tabl( "SELECT COUNT(m.id), m.status, SUM(m.bet) FROM wD_Members AS m
 					INNER JOIN wD_Games AS g ON m.gameID = g.id
@@ -1192,7 +1184,7 @@ class User {
 		
 		// Users with <25 games, or RR < 97 are not allowed.
 		include_once("lib/reliability.php");
-		if ($this->gamesPlayed < 25 or libReliability::getReliability($this) < 97) return false;
+		if ($this->gameCount < 25 or $this->reliabilityRating < 97) return false;
 		return true;
 	}
 

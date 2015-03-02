@@ -531,7 +531,7 @@ class panelGame extends Game
 		{
 			$buf .= '<em>Requirements:</em> ';
 			if( $this->minRating > 0)
-				$buf .= 'RR >= <em>'.libReliability::Grade($this->minRating).'</em> / ';
+				$buf .= 'RR >= <em>R'.$this->minRating.'</em> / ';
 			if( $this->minPhases > 0)
 				$buf .= 'MinPhases > <em>'.(int)($this->minPhases - 1) .'</em> / ';
 			if( $this->minNoCD > 0)
@@ -543,8 +543,7 @@ class panelGame extends Game
 
 		// Exit and do not show join button if the player should not be able to join a given game.
 		require_once(l_r('lib/reliability.php'));		 
-//		if (libReliability::getReliability($User) < $this->minRating) return substr($buf,0,-3)."</div>";
-		if ($User->phasesPlayed < $this->minPhases) return substr($buf,0,-3)."</div>";
+		if ($User->phaseCount < $this->minPhases) return substr($buf,0,-3)."</div>";
 		if (libReliability::noCDrating($User)  < $this->minNoCD) return substr($buf,0,-3)."</div>";
 		if (libReliability::noNMRrating($User) < $this->minNoNMR) return substr($buf,0,-3)."</div>";
 

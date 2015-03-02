@@ -282,7 +282,12 @@ if ( isset($_REQUEST['detail']) )
 					print 'Additionally, there are ' . $UserProfile->deletedCDs . ' deleted CDs for this account (eg, self CD positions retaken by this user).';
 				}
 				print '<h4>'.l_t('NMRs:').'</h4><ul>';
-				$tabl = $DB->sql_tabl("SELECT n.gameID, n.countryID, n.turn, n.bet, n.SCCount, g.name FROM wD_NMRs n LEFT JOIN wD_Games g ON n.gameID = g.id WHERE n.userID = ".$UserProfile->id);
+				// Add all vDip NMRs without a recorded game.
+				list($NMRCounter) = $DB->sql_row("SELECT COUNT(*) FROM wD_NMRs WHERE gameID = 0 AND userID  = ".$UserProfile->id);
+				if ($NMRCounter > 0)
+					print '<li>'.$NMRCounter.' NMR'.($NMRCounter > 1 ? 's' : '').' without a gameID found.</li>';
+
+				$tabl = $DB->sql_tabl("SELECT n.gameID, n.countryID, n.turn, n.bet, n.SCCount, g.name FROM wD_NMRs n LEFT JOIN wD_Games g ON n.gameID = g.id WHERE g.id != 0 AND n.userID = ".$UserProfile->id);
 				if ($DB->last_affected() != 0) {
 					while(list($gameID, $countryID, $turn, $bet, $SCCount, $name)=$DB->tabl_row($tabl))
 					{                                          
@@ -298,11 +303,41 @@ if ( isset($_REQUEST['detail']) )
 							'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>
                                                  	</li>';
 					}
-				} else {
+				} elseif ( $NMRCounter == 0) {
 					print l_t('No NMRs found for this profile.');
 				}
 				print '</ul>';
 
+				// Added Civil disorders taken on vDip:
+				$tabl = $DB->sql_tabl("SELECT g.name, c.userID, c.countryID, c.turn, c.bet, c.SCCount, c.gameId
+					FROM wD_Members ct
+					INNER JOIN wD_CivilDisorders c ON ( c.gameID = ct.gameID AND c.countryID = ct.countryID AND NOT c.userID = ct.userID )
+					INNER JOIN wD_Games g ON ( c.gameID = g.id )
+					WHERE ct.userID = ".$UserProfile->id." AND c.turn = (
+						SELECT MAX(sc.turn) 
+						FROM wD_CivilDisorders sc 
+						WHERE sc.gameID = c.gameID AND sc.countryID = c.countryID)");
+	
+				print '<h4>'.l_t('Civil disorders taken:').'</h4>
+					<ul>';
+					
+				if ($DB->last_affected() == 0) {
+					print l_t('No civil disorders taken from this user.');
+				}
+
+				while(list($name, $userID, $countryID, $turn, $bet, $SCCount,$gameID)=$DB->tabl_row($tabl))
+				{
+					print '<li>
+					'.l_t('Game:').' <strong><a href="board.php?gameID='.$gameID.'">'.$name.'</a></strong>,
+						'.l_t('from userID:').' <strong>'.$userID.'</strong>,
+						'.l_t('country #:').' <strong>'.$countryID.'</strong>,
+						'.l_t('turn:').' <strong>'.$turn.'</strong>,
+						'.l_t('bet:').' <strong>'.$bet.'</strong>,
+						'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>
+						</li>';
+				}
+				print '</ul>';
+				
 			} else {
                          	print l_t('You do not have permission to view this page.');
 			}
@@ -478,7 +513,7 @@ print '<li><strong>'.l_t('Game messages:').'</strong> '.$posts.'</li>';
 
 print '<li>&nbsp;</li>';
 $total = 0;
-$includeStatus=array('Won','Drawn','Survived','Defeated','Abandoned','Left');
+$includeStatus=array('Won','Drawn','Survived','Defeated','Abandoned', 'Left');
 foreach($rankingDetails['stats'] as $name => $status)
 {
 	if ( !in_array($name, $includeStatus) ) continue;
@@ -511,6 +546,7 @@ if( $total || (isset($playing) && $playing) )
 	if ($total)
 		print '<li>'.l_t('Total (finished): <strong>%s</strong>',$total).'</li>';
 
+	/* We use a different layout on vDip:
 	foreach($rankingDetails['stats'] as $name => $status)
 	{
 		if ( in_array($name, $includeStatus) ) continue;
@@ -533,6 +569,7 @@ if( $total || (isset($playing) && $playing) )
 	if ( $rankingDetails['takenOver'] )
 		print '<li>'.l_t('Left and taken over: <strong>%s</strong>',$rankingDetails['takenOver']).
 			'(<a href="profile.php?detail=civilDisorders&userID='.$UserProfile->id.'">'.l_t('View details').'</a>)</li>';
+	*/
 
 	print '</ul></li>';
 }
@@ -564,17 +601,22 @@ print '<style type="text/css"> .tooltip { position: absolute; display: none; bac
 			}
 		</script>';
 		
-print '<li><strong>'.l_t('Reliability stats: ').'</strong> <ul class="gamesublist">';
+print '<li><strong>'.l_t('Reliability stats').'</strong> ';
+	if( $User->type['Moderator'] || $User->id == $UserProfile->id )
+		print ' (<a class="light" href="profile.php?detail=civilDisorders&userID='.$UserProfile->id.'">'.l_t('breakdown').'</a>)';
+
+print ': <ul class="gamesublist">';
 print '<li>Reliability: 
 	<a onmouseover="showRR();"; onmouseout="hideWMTT();" href="#">
-    <strong>'.libReliability::getGrade($UserProfile).'</strong></a></li>';
-print '<li>NoNMR: <strong>'.libReliability::noNMRrating($UserProfile).'%</strong> (<strong>'.$UserProfile->missedMoves.'</strong> missed phases out of <strong>'.$UserProfile->phasesPlayed.'</strong>)</li>';
-print '<li>NoCD: <strong>'.libReliability::noCDrating($UserProfile).'%</strong> (<strong>'.$UserProfile->gamesLeft.'</strong> abandoned games out of <strong>'.$UserProfile->gamesPlayed.'</strong>)</li>';
+    <strong>'.libReliability::getGrade($UserProfile).'</strong></a> ';
+print '</li>';
+print '<li>NoNMR: <strong>'.libReliability::noNMRrating($UserProfile).'%</strong> (<strong>'.$UserProfile->nmrCount.'</strong> missed phases out of <strong>'.$UserProfile->phaseCount.'</strong>)</li>';
+print '<li>NoCD: <strong>'.libReliability::noCDrating($UserProfile).'%</strong> (<strong>'.$UserProfile->cdCount.'</strong> abandoned games out of <strong>'.$UserProfile->gameCount.'</strong>)</li>';
 
 if ( $User->type['Moderator'])
 	print '<li>Integrity: 
 		<a onmouseover="showI();"; onmouseout="hideWMTT();" href="#">
-		<strong>'.libReliability::integrityRating($UserProfile).'</strong></a> (<strong>'.$UserProfile->CDtakeover.'</strong> CD takeovers)</li>';
+		<strong>'.libReliability::integrityRating($UserProfile).'</strong></a> (<strong>'.$UserProfile->cdTakenCount.'</strong> CD takeovers + <strong>'.$UserProfile->integrityBalance.'</strong> balance)</li>';
 
 
 print '</ul></li></div>';

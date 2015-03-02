@@ -959,10 +959,6 @@ class processGame extends Game
 			include_once("lib/rating.php");
 			libRating::updateRatings($this, true);
 		}
-			
-		// Update the players play and CD count.
-		require_once(l_r('lib/reliability.php'));		 
-		libReliability::updateCDReliabilities($this->Members);			 
 		
 	}
 
@@ -992,10 +988,6 @@ class processGame extends Game
 			return false; // No TerrStatus to cache -> no need for a new year
 		}
 
-		// Check for missed turns and adjust the counter in the user-data
-		require_once(l_r('lib/reliability.php'));		 
-		libReliability::updateNMRReliabilities($this->Members);
-		
 		/*
 		 * In the functions below only 'Playing' and 'Left' status members are dealt with:
 		 * 'Defeated' players have no bearing, and the other statuses cannot exist at this stage.
@@ -1162,10 +1154,6 @@ class processGame extends Game
 			include_once("lib/rating.php");
 			libRating::updateRatings($this, true);
 		}
-
-		// Update the players play and CD count.
-		require_once(l_r('lib/reliability.php'));		 
-		libReliability::updateCDReliabilities($this->Members);			 
 
 		$DB->sql_put("DELETE FROM wD_Orders WHERE gameID = ".$this->id);
 		$DB->sql_put("DELETE FROM wD_Units WHERE gameID = ".$this->id);

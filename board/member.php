@@ -81,10 +81,13 @@ class userMember extends panelMember
 					AND gameID = ".$this->gameID."
 					AND userID = ".$this->userID."
 					AND countryID = ".$this->countryID);
+					
+		/* On vDip we do not record CDs if a player retakes his position
 		if ($DB->affected() != 0) {
                         $DB->sql_put("UPDATE wD_Users SET deletedCDs = deletedCDs + 1 where id=" .$this->userID);
 		}
-		 
+		// End of vDip patch */
+		
 		$DB->sql_put("DELETE FROM wD_CivilDisorders
 					WHERE gameID = ".$this->gameID."
 					AND userID = ".$this->userID."
@@ -101,11 +104,6 @@ class userMember extends panelMember
 				WHERE id = ".$this->id
 			);
 			
-		// Balance his reliability
-		require_once(l_r('lib/reliability.php'));		 
-		libReliability::updateReliability($this, 'gamesLeft', '- 1');
-		libReliability::updateReliability($this, 'gamesPlayed', '- 1');
-
 	}
 
 	/**

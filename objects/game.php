@@ -620,12 +620,14 @@ class Game
 					{
 						if ($Member->supplyCenterNo > 1 && $Member->status=='Playing')
 							$foundNMR=true;
-							
+
+						$ignore = ( ($this->isLiveGame() == True) ? 1 : 0);
+						
 						if ($Member->status=='Playing')
 						{
 							$DB->sql_put(
-								"INSERT INTO wD_CivilDisorders ( gameID, userID, countryID, turn, bet, SCCount )
-									VALUES ( ".$this->id.", ".$Member->userID.", ".$Member->countryID.", ".$this->turn.", ".$Member->bet.", ".$Member->supplyCenterNo.")"
+								"INSERT INTO wD_CivilDisorders ( gameID, userID, countryID, turn, bet, SCCount, forcedByMod)
+									VALUES ( ".$this->id.", ".$Member->userID.", ".$Member->countryID.", ".$this->turn.", ".$Member->bet.", ".$Member->supplyCenterNo.", ".$ignore.")"
 								);
 							$DB->sql_put("UPDATE wD_Members SET status='Left' WHERE id = ".$Member->id);
 							unset($this->Members->ByStatus['Playing'][$Member->id]);
@@ -633,9 +635,6 @@ class Game
 							
 							$this->Members->ByStatus['Left'][$Member->id] = $Member;
 							libGameMessage::send(0, 'GameMaster', 'NMR from '.$Member->country.'. Send the country in CD.', $this->id);
-							
-							require_once(l_r('lib/reliability.php'));		 
-							libReliability::updateReliability($Member, 'gamesLeft', '+ 1');
 						}
 					}
 				}				
@@ -655,6 +654,30 @@ class Game
 											attempts = 0,
 											minimumBet = ".$this->minimumBet."
 											WHERE id = ".$this->id);
+											
+							// Check for missed turns and adjust the counter in the user-data
+							if ( (count($this->Variant->countries) > 2) and ($this->phaseMinutes > 30) )
+							{
+								$DB->sql_put("INSERT INTO wD_NMRs (gameID, userID, countryID, turn, bet, SCCount)
+										SELECT m.gameID, m.userID, m.countryID, ".$this->turn." as turn, m.bet, m.supplyCenterNo
+										FROM wD_Members m
+										WHERE m.gameID = ".$this->id." 
+											AND ( m.status='Playing' OR m.status='Left' ) 
+											AND EXISTS(SELECT o.id FROM wD_Orders o WHERE o.gameID = m.gameID AND o.countryID = m.countryID)
+											AND NOT m.orderStatus LIKE '%Saved%' AND NOT m.orderStatus LIKE '%Ready%'");
+								
+								/*
+								 * Increment the moves received counter for users who could have submitted moves. This is a counter because it's a large number
+								 * users are unlikely to question, and calculating it from stored data is very involved.
+								*/
+								$DB->sql_put("UPDATE wD_Users u
+										INNER JOIN wD_Members m ON m.userID = u.id
+										SET u.phaseCount = u.phaseCount + 1
+										WHERE m.gameID = ".$this->id." 
+											AND ( m.status='Playing' OR m.status='Left' )
+											AND EXISTS(SELECT o.id FROM wD_Orders o WHERE o.gameID = m.gameID AND o.countryID = m.countryID)");
+							}							
+							
 							foreach ($this->Members->ByID as $id => $Member)
 							{
 								$this->Members->ByID[$id]->orderStatus->Ready=false;
@@ -670,11 +693,7 @@ class Game
 								$gameMasterText .= 	'The game will continue after this phase even if you do not find a replacement.';
 							
 							libGameMessage::send(0, 'GameMaster', $gameMasterText, $this->id);
-							
-							// Check for missed turns and adjust the counter in the user-data
-							require_once(l_r('lib/reliability.php'));		 
-							libReliability::updateNMRreliabilities($this->Members);
-							
+				
 							return false;
 						}
 						else

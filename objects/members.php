@@ -220,11 +220,7 @@ class Members
 				u.points AS points,
 				u.vpoints AS vpoints,
 				u.rlGroup AS rlGroup,
-				u.missedMoves AS missedMoves,
-				u.phasesPlayed AS phasesPlayed,			
-				u.gamesLeft AS gamesLeft,
-				u.CDtakeover AS CDtakeover,				
-				u.gamesPlayed AS gamesPlayed,				
+				u.reliabilityRating AS reliabilityRating,		
 				m.pointsWon as pointsWon,
 				IF(s.userID IS NULL,0,1) as online,
 				u.type as userType

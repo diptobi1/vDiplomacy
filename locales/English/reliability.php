@@ -9,21 +9,14 @@ defined('IN_CODE') or die('This script can not be run by itself.');
 
 global $User;
 
-$unballancedCDs = $User->gamesLeft - $User->CDtakeover;
-$unballancedNMR = $User->missedMoves - ($User->CDtakeover * 2);
-if ( $unballancedCDs < 0 )
-{
-	$unballancedNMR = $User->missedMoves + ($unballancedCDs * 2);
-	$unballancedCDs = 0;
-}
-
-if ($User->phasesPlayed < 100 && libReliability::integrityRating($User) > -1) {
+if ($User->phaseCount < 100 && libReliability::integrityRating($User) > -1) {
 ?>
 	<p class="intro">
 	New members of this site have some light restrictions on how many games they can join or create at once.
 	You need to play at least <strong>20 phases</strong>, before you can join more than 2 games, 
 	<strong>50 phases</strong>, before you can join more than 4 games and at least <strong>100 phases</strong>,
-	before you can join more than 7 games at once. 2-player variants are not affected by this restriction.
+	before you can join more than 7 games at once. 2-player variants are not affected by this restriction, but they do not
+	count towards your phases played. Also live games do not add up to your phases played too.
 	</p>
 	
 	<p class="intro">
@@ -92,15 +85,14 @@ if ($User->phasesPlayed < 100 && libReliability::integrityRating($User) > -1) {
 			<p class="intro">To calculate how many games you can join we use your CD-takeovers and subtract your missed moves * 0.2 and your CDs * 0.6
 			(as 1 CD most of the time has 2 missed moves before).</p>
 
-			<p class="intro">As we introduced these restrictions we balanced all NMRs and all CDs for your
-			existing players by adding enough CD-takeovers to their record, so this number might not actually reflect how many open spots you have taken.</p>
+			<p class="intro">As we introduced these restrictions we balanced all NMRs and all CDs for our existing players.</p>
 			
-			<p class="intro">Using your current stats we get:
-			<ul><li>CD-takeover = '.$User->CDtakeover.'</li>
-			<li>NMRs = '.$User->missedMoves.'</li>
-			<li>CDs = '.$User->gamesLeft.'</li></ul></p>
+			<p class="intro">Using your current stats <a class="light" href="profile.php?detail=civilDisorders&userID='.$User->id.'">(breakdown)</a> we get:
+			<ul><li>cdTaken ('.$User->cdTakenCount.') + balance = ('.$User->integrityBalance.') = '.($User->cdTakenCount + $User->integrityBalance).'</li>
+			<li>NMRs = '.$User->nmrCount.'</li>
+			<li>CDs = '.$User->cdCount.'</li></ul></p>
 			<p class="intro">
-			Your final score is: <b>'.$User->CDtakeover.'</b> - (<b>'.$User->missedMoves.'</b> * 0.2 + <b>'.$User->gamesLeft.'</b> * 0.6) = <b>'.($User->CDtakeover - ( $User->missedMoves * 0.2 + $User->gamesLeft * 0.6)).
+			Your final score is: <b>'.($User->cdTakenCount + $User->integrityBalance).'</b> - (<b>'.$User->nmrCount.'</b> * 0.2 + <b>'.$User->cdCount.'</b> * 0.6) = <b>'.($User->cdTakenCount + $User->integrityBalance - ( $User->nmrCount * 0.2 + $User->cdCount * 0.6)).
 			'</b><br>
 			<p class="intro">Based on this results the following restrictions are in effect:
 			<ul><li>greater than -1 => no restrictions</li>
@@ -108,10 +100,8 @@ if ($User->phasesPlayed < 100 && libReliability::integrityRating($User) > -1) {
 			<li>between -2 and -3 => max 5 games</li>
 			<li>between -3 and -4 => max 3 games</li>
 			<li>and lower than -4 => max 1 game </li>
-			</ul></p>
-			
-';
-			
+			</ul></p>';
+
 	}
 }
 ?>

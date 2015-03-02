@@ -147,16 +147,6 @@ class Member
 	 * @var string
 	 */
 	var $userType;
-	
-	/**
-	 * Number of Missed moves and phases played by the member...
-	 * @var int
-	 */
-	public $missedMoves;
-	public $phasesPlayed;
-	public $gamesLeft;
-	public $gamesPlayed;
-	public $CDtakeover;
 
 	/**
 	 * rlGroup of the player
@@ -234,7 +224,7 @@ class Member
 
 			$output .= 'href="profile.php?userID='.$this->userID.'">'.$this->username;
 		}
-		return $output.' ('.$this->vpoints.User::typeIcon($this->userType).'/'.$this->missedMoves.')</a>';
+		return $output.' ('.$this->vpoints.User::typeIcon($this->userType).')</a>';
 	}
 
 	/**

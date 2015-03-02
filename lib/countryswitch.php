@@ -147,9 +147,9 @@ class libSwitch
 				require_once(l_r('lib/reliability.php'));		 
 				if ( count($Variant->countries)>2 && $message = libReliability::isReliable($SendUser))
 					$error = 'The User you selected can not join new games at the moment.';
-				elseif ( $Game->minPhases > $SendUser->phasesPlayed)
+				elseif ( $Game->minPhases > $SendUser->phaseCount)
 					$error = 'The User you selected did not play enough phases to join this game.';
-				elseif ( $Game->minRating > libReliability::getReliability($SendUser) )
+				elseif ( $Game->minRating > $SendUser->reliabilityRating )
 					$error = 'The reliability of User you selected is not high enough to join this game.';
 				elseif ( array_key_exists ( $toID , $Game->Members->ByUserID))
 					$error = 'The User you selected is already a member of this game.';

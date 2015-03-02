@@ -314,11 +314,6 @@ class processMember extends Member
 			VALUES ( ".$this->gameID.", ".$this->userID.", ".$this->countryID.", ".$this->Game->turn.", ".$this->bet.", ".$this->supplyCenterNo.", $ignore)"
 		);
 
-		// Adjust the gamesLeft 
-		require_once(l_r('lib/reliability.php'));		 
-		libReliability::updateReliability($this, 'gamesLeft', '+ 1');
-		libReliability::updateReliability($this, 'gamesPlayed', '+ 1');
-		
 		/*
 		 * Don't do addWinnings(0), because that will refund their points; they
 		 * can still rejoin so leave their points untouched.

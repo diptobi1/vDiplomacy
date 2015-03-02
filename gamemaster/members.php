@@ -184,6 +184,8 @@ class processMembers extends Members
 	function findSetLeft()
 	{
 		$left=false;
+		// Ignore Live games for the 2-player games.
+		$ignore = ( (count($this->Game->Variant->countries) > 2) ? 1 : 0);
 
 		// Eliminate players who've left
 		foreach($this->ByStatus['Playing'] as $Member)
@@ -193,7 +195,7 @@ class processMembers extends Members
 			if($Member->missedPhases == 2)
 			{
 				$left=true;
-				$Member->setLeft();
+				$Member->setLeft($ignore);
 			}
 		}
 
@@ -615,10 +617,10 @@ class processMembers extends Members
 
 		// Check for additional requirements:
 		require_once(l_r('lib/reliability.php'));		 
-		if ( $this->Game->minPhases > $User->phasesPlayed)
-			throw new Exception("You did not play enough phases to join this game. (Required:".$this->Game->minPhases." / You:".$User->phasesPlayed.")");
-		if ( $this->Game->minRating > abs(libReliability::getReliability($User)) )
-			throw new Exception("You reliable-rating is too low to join this game. (Required:".$this->Game->minRating."% / You:".libReliability::getReliability($User)."%)");
+		if ( $this->Game->minPhases > $User->phaseCount)
+			throw new Exception("You did not play enough phases to join this game. (Required:".$this->Game->minPhases." / You:".$User->phaseCount.")");
+		if ( $this->Game->minRating > abs($User->reliabilityRating) )
+			throw new Exception("You reliable-rating is too low to join this game. (Required:".$this->Game->minRating."% / You:".$User->reliabilityRating."%)");
 		if ( $this->Game->minNoCD > libReliability::noCDrating($User) )
 			throw new Exception("You noCD-ratio is too low to join this game. (Required:".$this->Game->minNoCD."% / You:".libReliability::noCDrating($User)."%)");
 		if ( $this->Game->minNoNMR > libReliability::noNMRrating($User) )
@@ -715,12 +717,7 @@ class processMembers extends Members
 			$CD->missedPhases = 0;
 			$CD->orderStatus->Ready=false;
 			$CD->points = $User->points;
-			$CD->missedMoves = $User->missedMoves;
-			$CD->phasesPlayed = $User->phasesPlayed;
-			$CD->gamesLeft = $User->gamesLeft;
-
-			require_once(l_r('lib/reliability.php'));		 
-			libReliability::updateReliability($CD, 'CDtakeover', '+ 1');
+			$CD->reliabilityRating = $User->reliabilityRating;
 			
 			$this->ByUserID[$CD->userID] = $CD;
 			$this->ByStatus['Playing'][$CD->id] = $CD;
