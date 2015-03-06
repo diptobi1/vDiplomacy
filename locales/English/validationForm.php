@@ -23,8 +23,8 @@ defined('IN_CODE') or die('This script can not be run by itself.');
 ?>
 <h2>No Multiaccounting</h2>
 <p>
-	You may only have <b>one account</b>, second accounts are not allowed under <b>any circumstances</b>, and will be banned.
-	This may also lead to your first account also being banned.
+	The account registered the first time you were here is <b>permanently</b> yours.<br>
+	You may <b>not change to another under any circumstances</b>, or else you will get <b>banned</b>.
 	<ul>
 		<li>If you forgot your password, use the lost password finder <a href="logon.php?forgotPassword=1">here</a>.</li>
 		<li>If you forgot your username, use the username recovery <a href="logon.php?resendUsername=1">here</a>.</li>
@@ -34,7 +34,7 @@ defined('IN_CODE') or die('This script can not be run by itself.');
 </p>
 <h2>No Metagaming</h2>
 <p>
-	You can't make alliances <em>for reasons outside a game</em>, such as because you are friends, relatives or in return for a favour in another game.&nbsp; This is known as metagaming and is against the rules because it gives an unfair advantage to those involved.&nbsp; If you are worried that you can't stab someone because you want to stay friends, then that's fair enough but you can't join a game with them.
+	You can't make alliances <b>for reasons outside a game</b>, such as because you are friends, relatives or in return for a favour in another game.&nbsp; This is known as metagaming and is against the rules because it gives an unfair advantage to those involved.&nbsp; If you are worried that you can't stab someone because you want to stay friends, then that's fair enough but you can't join a game with them.
 </p>
 
 <h2>Register and Anti-bot Validation</h2>
