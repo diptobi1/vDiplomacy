@@ -46,6 +46,9 @@ class libReliability
 
 	static public function gameLimits($User)
 	{
+		// If a user has a timed ban he can't join a game
+		if ($User->tempBan > time()) return 0;
+
 		$gLp = $gLi = 999;
 		
 		if ($User->phaseCount < 100) {$gLp = 7;}
@@ -77,20 +80,15 @@ class libReliability
 		$mG = $gL - $totalGames;
 		if ($mG < 0) { $mG = 0; }
 		
-		// If a user has a timed ban he can 
-		if ($User->tempBan > time())
-			$mG=0;
-			
 		return $mG;
 	}
 	
 	/**
-	 * 
-	 * 
+	 * Print a CD notive if the users ability to join games is limited.
 	 */
 	static public function printCDNotice($User)
 	{
-		if ( self::maxGames($User) < 50 )
+		if ( self::maxGames($User) < 50 && !($User->tempBan > time()) )
 			print '<p class="notice">Game-Restrictions in effect.</p>
 				<p class="notice">You can join or create '.self::maxGames($User).' additional games.<br>
 				Read more about this <a href="reliability.php">here</a>.<br><br></p>';
@@ -103,6 +101,8 @@ class libReliability
 	static public function isReliable($User)
 	{
 		global $DB;
+		
+		if ($User->tempBan > time()) return 'You are not allowed to join or creaty any more games at the moment.';
 		
 		// A player can't join new games, as long as he has active CountrySwiches.
 		list($openSwitches)=$DB->sql_row('SELECT COUNT(*) FROM wD_CountrySwitch WHERE (status = "Send" OR status = "Active") AND fromID='.$User->id);
@@ -132,7 +132,7 @@ class libReliability
 					2-player variants are not affected by this restriction.</p>
 					<p>Read more about this <a href='reliability.php'>here</a>.</p>";
 					
-			return "<p>NOTICE: You cannot join or create a new game, because you seem to be having trouble keeping up with the orders in the ones you already have.</p>
+			return "<p>You cannot join or create a new game, because you seem to be having trouble keeping up with the orders in the ones you already have.</p>
 				<p>Read more about this <a href='reliability.php'>here</a>.</p>";
 		}
 	}
