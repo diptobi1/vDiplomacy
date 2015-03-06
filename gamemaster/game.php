@@ -303,8 +303,6 @@ class processGame extends Game
 		,$specialCDturn 
 		,$specialCDcount
 		,$chessTime
-		,$minNoCD
-		,$minNoNMR
 		,$moderator
 		,$chooseYourCountry
 		,$description
@@ -373,8 +371,6 @@ class processGame extends Game
 						specialCDturn = ".$specialCDturn.", 
 						specialCDcount = ".$specialCDcount.", 
 						chessTime = ".$chessTime.", 
-						minNoCD = ".$minNoCD.", 
-						minNoNMR = ".$minNoNMR.",
 						directorUserID = ".$moderator.",
 						chooseYourCountry = '".$chooseYourCountry."',
 						description = '".$description."',

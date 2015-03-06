@@ -527,25 +527,18 @@ class panelGame extends Game
 
 		$buf = '<div>';
 		// Show join requirements:
-		if (($this->minRating > 0) || ($this->minPhases > 0)  || ($this->minNoCD > 0)  || ($this->minNoNMR > 0 ))
+		if (($this->minRating > 0) || ($this->minPhases > 0))
 		{
 			$buf .= '<em>Requirements:</em> ';
 			if( $this->minRating > 0)
 				$buf .= 'RR >= <em>R'.$this->minRating.'</em> / ';
 			if( $this->minPhases > 0)
 				$buf .= 'MinPhases > <em>'.(int)($this->minPhases - 1) .'</em> / ';
-			if( $this->minNoCD > 0)
-				$buf .= 'NoCD > <em>'.(int)($this->minNoCD - 1) .'%</em> / ';
-			if( $this->minNoNMR > 0)
-				$buf .= 'NoNMR > <em>'.(int)($this->minNoNMR - 1) .'%</em> / ';
 			$buf= substr($buf,0,-2)." - ";
 		}
 
 		// Exit and do not show join button if the player should not be able to join a given game.
-		require_once(l_r('lib/reliability.php'));		 
 		if ($User->phaseCount < $this->minPhases) return substr($buf,0,-3)."</div>";
-		if (libReliability::noCDrating($User)  < $this->minNoCD) return substr($buf,0,-3)."</div>";
-		if (libReliability::noNMRrating($User) < $this->minNoNMR) return substr($buf,0,-3)."</div>";
 
 		// show no join button if player is blocked/tempBan
 		if ($User->tempBan > time()) return substr($buf,0,-3)."</div>";

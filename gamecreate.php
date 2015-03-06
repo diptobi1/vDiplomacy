@@ -59,8 +59,6 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 						,'specialCDturn'
 						,'specialCDcount'
 						,'chessTime'
- 						,'minNoCD'
- 						,'minNoNMR'
 						,'targetSCs'
 						,'moderated'
 						,'description'
@@ -160,17 +158,6 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 			throw new Exception("Your reliability-rating is to low (".abs($User->reliabilityRating).") for your own requirement (".$input['minRating'].").");
 		}
 		
-		$input['minNoCD'] = (int)$input['minNoCD'];		
-		if ( $input['minNoCD'] > libReliability::noCDrating($User) )
-		{
-			throw new Exception("Your reliability-rating is to low (".abs(libReliability::noCDrating($User)).") for your own requirement (".$input['minNoCD'].").");
-		}
-		$input['minNoNMR'] = (int)$input['minNoNMR'];		
-		if ( $input['minNoNMR'] > libReliability::noNMRrating($User) )
-		{
-			throw new Exception("Your reliability-rating is to low (".abs(libReliability::noNMRrating($User)).") for your own requirement (".$input['minNoNMR'].").");
-		}
-		
 		$input['maxTurns'] = (int)$input['maxTurns'];		
 		if ( $input['maxTurns'] < 4 )
 			$input['maxTurns'] = 0;
@@ -243,9 +230,7 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 			$input['minPhases'],
 			$input['specialCDturn'],
 			$input['specialCDcount'],
-			$input['chessTime'],
-			$input['minNoCD'],
-			$input['minNoNMR']
+			$input['chessTime']
 			,$input['moderator']
 			,$input['chooseYourCountry']
 			,$input['description']

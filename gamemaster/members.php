@@ -621,10 +621,6 @@ class processMembers extends Members
 			throw new Exception("You did not play enough phases to join this game. (Required:".$this->Game->minPhases." / You:".$User->phaseCount.")");
 		if ( $this->Game->minRating > abs($User->reliabilityRating) )
 			throw new Exception("You reliable-rating is too low to join this game. (Required:".$this->Game->minRating."% / You:".$User->reliabilityRating."%)");
-		if ( $this->Game->minNoCD > libReliability::noCDrating($User) )
-			throw new Exception("You noCD-ratio is too low to join this game. (Required:".$this->Game->minNoCD."% / You:".libReliability::noCDrating($User)."%)");
-		if ( $this->Game->minNoNMR > libReliability::noNMRrating($User) )
-			throw new Exception("You noCD-ratio is too low to join this game. (Required:".$this->Game->minNoNMR."% / You:".libReliability::noNMRrating($User)."%)");
 		if ( $User->tempBan > time() )
 			throw new Exception("You are blocked from joining new games.");
 

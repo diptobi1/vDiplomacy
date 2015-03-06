@@ -361,21 +361,6 @@ else
 	</script>
 	<li class="formlistfield">
 		ReliabilityRating: R
-<?php
-/*		
-		<span id="ReliabilitySelect" style="display:inline">
-			<select onChange="changeReliabilitySelect(this.value)">
-			<option value=0 selected>none</option>
-			<?php
-				foreach (libReliability::$grades as $limit=>$grade)
-					print '<option value='.$limit.'>'.$grade.'</option>';
-			?>
-			print '<option value=''>custom</option>';
-			</select>
-		</span>
-		<span id="ReliabilityText" style="display:none">
-*/
-?>		
 		<span id="ReliabilityText" >
 			<input id="ReliabilityInput" type="text" name="newGame[minRating]" size="2" value="0"
 				style="text-align:right;"
@@ -389,24 +374,6 @@ else
 			or better.
 		</span>
 		<br>
-		NoNMR: <input id="minNoNMR" type="text" name="newGame[minNoNMR]" size="2" value="0"
-			style="text-align:right;"
-			onkeypress="if (event.keyCode==13) this.blur(); return event.keyCode!=13"
-			onChange="
-				this.value = parseInt(this.value);
-				if (this.value == 'NaN' ) this.value = 0;
-				if (this.value < 0 ) this.value = 0;
-				if (this.value > 100 ) this.value = 100;
-				"/>% or better. - 
-		NoCD: <input type="text" id="minNoCD" name="newGame[minNoCD]" size="2" value="0"
-			style="text-align:right;"
-			onkeypress="if (event.keyCode==13) this.blur(); return event.keyCode!=13"
-			onChange="
-				this.value = parseInt(this.value);
-				if (this.value == 'NaN' ) this.value = 0;
-				if (this.value < 0 ) this.value = 0;
-				if (this.value > 100 ) this.value = 100;
-				"/>% or better.<br>
 		Min Phases: <select id="minPhases" name="newGame[minPhases]">
 			<option value=0 selected>none</option>
 			<option value=50>50+</option>

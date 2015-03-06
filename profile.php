@@ -18,7 +18,7 @@
     along with webDiplomacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/** 
  * @package Base
  */
 
@@ -610,8 +610,12 @@ print '<li>Reliability:
 	<a onmouseover="showRR();"; onmouseout="hideWMTT();" href="#">
     <strong>'.libReliability::getGrade($UserProfile).'</strong></a> ';
 print '</li>';
-print '<li>NoNMR: <strong>'.libReliability::noNMRrating($UserProfile).'%</strong> (<strong>'.$UserProfile->nmrCount.'</strong> missed phases out of <strong>'.$UserProfile->phaseCount.'</strong>)</li>';
-print '<li>NoCD: <strong>'.libReliability::noCDrating($UserProfile).'%</strong> (<strong>'.$UserProfile->cdCount.'</strong> abandoned games out of <strong>'.$UserProfile->gameCount.'</strong>)</li>';
+
+if ($UserProfile->phaseCount > 0)
+	print '<li>NoNMR: <strong>'.round (100 * ( 1 - $UserProfile->nmrCount / $UserProfile->phaseCount ) , 2).'%</strong> (<strong>'.$UserProfile->nmrCount.'</strong> missed phases out of <strong>'.$UserProfile->phaseCount.'</strong>)</li>';
+
+if ($UserProfile->gameCount > 0)
+	print '<li>NoCD: <strong>'.round (100 * ( 1 - $UserProfile->cdCount / $UserProfile->gameCount ) , 2).'%</strong> (<strong>'.$UserProfile->cdCount.'</strong> abandoned games out of <strong>'.$UserProfile->gameCount.'</strong>)</li>';
 
 if ( $User->type['Moderator'])
 	print '<li>Integrity: 

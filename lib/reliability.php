@@ -20,27 +20,6 @@
 
 class libReliability
 {
-	/**
-	 * Get a user's or members noNMRrating rating.	 
-	 * This is ( nmrCount / phaseCount )
-	 * @return noNMRrating
-	 */
-	static function noNMRrating($User)
-	{
-		if ($User->phaseCount == 0) return 100;
-		return round (100 * ( 1 - $User->nmrCount / $User->phaseCount ) , 2);
-	}
-	
-	/**
-	 * Get a user's or members noCDrating rating.	 
-	 * This is ( cdCount / gameCount )
-	 * @return noNMRrating
-	 */
-	static function noCDrating($User)
-	{
-		if ($User->gameCount == 0) return 100;
-		return round (100 * ( 1 - $User->cdCount / $User->gameCount ) , 2);
-	}
 
 	/**
 	 * Get a user's or members integrity rating.	 

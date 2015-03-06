@@ -227,8 +227,6 @@ class Game
 	 */
 	 public $minRating;
 	 public $minPhases;
-	 public $minNoCD;
-	 public $minNoNMR;
 
 	/**
 	 * Some settings to force a CD on early NMRs
@@ -426,8 +424,6 @@ class Game
 			g.specialCDturn,
 			g.rlPolicy,
 			g.chessTime,
-			g.minNoCD,
-			g.minNoNMR,
 			g.adminLock,
 			g.directorUserID,
 			g.chooseYourCountry,
