@@ -5,6 +5,14 @@ class libRelations {
 	static function checkRelationsGame(User $User, Game $Game)
 	{
 		global $DB;
+		if ($User->rlGroup < 0 && $Game->password == "")
+		{
+			list($rlFriends) = $DB->sql_row("SELECT count(*) FROM wD_Members AS m
+												LEFT JOIN wD_Users AS u ON ( u.id = m.userID )
+												WHERE m.gameID=".$Game->id." AND u.id != ".$User->id." AND u.rlGroup = ".$User->rlGroup);
+			if ($rlFriends > 0)
+				return "Sorry, you are unable to join this game.<br>This is probably because somebody you know in real life has already joined and the game has set no password.<br>";
+		}
 		if ($Game->rlPolicy == 'Strict' && $User->rlGroup < 0)
 		{
 			list($rlFriends) = $DB->sql_row("SELECT count(*) FROM wD_Members AS m
