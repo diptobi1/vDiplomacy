@@ -546,7 +546,6 @@ if( $total || (isset($playing) && $playing) )
 	if ($total)
 		print '<li>'.l_t('Total (finished): <strong>%s</strong>',$total).'</li>';
 
-	/* We use a different layout on vDip:
 	foreach($rankingDetails['stats'] as $name => $status)
 	{
 		if ( in_array($name, $includeStatus) ) continue;
@@ -556,6 +555,7 @@ if( $total || (isset($playing) && $playing) )
 		print '<li>'.l_t($name.': <strong>%s</strong>',$status).'</li>';
 	}
 
+	/* We use a different layout on vDip:
 	print '<li>'.l_t('No moves received / received:').' <strong>'.$UserProfile->nmrCount.'/'.$UserProfile->phaseCount.'</strong></li>';
 	print '<li>'.l_t('Reliability rating:').' <strong>'.round($UserProfile->reliabilityRating).'%</strong>';
 	if( $User->type['Moderator'] || $User->id == $UserProfile->id )

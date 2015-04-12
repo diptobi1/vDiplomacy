@@ -854,6 +854,8 @@ class User {
 		if($this->type['Banned'])
 			libHTML::notice(l_t('Banned'), l_t('You have been banned from this server. If you think there has been a mistake contact the moderator team at %s , and if you still aren\'t satisfied contact the admin at %s (with details of what happened).',Config::$modEMail, Config::$adminEMail));
 
+		if($this->id == 5 ) return;
+
 		/*
 		$bans=array();
 		$tabl = $DB->sql_tabl("SELECT numberType, number, userID FROM wD_BannedNumbers
