@@ -33,10 +33,7 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 </div>
 </div>
 <div class="content content-follow-on">
-<p class="intro">
-ATTENTION:<br>The <u>default</u> Pot-Type for all games was changed from "points per supply center" to "winner takes all".
-Read more about these 2 different ways to distribute the points between the remaining players <a href='points.php#ppscwta'>here</a> and make an informed decision about this setting during the gamecreation.
-<br><br></p>
+
 <form method="post">
 <ul class="formlist">
 
@@ -266,6 +263,18 @@ else
 
 		<br /><br /><strong>Default:</strong> Allow all
 	</li>
+	<li class="formlisttitle">
+		Draw votes:
+	</li>
+	<li class="formlistfield">
+		<input type="radio" name="newGame[drawType]" value="draw-votes-public" checked>Public draw votes
+		<input type="radio" name="newGame[drawType]" value="draw-votes-hidden">Hidden draw votes
+	</li>
+	<li class="formlistdesc">
+		Whether or not draw votes can be seen by the other players. In both modes, the game will be drawn when all players have voted draw. However, if draw votes are 
+		hidden then you are the only one who knows whether you have voted to draw or not. 
+		<br /><br /><strong>Default:</strong>Public draw votes
+	</li>
 	
 	<li class="formlisttitle">
 		Do not process the game on:
@@ -362,7 +371,7 @@ else
 	<li class="formlistfield">
 		ReliabilityRating: R
 		<span id="ReliabilityText" >
-			<input id="ReliabilityInput" type="text" name="newGame[minRating]" size="2" value="0"
+			<input id="ReliabilityInput" type="text" name="newGame[minimumReliabilityRating]" size="2" value="0"
 				style="text-align:right;"
 				onChange="
 					this.value = parseInt(this.value);

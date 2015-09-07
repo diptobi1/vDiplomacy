@@ -319,6 +319,8 @@ class panelGame extends Game
 			
 		if( $this->rlPolicy=='Friends')
 			$alternatives[]=l_t('OnlyFriends');
+		if( $this->drawType=='draw-votes-hidden') 
+			$alternatives[]=l_t('Hidden draw votes');
 		if( $this->missingPlayerPolicy=='Wait' )
 			$alternatives[]=l_t('Wait for orders');
 			
@@ -495,81 +497,99 @@ class panelGame extends Game
 			else
 				return '';
 		}
-		elseif ( !$this->isJoinable() )
-			return '';
-
-		if( $this->minimumBet <= 100 && !$User->type['User'] && !$this->private )
-			return l_t('A newly registered account can join this game; '.
-				'<a href="register.php" class="light">register now</a> to join.');
-
-		if ( $this->isLiveGame() && $this->fixStart == 'No' )
+		else 
 		{
-			$question = l_t('This is a live game.').'\n'.l_t('The game will start at the scheduled time even if all %s players have joined.', count($this->Variant->countries));
-		}
-		else
-		{
-			if ($this->fixStart == 'No')
-				$question = l_t('The game will start when all %s players have joined.', count($this->Variant->countries));
-			else
-				$question = l_t('The game will start at the scheduled time even if all %s players have joined.', count($this->Variant->countries));
+			$buf = '';
 			
-			list($turns,$games) = $DB->sql_row('SELECT SUM(turn), COUNT(*) FROM wD_Games WHERE variantID='.$this->Variant->id.' AND phase = "Finished"');
-			if ($games > 3)
+			if ($this->minimumReliabilityRating > 0)
 			{
-				$avgDur = libTime::timeLengthText((($turns / $games) - $this->turn) * 2.5 * $this->phaseMinutes * 60 );
-				if ($avgDur > 0)
-					$question .= '\n'.l_t('Looking at our stats this game might take (roughly) %s to complete.',$avgDur) ;
+				$buf .= l_t('Minimum Reliability Rating: <span class="%s">%s%%</span>. ',
+					($User->reliabilityRating < $this->minimumReliabilityRating ? 'Austria' :'Italy'), 
+					($this->minimumReliabilityRating));
 			}
 			
-		}
-		
-		$question .= '\n\n'.l_t('Are you sure you want to join this game?').'\n';		
-
-		$buf = '<div>';
-		// Show join requirements:
-		if (($this->minRating > 0) || ($this->minPhases > 0))
-		{
-			$buf .= '<em>Requirements:</em> ';
-			if( $this->minRating > 0)
-				$buf .= 'RR >= <em>R'.$this->minRating.'</em> / ';
-			if( $this->minPhases > 0)
-				$buf .= 'MinPhases > <em>'.(int)($this->minPhases - 1) .'</em> / ';
-			$buf= substr($buf,0,-2)." - ";
-		}
-
-		// Exit and do not show join button if the player should not be able to join a given game.
-		if ($User->phaseCount < $this->minPhases) return substr($buf,0,-3)."</div>";
-
-		// show no join button if player is blocked/tempBan
-		if ($User->tempBan > time()) return substr($buf,0,-3)."</div>";
-
-		$buf .= '<form style="display: inline;" onsubmit="return confirm(\''.$question.'\');" method="post" action="board.php?gameID='.$this->id.'">
-			<input type="hidden" name="formTicket" value="'.libHTML::formTicket().'" />';
+			if ($this->minPhases > 0)
+			{
+				$buf .= l_t('Minimum phases played: <span class="%s">%s</span>.',
+					($User->phaseCount < (int)($this->minPhases - 1) ? 'Austria' :'Italy'), 
+					(int)($this->minPhases - 1));
+			}
 			
-		if( $this->phase == 'Pre-game'&& count($this->Members->ByCountryID)>0 )
-		{
-			$buf .= '<label>Join for</label> <em>'.$this->minimumBet.libHTML::points().'</em> as: <select name="countryID">';
-			foreach($this->Variant->countries as $id=>$name)
-				if (!isset($this->Members->ByCountryID[($id +1)]))
-					$buf .= '<option value="'.($id +1).'" />'.$name.'</option>';
-			$buf .= '</select>';
-		}
-		elseif( $this->phase == 'Pre-game' )
-		{
-			if ( $this->pot > 0 )
-				$buf .= 'Bet to join: <em>'.$this->minimumBet.libHTML::points().'</em>: ';
-		}
-		else
-		{
-			$buf .= $this->Members->selectCivilDisorder();
-		}
+			if ( $this->isJoinable() )
+			{
+				if( $this->minimumBet <= 100 && !$User->type['User'] && !$this->private && $this->minPhases == 0)
+					return l_t('A newly registered account can join this game; '.
+						'<a href="register.php" class="light">register now</a> to join.');
 
-		if ( $this->private )
-			$buf .= '<br />'.self::passwordBox();
+				$question = l_t('Are you sure you want to join this game?').'\n\n';
+				
+				if ( $this->isLiveGame() && $this->fixStart == 'No' )
+				{
+					$question = l_t('This is a live game.').'\n'.l_t('The game will start at the scheduled time even if all %s players have joined.', count($this->Variant->countries));
+				}
+				else
+				{
+					if ($this->fixStart == 'No')
+						$question = l_t('The game will start when all %s players have joined.', count($this->Variant->countries));
+					else
+						$question = l_t('The game will start at the scheduled time even if all %s players have joined.', count($this->Variant->countries));
+					
+					list($turns,$games) = $DB->sql_row('SELECT SUM(turn), COUNT(*) FROM wD_Games WHERE variantID='.$this->Variant->id.' AND phase = "Finished"');
+					if ($games > 3)
+					{
+						$avgDur = libTime::timeLengthText((($turns / $games) - $this->turn) * 2.5 * $this->phaseMinutes * 60 );
+						if ($avgDur > 0)
+							$question .= '\n'.l_t('Looking at our stats this game might take (roughly) %s to complete.',$avgDur) ;
+					}
+					
+				}
 
-		$buf .= ' <input type="submit" name="join" value="'.l_t('Join').'" class="form-submit" />';
+				if (($User->reliabilityRating >= $this->minimumReliabilityRating) && ($User->phaseCount >= $this->minPhases))
+				{
+				
+					$buf .= '<form style="display: inline;" onsubmit="return confirm(\''.$question.'\');" method="post" action="board.php?gameID='.$this->id.'">
+						<input type="hidden" name="formTicket" value="'.libHTML::formTicket().'" />';
+						
+					if( $this->phase == 'Pre-game'&& count($this->Members->ByCountryID)>0 )
+					{
+						$buf .= '<label>Join for</label> <em>'.$this->minimumBet.libHTML::points().'</em> as: <select name="countryID">';
+						foreach($this->Variant->countries as $id=>$name)
+							if (!isset($this->Members->ByCountryID[($id +1)]))
+								$buf .= '<option value="'.($id +1).'" />'.$name.'</option>';
+						$buf .= '</select>';
+					}
+					elseif( $this->phase == 'Pre-game' )
+					{
+						if ( $this->pot > 0 )
+							$buf .= 'Bet to join: <em>'.$this->minimumBet.libHTML::points().'</em>: ';
+					}
+					else
+					{
+						$buf .= $this->Members->selectCivilDisorder();
+					}
 
-		$buf .= '</form></div>';
+					if ( $this->private )
+						$buf .= '<br />'.self::passwordBox();
+
+					$buf .= ' <input type="submit" name="join" value="'.l_t('Join').'" class="form-submit" />';
+
+					$buf .= '</div></form>';
+				}
+			}
+			if( $User->type['User'] && $this->phase != 'Finished')
+			{
+				$buf .= '<form method="post" action="redirect.php">'
+				       .'<input type="hidden" name="gameID" value="'.$this->id.'">';
+				if( ! $this->watched() ) {
+					$buf .= '<input style="margin-top: 0.5em;" type="submit" title="'.l_t('Adds this game to the watched games list on your home page, and subscribes you to game notifications').'" '
+					       .'class="form-submit" name="watch" value="'.l_t('Spectate game').'">';
+				} else {
+					$buf .= '<input type="submit" title="'.l_t('Removes this game from the watch list on your home page, and unsubscribes you from game notifications').'" '
+						       .'class="form-submit" name="unwatch" value="'.l_t('Stop spectating game').'">';
+				}
+				$buf .= '</form>';
+			}
+		}
 		return $buf;
 	}
 

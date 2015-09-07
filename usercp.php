@@ -104,6 +104,7 @@ if ( isset($_REQUEST['userForm']) )
 		$errors = array();
 
 		$SQLVars = User::processForm($_REQUEST['userForm'], $errors);
+
 		if( count($errors) )
 			throw new Exception(implode('. ',$errors));
 
@@ -120,6 +121,9 @@ if ( isset($_REQUEST['userForm']) )
 				'greyout intensity' => 'greyOut',
 				'Remove scrollbars from smallmap'=>'scrollbars',				
 				'Homepage'=>'homepage','Comment'=>'comment');
+
+                $User->options->set($_REQUEST['userForm']);
+                $User->options->load();
 
 		$set = '';
 		foreach( $allowed as $name=>$SQLName )

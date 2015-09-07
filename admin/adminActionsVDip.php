@@ -169,9 +169,9 @@ class adminActionsVDip extends adminActions
 		$minRating = (int)$params['minRating'];
 		$minPhases = (int)$params['minPhases'];
 		
-		$DB->sql_put("UPDATE wD_Games SET minRating = ".$minRating.", minPhases = ".$minPhases." WHERE id=".$gameID);
+		$DB->sql_put("UPDATE wD_Games SET minimumReliabilityRating = ".$minRating.", minPhases = ".$minPhases." WHERE id=".$gameID);
 
-		return 'This games reliability requirements was changed to: minRating = '.$minRating.', minPhases = '.$minPhases;
+		return 'This games reliability requirements was changed to: minimumReliabilityRating = '.$minRating.', minPhases = '.$minPhases;
 	}
 	
 	public function toggleAdminLock(array $params)
@@ -233,7 +233,7 @@ class adminActionsVDip extends adminActions
 
 			// Check for additional requirements:
 			require_once(l_r('lib/reliability.php'));		 
-			if ( $Game->minRating > $SendToUser->reliabilityRating )
+			if ( $Game->minimumReliabilityRating > $SendToUser->reliabilityRating )
 				$ret .= '<b>Error:</b> The reliability of '.$SendToUser->username.' is not high enough to join the game <a href="board.php?gameID='.$Game->id.'">'.$Game->name.'</a>.<br>';
 			elseif ( array_key_exists ( $SendToUser->id , $Game->Members->ByUserID))
 				$ret .= '<b>Error:</b> '.$SendToUser->username.' is already a member of the game <a href="board.php?gameID='.$Game->id.'">'.$Game->name.'</a>.<br>';

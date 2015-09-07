@@ -615,12 +615,14 @@ class processMembers extends Members
 		if ( !$this->Game->isJoinable() )
 			throw new Exception(l_t("You cannot join this game."));
 
+		if ( !($this->Game->minimumReliabilityRating <= $User->reliabilityRating) )
+			throw new Exception(l_t("Your Reliability Rating of %s%% is not high enough to join this game, which is restricted to %s%% RR and above.",
+				$User->reliabilityRating, $this->Game->minimumReliabilityRating));
+
 		// Check for additional requirements:
 		require_once(l_r('lib/reliability.php'));		 
 		if ( $this->Game->minPhases > $User->phaseCount)
 			throw new Exception("You did not play enough phases to join this game. (Required:".$this->Game->minPhases." / You:".$User->phaseCount.")");
-		if ( $this->Game->minRating > abs($User->reliabilityRating) )
-			throw new Exception("You reliable-rating is too low to join this game. (Required:".$this->Game->minRating."% / You:".$User->reliabilityRating."%)");
 		if ( $User->tempBan > time() )
 			throw new Exception("You are blocked from joining new games.");
 
@@ -703,7 +705,8 @@ class processMembers extends Members
 						missedPhases = 0, timeLoggedIn = ".time()."
 						, votes=''
 					WHERE id = ".$CD->id);
-			
+			$DB->sql_put('DELETE FROM wD_WatchedGames WHERE userID='.$User->id. ' AND gameID='.$this->Game->id);		
+
 			unset($this->ByUserID[$CD->userID]);
 			unset($this->ByStatus['Left'][$CD->id]);
 

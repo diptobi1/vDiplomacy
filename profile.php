@@ -538,6 +538,9 @@ if( $total || (isset($playing) && $playing) )
 	{
 		if ( !in_array($name, $includeStatus) ) continue;
 
+		if (!$showAnon && isset($rankingDetails['anon'][$name]))
+			$status -= $rankingDetails['anon'][$name];
+
 		print '<li>'.l_t($name.': <strong>%s</strong>',$status);
 		if ($total > 0) print ' ( '.round(($status/$total)*100).'% )';
 		print '</li>';
@@ -557,7 +560,7 @@ if( $total || (isset($playing) && $playing) )
 
 	/* We use a different layout on vDip:
 	print '<li>'.l_t('No moves received / received:').' <strong>'.$UserProfile->nmrCount.'/'.$UserProfile->phaseCount.'</strong></li>';
-	print '<li>'.l_t('Reliability rating:').' <strong>'.round($UserProfile->reliabilityRating).'%</strong>';
+	print '<li>'.l_t('Reliability rating:').' <strong>'.($UserProfile->reliabilityRating).'%</strong>';
 	if( $User->type['Moderator'] || $User->id == $UserProfile->id )
 	{
 		print ' <a class="light" href="profile.php?detail=civilDisorders&userID='.$UserProfile->id.'">'.l_t('breakdown').'</a>';
@@ -694,9 +697,9 @@ list($liked) = $DB->sql_row("SELECT COUNT(*) FROM wD_ForumMessages fm
 $likes = ($likes ? '<strong>'.l_t('Likes:').'</strong> '.$likes : '');
 $liked = ($liked ? '<strong>'.l_t('Liked:').'</strong> '.$liked : '');
 
-print '<li><strong>'.l_t('Forum posts:').'</strong> '.$posts.'<br />
-	<strong>'.l_t('View:').'</strong> <a class="light" href="profile.php?detail=threads&userID='.$UserProfile->id.'">'.l_t('Threads').'</a>,
-		<a class="light" href="profile.php?detail=replies&userID='.$UserProfile->id.'">'.l_t('replies').'</a>';
+print '<li><strong>'.l_t('Forum posts:').'</strong> '.$posts.'<br />';
+	//<strong>'.l_t('View:').'</strong> <a class="light" href="profile.php?detail=threads&userID='.$UserProfile->id.'">'.l_t('Threads').'</a>,
+	//	<a class="light" href="profile.php?detail=replies&userID='.$UserProfile->id.'">'.l_t('replies').'</a>';
 
 print '<br/>'.implode(' / ',array($likes,$liked)).'
 	</li>';

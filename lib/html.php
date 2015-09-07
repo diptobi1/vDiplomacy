@@ -427,12 +427,13 @@ class libHTML
 		<meta name="keywords" content="'.l_t('diplomacy,diplomacy game,online diplomacy,classic diplomacy,web diplomacy,diplomacy board game,play diplomacy,php diplomacy').'" />
 		<link rel="shortcut icon" href="'.STATICSRV.l_s('favicon.ico').'" />
 		<link rel="icon" href="'.STATICSRV.l_s('favicon.ico').'" />
-		<link rel="stylesheet" href="'.CSSDIR.l_s('/global.css').'" type="text/css" />
+		<link rel="stylesheet" href="'.CSSDIR.l_s('/global.css?ver=1').'" type="text/css" />
 		<link rel="stylesheet" href="'.CSSDIR.l_s('/gamepanel.css').'" type="text/css" />
 		<link rel="stylesheet" href="'.CSSDIR.l_s('/home.css').'" type="text/css" />
 
 		<link rel="apple-touch-icon-precomposed" href="'.STATICSRV.'apple-touch-icon.png" />
 		'.$variantCSS.'
+		<script type="text/javascript" src="useroptions.php"></script>
 		<script type="text/javascript" src="'.STATICSRV.l_j('contrib/js/prototype.js').'"></script>
 		<script type="text/javascript" src="'.STATICSRV.l_j('contrib/js/scriptaculous.js').'"></script>
 		<link rel="stylesheet" type="text/css" href="'.STATICSRV.l_s('contrib/js/pushup/src/css/pushup.css').'" />
@@ -589,11 +590,11 @@ class libHTML
 		global $User, $DB;
 
 		$tabl = $DB->sql_tabl(
-			"SELECT g.id, g.variantID, g.name, m.orderStatus, m.countryID, (m.newMessagesFrom+0) as newMessagesFrom, g.processStatus, g.phase
+			"SELECT g.id, g.variantID, g.name, g.phase, m.orderStatus, m.countryID, (m.newMessagesFrom+0) as newMessagesFrom, g.processStatus
 			FROM wD_Members m
 			INNER JOIN wD_Games g ON ( m.gameID = g.id )
-			WHERE m.userID = ".$User->id." AND (  ( m.status='Playing' OR m.status='Left' ) OR NOT (m.newMessagesFrom+0) = 0 )
-				AND ( ( NOT m.orderStatus LIKE '%Ready%' AND NOT m.orderStatus LIKE '%None%' ) OR NOT ( (m.newMessagesFrom+0) = 0 ) ) ORDER BY  g.processStatus ASC, g.processTime ASC");
+			WHERE m.userID = ".$User->id."
+				AND ( ( NOT m.orderStatus LIKE '%Ready%' AND NOT m.orderStatus LIKE '%None%' AND g.phase != 'Finished' ) OR NOT ( (m.newMessagesFrom+0) = 0 ) ) ORDER BY  g.processStatus ASC, g.processTime ASC");
 
 		$gameIDs = array();
 		$notifyGames = array();
@@ -639,7 +640,13 @@ class libHTML
 		{
 			$notifyGame = $notifyGames[$gameID];
 			require_once(l_r('objects/basic/set.php'));
-			$notifyGame['orderStatus'] = new setMemberOrderStatus($notifyGame['orderStatus']);
+
+			// Games that are finished should show as 'no orders'
+			if ( $notifyGame['phase'] != 'Finished') {
+					$notifyGame['orderStatus'] = new setMemberOrderStatus($notifyGame['orderStatus']);
+			} else {
+					$notifyGame['orderStatus'] = new setMemberOrderStatus('None');
+			}
 
 			// Don't print the game if we're looking at it.
 			if ( isset($_REQUEST['gameID']) and $_REQUEST['gameID'] == $gameID )
@@ -656,7 +663,6 @@ class libHTML
 
 			if ( $notifyGame['phase'] != 'Pre-game' && $notifyGame['phase'] != 'Finished' )
 				$gameNotifyBlock .= $notifyGame['orderStatus']->icon();
-
 			if ( $notifyGame['newMessagesFrom'] )
 				$gameNotifyBlock .= '<img src="'.l_s('images/icons/mail.png').'" alt="'.l_t('New messages').'" title="'.l_t('New messages!').'" />';
 
@@ -1008,6 +1014,8 @@ class libHTML
 	static private function footerScripts() {
 		global $User, $Locale;
 
+		$jsVersion = 4;  // increment this to force clients to reload their JS files
+
 		$buf = '';
 
 		// onlineUsers, for the online icons
@@ -1057,11 +1065,12 @@ class libHTML
 		$footerIncludes[] = l_j('utility.js');
 		$footerIncludes[] = l_j('cacheUpdate.js');
 		$footerIncludes[] = l_j('timeHandler.js');
-		$footerIncludes[] = l_j('forum.js');
+		$footerIncludes[] = l_j('forum.js');          
+		$footerIncludes[] = l_j('Color.Vision.Daltonize.js');
 		
 		// Don't localize all the footer includes here, as some of them may be dynamically generated
 		foreach( array_merge($footerIncludes,self::$footerIncludes) as $includeJS ) // Add on the dynamically added includes
-			$buf .= '<script type="text/javascript" src="'.STATICSRV.JSDIR.'/'.$includeJS.'"></script>';
+			$buf .= '<script type="text/javascript" src="'.STATICSRV.JSDIR.'/'.$includeJS.'?ver='.$jsVersion.'"></script>';
 
 		// Utility (error detection, message protection), HTML post-processing,
 		// time handling functions. Only logged-in users need to run these

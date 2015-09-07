@@ -29,6 +29,95 @@ font-style:normal;
 	margin-left:30px;
 }
 </style>
+August 27th, 2015
+<ul>
+<li>Finished games now show up in the notifications bar if you have new messages.</li>
+</ul>
+<div class="hr"></div>
+August 25th, 2015
+<ul>
+<li>Added a cue to the game search page so that it is clear that clicking the current tab brings out additional search options.</li>
+<li>The New game tab now shows all new games, not just the ones that you can afford.</li>
+<li>Pot type is now shown on the small game panels on the home page.</li>
+</ul>
+<div class="hr"></div>
+August 19th, 2015
+<ul>
+<li>Bugfix: Destroyed units are no longer drawn when the "show move arrows" profile setting is set.</li>
+</ul>
+<div class="hr"></div>
+August 18th, 2015
+<ul>
+<li>Bugfix: Anonymous defeats no longer increment the 'defeats' count on a profile page until the game is over.</li>
+</ul>
+<div class="hr"></div>
+August 5th, 2015
+<ul>
+<li>Number of PMs displayed on the <a href="index.php?notices=on">notices</a> page increased to 50 from 35.</li>
+<li>Guests are now allowed to use the user search feature, allowing members who have forgotten their username to find it.</li>
+</ul>
+<div class="hr"></div>
+July 25th, 2015
+<ul>
+<li>Made moderator posts clearly labelled "<strong>moderator</strong>" in global chat. This is important for the larger variants, where some countries have similar text to moderator posts.</li>
+<li>Mousing over the upcoming live games no longer hides game notices.</li>
+</ul>
+<div class="hr"></div>
+May 23rd, 2015
+<ul>
+<li>Bugfix: CD/NMR disband ordering now works correctly on maps with 128 territories or more.</li>
+<li>Bugfix: Colourblind map is no longer sometimes blank on page load.</li> 
+</ul>
+<div class="hr"></div>
+May 16th, 2015
+<ul>
+<li>Added a mechanism for a variety of user options; the first options using the new mechanism are to hide the live games tab and to hide the move arrows on the board.</li>
+</ul>
+<div class="hr"></div>
+May 11th, 2015
+<ul>
+<li>Now games can be restricted to a minimum reliability rating at game creation time.</li>
+<li>Bugfix: Spectate option no longer appears on finished games.</li>
+</ul>
+<div class="hr"></div>
+May 10th, 2015
+<ul>
+<li>Bugfix: Moderator posts to global press now correctly trigger the new message icon.</li>
+</ul>
+<div class="hr"></div>
+May 1st, 2015
+<ul>
+<li>Spectated games; users can now spectate games that they're not in (so that games appear on their home page and notifications).</li>
+</ul>
+<div class="hr"></div>
+April 21st, 2015
+<ul>
+<li>Spectated games; users can now spectate games that they're not in (so that games appear on their home page and notifications).</li>
+</ul>
+<div class="hr"></div>
+April 21st, 2015
+<ul>
+<li>New game mode: Hidden draw votes. This allows players to play games where you don't know who has voted for a draw or not.</li>
+<li>Joinable games now defaults to showing public games only.</li>
+<li>Upcoming live games now appear at the top of the forum on the front page.</li>
+</ul>
+<div class="hr"></div>
+April 19th, 2015
+<ul>
+<li>Fixed a bug where destroyed units on coasts would incorrectly appear in move previews.</li>
+</ul>
+<div class="hr"></div>
+March 13th, 2015
+<ul>
+<li>Fixed a bug where units on a coast were incorrectly able to order a support move to their own province (this bug affected display only).</li>
+<li>"Via land" is now automatically selected as the default order for units able to move via land or via convoy</li>
+</ul>
+<div class="hr"></div>
+March 10th, 2015
+<ul>
+<li>Fixed a bug where games wouldn't be joinable after a user was banned.</li>
+</ul>
+<div class="hr"></div>
 Feb 27th, 2015
 <ul>
 <li>Fixed a graphics glitch and a few border issues on the Anc. Med variant.</li>

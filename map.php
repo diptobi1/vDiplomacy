@@ -56,7 +56,7 @@ if( isset($_REQUEST['colorCorrect']))
 else
 	define('COLORCORRECT',0);
 
-// Check if we should hide the move arrows.
+// Check if we are on preview-mode
 if( isset($_REQUEST['preview']))
 	define('PREVIEW',1);
 else
@@ -411,10 +411,9 @@ while(list($moveType, $terrID,
 		and !isset($fullTerrID[$terrID])
 		and ( isset($drawToTerrID) and ! isset($fullTerrID[$drawToTerrID]) ) )
 	{
+		// Do not display destroyed units in previews or when no moves are shown 
+		if ((PREVIEW || HIDEMOVES) && in_array($Game->Variant->deCoast($drawToTerrID),$destroyedTerrs)) continue;
 
-		// Don't add a unit if it's destroyed.
-		if (HIDEMOVES && in_array($Game->Variant->deCoast($drawToTerrID), $destroyedTerrs)) continue;
-	
 		/*
 		 * We're drawing a unit onto the board
 		 */

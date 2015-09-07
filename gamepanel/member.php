@@ -402,13 +402,32 @@ class panelMember extends Member
 	 */
 	function memberVotes()
 	{
+        	global $User;
+
 		$buf=array();
 		foreach($this->votes as $voteName)
 		{
 			if ( $voteName == 'Pause' && $this->Game->processStatus=='Paused' )
 				$voteName = 'Unpause';
+			// Do we hide draws?
+			if ( $voteName == 'Draw' && $this->Game->drawType == 'draw-votes-hidden' 
+				&& $User->id != $this->userID ) 
+			{
+				// Moderators can see draws in games they're not in
+				if (($User->type['Moderator']) && (! $this->Game->Members->isJoined())) 
+				{
+					$buf[]=l_t("(Hidden Draw)");
+				}
+				continue;
+			}
 			$buf[]=l_t($voteName);
 		}
+
+		// Display hidden draw votes message if appropriate
+		if ( $this->Game->drawType == 'draw-votes-hidden'
+			&& $User->id != $this->userID 
+			&& !(($User->type['Moderator']) && (! $this->Game->Members->isJoined()))) 
+			$buf[]=l_t("(any draw votes are hidden)");
 
 		if( count($buf) )
 			return l_t('Votes:').' <span class="memberVotes">'.implode(', ',$buf).'</span>';

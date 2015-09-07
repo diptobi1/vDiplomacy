@@ -953,9 +953,56 @@ $sql[]="ALTER TABLE `wD_NMRs` ADD KEY `gameID` (`gameID`,`userID`), ADD KEY `use
 
 $sql[]="ALTER TABLE wD_CivilDisorders ADD COLUMN forcedByMod BOOLEAN DEFAULT 0;";
 
+// VDip: 52
+ALTER TABLE wD_Users ADD vpoints mediumint(8) unsigned NOT NULL DEFAULT '1000';
+
+$sql[]="UPDATE wD_Users u 
+	SET u.vpoints = (SELECT r.rating FROM wD_Ratings r
+		LEFT JOIN wD_Games g ON (g.id = r.gameID)
+			JOIN (SELECT MAX(g2.processTime) AS last, r2.userID AS uid FROM wD_Ratings r2
+				LEFT JOIN wD_Games g2 ON (g2.id = r2.gameID ) GROUP BY r2.userID) AS tab2 ON 
+				(uid = r.userID && last = g.processTime)			
+	WHERE r.ratingType='vDip' AND r.userID = u.id);";
+
+// VDip: 53
+// VDip 53 does just change the vDip Reliability in the new webdip-reliability format, no need for code here...
+
+// VDip: 54
+$sql[]="ALTER TABLE `wD_Games` DROP COLUMN `minNoCD`;";
+$sql[]="ALTER TABLE `wD_Games` DROP COLUMN `minNoNMR`;";
+$sql[]="ALTER TABLE `wD_Backup_Games` DROP COLUMN `minNoCD`;";
+$sql[]="ALTER TABLE `wD_Backup_Games` DROP COLUMN `minNoNMR`;";
+
+// Webdip 1.37
+$sql[]="ALTER TABLE wD_Games ADD drawType enum('draw-votes-public','draw-votes-hidden') NOT NULL DEFAULT 'draw-votes-public';";
+$sql[]="ALTER TABLE wD_Backup_Games ADD drawType enum('draw-votes-public','draw-votes-hidden') NOT NULL DEFAULT 'draw-votes-public';";
+
+// Webdip 1.38
+$sql[]="CREATE TABLE `wD_WatchedGames` (
+	  `userID` mediumint(8) unsigned NOT NULL,
+	  `gameID` mediumint(8) unsigned NOT NULL,
+	  KEY `gid` (`gameID`),
+	  KEY `uid` (`userID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+$sql[]="ALTER TABLE wD_Games ADD `minimumReliabilityRating` tinyint(3) unsigned NOT NULL DEFAULT '0';";
+$sql[]="ALTER TABLE wD_Backup_Games ADD `minimumReliabilityRating` tinyint(3) unsigned NOT NULL DEFAULT '0';";
+
+// Webdip 1.39
+$sql[]="CREATE TABLE `wD_UserOptions` (
+	  `userID` mediumint(8) unsigned NOT NULL,
+	  `colourblind` enum('No','Protanope','Deuteranope','Tritanope') NOT NULL DEFAULT 'No',
+	  `displayUpcomingLive` enum('No','Yes') NOT NULL DEFAULT 'Yes',
+	  `showMoves` enum('No','Yes') NOT NULL DEFAULT 'Yes',
+	  KEY `uid` (`userID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+// Webdip 1.40
+$sql[]="ALTER table wD_UnitDestroyIndex MODIFY destroyIndex smallint;";
+
 // Set the correct version-information in the database	
-$sql[]="UPDATE `wD_Misc`     SET `value` = '136' WHERE `name` = 'Version';";
-$sql[]="UPDATE `wD_vDipMisc` SET `value` = '51'  WHERE `name` = 'Version';";
+$sql[]="UPDATE `wD_Misc`     SET `value` = '140' WHERE `name` = 'Version';";
+$sql[]="UPDATE `wD_vDipMisc` SET `value` = '54'  WHERE `name` = 'Version';";
 
 // Create a default Admin-Account
 require_once ('lib/auth.php');

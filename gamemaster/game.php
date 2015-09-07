@@ -294,11 +294,9 @@ class processGame extends Game
 	 *
 	 * @return Game The object corresponding to the new game
 	 */
-	 
-	public static function create($variantID, $name, $password, $bet, $potType, $phaseMinutes, $joinPeriod, $anon, $press, $missingPlayerPolicy='Normal'
+	public static function create($variantID, $name, $password, $bet, $potType, $phaseMinutes, $joinPeriod, $anon, $press, $missingPlayerPolicy='Normal', $drawType, $rrLimit
 		,$maxTurns 
 		,$targetSCs 
-		,$minRating 
 		,$minPhases
 		,$specialCDturn 
 		,$specialCDcount
@@ -364,9 +362,9 @@ class processGame extends Game
 						"processTime = ".$pTime.",
 						phaseMinutes = ".$phaseMinutes.",
 						missingPlayerPolicy = '".$missingPlayerPolicy."',
+						drawType='$drawType', minimumReliabilityRating=$rrLimit ,
 						maxTurns = ".$maxTurns.", 
 						targetSCs = ".$targetSCs.", 
-						minRating = ".$minRating.", 
 						minPhases = ".$minPhases.", 
 						specialCDturn = ".$specialCDturn.", 
 						specialCDcount = ".$specialCDcount.", 

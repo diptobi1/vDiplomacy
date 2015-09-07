@@ -51,9 +51,8 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 		$form = $_REQUEST['newGame']; // This makes $form look harmless when it is unsanitized; the parameters must all be sanitized
 
 		$input = array();
-		$required = array('variantID', 'name', 'password', 'passwordcheck', 'bet', 'potType', 'phaseMinutes', 'joinPeriod', 'anon', 'pressType', 'missingPlayerPolicy'
+		$required = array('variantID', 'name', 'password', 'passwordcheck', 'bet', 'potType', 'phaseMinutes', 'joinPeriod', 'anon', 'pressType', 'missingPlayerPolicy','drawType','minimumReliabilityRating'
 						,'countryID'
-						,'minRating' 
 						,'minPhases'
 						,'maxTurns'
 						,'specialCDturn'
@@ -144,18 +143,28 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 			default:
 				$input['missingPlayerPolicy'] = 'Normal';
 		}
-	
+		switch($input['drawType']) {
+			case 'draw-votes-hidden':
+				$input['drawType'] = 'draw-votes-hidden';
+				break;
+			default:
+				$input['drawType'] = 'draw-votes-public';
+				break;
+		}
+		$input['minimumReliabilityRating'] = (int)$input['minimumReliabilityRating'];
+		if ( $input['minimumReliabilityRating'] < 0 or $input['minimumReliabilityRating'] > 100 )
+		{
+			throw new Exception(l_t("The reliability rating threshold must range from 0-100"));
+		}
+		if ( $input['minimumReliabilityRating'] > $User->reliabilityRating )
+		{
+			throw new Exception(l_t("Your reliability rating is %s%%, so you can't create a game which requires players to have a RR of %s%% or greater.",($User->reliabilityRating),$input['minimumReliabilityRating']));
+		}
+		
 		$input['minPhases'] = (int)$input['minPhases'];
 		if ( $input['minPhases'] > $User->phaseCount )
 		{
 			throw new Exception("You didn't play enough phases (".$User->phaseCount.") for your own requirement (".$input['minPhases'].")");
-		}
-		
-		require_once(l_r('lib/reliability.php'));		 
-		$input['minRating'] = (int)$input['minRating'];		
-		if ( $input['minRating'] > $User->reliabilityRating )
-		{
-			throw new Exception("Your reliability-rating is to low (".abs($User->reliabilityRating).") for your own requirement (".$input['minRating'].").");
 		}
 		
 		$input['maxTurns'] = (int)$input['maxTurns'];		
@@ -224,9 +233,10 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 			$input['anon'], 
 			$input['pressType'], 
 			$input['missingPlayerPolicy'],
+			$input['drawType'],
+			$input['minimumReliabilityRating'],
 			$input['maxTurns'],
 			$input['targetSCs'],
-			$input['minRating'],
 			$input['minPhases'],
 			$input['specialCDturn'],
 			$input['specialCDcount'],

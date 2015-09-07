@@ -21,7 +21,7 @@
 // Current turn, -2 is undefined, -1 is pre-game
 var turn=-2;
 
-var noMoves='';
+var noMoves=(useroptions.showMoves =='No'?'&hideMoves':'');
 var preview='';
 
 // Toggle the display of the Move arrows.
@@ -145,7 +145,7 @@ function loadMap(gameID, currentTurn, newTurn)
 	
 	// Update the link to the large map
 	$('LargeMapLink').innerHTML = 
-			' <a href="map.php?gameID='+gameID+'&turn='+newTurn+'&mapType=large" target="blank" class="light">'+
+			' <a href="map.php?gameID='+gameID+'&turn='+newTurn+'&mapType=large'+'" target="blank" class="light">'+
 			'<img src="'+l_s('images/historyicons/external.png')+'" alt="'+l_t('Open large map')+'" ' +
 			'title="'+l_t('This button will open the large map in a new window. The large ' +
 			'map shows all the moves, and is useful when the small map isn\'t clear enough.')+'" /><\/a>';
@@ -153,3 +153,16 @@ function loadMap(gameID, currentTurn, newTurn)
 	// Update the source for the map image
 	$('mapImage').src = 'map.php?gameID='+gameID+'&turn='+newTurn;
 }
+
+function recolorMap() 
+{
+	if ($('mapImage').complete && useroptions.colourblind != 'No' && $('mapImage').src.substring(0,4) == 'http' ) {
+	        Color.Vision.Daltonize($('mapImage'),
+				{'type':useroptions.colourblind,
+				'callback': function (c) {$('mapImage').src = c.toDataURL();}
+				});
+	}
+}
+
+recolorMap();
+Event.observe($('mapImage'),'load',recolorMap);

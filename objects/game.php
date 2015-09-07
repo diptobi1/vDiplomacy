@@ -168,6 +168,12 @@ class Game
 	public $potType;
 
 	/**
+	 * draw-votes-public/draw-votes-hidden
+	 * @var string
+	 */
+	public $drawType;
+
+	/**
 	 * Not-processing/Processing/Crashed/Paused
 	 * @var string
 	 */
@@ -210,6 +216,11 @@ class Game
 	public $missingPlayerPolicy;
 
 	/**
+	 * The minimum value for Reliability Rating before a player can join this game
+	 */
+	public $minimumReliabilityRating;
+
+	/**
 	 * Any value > 0 ends the game after the given turn. Winner is the one with the most SC at this time.
 	 * @var int
 	 */
@@ -222,10 +233,9 @@ class Game
 	 public $targetSCs;
 	 
 	/**
-	 * Some special settings to restrict acces to players based on their rating
+	 * Some special settings to restrict acces to players based on their phases played
 	 * @var int
 	 */
-	 public $minRating;
 	 public $minPhases;
 
 	/**
@@ -388,6 +398,35 @@ class Game
 		$this->private = isset($this->password);
 
 		$this->Variant = $GLOBALS['Variants'][$this->variantID];
+	}                         
+
+	function watched() 
+	{
+        	global $DB, $User;
+
+		$row = $DB->sql_row('SELECT * from wD_WatchedGames WHERE gameID='.$this->id.' AND userID=' . $User->id);
+		return $row != false;
+	}
+	function watch() 
+	{
+        	global $DB, $User;
+
+		if (! $this->watched())
+		{
+		        $DB->sql_put('INSERT INTO wD_WatchedGames (gameID, userID) VALUES ('.$this->id. ','.$User->id.')');
+		        $DB->sql_put('COMMIT');
+		}
+	}
+
+	function unwatch() 
+	{
+                global $DB, $User;
+
+	        if ($this->watched())
+		{
+			$DB->sql_put('DELETE from wD_WatchedGames WHERE gameID='. $this->id . ' AND userID='. $User->id);// . $this->id . ' AND userID=' . $User->id);
+			$DB->sql_put('COMMIT');
+		} 
 	}
 
 	/**
@@ -416,9 +455,11 @@ class Game
 			g.minimumBet,
 			g.anon,
 			g.pressType,
+			g.missingPlayerPolicy,
+			g.drawType,
+			g.minimumReliabilityRating,
 			g.maxTurns,
 			g.targetSCs,
-			g.minRating,
 			g.minPhases,
 			g.specialCDcount,
 			g.specialCDturn,

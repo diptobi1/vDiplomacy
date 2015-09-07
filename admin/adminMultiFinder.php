@@ -673,7 +673,7 @@ class adminMultiCheck
 		
 		$linkMatches = array();
 		foreach($matches as $match)
-			$linkMatches[] = '<a href="board.php?gameID='.$match.'" class="light">'.$match.(in_array($match,$privateMatches)?' (Private)':'').'</a>';
+			$linkMatches[] = '<a href="board.php?gameID='.$match.'" class="light">'.$match.(in_array($match,$privateMatches)?'':' (Public)').'</a>';
 		$matches = $linkMatches;
 		unset($linkMatches);
 

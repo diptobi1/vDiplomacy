@@ -456,14 +456,14 @@ class Chatbox
 				$message['message'] = '<span class="messageFromMe">'.$message['message'].'</span>';
 
 			// Display the country name in front of the text (for colorblind people)
-			if ( $User->showCountryNames == 'Yes')
+			if ( $User->options->value['colourblind'] != 'No')
 			{
 				if(isset($Member) && $Member->countryID == $message['fromCountryID'])
 					$messagestxt .=  '<strong>You:</strong> ';
 				elseif( $message['fromCountryID'] != 0 )
 					$messagestxt .=  '<strong>'.$this->countryName($message['fromCountryID']).':</strong> ';
 			}
-				
+
 			$messagestxt .= $message['message'].
 					'</TD>
 				</TR>';

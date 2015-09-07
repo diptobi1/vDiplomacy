@@ -21,7 +21,8 @@
 defined('IN_CODE') or die('This script can not be run by itself.');
 
 require_once(l_r('objects/notice.php'));
-require_once('objects/basic/set.php');
+require_once(l_r('objects/useroptions.php'));
+require_once(l_r('objects/basic/set.php'));
 require_once('lib/reliability.php');
 
 /**
@@ -169,6 +170,12 @@ class User {
 	 * @var bool
 	 */
 	public $online;
+
+	/**
+	 * The user's options
+	 * @var UserOptions
+	 */
+	public $options;
 
 	/**
 	 * Number of available points
@@ -400,7 +407,7 @@ class User {
 
 		if( isset($userForm['username']) )
 		{
-			$SQLVars['username'] = $DB->escape($userForm['username']);
+			$SQLVars['username'] = trim($DB->escape($userForm['username']));
 		}
 
 		if( isset($userForm['password']) and $userForm['password'] )
@@ -418,7 +425,7 @@ class User {
 
 		if(isset($userForm['email']) and $userForm['email'] )
 		{
-			$userForm['email'] = $DB->escape($userForm['email']);
+			$userForm['email'] = trim($DB->escape($userForm['email']));
 			if( !libAuth::validate_email($userForm['email']) )
 			{
 				$errors[] = l_t("The e-mail address you entered isn't valid. Please enter a valid one");
@@ -637,6 +644,8 @@ class User {
 		}
 		// For display, cdCount should include deletedCDs
 		$this->{'cdCount'} = $this->{'cdCount'} + $this->{'deletedCDs'};
+		// RR should be rounded
+		$this->reliabilityRating = round($this->reliabilityRating);
 
 		// Convert an array of types this user has into an array of true/false indexed by type
 		$this->type = explode(',', $this->type);
@@ -659,6 +668,8 @@ class User {
 		$this->notifications=new setUserNotifications($this->notifications);
 
 		$this->online = (bool) $this->online;
+
+		$this->options = new UserOptions($this->id);
 	}
 
 	/**
