@@ -1000,9 +1000,16 @@ $sql[]="CREATE TABLE `wD_UserOptions` (
 // Webdip 1.40
 $sql[]="ALTER table wD_UnitDestroyIndex MODIFY destroyIndex smallint;";
 
+// VDip 55
+$sql[]="UPDATE wD_Games SET minimumReliabilityRating = minRating;";
+$sql[]="UPDATE wD_Backup_Games SET minimumReliabilityRating = minRating;";
+
+$sql[]="ALTER TABLE `wD_Games` DROP COLUMN `minRating`;";
+$sql[]="ALTER TABLE `wD_Backup_Games` DROP COLUMN `minRating`;";
+
 // Set the correct version-information in the database	
 $sql[]="UPDATE `wD_Misc`     SET `value` = '140' WHERE `name` = 'Version';";
-$sql[]="UPDATE `wD_vDipMisc` SET `value` = '54'  WHERE `name` = 'Version';";
+$sql[]="UPDATE `wD_vDipMisc` SET `value` = '55'  WHERE `name` = 'Version';";
 
 // Create a default Admin-Account
 require_once ('lib/auth.php');
