@@ -573,7 +573,7 @@ class panelGame extends Game
 
 					$buf .= ' <input type="submit" name="join" value="'.l_t('Join').'" class="form-submit" />';
 
-					$buf .= '</div></form>';
+					$buf .= '</form>';
 				}
 			}
 			if( $User->type['User'] && $this->phase != 'Finished')
