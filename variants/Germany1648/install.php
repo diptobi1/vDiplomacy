@@ -240,6 +240,7 @@ $bordersRawData=array(
 	array('Duchy of Julich','Principality of Zweibrucken','Yes','No'),
 	array('Duchy of Julich','Aachen #6','No','Yes'),
 	array('Archbishopric of Cologne','Far Spanish Netherlands','Yes','Yes'),
+	array('Archbishopric of Cologne','Duchy of Cleves','Yes','No'),
 	array('Archbishopric of Cologne','County of Mark','Yes','No'),
 	array('Archbishopric of Cologne','Bishopric of Munster','Yes','No'),
 	array('Archbishopric of Cologne','Duchy of Westphalia','Yes','No'),
