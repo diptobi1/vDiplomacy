@@ -140,7 +140,7 @@ class userMember extends panelMember
 			foreach($this->Game->Members->ByStatus['Playing'] as $Member)
 				if (in_array($voteName ,$Member->votes))
 					$count++;
-			if ($count == 1)
+			if ($count == 1 && !($this->Game->drawType == 'draw-votes-hidden' && $voteText == 'Draw'))
 			{
 				require_once "lib/gamemessage.php";
 				$msg = $this->country.' voted for a '.$voteText.'. ';
