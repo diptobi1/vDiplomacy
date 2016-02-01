@@ -515,7 +515,7 @@ function display_interface() {
     }
 
     // Territory information
-    if ( ($variantID != 0) && ($terrID != '0') && ($mode == 'units' || $mode == 'all') && ($edit != 'data')) {
+    if ( ($variantID != 0) && ($terrID != '0') && ($edit != 'data')) {
 
         // Get values from database
         list($type, $supply, $countryID, $x, $y, $sx, $sy) = $DB->sql_row('SELECT type,supply,countryID,mapX,mapY,smallMapX,smallMapY FROM wD_Territories WHERE mapID=' . $mapID . ' AND id=' . $terrID);
@@ -546,54 +546,57 @@ function display_interface() {
         print '</li>';
 
         // Coordinates:
-        print '<li class="formlisttitle">';
-        if ($mapsize == 'large') {
-            print 'MapX: ';
-			if ($edit != 'on')
-				print '<span style="font-weight: normal;">'.$x.'</span>';
-			else
-			{
-				print display_button_form('map_x', ($x - 5), '-5');
-				print display_button_form('map_x', ($x - 1), '-1');
-				print display_text_form('map_x', $x);
-				print display_button_form('map_x', ($x + 1), '+1');
-				print display_button_form('map_x', ($x + 5), '+5');
+		if ($mode == 'units')
+		{
+			print '<li class="formlisttitle">';
+			if ($mapsize == 'large') {
+				print 'MapX: ';
+				if ($edit != 'on')
+					print '<span style="font-weight: normal;">'.$x.'</span>';
+				else
+				{
+					print display_button_form('map_x', ($x - 5), '-5');
+					print display_button_form('map_x', ($x - 1), '-1');
+					print display_text_form('map_x', $x);
+					print display_button_form('map_x', ($x + 1), '+1');
+					print display_button_form('map_x', ($x + 5), '+5');
+				}
+				print ' - MapY: ';
+				if ($edit != 'on')
+					print '<span style="font-weight: normal;">'.$y.'</span>';
+				else
+				{
+					print display_button_form('map_y', ($y - 5), '-5');
+					print display_button_form('map_y', ($y - 1), '-1');
+					print display_text_form('map_y', $y);
+					print display_button_form('map_y', ($y + 1), '+1');
+					print display_button_form('map_y', ($y + 5), '+5');
+					print ' - Calculate: ';
+					print display_button_form('calcxy', 'terr', 'territory');
+					print display_button_form('calcxy', 'all', 'all unset');
+				}
+			} else {
+				print 'SmallMapX: ';
+				if ($edit != 'on')
+					print '<span style="font-weight: normal;">'.$sx.'</span>';
+				else
+				{
+					print display_button_form('map_x', ($sx - 1), '-');
+					print display_text_form('map_x', $sx);
+					print display_button_form('map_x', ($sx + 1), '+');
+				}
+				print ' - SmallMapY: ';
+				if ($edit != 'on')
+					print '<span style="font-weight: normal;">'.$sy.'</span>';
+				else
+				{
+					print display_button_form('map_y', ($sy - 1), '-');
+					print display_text_form('map_y', $sy);
+					print display_button_form('map_y', ($sy + 1), '+');
+				}
 			}
-            print ' - MapY: ';
-			if ($edit != 'on')
-				print '<span style="font-weight: normal;">'.$y.'</span>';
-			else
-			{
-				print display_button_form('map_y', ($y - 5), '-5');
-				print display_button_form('map_y', ($y - 1), '-1');
-				print display_text_form('map_y', $y);
-				print display_button_form('map_y', ($y + 1), '+1');
-				print display_button_form('map_y', ($y + 5), '+5');
-				print ' - Calculate: ';
-				print display_button_form('calcxy', 'terr', 'territory');
-				print display_button_form('calcxy', 'all', 'all unset');
-			}
-        } else {
-            print 'SmallMapX: ';
-			if ($edit != 'on')
-				print '<span style="font-weight: normal;">'.$sx.'</span>';
-			else
-			{
-				print display_button_form('map_x', ($sx - 1), '-');
-				print display_text_form('map_x', $sx);
-				print display_button_form('map_x', ($sx + 1), '+');
-			}
-            print ' - SmallMapY: ';
-			if ($edit != 'on')
-				print '<span style="font-weight: normal;">'.$sy.'</span>';
-			else
-			{
-				print display_button_form('map_y', ($sy - 1), '-');
-				print display_text_form('map_y', $sy);
-				print display_button_form('map_y', ($sy + 1), '+');
-			}
-        }
-        print '</li>';
+			print '</li>';
+		}
     }
 
     // Link-list
