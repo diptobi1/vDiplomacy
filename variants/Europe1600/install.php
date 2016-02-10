@@ -460,7 +460,6 @@ $bordersRawData=array(
 	array('Pskov','Ingria','No','Yes'),
 	array('Pskov','Estonia','No','Yes'),
 	array('Novgorod','Archangel','No','Yes'),
-	array('Novgorod','Karelia','No','Yes'),
 	array('Novgorod','Ingria','Yes','Yes'),
 	array('Siberia','Archangel','Yes','Yes'),
 	array('Archangel','Karelia','Yes','Yes'),
