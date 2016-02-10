@@ -476,7 +476,6 @@ $bordersRawData=array(
 	array('Gulf of Bothnia','Estonia','Yes','No'),
 	array('Gulf of Bothnia','Stockholm','Yes','No'),
 	array('Baltic Sea','Sea of Bornholm','Yes','No'),
-	array('Baltic Sea','Scania','Yes','No'),
 	array('Baltic Sea','Estonia','Yes','No'),
 	array('Baltic Sea','Stockholm','Yes','No'),
 	array('Baltic Sea','Smaland','Yes','No'),
