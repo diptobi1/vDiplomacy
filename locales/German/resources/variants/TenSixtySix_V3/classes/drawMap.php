@@ -69,6 +69,9 @@ class TenSixtySix_V3Variant_drawMap extends TenSixtySixVariant_drawMap
 	//Coast durch küste ersetzt
 	public function colorTerritory($terrID, $countryID)
 	{
+		//da Änderungen für colorTerritory und insbesondere __construct unsauber eingeführt, kann in __construct colorTerritory mit 0 aufgerufen werden => in diesem Fall nichts tun
+		if($terrID == 0) return; 
+		
 		$this->unit_c[$terrID]=$countryID;
 		foreach (preg_grep( "/^".$this->territoryNames[$terrID].".*küste\)$/", $this->territoryNames) as  $id=>$name)
 			$this->unit_c[$id]=$countryID;
