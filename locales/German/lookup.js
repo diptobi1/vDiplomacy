@@ -1930,7 +1930,6 @@ Who do you trust?"<br />\
 	'Confirm': 'Bestätigen',
 	'Crashed': 'Abgestürtzt',
 	'You are not in any active games, select the "New" tab to view games that you can join, or if you can\'t find a game you want to join select "New game" in the menu to create your own.': 'Du nimmst an keinen aktiven Spielen teil. Wähle die Registerkarte "Neu", um dir Spiele anzuzeigen, denen du beitreten kannst oder erstelle ein neues Spiel, in dem du auf "Neues Spiel" klickst, falls du kein passendes finden solltest.',
-	'PreGameCheck': 'Vorspiel-Check',
 	'You sent:': 'Du schriebst:',
 	'You sent: ': 'Du schriebst: ',
 	'Won: <strong>%s</strong>': 'Gewonnen <strong>%s</strong>',
