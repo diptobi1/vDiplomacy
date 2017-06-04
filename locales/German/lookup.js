@@ -225,7 +225,7 @@ Locale.textLookup = $H({
 	'If you repeatedly get unexpected / unwanted e-mails from this address please contact the server admin at %s to have the matter investigated.': 'Solltest du zum wiederholten mal unerwartete / ungewünschte Emails von dieser Absender-Adresse erhalten kontaktiere bitte den Admin über %s, damit das Problem überprüft werden kann.',
 	'If your message is long you may need to write a summary message, and add the full message as a reply.': 'Falls deine Nachricht sehr lang sein sollte schreibe bitte erst eine kurze Zusammenfassung und verfasse deine eigentliche Nachricht als Antwort darauf.',
 	'If your post relates to a particular game please include the <strong>URL or ID#</strong>\
-				of the game.': 'Wenn dein Beitrag mit einem bestimmten Spiel zusammenhängt, gebe bitte auch die <strong>URL oder ID#</strong> des Spiels an',
+				of the game.': 'Falls deine Nachricht sehr lang sein sollte schreibe bitte erst eine kurze Zusammenfassung und verfasse deine eigentliche Nachricht als Antwort darauf.',
 	'Intro to webDiplomacy Points': 'Diplomacy Punkte',
 	'Join': 'Mitspielen',
 	'Joined %s': '%s beigetreten',
@@ -350,7 +350,6 @@ Locale.textLookup = $H({
 	'Removes a private game\'s password.': 'Löscht das Passwort eine privaten Spielst.',
 	'Rendered in: <strong>%ssec</strong> - Data retrievals: <strong>%s</strong> - Data insertions: <strong>%s</strong>': 'Übertragen in: <strong>%ssec</strong> - Daten empfangen: <strong>%s</strong> - Daten eingefügt: <strong>%s</strong>',
 	'Replies:': 'Antworten:',
-	'Reply': 'Antworten',
 	'Reply posted sucessfully.': 'Beitrag erfolgreich beantwortet.',
 	'Reprocess game': 'Spiel erneut auswerten',
 	'Reset last process time': 'Letzte Auswertungszeit zurücksetzen',
@@ -1599,12 +1598,7 @@ victory over the backs of both enemies and friends.<br />\
 \
 Who do you trust?"<br />\
 (<a href="http://www.wizards.com/default.asp?x=ah/prod/diplomacy"\
-	class="light">Avalon Hill</a>)</em>': '<em> "Glück spielt bei Diplomacy keine Rolle. Hinterlist und Klugheit, Ehrlichkeit und perfekt getimter Verrat sind die Instumente, mit denen man seine Mitspieler überlistet. Der geschickte Verhandlungsführer steigt auf, über die Rücken seiner Feinde und Freunde.<br />\
-<br />\
-\
-Who do you trust?"<br />\
-(<a href="<a rel="nofollow" href="http://www.amazon.de/gp/product/B0015MN6JE/ref=as_li_tl?ie=UTF8&camp=1638&creative=19454&creativeASIN=B0015MN6JE&linkCode=as2&tag=diplswebs-21">Avalon Hill / Wizards of the Coast 221930000 - Diplomacy, Englische Ausgabe, Brettspiel</a><img src="http://ir-de.amazon-adsystem.com/e/ir?t=diplswebs-21&l=as2&o=3&a=B0015MN6JE" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />"\
-	class="light">Avalon Hill</a>)</em>',
+	class="light">Avalon Hill</a>)</em>': '<em>"Glück spielt bei Diplomacy keine Rolle. Gerissenheit und Klugheit, Ehrlichkeit und perfekt platzierter Verrat sind die notwendigen Werkzeuge, um seine Mitspieler auszutricksen. Der geschickteste Verhandlungsführer wird über die Rücken seiner Freunde - und Freunde - zum Erfolg aufsteigen.<br /><br />Wem vertraust du?"<br />(<a rel="nofollow" href="http://www.amazon.de/gp/product/B0015MN6JE/ref=as_li_tl?ie=UTF8&camp=1638&creative=19454&creativeASIN=B0015MN6JE&linkCode=as2&tag=diplswebs-21" class="light">Avalon Hill</a>)</em>',
 	'A multiplayer web implementation of the popular turn-based strategy game Diplomacy.': 'Hier kannst du das berühmte, Runden-basierte Strategiespiel Diplomacy kostenlos online spielen.',
 	'The map': 'Die Karte',
 	'A vDiplomacy map': 'Eine Diplomacy-Karte',
@@ -1930,6 +1924,7 @@ Who do you trust?"<br />\
 	'Confirm': 'Bestätigen',
 	'Crashed': 'Abgestürtzt',
 	'You are not in any active games, select the "New" tab to view games that you can join, or if you can\'t find a game you want to join select "New game" in the menu to create your own.': 'Du nimmst an keinen aktiven Spielen teil. Wähle die Registerkarte "Neu", um dir Spiele anzuzeigen, denen du beitreten kannst oder erstelle ein neues Spiel, in dem du auf "Neues Spiel" klickst, falls du kein passendes finden solltest.',
+	'PreGameCheck': 'PreGameCheck',
 	'You sent:': 'Du schriebst:',
 	'You sent: ': 'Du schriebst: ',
 	'Won: <strong>%s</strong>': 'Gewonnen <strong>%s</strong>',
@@ -1967,4 +1962,37 @@ Who do you trust?"<br />\
 	'[E-mail address image]': '[E-Mail-Adresse Bild]',
 	'view threads': 'Diskussionen anzeigen',
 	'Please <a href=\'register.php\' class=\'light\'>register</a> or <a href=\'logon.php\' class=\'light\'>log in</a> to %s.': 'Bitte <a href=\'register.php\' class=\'light\'>registriere</a> oder <a href=\'logon.php\' class=\'light\'>logge dich ein</a> um %s.',
+	'Mon': 'Mo',
+	'Orders saved, but not completed!': 'Befehle gespeichert, aber nicht vervollständigt!',
+	'ChooseYourCountry': 'Landauswahl',
+	'Neutral units': 'Neutrale Einheiten',
+	'Saved': 'Gespeichert',
+	'A place to discuss Mod topics.': 'Ein Ort, um Moderator-Themen zu besprechen.',
+	'Thu': 'Do',
+	'Wed': 'Mi',
+	'Tue': 'Di',
+	'Fri': 'Fr',
+	'Sat': 'Sa',
+	'Sun': 'So',
+	'NMR: Serious': 'NRM: Ernst',
+	'noProcess:So': 'keine Auswertung: So',
+	'%s left on unpause': '%s bei Fortsetzung verbleibend',
+	'noProcess:Mo,Di,Do': 'keine Auswertung: Mo, Di, Do',
+	'very fast': 'sehr schnell',
+	'assigned to:': 'zugewiesen an:',
+	'noProcess:Mi': 'keine Auswertung: Mi',
+	'noProcess:Sa,So': 'keine Auswertung: Sa, So',
+	'Unpause': 'Fortsetzen',
+	'Checking against IP/cookie-code linked users.': 'Über IP/Cookie-Code verknüpfte User überprüfen',
+	'Processed.': 'Ausgewertet.',
+	'Processing..': 'Auswerten..',
+	'This account has no links with other accounts': 'Dieser Account ist nicht mit anderen Accounts verbunden',
+	'A place to discuss topics/games with other webDiplomacy players.': 'Ein Ort an dem mit Diplomacy-Spielern über Themen/Spiele diskutiert wird.',
+	'noProcess:Sa': 'KeineAuswertung:Sa',
+	'view replies': 'Antworten anzeigen',
+	'Thread is too old to reply to': 'Diskussion ist zu alt, um auf sie zu Antworten',
+	'in internal discussion.': 'in interner Diskussion',
+	'new': 'neu',
+	'Only for admins': 'Nur für Admins',
+	'%s SC ': '%s VZ',
 });
