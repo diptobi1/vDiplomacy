@@ -307,6 +307,26 @@ if ( isset($_REQUEST['detail']) )
 					print l_t('No NMRs found for this profile.');
 				}
 				print '</ul>';
+				
+				$tabl = $DB->sql_tabl("SELECT n.gameID, n.countryID, n.turn, n.bet, n.SCCount, g.name FROM wD_NMRs n 
+											LEFT JOIN wD_Games g ON n.gameID = g.id 
+											WHERE g.id is null AND n.countryID != 0 AND n.userID = ".$UserProfile->id);
+
+				if ($DB->last_affected() != 0) {
+					print '<h4>'.l_t('Cancelled NMRs:').'</h4><ul>';
+					
+					while(list($gameID, $countryID, $turn, $bet, $SCCount, $name)=$DB->tabl_row($tabl))
+					{                                          
+						print '<li>
+								'.l_t('Game:').' <strong>'.$gameID.'</strong>,
+								'.l_t('country #:').' <strong>'.$countryID.'</strong>,
+								'.l_t('turn:').' <strong>'.$turn.'</strong>,
+								'.l_t('bet:').' <strong>'.$bet.'</strong>,
+								'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>
+                            </li>';
+					}
+					print '</ul>';
+				}				
 
 				// Added Civil disorders taken on vDip:
 				$tabl = $DB->sql_tabl("SELECT g.name, c.userID, c.countryID, c.turn, c.bet, c.SCCount, c.gameId
