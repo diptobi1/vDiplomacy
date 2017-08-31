@@ -87,9 +87,14 @@ class adminActionsRestrictedVDip extends adminActionsForum
 	
 	public function recalculateRatings(array $params)
 	{
+
+	global $DB,$Misc;
+		
+		if (!($Misc->Maintenance))
+			return l_t('Maintenance mode off. Please turn Maintenance mode on to avoid problems');
+		
 		set_time_limit(0);
 		include_once("lib/rating.php");
-		global $DB;
 		
 		$deleteMonths = $params['month'];
 		
