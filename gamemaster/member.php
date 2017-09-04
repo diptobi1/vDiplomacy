@@ -88,7 +88,9 @@ class processMember extends Member
 
 		// It is assumed this is being run within a transaction
 
-		if ($countryID > count($Game->Variant->countries))
+		if ($countryID > count($Game->Variant->countries) && $Game->chooseYourCountry=='Yes')
+			$countryID = 1;
+		elseif ($Game->chooseYourCountry=='No')
 			$countryID = 0;
 			
 		$DB->sql_put("INSERT INTO wD_Members SET
