@@ -14,14 +14,14 @@ class CelticBritainVariant_drawMap extends drawMap {
 
 	protected $countryColors = array(
 		0 => array(211, 249, 188),
-		1 => array(255, 126, 000),
-		2 => array(111, 049, 152),
-		3 => array(000, 183, 239),
-		4 => array(067, 072, 224),
-		5 => array(034, 117, 076),
-		6 => array(168, 230, 029),
+		1 => array(255, 126,   0),
+		2 => array(111,  49, 152),
+		3 => array(  0, 183, 239),
+		4 => array( 67,  72, 224),
+		5 => array( 34, 117,  76),
+		6 => array(168, 230,  29),
 		7 => array(254, 162, 176),
-		8 => array(153, 000, 048),
+		8 => array(153,   0,  48),
 			);
 
 	protected function resources() {
