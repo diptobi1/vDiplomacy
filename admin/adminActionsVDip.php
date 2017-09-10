@@ -65,6 +65,12 @@ class adminActionsVDip extends adminActions
 				'description' => 'Manually grand or remove the license to create moderated games.',
 				'params' => array('userID'=>'User ID','newLicense'=>'change license to (Yes, No or NULL)'),
 			),
+			'ChangeCDNMR' => array(
+				'name' => 'Change CDs and NMRs',
+				'description' => 'Change the CDs or NMRs in a given game or from a user. If you only enter a UserID or a GameID you get a list of all CDs and NMRs of this user or in this game.',
+				'params' => array('MyUserID'=>'User ID', 'MyGameID'=>'GameID', 'TurnID'=>'Turn', 'CDorNMR'=>'What to change'),
+			),
+			
 		);
 		
 		adminActions::$actions = array_merge(adminActions::$actions, $vDipActions);
@@ -343,5 +349,98 @@ class adminActionsVDip extends adminActions
 
 		return l_t('This users director license was set to %s.',$newLicense);
 	}
+	
+	public function ChangeCDNMR(array $params)
+	{
+		global $DB;
+		$MyUserID = (int)$params['MyUserID'];
+		$MyGameID = (int)$params['MyGameID'];
+		$TurnID   = strtoupper($params['TurnID']);
+		$CDorNMR  = strtoupper($params['CDorNMR']);
+		
+		if ($MyUserID==0 && $MyGameID==0) return l_t('Need a userID or a gameID');
+
+		if ($MyUserID!=0 && $MyGameID==0) $SQLchange = "userID = ".$MyUserID;
+		if ($MyUserID==0 && $MyGameID!=0) $SQLchange = "gameID = ".$MyGameID;
+		if ($MyUserID!=0 && $MyGameID!=0) $SQLchange = "userID = ".$MyUserID." AND gameID = ".$MyGameID;
+
+		if ($TurnID == '') $TurnID = 'ALL';
+		if ($TurnID != 'ALL')
+			$SQLchange .= " AND turn = ".(int)$TurnID;
+		
+		if ( (strpos($CDorNMR,'CD')!== false) || (strpos($CDorNMR,'ALL')!== false))
+			$DB->sql_put("UPDATE wD_CivilDisorders SET forcedByMod = !forcedByMod WHERE ". $SQLchange);
+
+		if ((strpos($CDorNMR,'NMR')!== false) || (strpos($CDorNMR,'ALL')!== false))
+			$DB->sql_put("UPDATE wD_NMRs SET ignoreNMR = !ignoreNMR WHERE ". $SQLchange);
+		
+		if ($MyUserID != 0) $checkList[] = "userID";
+		if ($MyGameID != 0) $checkList[] = "gameID";
+		
+		$info=''; $affectedUsers = array();
+
+		foreach ($checkList as $check)
+		{
+			if ($check == "userID") {
+				$SQL = "userID = ".$MyUserID;
+				$info .= '<li><strong>'.l_t('UserID ').' '.$MyUserID.':</strong></li>';
+			} else {
+				$SQL = "gameID = ".$MyGameID;
+				$info .= '<li><strong>'.l_t('GameID ').' '.$MyGameID.':</strong></li>';
+			}
+			
+			$tabl = $DB->sql_tabl("SELECT c.userID, g.name, c.countryID, c.turn, c.bet, c.SCCount, c.gameId, c.forcedByMod
+				FROM wD_CivilDisorders c LEFT JOIN wD_Games g ON ( c.gameID = g.id )
+				WHERE ". $SQL);
+			
+			while(list($userID, $name, $countryID, $turn, $bet, $SCCount, $gameID, $forcedByMod)=$DB->tabl_row($tabl))
+			{
+				$affectedUsers[]=$userID;
+				if ($forcedByMod == 1) $info .= '<s>';
+				$info .= '<li><strong>CD</strong>, 
+					'.($check == "gameID" ? l_t('UserID:')." <strong>".$userID : l_t('GameID:')." <strong>".$gameID) .'</strong>,
+					'.l_t('country #:').' <strong>'.$countryID.'</strong>,
+					'.l_t('turn:').' <strong>'.$turn.'</strong>,
+					'.l_t('bet:').' <strong>'.$bet.'</strong>,
+					'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>
+					</li>';
+				if ($forcedByMod == 1) $info .= '</s>';
+			}
+			
+			$tabl = $DB->sql_tabl("SELECT n.userID, n.gameID, n.countryID, n.turn, n.bet, n.SCCount, g.name, n.ignoreNMR 
+				FROM wD_NMRs n LEFT JOIN wD_Games g ON ( n.gameID = g.id )
+				WHERE g.id != 0 AND ".$SQL);
+				
+			while(list($userID, $gameID, $countryID, $turn, $bet, $SCCount, $name, $ignoreNMR)=$DB->tabl_row($tabl))
+			{                                          
+				$affectedUsers[]=$userID;
+				if ($ignoreNMR == 1) $info .= '<s>';
+				$info .= '<li><strong>NMR</strong>, 
+					'.($check == "gameID" ? l_t('UserID:')." <strong>".$userID : l_t('GameID:')." <strong>".$gameID) .'</strong>,
+					'.l_t('country #:').' <strong>'.$countryID.'</strong>,
+					'.l_t('turn:').' <strong>'.$turn.'</strong>,
+					'.l_t('bet:').' <strong>'.$bet.'</strong>,
+					'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>
+					</li>';				
+				if ($ignoreNMR == 1) $info .= '</s>';
+			}
+			$info .= '<br>';
+		}
+		
+		$affectedUsers = array_unique($affectedUsers);
+		
+		$DB->sql_put("UPDATE wD_Users u 
+			SET u.cdCount = (SELECT COUNT(1) FROM wD_CivilDisorders c WHERE c.userID = u.id AND c.forcedByMod=0),
+				u.nmrCount = (SELECT COUNT(1) FROM wD_NMRs n WHERE n.userID = u.id AND n.ignoreNMR=0),
+				u.reliabilityRating = (POW( (
+					(100 * ( 1.0 - ((cast(u.cdCount as signed) + u.deletedCDs) / (u.gameCount+1)) ))
+				    +  (100 * (1.0 -   ((u.nmrCount)/(u.phaseCount+1))))
+			    )/2 , 3)/10000)
+			WHERE u.id IN (".implode(',',$affectedUsers).")");
+			
+		return $info;
+	
+	}
+	
 }
 ?>

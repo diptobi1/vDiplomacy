@@ -246,16 +246,20 @@ if ( isset($_REQUEST['detail']) )
 					print l_t('No civil disorders found for this profile.');
 				}
 
-				while(list($name, $countryID, $turn, $bet, $SCCount,$gameID,$forcedByMod)=$DB->tabl_row($tabl))
+				while(list($name, $countryID, $turn, $bet, $SCCount, $gameID, $forcedByMod)=$DB->tabl_row($tabl))
 				{
-					print '<li>
-					'.l_t('Game:').' <strong><a href="board.php?gameID='.$gameID.'">'.$name.'</a></strong>,
-						'.l_t('country #:').' <strong>'.$countryID.'</strong>,
-						'.l_t('turn:').' <strong>'.$turn.'</strong>,
-						'.l_t('bet:').' <strong>'.$bet.'</strong>,
-						'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>';
-						if ( $User->type['Moderator'] ) print ','.l_t('ignored:').' <strong>'.$forcedByMod.'</strong>';
+					if (!$forcedByMod || $User->type['Moderator'])
+					{
+						print '<li>';
+						if ($forcedByMod) print '<s>';
+						print l_t('Game:').' <strong><a href="board.php?gameID='.$gameID.'">'.$name.'</a></strong>,
+							'.l_t('country #:').' <strong>'.$countryID.'</strong>,
+							'.l_t('turn:').' <strong>'.$turn.'</strong>,
+							'.l_t('bet:').' <strong>'.$bet.'</strong>,
+							'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>';
+						if ($forcedByMod) print '</s>';
 						print '</li>';
+					}
 				}
 				print '</ul>';
 
@@ -267,14 +271,18 @@ if ( isset($_REQUEST['detail']) )
 					print '<h4>'.l_t('Cancelled civil disorders:').'</h4><ul>';
 					while(list($countryID, $turn, $bet, $SCCount,$gameID,$forcedByMod)=$DB->tabl_row($tabl))
 					{
-						print '<li>
-						'.l_t('Game:').' <strong>'.$gameID.'</strong>,
-							'.l_t('country #:').' <strong>'.$countryID.'</strong>,
-							'.l_t('turn:').' <strong>'.$turn.'</strong>,
-							'.l_t('bet:').' <strong>'.$bet.'</strong>,
-							'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>';
-							if ( $User->type['Moderator'] ) print ','.l_t('ignored:').' <strong>'.$forcedByMod.'</strong>';
+						if (!$forcedByMod || $User->type['Moderator'])
+						{
+							print '<li>';
+							if ($forcedByMod) print '<s>';
+							print l_t('Game:').' <strong>'.$gameID.'</strong>,
+								'.l_t('country #:').' <strong>'.$countryID.'</strong>,
+								'.l_t('turn:').' <strong>'.$turn.'</strong>,
+								'.l_t('bet:').' <strong>'.$bet.'</strong>,
+								'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>';
+							if ($forcedByMod) print '</s>';
 							print '</li>';
+						}
 					}
 					print "</ul>";
 				}
@@ -287,43 +295,49 @@ if ( isset($_REQUEST['detail']) )
 				if ($NMRCounter > 0)
 					print '<li>'.$NMRCounter.' NMR'.($NMRCounter > 1 ? 's' : '').' without a gameID found.</li>';
 
-				$tabl = $DB->sql_tabl("SELECT n.gameID, n.countryID, n.turn, n.bet, n.SCCount, g.name FROM wD_NMRs n LEFT JOIN wD_Games g ON n.gameID = g.id WHERE g.id != 0 AND n.userID = ".$UserProfile->id);
+				$tabl = $DB->sql_tabl("SELECT n.gameID, n.countryID, n.turn, n.bet, n.SCCount, g.name, n.ignoreNMR FROM wD_NMRs n LEFT JOIN wD_Games g ON n.gameID = g.id WHERE g.id != 0 AND n.userID = ".$UserProfile->id);
 				if ($DB->last_affected() != 0) {
-					while(list($gameID, $countryID, $turn, $bet, $SCCount, $name)=$DB->tabl_row($tabl))
+					while(list($gameID, $countryID, $turn, $bet, $SCCount, $name, $ignoreNMR)=$DB->tabl_row($tabl))
 					{                                          
-						print '<li>';
-						if ($name != '') {
-							print l_t('Game:').' <strong><a href="board.php?gameID='.$gameID.'">'.$name.'</a></strong> ';
-						} else {	
-							print l_t('Game:').' <strong>'.$gameID.' '.l_t('(Cancelled)').'</strong> ';
+						if (!$ignoreNMR || $User->type['Moderator'])
+						{
+							print '<li>';
+							if ($ignoreNMR) print '<s>';
+							print 	l_t('Game:').' <strong><a href="board.php?gameID='.$gameID.'">'.$name.'</a></strong>,
+									'.l_t('country #:').' <strong>'.$countryID.'</strong>,
+									'.l_t('turn:').' <strong>'.$turn.'</strong>,
+									'.l_t('bet:').' <strong>'.$bet.'</strong>,
+									'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>';
+							if ($ignoreNMR) print '</s>';
+							print '</li>';
 						}
-						print l_t('country #:').' <strong>'.$countryID.'</strong>,
-							'.l_t('turn:').' <strong>'.$turn.'</strong>,
-							'.l_t('bet:').' <strong>'.$bet.'</strong>,
-							'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>
-                                                 	</li>';
 					}
 				} elseif ( $NMRCounter == 0) {
 					print l_t('No NMRs found for this profile.');
 				}
 				print '</ul>';
 				
-				$tabl = $DB->sql_tabl("SELECT n.gameID, n.countryID, n.turn, n.bet, n.SCCount, g.name FROM wD_NMRs n 
+				$tabl = $DB->sql_tabl("SELECT n.gameID, n.countryID, n.turn, n.bet, n.SCCount, g.name, n.ignoreNMR FROM wD_NMRs n 
 											LEFT JOIN wD_Games g ON n.gameID = g.id 
 											WHERE g.id is null AND n.countryID != 0 AND n.userID = ".$UserProfile->id);
 
 				if ($DB->last_affected() != 0) {
 					print '<h4>'.l_t('Cancelled NMRs:').'</h4><ul>';
 					
-					while(list($gameID, $countryID, $turn, $bet, $SCCount, $name)=$DB->tabl_row($tabl))
+					while(list($gameID, $countryID, $turn, $bet, $SCCount, $name, $ignoreNMR)=$DB->tabl_row($tabl))
 					{                                          
-						print '<li>
-								'.l_t('Game:').' <strong>'.$gameID.'</strong>,
-								'.l_t('country #:').' <strong>'.$countryID.'</strong>,
-								'.l_t('turn:').' <strong>'.$turn.'</strong>,
-								'.l_t('bet:').' <strong>'.$bet.'</strong>,
-								'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>
-                            </li>';
+						if (!$ignoreNMR || $User->type['Moderator'])
+						{
+							print '<li>';
+							if ($ignoreNMR) print '<s>';
+							print 	l_t('Game:').' <strong>'.$gameID.'</strong>,
+									'.l_t('country #:').' <strong>'.$countryID.'</strong>,
+									'.l_t('turn:').' <strong>'.$turn.'</strong>,
+									'.l_t('bet:').' <strong>'.$bet.'</strong>,
+									'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>';
+							if ($ignoreNMR) print '</s>';
+							print '</li>';
+						}
 					}
 					print '</ul>';
 				}				
@@ -359,7 +373,7 @@ if ( isset($_REQUEST['detail']) )
 				print '</ul>';
 				
 			} else {
-                         	print l_t('You do not have permission to view this page.');
+				print l_t('You do not have permission to view this page.');
 			}
 
 			break;
