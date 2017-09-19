@@ -31,6 +31,7 @@
 	0.9.1: turn display updated
 	1.0:   release
 	1.0.1: Errorfix: targetSC of 0 causes some problems with the new rating.
+	1.0.3: Errorfix: New scoring-code with webdip 1.51
 
 */
 
@@ -45,7 +46,7 @@ class LepantoVariant extends WDVariant {
 	public $author     = 'Emmanuele Ravaioli (Tadar Es Darden)';
 	public $adapter    = 'Emmanuele Ravaioli / Oliver Auth';
 	public $version    = '1.0';
-	public $codeVersion= '1.0.2';
+	public $codeVersion= '1.0.3';
 
 	public $countries=array('Holy League', 'Ottoman Empire');
 

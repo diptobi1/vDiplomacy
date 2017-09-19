@@ -124,16 +124,15 @@ class panelMembers extends Members
 		$buf = "";
 		if( 1==count($this->ByStatus['Left']) )
 		{
-			foreach($this->ByStatus['Left'] as $Member);
-
-			$bet = ( method_exists ('Config','adjustCD') ? Config::adjustCD($Member->pointsValue()) : $Member->pointsValue() );
-			
-			$buf .= '<input type="hidden" name="countryID" value="'.$Member->countryID.'" />
-				<label>Take over:</label> '.$Member->countryColored();
-				
-			if ($this->Game->pot > 0)
-				$buf .= ', for <em>'.$bet.libHTML::points().'</em>'.
-					( ($bet != $Member->pointsValue()) ? ' (worth:'.$Member->pointsValue().libHTML::points().')':'');
+			foreach($this->ByStatus['Left'] as $Member)
+			{
+				$buf .= '<input type="hidden" name="countryID" value="'.$Member->countryID.'" />
+					<label>Take over:</label> '.$Member->countryColored();
+					
+				if ($this->Game->pot > 0)
+					$buf .= ', for <em>'.$Member->pointsValueInTakeover().libHTML::points().'</em>'.
+						( ($Member->pointsValue() != $Member->pointsValueInTakeover()) ? ' (worth:'.$Member->pointsValue().libHTML::points().')':'');
+			}
 		}
 		else
 		{
@@ -142,20 +141,18 @@ class panelMembers extends Members
 			{
 				$pointsValue = $Member->pointsValueInTakeover();
 
-				$bet = ( method_exists ('Config','adjustCD') ? Config::adjustCD($pointsValue) : $pointsValue );
-
 				if ( $User->points >= $pointsValue )
 				{
-					$buf .= '<option value="'.$Member->countryID.'" />'.$Member->country;
+					$buf .= '<option value="'.$Member->countryID.'" />'.l_t('%s',$Member->country);
 					
 					if ($this->Game->pot > 0)
-						$buf .= ', for '.$bet.'</em>'.( ($bet != $pointsValue) ? ' (worth:'.$pointsValue.')':'');
+						$buf .= l_t(', for %s',$Member->pointsValueInTakeover().( ($Member->pointsValue() != $pointsValue) ? ' (worth:'.$pointsValue.')':''));
 						
 					$buf .= '</option>';
 				}
 			}
 			$buf .= '</select>';
-		}
+		}		
 		return $buf;
 	}
 

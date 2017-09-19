@@ -237,11 +237,14 @@ class Member
 	}
 
 	/**
-	 * CD takeovers cost a different amount to in game positions. How much is this position worth in takeover?
+	 * CD takeovers cost 0. This is a function because they weren't always free, and keeping the function means we can always change it later.
 	 * @return int
 	 */
 	function pointsValueInTakeover() {
-                return round($this->pointsValue() /2);
+		if ($this->pointsValue() == 0) return 0;
+		$bet = ceil($this->pointsValue() / 2);
+		if ($bet == 0) $bet=1;
+		return  $bet;
 	}	
 
 	/**
