@@ -1007,9 +1007,16 @@ $sql[]="UPDATE wD_Backup_Games SET minimumReliabilityRating = minRating;";
 $sql[]="ALTER TABLE `wD_Games` DROP COLUMN `minRating`;";
 $sql[]="ALTER TABLE `wD_Backup_Games` DROP COLUMN `minRating`;";
 
+// VDip 56
+$sql[]="ALTER TABLE wD_NMRs ADD COLUMN ignoreNMR BOOLEAN DEFAULT 0;";
+
+// Webdip 1.41
+$sql[]="ALTER TABLE wD_Games CHANGE `potType` `potType` enum('Winner-takes-all','Points-per-supply-center','Unranked','Sum-of-squares') NOT NULL;";
+$sql[]="ALTER TABLE wD_Backup_Games CHANGE `potType` `potType` enum('Winner-takes-all','Points-per-supply-center','Unranked','Sum-of-squares') NOT NULL;";
+
 // Set the correct version-information in the database	
-$sql[]="UPDATE `wD_Misc`     SET `value` = '140' WHERE `name` = 'Version';";
-$sql[]="UPDATE `wD_vDipMisc` SET `value` = '55'  WHERE `name` = 'Version';";
+$sql[]="UPDATE `wD_Misc`     SET `value` = '141' WHERE `name` = 'Version';";
+$sql[]="UPDATE `wD_vDipMisc` SET `value` = '56'  WHERE `name` = 'Version';";
 
 // Create a default Admin-Account
 require_once ('lib/auth.php');

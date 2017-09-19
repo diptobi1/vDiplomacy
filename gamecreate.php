@@ -104,8 +104,11 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 		{
 			throw new Exception(l_t("%s is an invalid bet size.",(string)$input['bet']));
 		}
+		if ( $input['bet'] == 0 )
+			$input['potType'] = 'Unranked';
 
-		if ( $input['potType'] != 'Winner-takes-all' and $input['potType'] != 'Points-per-supply-center' )
+		if ( $input['potType'] != 'Winner-takes-all' and $input['potType'] != 'Points-per-supply-center' 
+			and $input['potType'] != 'Unranked' and $input['potType'] != 'Sum-of-squares')
 		{
 			throw new Exception(l_t('Invalid potType input given.'));
 		}

@@ -222,12 +222,12 @@ else
 	<script type="text/javascript">
 	setExtOptions(<?php print $first;?>);
 	</script>
-	
+
 	<div id="potType">
 		<li class="formlisttitle">Pot type:</li>
 		<li class="formlistfield">
-			<input type="radio" name="newGame[potType]" value="Points-per-supply-center"> Points-per-supply-center (PPSC)<br />
 			<input type="radio" name="newGame[potType]" value="Winner-takes-all" checked > Winner-takes-all (WTA)
+			<input type="radio" name="newGame[potType]" value="Points-per-supply-center"> Points-per-supply-center (PPSC)<br />
 		</li>
 		<li class="formlistdesc">
 			Should the winnings be split up according to who has the most supply centers, or should the winner
@@ -235,7 +235,7 @@ else
 
 			<strong>Default:</strong> Winner-takes-all (WTA)
 		</li>
-	</div>
+</div>
 
 	<li class="formlisttitle">
 		Anonymous players:
