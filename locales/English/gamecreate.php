@@ -222,7 +222,7 @@ else
 	<script type="text/javascript">
 	setExtOptions(<?php print $first;?>);
 	</script>
-
+	
 	<div id="potType">
 		<li class="formlisttitle">Pot type:</li>
 		<li class="formlistfield">
@@ -235,7 +235,7 @@ else
 
 			<strong>Default:</strong> Winner-takes-all (WTA)
 		</li>
-</div>
+	</div>
 
 	<li class="formlisttitle">
 		Anonymous players:
