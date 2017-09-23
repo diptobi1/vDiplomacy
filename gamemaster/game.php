@@ -467,7 +467,8 @@ class processGame extends Game
 			$this->minimumBet = null;
 		}
 		// The new value isn't the same, and it isn't comparing false with null (which are the same in this case)
-		elseif ( ($minimumBet === 0 || $minimumBet != $this->minimumBet) && !( $minimumBet==false && is_null($this->minimumBet)) )
+		// This really needs to be cleaned up so that it isn't relying on how true/false/null work.
+		elseif ( ($minimumBet === 0 || $minimumBet !== $this->minimumBet) && !( $minimumBet===false && is_null($this->minimumBet)) )
 		{
 			$DB->sql_put("UPDATE wD_Games SET minimumBet = ".($minimumBet !== false?$minimumBet:'NULL')." WHERE id=".$this->id);
 			$this->minimumBet = $minimumBet;

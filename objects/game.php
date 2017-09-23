@@ -227,6 +227,7 @@ class Game
 	 */
 	public $minimumReliabilityRating;
 
+	public $civilDisorderInfo;
 	/**
 	 * Any value > 0 ends the game after the given turn. Winner is the one with the most SC at this time.
 	 * @var int
@@ -333,6 +334,7 @@ class Game
 		}
 
 		$this->loadMembers();
+		$this->loadCDs();
 		switch ($this->potType) {
 		case 'Points-per-supply-center':
 				$this->Scoring = new ScoringPPSC($this);
@@ -386,8 +388,8 @@ class Game
 			 * - The game is finished
 			 * - The user is a moderator who isn't in the game
 			 */
-			if ( $this->anon == 'No' || $this->phase == 'Finished' || ($User->type['Moderator'] && !isset($this->Members->ByUserID[$User->id])) )
-			{
+			if ( $this->anon == 'No' || $this->phase == 'Finished' || $this->hasModeratorPowers())
+			{                                                        
 				$this->isMemberInfoHidden = false;
 			}
 			else
@@ -407,7 +409,13 @@ class Game
 	public function moderatorSeesMemberInfo() {                                                                                            
 		global $User;
 
-		return (!($this->anon == 'No' || $this->phase == 'Finished') && $User->type['Moderator'] && !isset($this->Members->ByUserID[$User->id]));
+		return (!($this->anon == 'No' || $this->phase == 'Finished') && $this->hasModeratorPowers());
+	}
+
+	public function hasModeratorPowers() {
+            global $User;
+
+			return ($User->type['Moderator'] && !isset($this->Members->ByUserID[$User->id]));
 	}
 
 
@@ -451,6 +459,18 @@ class Game
 			$DB->sql_put('DELETE from wD_WatchedGames WHERE gameID='. $this->id . ' AND userID='. $User->id);// . $this->id . ' AND userID=' . $User->id);
 			$DB->sql_put('COMMIT');
 		} 
+	}
+
+	function loadCDs() {
+		global $DB;
+
+        $this->civilDisorderInfo = array();
+
+		$tabl = $DB->sql_tabl('SELECT userID, countryID, turn, SCCount from wD_CivilDisorders where gameID='. $this->id);
+		while ( $row = $DB->tabl_hash($tabl) )
+		{
+			$this->civilDisorderInfo[$row['userID']] = $row;
+		}
 	}
 
 	/**
@@ -521,6 +541,8 @@ class Game
 		global $User;
 
 		if( $this->Members->isJoined() ) return false;
+
+        if ( array_key_exists($User->id,$this->civilDisorderInfo) ) return false;
 
 		if( !$User->type['User'] ) return false;
 
