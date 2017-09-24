@@ -254,13 +254,15 @@ else
 		Disable in-game messaging:
 	</li>
 	<li class="formlistfield">
-		<input type="radio" name="newGame[pressType]" value="Regular" checked>Allow all
-		<input type="radio" name="newGame[pressType]" value="PublicPressOnly">Global messages only, no private chat/press (Public Press)
-		<input type="radio" name="newGame[pressType]" value="NoPress">No in-game messaging (Gunboat)
+		<input type="radio" name="newGame[pressType]" value="Regular" checked>Allow all<br />
+		<input type="radio" name="newGame[pressType]" value="PublicPressOnly">Global messages only, no private chat/press (Public Press)<br />
+		<input type="radio" name="newGame[pressType]" value="NoPress">No in-game messaging (Gunboat)<br />
+		<input type="radio" name="newGame[pressType]" value="RulebookPress">Per rulebook<br />
 	</li>
 	<li class="formlistdesc">
 		Disable some types of messaging; allow only global in-game messages, or allow no in-game messages.
 
+		<br/><br/> "Per rulebook" means no discussion during builds and retreats as per the original Diplomacy rulebook. In this mode, saved retreats and builds are automatically readied for the next turn.
 		<br /><br /><strong>Default:</strong> Allow all
 	</li>
 	<li class="formlisttitle">

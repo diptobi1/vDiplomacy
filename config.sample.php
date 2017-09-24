@@ -317,7 +317,7 @@ class Config
 					"SMTPAuth"=>false,
 					/* If this is FALSE the two variables below are ignored */
 					"Username"=>"webmaster",
-					"Password"=>"password123",
+					"Password"=>"password123"
 					/* Uncomment the line below to use SSL to connect (e.g. for gmail) */
 					// , 'SMTPSecure'=>'ssl'
 				),

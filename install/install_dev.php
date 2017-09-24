@@ -1014,8 +1014,12 @@ $sql[]="ALTER TABLE wD_NMRs ADD COLUMN ignoreNMR BOOLEAN DEFAULT 0;";
 $sql[]="ALTER TABLE wD_Games CHANGE `potType` `potType` enum('Winner-takes-all','Points-per-supply-center','Unranked','Sum-of-squares') NOT NULL;";
 $sql[]="ALTER TABLE wD_Backup_Games CHANGE `potType` `potType` enum('Winner-takes-all','Points-per-supply-center','Unranked','Sum-of-squares') NOT NULL;";
 
+// Webdip 1.42
+$sql[]="ALTER TABLE wD_Backup_Games CHANGE `pressType` `pressType` enum('Regular','PublicPressOnly','NoPress','RulebookPress') NOT NULL DEFAULT 'Regular';";
+$sql[]="ALTER TABLE wD_Games CHANGE `pressType` `pressType` enum('Regular','PublicPressOnly','NoPress','RulebookPress') NOT NULL DEFAULT 'Regular';";
+
 // Set the correct version-information in the database	
-$sql[]="UPDATE `wD_Misc`     SET `value` = '141' WHERE `name` = 'Version';";
+$sql[]="UPDATE `wD_Misc`     SET `value` = '142' WHERE `name` = 'Version';";
 $sql[]="UPDATE `wD_vDipMisc` SET `value` = '56'  WHERE `name` = 'Version';";
 
 // Create a default Admin-Account

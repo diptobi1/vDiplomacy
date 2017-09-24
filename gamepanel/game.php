@@ -273,6 +273,8 @@ class panelGame extends Game
 			$alternatives[]=$this->Variant->link();
 		if( $this->pressType=='NoPress')
 			$alternatives[]=l_t('Gunboat');
+		elseif( $this->pressType=='RulebookPress')
+			$alternatives[]=l_t('Rulebook press');
 		elseif( $this->pressType=='PublicPressOnly' )
 			$alternatives[]=l_t('Public Press');
 		if( $this->anon=='Yes' )
