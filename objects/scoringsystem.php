@@ -54,7 +54,7 @@ class ScoringPPSC extends ScoringSystem {
 
             assert('$SCsInPlayCount > 0');
 
-            $SCTarget = $this->Game->Variant->supplyCenterTarget;
+			$SCTarget = ( ($this->Game->targetSCs > 0) ? $this->Game->targetSCs : $SCTarget = $this->Game->Variant->supplyCenterTarget);
             foreach($this->Game->Members->ByStatus['Playing'] as $Member)
             {	
 
@@ -99,7 +99,7 @@ class ScoringPPSC extends ScoringSystem {
 		$ratios = $this->PPSCRatios();
 		return ceil($ratios[$Member->countryID] * $this->Game->pot);
 	}
-	public function abbr() { return 'SWS'; }
+	public function abbr() { return 'PPSC'; }
 	public function longName() {return 'Survivors-Win Scoring';} 
 }
 
@@ -109,7 +109,7 @@ class ScoringWTA extends ScoringSystem {
 	}
 	public function pointsForWin($Member) {return $this->Game->pot;}
 	public function pointsForSurvive($Member) {return 0;}
-	public function abbr() { return 'DSS'; }
+	public function abbr() { return 'WTA'; }
 	public function longName() {return 'Draw-Size Scoring';} 
 }
 
