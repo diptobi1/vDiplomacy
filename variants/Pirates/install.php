@@ -428,7 +428,6 @@ $bordersRawData=array(
 	array('Curacao','Isla Blanquilla','Yes','No'),
 	array('Curacao','Keelhaul Key','Yes','No'),
 	array('Curacao','Maracaibo Lagoon','Yes','No'),
-	array('Curacao','Maracaibo','Yes','No'),
 	array('Curacao','Margarita','Yes','No'),
 	array('Curacao','Montserrat','Yes','No'),
 	array('Curacao','New Andalucia','Yes','No'),
@@ -1160,6 +1159,7 @@ $DB->sql_put('UPDATE wD_Territories SET supply="No" WHERE mapID='.$this->mapID.'
 InstallCache::terrJSON($this->territoriesJSONFile(),$this->mapID);
 
 ?>
+
 
 
 
