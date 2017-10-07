@@ -362,7 +362,7 @@ class libHome
 			LEFT JOIN wD_Sessions s ON ( m.fromUserID = s.userID )
 			LEFT JOIN wD_ForumMessages t ON ( m.toID = t.id AND t.type = 'ThreadStart' AND m.type = 'ThreadReply' )
 			ORDER BY m.timeSent DESC
-			LIMIT 50");
+			LIMIT 100");
 		$oldThreads=0;
 		$threadCount=0;
 
@@ -435,9 +435,11 @@ class libHome
 			}
 
 
+			$maxPosts = 4; // limit the number of Posts/Thread to 4 on the home-screen
 			$data['posts'] = array_reverse($data['posts']);
 			foreach($data['posts'] as $post)
 			{
+				if ($maxPosts-- > 0)
 				$buf .= '<div class="homeForumPost homeForumPostAlt'.libHTML::alternate().' userID'.$post['userID'].'">
 
 
