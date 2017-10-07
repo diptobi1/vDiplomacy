@@ -78,8 +78,9 @@ try
 
 	if ( count($errors) ) throw new Exception(implode('. ',$errors));
 
+	$set .= ', vpoints = 1000'; // Set the initial vPoints displayed to 1000.
 	$set .= ', timeJoined = '.time().', timeLastSessionEnded = '.time();
-
+	
 	if( User::findUsername($SQLVars['username']) )
 		throw new Exception(l_t("The username '%s' is already in use. Please choose another.",$SQLVars['username']));
 	elseif( User::findEmail($SQLVars['email']) )
