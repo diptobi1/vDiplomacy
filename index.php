@@ -435,11 +435,10 @@ class libHome
 			}
 
 
-			$maxPosts = 4; // limit the number of Posts/Thread to 4 on the home-screen
 			$data['posts'] = array_reverse($data['posts']);
+			$data['posts'] = array_slice($data['posts'], -4); // remove all but the last 4 posts.
 			foreach($data['posts'] as $post)
 			{
-				if ($maxPosts-- > 0)
 				$buf .= '<div class="homeForumPost homeForumPostAlt'.libHTML::alternate().' userID'.$post['userID'].'">
 
 
