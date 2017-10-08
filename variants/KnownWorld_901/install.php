@@ -119,7 +119,7 @@ $territoryRawData=array(
 	array('Tyrrhenian Sea', 'Sea', 'No', 0, 565, 746, 0, 0),
 	array('Libyan Sea', 'Sea', 'No', 0, 600, 863, 0, 0),
 	array('Straits of Jebel Tarik', 'Sea', 'No', 0, 448, 787, 0, 0),
-	array('Balearic Sea', 'Sea', 'No', 0, 416, 760, 0, 0),
+	array('Balearic Sea', 'Sea', 'No', 0, 455, 750, 0, 0),
 	array('Ligurian Sea', 'Sea', 'No', 0, 506, 685, 0, 0),
 	array('Sea of Tangiers', 'Sea', 'No', 0, 203, 858, 0, 0),
 	array('Sea of Worms', 'Sea', 'No', 0, 49, 740, 0, 0),
@@ -308,7 +308,7 @@ $territoryRawData=array(
 foreach($territoryRawData as $territoryRawRow)
 {
 	list($name, $type, $supply, $countryID, $x, $y, $sx, $sy)=$territoryRawRow;
-	new InstallTerritory($name, $type, $supply, $countryID, $x, $y, $x, $y);
+	new InstallTerritory($name, $type, $supply, $countryID, $x, $y, $sx, $sy);
 }
 unset($territoryRawData);
 
@@ -1145,6 +1145,7 @@ InstallCache::terrJSON($this->territoriesJSONFile(),$this->mapID);
 
 // Copy the smallmap-sample to the cache-directory to avoid a screwed variantpage (there is no smallmap available)
 copy ('variants/'.$this->name.'/resources/sampleMap.png','variants/'.$this->name.'/cache/sampleMap.png');
+
 
 
 
