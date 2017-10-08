@@ -34,20 +34,21 @@ class LepantoVariant_processMembers extends processMembers {
 			WHERE toTerrID IN ('11','13','86','88') AND type IN ('Move') AND success='Yes' AND gameID = ".$this->Game->id."
 			ORDER BY countryID ASC");
 			
-		$won=0;
+		$wonPl_1 = $wonPl_2 = 0;
 		while(list($winmove) = $DB->tabl_row($tabl))
-			$won += $winmove;
-			
-		switch($won)
 		{
-			case '1':
-				$this->ByCountryID[2]->setDefeated($this->Game->Scoring->pointsForDefeat($this->ByCountryID[2]));
-				return $this->ByCountryID[1];
-			case '2':
-				$this->ByCountryID[1]->setDefeated($this->Game->Scoring->pointsForDefeat($this->ByCountryID[1]));
-				return $this->ByCountryID[2];
-			case '3':
-				$DB->sql_put("UPDATE wD_Members SET votes='Draw' WHERE gameID=".$this->Game->id);
+			if ($winmove == 1) $wonPl_1++;
+			if ($winmove == 2) $wonPl_2++;
+		}	
+			
+		if ($wonPl_1 > $wonPl_2) {
+			$this->ByCountryID[2]->setDefeated($this->Game->Scoring->pointsForDefeat($this->ByCountryID[2]));
+			return $this->ByCountryID[1];
+		} elseif ($wonPl_1 < $wonPl_2) {
+			$this->ByCountryID[1]->setDefeated($this->Game->Scoring->pointsForDefeat($this->ByCountryID[1]));
+			return $this->ByCountryID[2];
+		} elseif ($wonPl_1 + $wonPl_2 > 0) {
+			$DB->sql_put("UPDATE wD_Members SET votes='Draw' WHERE gameID=".$this->Game->id);
 		}
 		
 		return false;
