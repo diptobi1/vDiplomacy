@@ -37,13 +37,18 @@ class DutchRevoltVariant_OrderInterface extends OrderInterface {
 				libHTML::$footerScript[$index]=str_replace('loadOrdersPhase();','loadOrdersPhase(); OnlyFleets(Array("9"));', $script);
 		}
 		if ($this->phase=='Diplomacy') {
-			// Fix an error in the webdip convoy-order generation
+			// Fix an error in the webdip convoy-order generation and No way back to Spain
 			libHTML::$footerIncludes[] = '../variants/DutchRevolt/resources/convoydisplayfix.js';
 			foreach(libHTML::$footerScript as $index=>$script)
 				libHTML::$footerScript[$index]=str_replace('loadOrdersPhase();','loadOrdersPhase(); ConvoyDisplayFix();', $script);
 		}
-
-		
+		if ($this->phase=='Retreats') {
+			// No Retreats to Spain possible
+			libHTML::$footerIncludes[] = '../variants/DutchRevolt/resources/oneway.js';
+			foreach(libHTML::$footerScript as $index=>$script)
+				libHTML::$footerScript[$index]=str_replace('loadOrdersPhase();','loadOrdersPhase(); OneWay_loadOrdersPhase();', $script);
+		}
+	
 	}
 
 

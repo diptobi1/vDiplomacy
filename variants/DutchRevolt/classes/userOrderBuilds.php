@@ -21,7 +21,10 @@ class DutchRevoltVariant_userOrderBuilds extends userOrderBuilds
 				return true;
 			else
 				return false;
-		} else
+		} 
+		elseif ( $this->type == 'Destroy' && $this->toTerrID == 9 )
+			return true;
+		else
 			return parent::toTerrIDCheck();
 	}
 }

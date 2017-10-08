@@ -55,31 +55,5 @@ class DutchRevoltVariant_drawMap extends drawMap {
 		$this->loadOrderArrows();
 	}
 	
-	protected function color(array $color, $image=false)
-	{
-		if ( ! is_array($image) )
-		{
-			$image = $this->map;
-		}
-		
-		list($r, $g, $b) = $color;
-		
-		$colorRes = imagecolorexact($image['image'], $r, $g, $b);
-		if ($colorRes == -1)
-		{
-			$colorRes = imageColorAllocate($image['image'], $r, $g, $b);
-			if (!$colorRes)
-				$colorRes = imageColorClosest($image['image'], $r, $g, $b);
-		}
-		
-		return $colorRes; 
-	}
-
-	public function ColorTerritory($terrID, $countryID)	
-	{
-		if ($terrID == 9) return;
-		parent::ColorTerritory($terrID, $countryID);
-	}
-	
 }
 ?>

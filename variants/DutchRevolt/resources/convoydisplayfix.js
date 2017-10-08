@@ -28,6 +28,9 @@ function ConvoyDisplayFix() {
 					case 'Convoy': this.toTerrChoices = this.Unit.getConvoyToChoices(); break;
 					default: this.toTerrChoices = undefined; return;
 				}
+
+				var index = this.toTerrChoices.indexOf("9");
+				if (index != -1) this.toTerrChoices.splice(index, 1);
 				
 				this.toTerrChoices=this.arrayToChoices(this.toTerrChoices);
 				
