@@ -979,7 +979,7 @@ class libHTML
 	
 		// Version, sourceforge and HTML compliance logos
 		return $cookiesWarning.l_t('based on webDiplomacy version <strong>%s</strong> vDip.%s',number_format(VERSION/100,2),VDIPVERSION.'<br />
-			<a href="https://github.com/Sleepcap/vDiplomacy" class="light">GitHub Project</a> | <a href="mailto:'.Config::$modEMail.'" class="light">Contact Moderator</a>');
+			<a href="https://github.com/Sleepcap/vDiplomacy" class="light">GitHub Project</a> | <a href="modforum.php" class="light">Contact Moderator</a>');
 	}
 
 	/*
