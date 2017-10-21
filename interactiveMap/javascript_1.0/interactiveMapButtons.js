@@ -396,7 +396,7 @@ interactiveMap.interface.options.load = function(){
     function buildSlider() {
         var track = $("track");
         interactiveMap.interface.options.sliderControl = new Control.Slider(track.firstChild, track, {
-            range: $R(0,1),
+            range: $R(0.1,0.9),
             sliderValue: interactiveMap.options.greyOutIntensity,
             onChange: function(value) {
                 interactiveMap.options.greyOutIntensity = value;
@@ -445,7 +445,20 @@ interactiveMap.interface.options.load = function(){
     track.appendChild(new Element("div",{'id':'handle', 'style':'width:10px; height:15px; background-color:Red; cursor:move; position: absolute;'}));
         
     this.closeButton = interactiveMap.interface.options.element.appendChild(new Element("p")).appendChild(new Element("Button", {'id': 'close', 'class':'buttonIA form-submit'})).update("Close");
-    this.closeButton.observe('click', function(){interactiveMap.interface.options.element.hide(); $("options").disabled = false;});
+    this.closeButton.observe('click', function(){
+		interactiveMap.interface.options.element.hide(); 
+		$("options").disabled = false;
+						
+		/* update user options for interactive map in database (vdip options menu has to be installed!) */
+		if(interactiveMap.saveIAoptionsOnDatabase)
+			new Ajax.Request('usercp.php',{
+				parameters: {
+					"userForm[terrGrey]": (!interactiveMap.options.greyOut)?'off':(interactiveMap.options.unitGreyOut)?'all':'selected',
+					"userForm[scrollbars]": interactiveMap.options.scrollbars?'Yes':'No',
+					"userForm[greyOut]": Math.floor(interactiveMap.options.greyOutIntensity*100)
+				}
+			});
+	});
     $('options').parentNode.appendChild(this.element).hide();
         
     buildSlider();

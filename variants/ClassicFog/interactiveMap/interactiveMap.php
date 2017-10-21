@@ -29,7 +29,7 @@ class Fog_IAmap extends IAmap {
                 }
         }
         
-        //ignore fake-territories
+        //ignore fake-territories (Islands and Seas
         protected function getTerritoryPositions() {
                 global $DB;
 
@@ -38,7 +38,7 @@ class Fog_IAmap extends IAmap {
                 $territoryPositions = array();
                 $tabl = $DB->sql_tabl($territoryPositionsSQL);
                 while (list($terrID, $name, $coast, $x, $y) = $DB->tabl_row($tabl)) {
-                        if (strpos($name,' (fake)')) continue;
+                        if (strpos($name,' - Islands') || strpos($name,' - Seas') ) continue;
                         
                         if ($coast != 'Child') {
                                 $territoryPositions[$terrID] = array(intval($x), intval($y));
