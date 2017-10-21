@@ -37,7 +37,7 @@ interactiveMap.resetOrder = function() {
     interactiveMap.draw();
     if ((context.phase == "Builds") && (MyOrders.length != 0) && (MyOrders[0].type != "Destroy"))
         interactiveMap.greyOut.draw(SupplyCenters.select(function(n) {
-            return MyOrders.pluck("ToTerritory").indexOf(n) == -1
+            return MyOrders.pluck("ToTerritory").collect(function(t){if(!Object.isUndefined(t)) return t.coastParent;}).indexOf(n) == -1 && n.coast != "Child";
         }).pluck("id"));
     else if ((context.phase == "Retreats") && (MyOrders.length != 0))
         interactiveMap.greyOut.draw(MyOrders.pluck("Unit").pluck("terrID"));
