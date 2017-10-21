@@ -281,6 +281,10 @@ class libAuth
 		}
 	}
 
+	public static function generateKey($userId, $userKey) {
+		return $userId.'_'.md5(md5(Config::$secret).$userId.$userKey.sha1(Config::$secret));
+	}
+	
 	/**
 	 * Generate a session key for a given user ID using the config secret
 	 * @param int $userID The user ID to generate for
@@ -288,7 +292,16 @@ class libAuth
 	 */
 	private static function userID_Key( $userID )
 	{
-		return $userID.'_'.md5(md5(Config::$secret).$userID.sha1(Config::$secret));
+		try
+		{
+			// TODO: Is there any way to recycle this user record request to ensure it isn't requested twice?
+			$TRYUser = new User($userID); // The user object associated with this key
+		}
+		catch(Exception $e)
+		{
+			libHTML::error(l_t("The userID provided does not exist."));
+		}
+		return self::generateKey($userID, $TRYUser->password);
 	}
 
 	/**
@@ -382,15 +395,15 @@ class libAuth
 
 				// Make sure there's no refresh loop
 				trigger_error(l_t("An invalid log-on cookie was given, but it seems an attempt to remove it has failed.")."<br /><br />".
-					l_t("This error has been logged, please e-mail %s if the problem persists, or you can't log on.",Config::$adminEMail));
+					l_t("This error has been logged, please e-mail %s if the problem persists, or you can't log on.",Config::$modEMail));
 			}
 			else
 			{
 				self::keyWipe();
 				header('refresh: 3; url=logon.php?logoff=on');
-				libHTML::error(l_t("An invalid log-on cookie was given, and it has been removed. ".
+				libHTML::error(l_t("You have been logged out. ".
 					"You are being redirected to the log-on page.")."<br /><br />".
-					l_t("Inform an admin at %s if the problem persists, or you can't log on.",Config::$adminEMail));
+					l_t("Inform the moderators at %s if the problem persists, or you can't log on.",Config::$modEMail));
 			}
 
 		}

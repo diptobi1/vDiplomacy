@@ -104,8 +104,11 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 		{
 			throw new Exception(l_t("%s is an invalid bet size.",(string)$input['bet']));
 		}
+		if ( $input['bet'] == 0 )
+			$input['potType'] = 'Unranked';
 
-		if ( $input['potType'] != 'Winner-takes-all' and $input['potType'] != 'Points-per-supply-center' )
+		if ( $input['potType'] != 'Winner-takes-all' and $input['potType'] != 'Points-per-supply-center' 
+			and $input['potType'] != 'Unranked' and $input['potType'] != 'Sum-of-squares')
 		{
 			throw new Exception(l_t('Invalid potType input given.'));
 		}
@@ -124,12 +127,27 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 		
 		$input['anon'] = ( (strtolower($input['anon']) == 'yes') ? 'Yes' : 'No' );
 		
+		if ( $input['variantID'] == 15 )
+		{
+			$input['bet'] = 5; 
+			$input['potType'] = 'Unranked';
+		}
+		
+		if ( $input['variantID'] == 23 )
+		{
+			$input['bet'] = 5; 
+			$input['potType'] = 'Unranked';
+		}
+		
 		switch($input['pressType']) {
 			case 'PublicPressOnly':
 				$input['pressType'] = 'PublicPressOnly';
 				break;
 			case 'NoPress':
 				$input['pressType'] = 'NoPress';
+				break;
+			case 'RulebookPress':
+				$input['pressType'] = 'RulebookPress';
 				break;
 			case 'Regular': // Regular is the default
 			default:
@@ -145,7 +163,7 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 		}
 		switch($input['drawType']) {
 			case 'draw-votes-hidden':
-				$input['drawType'] = 'draw-votes-hidden';
+				$input['drawType'] = 'draw-votes-hidden'; 
 				break;
 			default:
 				$input['drawType'] = 'draw-votes-public';

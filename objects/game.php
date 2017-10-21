@@ -20,6 +20,7 @@
 
 require_once(l_r('lib/variant.php'));
 require_once(l_r('objects/members.php'));
+require_once(l_r('objects/scoringsystem.php'));
 
 /**
  * Prints data on a game, and loads and manages the collections of members which this game contains.
@@ -162,6 +163,12 @@ class Game
 	public $Members;
 
 	/**
+	 * An object of type ScoringSystem that provides the information needed to calculate game scores
+	 * @var ScoringSystem
+	 */
+	public $Scoring;
+
+	/**
 	 * Winner-takes-all/Points-per-supply-center
 	 * @var string
 	 */
@@ -220,6 +227,7 @@ class Game
 	 */
 	public $minimumReliabilityRating;
 
+	public $civilDisorderInfo;
 	/**
 	 * Any value > 0 ends the game after the given turn. Winner is the one with the most SC at this time.
 	 * @var int
@@ -326,7 +334,25 @@ class Game
 		}
 
 		$this->loadMembers();
+		$this->loadCDs();
+		switch ($this->potType) {
+		case 'Points-per-supply-center':
+				$this->Scoring = new ScoringPPSC($this);
+				break;
+		case 'Winner-takes-all':
+				$this->Scoring = new ScoringWTA($this);
+				break;             
+		case 'Unranked':
+				$this->Scoring = new ScoringUnranked($this);
+				break;             
+		case 'Sum-of-squares':
+				$this->Scoring = new ScoringSoS($this);
+				break;             
+		default:
+			trigger_error("Unknown pot type '".$this->potType."'");
+				break;
 
+		}
 		// TODO: Make this check work with variants properly
 		//if( !( defined("DATC") or $this->phase != "Diplomacy" or count($this->Members->ByID) == count($this->Variant->countries) ) )
 		//	trigger_error("Game loaded incorrectly");
@@ -362,8 +388,8 @@ class Game
 			 * - The game is finished
 			 * - The user is a moderator who isn't in the game
 			 */
-			if ( $this->anon == 'No' || $this->phase == 'Finished' || ($User->type['Moderator'] && !isset($this->Members->ByUserID[$User->id])) )
-			{
+			if ( $this->anon == 'No' || $this->phase == 'Finished' || $this->hasModeratorPowers())
+			{                                                        
 				$this->isMemberInfoHidden = false;
 			}
 			else
@@ -383,7 +409,13 @@ class Game
 	public function moderatorSeesMemberInfo() {                                                                                            
 		global $User;
 
-		return (!($this->anon == 'No' || $this->phase == 'Finished') && $User->type['Moderator'] && !isset($this->Members->ByUserID[$User->id]));
+		return (!($this->anon == 'No' || $this->phase == 'Finished') && $this->hasModeratorPowers());
+	}
+
+	public function hasModeratorPowers() {
+            global $User;
+
+			return ($User->type['Moderator'] && !isset($this->Members->ByUserID[$User->id]));
 	}
 
 
@@ -427,6 +459,18 @@ class Game
 			$DB->sql_put('DELETE from wD_WatchedGames WHERE gameID='. $this->id . ' AND userID='. $User->id);// . $this->id . ' AND userID=' . $User->id);
 			$DB->sql_put('COMMIT');
 		} 
+	}
+
+	function loadCDs() {
+		global $DB;
+
+        $this->civilDisorderInfo = array();
+
+		$tabl = $DB->sql_tabl('SELECT userID, countryID, turn, SCCount from wD_CivilDisorders where gameID='. $this->id);
+		while ( $row = $DB->tabl_hash($tabl) )
+		{
+			$this->civilDisorderInfo[$row['userID']] = $row;
+		}
 	}
 
 	/**
@@ -497,6 +541,8 @@ class Game
 		global $User;
 
 		if( $this->Members->isJoined() ) return false;
+
+        if ( array_key_exists($User->id,$this->civilDisorderInfo) ) return false;
 
 		if( !$User->type['User'] ) return false;
 
@@ -746,6 +792,14 @@ class Game
 		else
 			return false;			
 	}
+    /**
+     * Game name
+     * @return string
+     */
+    function titleBarName()
+    {
+        return $this->name;
+    }
 }
 
 

@@ -41,10 +41,10 @@ class LepantoVariant_processMembers extends processMembers {
 		switch($won)
 		{
 			case '1':
-				$this->ByCountryID[2]->setDefeated();
+				$this->ByCountryID[2]->setDefeated($this->Game->Scoring->pointsForDefeat($this->ByCountryID[2]));
 				return $this->ByCountryID[1];
 			case '2':
-				$this->ByCountryID[1]->setDefeated();
+				$this->ByCountryID[1]->setDefeated($this->Game->Scoring->pointsForDefeat($this->ByCountryID[1]));
 				return $this->ByCountryID[2];
 			case '3':
 				$DB->sql_put("UPDATE wD_Members SET votes='Draw' WHERE gameID=".$this->Game->id);

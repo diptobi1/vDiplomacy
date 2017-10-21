@@ -36,6 +36,7 @@ class ClassicFogVariant_panelMembersHome extends panelMembersHome
 
 		$fixed_width=100/count($this->ByStatus['Playing']);
 		
+		ksort ($this->ByStatus['Playing']);
 		foreach($this->ByStatus['Playing'] as $member)
 				$buf .= '<td class="occupationBar'.$member->countryID.' '.libHTML::first().'" style="width:'.$fixed_width.'%"></td>';
 

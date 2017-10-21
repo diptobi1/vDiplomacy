@@ -249,6 +249,12 @@ class Config
 	public static $faq=array('Have any extra questions been added?'=>'No, not yet.');
 
 	/**
+	 * If this is set it is used as a link to a custom forum, instead of the built-in forum
+	 * @var string
+	 */
+	//public static $customForumURL = 'contrib/phpBB3/';
+	
+	/**
 	 * The directory in which error logs are stored. If this returns false errors will not be logged.
 	 * *Must not be accessible to the web server, as sensitive info is stored in this folder.*
 	 *
@@ -317,7 +323,7 @@ class Config
 					"SMTPAuth"=>false,
 					/* If this is FALSE the two variables below are ignored */
 					"Username"=>"webmaster",
-					"Password"=>"password123",
+					"Password"=>"password123"
 					/* Uncomment the line below to use SSL to connect (e.g. for gmail) */
 					// , 'SMTPSecure'=>'ssl'
 				),
@@ -374,14 +380,6 @@ class Config
 	 * If set to any value it wil display this mail adress in the rules section instead of the admin-mail.
 	 */
 	//public static $modEMail = 'admin@vDiplomacy.com';
-
-	/*
-	 * Make CD-takeovers cheaper (1/2 bet for example)
-	 */
-	// public static function adjustCD($bet)
-	// {
-	//	return ceil($bet / 2);
-	// }
 	
 	/*
 	 * Give edit access to these users for some variants without admin-access needed.

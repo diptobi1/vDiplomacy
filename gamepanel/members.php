@@ -110,7 +110,31 @@ class panelMembers extends Members
 			}
 		}
 
-		return '<table>'.implode('',$membersList).'</table>';
+		$extras ='';
+		if ($this->Game->hasModeratorPowers() && count($this->Game->civilDisorderInfo) != 0) 
+		{ 
+				$extras = '<div class="bar titleBar modEyes">Civil Disorders</div><table><tbody>';
+				foreach ($this->Game->civilDisorderInfo as $userID => $CD) 
+				{
+						$cdUser = new User($userID);
+						$extras .= '<tr class="member memberAlternate1"><td class="memberLeftSide" style="white-space: nowrap;"><span><a href="profile.php?userID='.$userID .'">'.$cdUser->username.'</a>'.
+								' <span class="points">('.$cdUser->points.libHTML::points().User::typeIcon($cdUser->type).')'
+				.(defined('AdminUserSwitch') ? ' (<a href="board.php?gameID='.$this->Game->id.'&auid='.$cdUser->id.'" class="light">+</a>)':'') .
+								'</span></span></td><td class="memberRightSide">';
+						$extras .= '<span class="country' .$CD['countryID']. '">';
+						if( $CD['countryID']==0 )
+							 $extras .= 'Unassigned';
+						else
+								$extras .= $this->Game->Variant->countries[$CD['countryID']-1];
+						$extras .= '</span> (' .$this->Game->datetxt($CD['turn']). ') with ' .$CD['SCCount']. ' centres.';
+
+						$extras .= '</td></tr>';
+				}
+				$extras .= "</tbody></table>";
+               	
+		}				
+
+		return '<table>'.implode('',$membersList).'</table>'.$extras;
 	}
 
 	/**
@@ -124,16 +148,15 @@ class panelMembers extends Members
 		$buf = "";
 		if( 1==count($this->ByStatus['Left']) )
 		{
-			foreach($this->ByStatus['Left'] as $Member);
-
-			$bet = ( method_exists ('Config','adjustCD') ? Config::adjustCD($Member->pointsValue()) : $Member->pointsValue() );
-			
-			$buf .= '<input type="hidden" name="countryID" value="'.$Member->countryID.'" />
-				<label>Take over:</label> '.$Member->countryColored();
-				
-			if ($this->Game->pot > 0)
-				$buf .= ', for <em>'.$bet.libHTML::points().'</em>'.
-					( ($bet != $Member->pointsValue()) ? ' (worth:'.$Member->pointsValue().libHTML::points().')':'');
+			foreach($this->ByStatus['Left'] as $Member)
+			{
+				$buf .= '<input type="hidden" name="countryID" value="'.$Member->countryID.'" />
+					<label>Take over:</label> '.$Member->countryColored();
+					
+				if ($this->Game->pot > 0)
+					$buf .= ', for <em>'.$Member->pointsValueInTakeover().libHTML::points().'</em>'.
+						( ($Member->pointsValue() != $Member->pointsValueInTakeover()) ? ' (worth:'.$Member->pointsValue().libHTML::points().')':'');
+			}
 		}
 		else
 		{
@@ -142,20 +165,18 @@ class panelMembers extends Members
 			{
 				$pointsValue = $Member->pointsValueInTakeover();
 
-				$bet = ( method_exists ('Config','adjustCD') ? Config::adjustCD($pointsValue) : $pointsValue );
-
 				if ( $User->points >= $pointsValue )
 				{
-					$buf .= '<option value="'.$Member->countryID.'" />'.$Member->country;
+					$buf .= '<option value="'.$Member->countryID.'" />'.l_t('%s',$Member->country);
 					
 					if ($this->Game->pot > 0)
-						$buf .= ', for '.$bet.'</em>'.( ($bet != $pointsValue) ? ' (worth:'.$pointsValue.')':'');
+						$buf .= l_t(', for %s',$Member->pointsValueInTakeover().( ($Member->pointsValue() != $pointsValue) ? ' (worth:'.$pointsValue.')':''));
 						
 					$buf .= '</option>';
 				}
 			}
 			$buf .= '</select>';
-		}
+		}		
 		return $buf;
 	}
 

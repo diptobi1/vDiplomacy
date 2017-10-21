@@ -33,6 +33,7 @@
 	1.0.11: copy orders.php to board/info
 	1.0.12: countries no longer sorted by value...
 	1.0.13: do not hide the county-value for CDed countries, so new players can join...
+	1.0.15: shuffle the occupationbar on the homescreen to hide the strongest nation.
 
 */
 
@@ -46,7 +47,7 @@ class ClassicFogVariant extends WDVariant {
 	public $description= 'This is the classic map, but players can only see a limited part of the map';
 	public $adapter    = 'Oliver Auth';
 	public $version    = '1.0';
-	public $codeVersion= '1.0.14';
+	public $codeVersion= '1.0.15';
 
 	public $countries=array('England', 'France', 'Italy', 'Germany', 'Austria', 'Turkey', 'Russia');
 	

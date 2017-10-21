@@ -182,14 +182,6 @@ class panelGame extends Game
 		}
 	}
 
-	/**
-	 * Game name
-	 * @return string
-	 */
-	function titleBarName()
-	{
-		return $this->name;
-	}
 
 	/**
 	 * Icons for the game, e.g. private padlock and featured star
@@ -250,7 +242,6 @@ class panelGame extends Game
 		
 		if ($this->pot > 0 || ($this->pot == 0 && count($this->Members->ByID) == 0 && $this->minimumBet != 0) )
 			$leftBottom .= l_t('Pot:').' <span class="gamePot">'.$this->pot.' '.libHTML::points().'</span> - ';
-			//<span class="gamePotType" title="'.$this->potType.'">('.($this->potType=='Points-per-supply-center'?'PPSC':'WTA').')</span>';
 		else
 			$leftBottom .= '<i><a class="light" href="features.php#4_4">'.l_t('Unrated').'</a></i> - ';
 
@@ -280,12 +271,10 @@ class panelGame extends Game
 		$alternatives=array();
 		if( $this->variantID!=1 )
 			$alternatives[]=$this->Variant->link();
-		if( $this->potType=='Winner-takes-all' && $this->pot > 0 )
-			$alternatives[]='<b><a href="points.php#ppscwta">'.l_t('WTA').'</a></b>';
-		elseif ($this->potType=='Points-per-supply-center' && $this->pot > 0 )
-			$alternatives[]='<b><a href="points.php#ppscwta">'.l_t('PPSC').'</a></b>';
 		if( $this->pressType=='NoPress')
 			$alternatives[]=l_t('Gunboat');
+		elseif( $this->pressType=='RulebookPress')
+			$alternatives[]=l_t('Rulebook press');
 		elseif( $this->pressType=='PublicPressOnly' )
 			$alternatives[]=l_t('Public Press');
 		if( $this->anon=='Yes' )
@@ -319,6 +308,14 @@ class panelGame extends Game
 			
 		if( $this->rlPolicy=='Friends')
 			$alternatives[]=l_t('OnlyFriends');
+
+		// Use hardcoded explainations (with link) with the old names...
+		// $alternatives[]=$this->Scoring->longName();
+		if( $this->potType=='Winner-takes-all' && $this->pot > 0 )
+			$alternatives[]='<b><a href="points.php#ppscwta">'.l_t('WTA').'</a></b>';
+		elseif ($this->potType=='Points-per-supply-center' && $this->pot > 0 )
+			$alternatives[]='<b><a href="points.php#ppscwta">'.l_t('PPSC').'</a></b>';
+		
 		if( $this->drawType=='draw-votes-hidden') 
 			$alternatives[]=l_t('Hidden draw votes');
 		if( $this->missingPlayerPolicy=='Wait' )

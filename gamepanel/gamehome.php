@@ -119,6 +119,8 @@ class panelGameHome extends panelGameBoard
 		$alternatives=array();
 		if( $this->pressType=='NoPress')
 			$alternatives[]=l_t('No chat');
+		elseif( $this->pressType=='RulebookPress' )
+			$alternatives[]=l_t('Rulebook chat');
 		elseif( $this->pressType=='PublicPressOnly' )
 			$alternatives[]=l_t('Public chat');
 		if( $this->anon=='Yes' )
@@ -150,23 +152,7 @@ class panelGameHome extends panelGameBoard
 	 */
 	function pot()
 	{
-		return $this->pot.' '.libHTML::points().' '.$this->potTypeAbbr();
-	}
-
-	/**
-	* Pot type abbreviation
-	* @return string
-	*/
-	function potTypeAbbr()
-	{
-		switch($this->potType) {
-			case 'Winner-takes-all':
-				return 'WTA';
-			case 'Points-per-supply-center':
-				return 'PPSC';
-			default:
-				return '';
-		}
+		return $this->pot.' '.libHTML::points().'<span title="'.$this->Scoring->longName().'"> '.$this->Scoring->Abbr().'</span>';
 	}
 
 	/**

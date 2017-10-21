@@ -254,7 +254,7 @@ class panelMember extends Member
 		if( $this->status == 'Playing' || $this->status == 'Left' )
 		{
 			$buf .= l_t('worth:').' <em';
-			$value = $this->AdjustedPointsValue();
+			$value = $this->EOGPointsValue();
 			if ( $value > $this->bet )
 				$buf .= ' class="good"';
 			elseif ( $value < $this->bet )
@@ -265,7 +265,7 @@ class panelMember extends Member
 			if (count($this->Game->Members->ByStatus['Playing']) < count($this->Game->Members->ByID))
 			{
 				$buf .= ' /  <em';
-				$draw_value = $this->DrawPointsValue();
+				$draw_value = $this->Game->Scoring->pointsForDraw($this);
 				if ( $draw_value > $value )
 					$buf .= ' class="good"';
 				elseif ( $draw_value < $value )
@@ -278,8 +278,7 @@ class panelMember extends Member
 			return $buf;
 		}
 		elseif ( $this->status == 'Won' ||
-			($this->Game->potType == 'Points-per-supply-center' && ( $this->status == 'Survived' || $this->status == 'Drawn' ) )
-			)
+			($this->Game->potType == 'Points-per-supply-center' &&  $this->status == 'Survived') || $this->status == 'Drawn' )
 		{
 			$buf .= l_t('won:').' <em';
 			$value = $this->pointsWon;
@@ -569,18 +568,22 @@ class panelMember extends Member
 		return $output;
 	}
 	
-	function AdjustedPointsValue()
+	// How many points would this member get if the game ends now...
+	function EOGPointsValue()
 	{
-		if ($this->Game->potType == 'Points-per-supply-center') return $this->pointsValue();
+		// in PPSC win and survive get their value based on SC-count, so we can just treat everybody as a winner
+		if ($this->Game->potType == 'Points-per-supply-center') return $this->Game->Scoring->pointsForWin($this);
 
+		// In a WTA-game we need to check if the current member is the winner or not.
 		$wta=array();
 		
 		foreach ($this->Game->Members->ByStatus['Playing'] as $Member)
 			if ($Member->supplyCenterNo > $this->supplyCenterNo) 
-				return "0";
+				return $this->Game->Scoring->pointsForSurvive($this);
 			elseif ($Member->supplyCenterNo == $this->supplyCenterNo) 
 				$wta[]=$Member->countryID;
-				
+		
+		// More than one player with the same SC, so we need to check the previous turns.
 		if (count($wta) > 1)
 		{
 			global $DB;
@@ -605,20 +608,15 @@ class panelMember extends Member
 				if (count($wta) == 1)
 					$turn=0;
 				if (array_search($this->countryID, $wta) === false)
-					return 0;
+					return $this->Game->Scoring->pointsForSurvive($this);
 			}
 		}
 		
-		// Still no winner found:
+		// Still no winner found (we split the WTA-scoring, but in reality it will be awarded to one at random):
 		if (count($wta) > 1)
-			return round($this->Game->pot / count($wta)); 
+			return round($this->Game->Scoring->pointsForWin($this) / count($wta)); 
 		else		
-			return $this->Game->pot;
-	}
-	
-	function DrawPointsValue()
-	{
-		return round($this->Game->pot / count($this->Game->Members->ByStatus['Playing']));
+			return $this->Game->Scoring->pointsForWin($this);
 	}
 
 }

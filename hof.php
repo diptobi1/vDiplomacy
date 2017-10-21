@@ -59,8 +59,8 @@ if(isset($_REQUEST['userID']))
 					<TH class="cellb">Change</TH>
 					<TH class="cellb">Total</TH>
 				</THEAD>';
-			
-	$USER_TABL = $DB->sql_tabl("
+	
+		$USER_TABL = $DB->sql_tabl("
 		SELECT r.rating, r.gameID, g.name, g.variantID, m.status FROM wD_Ratings r
 			LEFT JOIN wD_Games g ON (g.id = r.gameID)
 			LEFT JOIN wD_Members m ON (m.userID = r.userID && g.id=m.gameID)

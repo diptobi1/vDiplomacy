@@ -40,7 +40,7 @@ class WWIV_V6Variant_processOrderBuilds extends WWIVVariant_processOrderBuilds
 		'Central-States' => array ('St Louis (stl)'=>'Army', 'Wisconsin (wis)'=>'Army', 'Chicago (chi)'=>'Army'),
 		'Inca-Empire' => array ('La Paz (lpz)'=>'Army', 'Valparaiso (val)'=>'Army', 'Lima (lim)'=>'Fleet'),
 		'India' => array ('Delhi (del)'=>'Army', 'Calcutta (cal)'=>'Army', 'Bombay (bom)'=>'Fleet'),
-		'Indonesia' => array ('Jakarta (jak)'=>'Fleet', 'Palembang (plm)'=>'Army', 'Jakarta (jak)'=>'Fleet'),
+		'Indonesia' => array ('Jakarta (jak)'=>'Fleet', 'Palembang (plm)'=>'Army', 'Surabaya (sby)'=>'Fleet'),
 		'Iran' => array ('Shiraz (shi)'=>'Fleet', 'Tabriz (tab)'=>'Army', 'Tehran (teh)'=>'Army'),
 		'Japan' => array ('Sapporo (sap)'=>'Fleet', 'Kyoto (kyo)'=>'Fleet', 'Tokyo (tok)'=>'Fleet'),
 		'Manchuria' => array ('Shenyang (she)'=>'Fleet', 'Harbin (har)'=>'Army', 'Beijing (bei)'=>'Army'),

@@ -47,7 +47,7 @@ function OrdersHTMLFormClass() {
 		else
 		{
 			this.updateFormButtons();
-			this.UpdateButton.observe('click', this.onSave.bindAsEventListener(this));
+			if ( this.UpdateButton != null ) this.UpdateButton.observe('click', this.onSave.bindAsEventListener(this));
 			this.FinalizeButton.observe('click', this.onLock.bindAsEventListener(this));
 		}
 	}
@@ -156,16 +156,20 @@ function OrdersHTMLFormClass() {
 	this.buttonOff=function(buttonName){
 		var Button=$(buttonName+this.context.memberID);
 
-		Button.removeClassName('form-submit');
-		Button.setStyle({color:'#777777', backgroundColor:'#F5F5F5', fontWeight:'bold'});
-		Button.disable();
+		if (Button != null) {
+				Button.removeClassName('form-submit');
+				Button.setStyle({color:'#777777', backgroundColor:'#F5F5F5', fontWeight:'bold'});
+				Button.disable();
+		}
 	};
 	this.buttonOn=function(buttonName){
 		var Button=$(buttonName+this.context.memberID);
 		
-		Button.addClassName('form-submit');
-		Button.setStyle({color:'',backgroundColor:'', fontWeight:''});
-		Button.enable();
+		if (Button != null) {
+				Button.addClassName('form-submit');
+				Button.setStyle({color:'',backgroundColor:'', fontWeight:''});
+				Button.enable();
+		}
 	};
 	
 	this.updateFormButtons = function() {
@@ -173,11 +177,13 @@ function OrdersHTMLFormClass() {
 			if( MyOrders.pluck('isChanged').any(function(c){return c;}) )
 			{
 				this.ordersChanged=true;
+				window.ordersChanged = true;
 				this.buttonOn('UpdateButton');
 			}
 			else
 			{
 				this.ordersChanged=false;
+				window.ordersChanged=false;
 				this.buttonOff('UpdateButton');
 			}
 	
@@ -191,3 +197,29 @@ function OrdersHTMLFormClass() {
 function loadOrdersForm() {
 	OrdersHTML = new OrdersHTMLFormClass();
 }
+
+if(window.addEventListener){
+	window.addEventListener('beforeunload',onbeforeunload_unsavedorders,false);
+	console.log("Added onbeforeunload_unsavedorders listener via addEventListener");
+}else{
+	window.attachEvent('onbeforeunload',onbeforeunload_unsavedorders);
+	console.log("Added onbeforeunload_unsavedorders listener via attachEvent");
+}
+
+window.ordersChanged = false;
+
+// When the window is about to change make sure there are no unsubmitted messages around
+function onbeforeunload_unsavedorders(e) {
+
+	// Don't give a warning dialog if no orders were changed
+	if( !window.ordersChanged ) return;
+
+	var str=l_t("You seem to have unsubmitted orders.");
+	var e = e || window.event;
+	
+	// For IE and Firefox
+	if (e) e.returnValue = str;
+	
+	//For Safari
+	return str;
+};

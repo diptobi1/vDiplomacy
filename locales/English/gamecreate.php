@@ -62,7 +62,7 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 			}
 			if (this.selectedIndex == 28) $('phaseHoursText').show(); else $('phaseHoursText').hide();">
 		<?php
-			$phaseList = array(5, 10, 15, 20, 30,
+			$phaseList = array(5,7, 10, 15, 20, 30,
 				60, 120, 240, 360, 480, 600, 720, 840, 960, 1080, 1200, 1320,
 				1440, 2160, 2880, 4320, 5760, 7200, 8640, 10080, 14400, 1440+60, 2880+60*2);
 
@@ -202,6 +202,9 @@ else
 		available on this server.<br /><br />
 
 		Click any of the variant names to view the details on the variants page.<br /><br />
+		
+		<strong>*Please note that 1 vs 1 games will default to a 5 point bet as an unranked game no matter what bet/game type are selected</strong>
+		<br /><br />
 
 		<strong>Default:</strong> <?php print $defaultName;?>
 	</li>
@@ -226,8 +229,8 @@ else
 	<div id="potType">
 		<li class="formlisttitle">Pot type:</li>
 		<li class="formlistfield">
-			<input type="radio" name="newGame[potType]" value="Points-per-supply-center"> Points-per-supply-center (PPSC)<br />
 			<input type="radio" name="newGame[potType]" value="Winner-takes-all" checked > Winner-takes-all (WTA)
+			<input type="radio" name="newGame[potType]" value="Points-per-supply-center"> Points-per-supply-center (PPSC)<br />
 		</li>
 		<li class="formlistdesc">
 			Should the winnings be split up according to who has the most supply centers, or should the winner
@@ -254,13 +257,15 @@ else
 		Disable in-game messaging:
 	</li>
 	<li class="formlistfield">
-		<input type="radio" name="newGame[pressType]" value="Regular" checked>Allow all
-		<input type="radio" name="newGame[pressType]" value="PublicPressOnly">Global messages only, no private chat/press (Public Press)
-		<input type="radio" name="newGame[pressType]" value="NoPress">No in-game messaging (Gunboat)
+		<input type="radio" name="newGame[pressType]" value="Regular" checked>Allow all<br />
+		<input type="radio" name="newGame[pressType]" value="PublicPressOnly">Global messages only, no private chat/press (Public Press)<br />
+		<input type="radio" name="newGame[pressType]" value="NoPress">No in-game messaging (Gunboat)<br />
+		<input type="radio" name="newGame[pressType]" value="RulebookPress">Per rulebook<br />
 	</li>
 	<li class="formlistdesc">
 		Disable some types of messaging; allow only global in-game messages, or allow no in-game messages.
 
+		<br/><br/> "Per rulebook" means no discussion during builds and retreats as per the original Diplomacy rulebook. In this mode, saved retreats and builds are automatically readied for the next turn.
 		<br /><br /><strong>Default:</strong> Allow all
 	</li>
 	<li class="formlisttitle">

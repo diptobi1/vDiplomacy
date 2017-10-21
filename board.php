@@ -24,9 +24,6 @@
 
 require_once('header.php');
 
-// If viewing an archive page make that the title, otherwise us the default
-libHTML::starthtml(isset($_REQUEST['viewArchive'])?$_REQUEST['viewArchive']:false);
-
 if ( ! isset($_REQUEST['gameID']) )
 {
 	libHTML::error(l_t("You haven't specified a game to view, please go back to the game listings and choose one."));
@@ -45,6 +42,9 @@ if ( $User->type['User'] && ( isset($_REQUEST['join']) || isset($_REQUEST['leave
 		$Variant=libVariant::loadFromGameID($gameID);
 		libVariant::setGlobals($Variant);
 		$Game = $Variant->processGame($gameID);
+		
+		// If viewing an archive page make that the title, otherwise us the name of the game
+		libHTML::starthtml(isset($_REQUEST['viewArchive'])?$_REQUEST['viewArchive']:$Game->titleBarName());
 		
 		if ( isset($_REQUEST['join']) )
 		{
@@ -80,7 +80,10 @@ else
 		$Variant=libVariant::loadFromGameID($gameID);
 		libVariant::setGlobals($Variant);
 		$Game = $Variant->panelGameBoard($gameID);
-
+		
+		// If viewing an archive page make that the title, otherwise us the name of the game
+		libHTML::starthtml(isset($_REQUEST['viewArchive'])?$_REQUEST['viewArchive']:$Game->titleBarName());
+		
 		// In an game with strict rlPolicy don't allow users to join from a Left if they know someone else in this game
 		// Usually after a Mod set them to CD.
 		if ( $Game->Members->isJoined() && $Game->rlPolicy == 'Strict' && $User->rlGroup < 0 && $Game->Members->ByUserID[$User->id]->status == 'Left')

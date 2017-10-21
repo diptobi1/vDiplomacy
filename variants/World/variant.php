@@ -35,6 +35,7 @@
 	1.1.6: Movment fix for some borders
 	1.1.7: Movment fix for some borders
 	1.1.7.1: Movment fix for some borders
+	1.1.7.3: Movment fix for some borders
 		   
 */
 

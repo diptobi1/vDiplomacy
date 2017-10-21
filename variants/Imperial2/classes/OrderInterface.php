@@ -30,7 +30,7 @@ class StraitsRule_OrderInterface extends OrderInterface {
 		global $Variant;
 		parent::jsLoadBoard();
 
-		if( $this->phase=='Diplomacy' )
+		if( $this->phase=='Diplomacy' || $this->phase=='Retreats' )
 		{
 			libHTML::$footerIncludes[] = '../variants/'.$Variant->name.'/resources/straitsRule.js';
 			foreach(libHTML::$footerScript as $index=>$script)

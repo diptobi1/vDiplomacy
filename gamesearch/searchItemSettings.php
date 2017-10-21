@@ -231,6 +231,7 @@ class searchPotType extends searchItemRadio
 {
 	public $name='potType';
 	protected $label='Points distribution type';
+//	protected $options=array('-'=>'All','Winner-takes-all'=>'Draw-Size Scoring', 'Sum-of-squares'=>'Sum of Squares','Unranked'=>'Unranked');
 	protected $options=array('-'=>'All','Points-per-supply-center'=>'Points-per-supply-center','Winner-takes-all'=>'Winner-takes-all');
 
 	function sql(&$TABLES,&$WHERE,&$ORDER)
@@ -483,7 +484,7 @@ class searchPressType extends searchItemCheckbox
 {
 	public $name='pressType';
 	protected $label='Messaging rules';
-	protected $options=array('Regular'=>'Normal', 'PublicPressOnly'=>'Public messages only', 'NoPress'=>'No messages');
+	protected $options=array('Regular'=>'Normal', 'PublicPressOnly'=>'Public messages only', 'NoPress'=>'No messages','RulebookPress'=>'Rulebook press');
 
 	function sql(&$TABLES,&$WHERE,&$ORDER)
 	{

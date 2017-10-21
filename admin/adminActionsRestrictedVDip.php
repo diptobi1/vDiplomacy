@@ -34,8 +34,9 @@ class adminActionsRestrictedVDip extends adminActionsForum
 			),
 			'recalculateRatings' => array(
 				'name' => 'Recalculate VDip-ratings',
-				'description' => 'Recalculates the ratings for all users.',
-				'params' => array(),
+				'description' => 'Recalculates the ratings for all users. You can enter how many month of rating-data you want to delete bevore the recalculation. '.
+									'You might need to recall this function a few times, because of server-timeout-issues it will only recalculate 5000 games at once.',
+				'params' => array('month'=>'Month'),
 			),
 			'delCache' => array(
 				'name' => 'Clean the cache directory.',
@@ -86,24 +87,84 @@ class adminActionsRestrictedVDip extends adminActionsForum
 	
 	public function recalculateRatings(array $params)
 	{
+
+	global $DB,$Misc;
+		
+		if (!($Misc->Maintenance))
+			return l_t('Maintenance mode off. Please turn Maintenance mode on to avoid problems');
+		
 		set_time_limit(0);
 		include_once("lib/rating.php");
-		global $DB;
 		
-		$DB->sql_put("DELETE FROM wD_Ratings");
-		$tabl = $DB->sql_tabl("SELECT id FROM wD_Games WHERE phase='Finished' ORDER BY processTime ASC");
+		$deleteMonths = $params['month'];
+		
+		if ($deleteMonths  != "") {
+			$lastRating = strtotime("-".$deleteMonths." month");
+			$DB->sql_put("DELETE r FROM wD_Ratings r
+							INNER JOIN wD_Games g ON (g.id = r.gameID)
+							WHERE r.ratingType='vDip' && 
+								g.processTime > '".$lastRating."'");
+		}
+
+		list ($lastRating) = $DB->sql_row("
+				SELECT g.processTime FROM wD_Games g
+					LEFT JOIN wD_Ratings r ON (g.id = r.gameID)
+				WHERE
+					r.ratingType='vDip'
+					&& g.phase = 'Finished'
+				ORDER BY g.processTime DESC LIMIT 1");
+		
+		$tabl = $DB->sql_tabl("SELECT id FROM wD_Games WHERE phase='Finished' AND processTime > '".$lastRating."' ORDER BY processTime ASC");
 		$count = 0;
-		while(list($gameID) = $DB->tabl_row($tabl))
+		while ( (list($gameID)=$DB->tabl_row($tabl)) && ($count<5000) )
 		{
 			libRating::updateRatings($gameID);
 			$count++;
 		}
-		return 'Recalculated the ratings for '.$count.' games.';		
+
+		list ($lastRating) = $DB->sql_row("
+				SELECT g.processTime FROM wD_Games g
+					LEFT JOIN wD_Ratings r ON (g.id = r.gameID)
+				WHERE
+					r.ratingType='vDip'
+					&& g.phase = 'Finished'
+				ORDER BY g.processTime DESC LIMIT 1");
+
+		list($gamesCount) = $DB->sql_row("SELECT COUNT(*) FROM `wD_Games` WHERE phase = 'Finished' && processtime > '".$lastRating."'");
+		if ($gamesCount == 0)
+			return 'Recalculated the ratings for '.$count.' games. No more ratings to recalculate. All done.';
+			
+		return 'Recalculated the ratings for '.$count.' games. There are still '.$gamesCount.' games to reprocess. So please call this function again with an empty "month" entry.';
 	}
-	
+
 	public function recalculateRatingsConfirm(array $params)
 	{
-		return 'Do you really want to recalculate all ratings? This might take quite some time.';
+		global $DB,$Misc;
+		
+		if (!($Misc->Maintenance))
+			return l_t('Maintenance mode off. Please turn Maintenance mode on to avoid problems');
+		
+		$deleteMonths = $params['month'];
+		if ($deleteMonths  == "") {
+			list ($lastRating) = $DB->sql_row("
+					SELECT g.processTime FROM wD_Games g
+						LEFT JOIN wD_Ratings r ON (g.id = r.gameID)
+					WHERE
+						r.ratingType='vDip'
+						&& g.phase = 'Finished'
+					ORDER BY g.processTime DESC LIMIT 1");
+			$lastRating = ($lastRating==""?0:$lastRating);
+			list($gamesCount) = $DB->sql_row("SELECT COUNT(*) FROM `wD_Games` WHERE phase = 'Finished' && processtime > ".$lastRating);
+			if ($gamesCount == 0)
+				$info = 'No more games to recalculate...';
+			else
+				$info = 'I will recalculate '.$gamesCount.' more games.';
+		} else {
+			$lastRating = strtotime("-".$deleteMonths." month");
+			list($gamesCount) = $DB->sql_row("SELECT COUNT(*) FROM `wD_Games` WHERE phase = 'Finished' && processtime > ".$lastRating);
+			$info = 'I will delete rating-data from the last '.$deleteMonths.' month and start recalculation.<br>This will recalculate '.$gamesCount.' games.';
+		}
+		return $info;
 	}
 
 	public function clearAdvancedAccessLogs(array $params)

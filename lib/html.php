@@ -688,7 +688,12 @@ class libHTML
 
 		// Items displayed in the menu
 		$links['index.php']=array('name'=>'Home', 'inmenu'=>TRUE, 'title'=>"See what's happening");
-		$links['forum.php']=array('name'=>'Forum', 'inmenu'=>TRUE, 'title'=>"The forum; chat, get help, help others, arrange games, discuss strategies");
+		if( isset(Config::$customForumURL) ) {
+			$links[Config::$customForumURL]=array('name'=>'Forum', 'inmenu'=>TRUE, 'title'=>"The forum; chat, get help, help others, arrange games, discuss strategies");
+		} else {
+			$links['forum.php']=array('name'=>'Forum', 'inmenu'=>TRUE, 'title'=>"The forum; chat, get help, help others, arrange games, discuss strategies");
+		}
+		
 		$links['gamelistings.php']=array('name'=>'Games', 'inmenu'=>TRUE, 'title'=>"Game listings; a searchable list of the games on this server");
 
 		if (is_object($User))
@@ -975,7 +980,7 @@ class libHTML
 		// Version, sourceforge and HTML compliance logos
 		return $cookiesWarning.l_t('based on webDiplomacy version <strong>%s</strong> vDip.%s',number_format(VERSION/100,2),VDIPVERSION.'<br />
 			<a href="http://github.com/kestasjk/webDiplomacy" class="light">GitHub Project</a> | 
-			<a href="http://github.com/kestasjk/webDiplomacy/issues" class="light">Bug reports</a>');
+			<a href="http://github.com/kestasjk/webDiplomacy/issues" class="light">Bug Reports</a> | <a href="mailto:'.Config::$modEMail.'" class="light">Contact Moderator</a>');
 	}
 
 	/*
@@ -1014,7 +1019,7 @@ class libHTML
 	static private function footerScripts() {
 		global $User, $Locale;
 
-		$jsVersion = 4;  // increment this to force clients to reload their JS files
+		$jsVersion = 5;  // increment this to force clients to reload their JS files
 
 		$buf = '';
 

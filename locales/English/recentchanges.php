@@ -29,6 +29,61 @@ font-style:normal;
 	margin-left:30px;
 }
 </style>
+December 29th, 2016
+<ul>
+<li>Added ClassicFvA, ClassicGvI and KnownWorld901 as playable variants to the site. 1v1 games are only playable as unranked games with 5 point bets.</li>
+</ul>
+<div class="hr"></div>
+May 3rd, 2016
+<ul>
+<li>Now the conversion of (d) to the points symbol in the forum is less aggressive.</li>
+<li>Now there's a warning if a user tries to leave a page with unsaved orders.</li>
+</ul>
+<div class="hr"></div>
+February 1st, 2016
+<ul>
+<li>New press mode: "Rulebook Press", where there is no discussion during builds and retreats, and builds/retreats are automatically readied.</li>
+</ul>
+<div class="hr"></div>
+January 21st, 2016
+<ul>
+<li>Now all members can see global press above the map without going to the chat archive.</li>
+</ul>
+<div class="hr"></div>
+December 30th, 2015
+<ul>
+<li>Seven minute phases now available.</li>
+</ul>
+<div class="hr"></div>
+December 29th, 2015
+<ul>
+<li>Several corrections to the borders in the World variant.</li>
+</ul>
+<div class="hr"></div>
+December 27th, 2015
+<ul>
+<li>It is no longer possible to rejoin a game with multiple CDs as a different country.</li>
+</ul>
+<div class="hr"></div>
+December 24th, 2015
+<ul>
+<li>Game title now visible as the page title on the game board (instead of 'board').</li>
+<li>Forum posts no longer repost when a page is refreshed.</li>
+<li>Improved text on new thread post.</li>
+<li>Credits page now automatically lists the moderators.</li>
+</ul>
+<div class="hr"></div>
+December 22nd, 2015
+<ul>
+<li>Unranked games now available. Unranked games return the player's bet at the end of the game.</li>
+<li>Sum-of-Squares scoring now available.</li>
+<li>WTA has been renamed "Draw-Size Scoring".</li>
+<li>PPSC has been renamed "Survivors-Win Scoring".</li>
+<li>The 'worth' section at the bottom of the game panel now tells you what your score would be if the game drew.</li>
+<li>PPSC/SWS has been temporarily disabled for new games.</li>
+<li>All takeovers are now free.</li>
+</ul>
+<div class="hr"></div>
 August 27th, 2015
 <ul>
 <li>Finished games now show up in the notifications bar if you have new messages.</li>

@@ -23,11 +23,13 @@ class BiddingStart_processGame extends processGame
 {
 	function process()
 	{
+		global $DB;
 		parent::process();		
 		if ( $this->phase == 'Diplomacy' && $this->turn==1 )
 		{
 			parent::process();		
 			parent::process();		
+			$DB->sql_put( "DELETE FROM wD_NMRs WHERE gameID = ".$this->id );			
 		}
 	}
 	
