@@ -100,4 +100,22 @@ class Transform_OrderInterface extends BuildAnywhere_OrderInterface
 	}
 }
 
-class PiratesVariant_OrderInterface extends Transform_OrderInterface {}
+class RetreatAsArmy_OrderInterface extends Transform_OrderInterface
+{
+	// Allow Transform for 102=Trashure Island, 69=Old Spanish Armory, 80=Rum Distillery, 52=Mayan Gold
+	protected function jsLoadBoard()
+	{
+		global $Variant;
+		parent::jsLoadBoard();
+
+		if( $this->phase=='Retreats' )
+		{
+			libHTML::$footerIncludes[] = '../variants/'.$Variant->name.'/resources/retreatAsArmy.js';
+			foreach(libHTML::$footerScript as $index=>$script)
+				libHTML::$footerScript[$index]=str_replace('loadModel();','loadModel();RetreatAsArmy();', $script);
+		}
+	}
+}
+
+
+class PiratesVariant_OrderInterface extends RetreatAsArmy_OrderInterface {}

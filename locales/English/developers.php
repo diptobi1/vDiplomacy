@@ -67,7 +67,8 @@ print libHTML::pageTitle('Developer/webmaster info','If you want to fix/improve/
 
 <div class="hr"></div>                                                                                                                                                                                                         
 <h4>Code links</h4> 
-<p><a href="https://github.com/kestasjk/webDiplomacy" class="light">github.com/kestasjk/webDiplomacy</a> - the code</p>
+<p><a href="https://github.com/Sleepcap/vDiplomacy" class="light">github.com/Sleepcap/vDiplomacy</a> - the vDiplomacy-code</p>
+<p><a href="https://github.com/kestasjk/webDiplomacy" class="light">github.com/kestasjk/webDiplomacy</a> - the original webDiplomacy-code</p>
 <p><a href="https://github.com/kestasjk/webDiplomacy/issues" class="light">github.com/kestasjk/webDiplomacy</a> - the issues</p>
 
 <h4>Webmasters</h4>

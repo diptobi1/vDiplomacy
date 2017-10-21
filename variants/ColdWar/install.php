@@ -208,7 +208,7 @@ $bordersRawData=array(
 	array('Urals','Pakistan','No','Yes'),
 	array('Urals','Afghanistan','No','Yes'),
 	array('Urals','Iran','No','Yes'),
-	array('Urals','Caucasus','Yes','Yes'),
+	array('Urals','Caucasus','No','Yes'),
 	array('Urals','Moscow','No','Yes'),
 	array('Urals','Leningrad','No','Yes'),
 	array('Urals','Leningrad (North Coast)','Yes','No'),

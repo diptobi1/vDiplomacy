@@ -2,6 +2,9 @@
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
+ini_set('memory_limit',"55M");
+set_time_limit(0);
+
 class OrderArchiv {	
 
 	public $terrIDToName=array();
@@ -182,6 +185,7 @@ class OrderArchiv {
 
 		$tabl = $DB->sql_tabl("SELECT turn, countryID, LOWER(unitType) as unitType, LOWER(type) as type, terrID, toTerrID, fromTerrID, viaConvoy, success, dislodged
 				FROM wD_MovesArchive WHERE gameID = ".$Game->id."
+				AND turn > ".(($Game->turn) - 20) ." 
 				ORDER BY turn DESC, countryID ASC");
 
 		$lastTurn = -1;
@@ -236,7 +240,7 @@ class OrderArchiv {
 	
 }	
 
-print '<h3>Order history</h3>';
+print '<h3>Order history (last 20 turns):</h3>';
 print '<div class="variant'.$Game->Variant->name.'">';
 
 ini_set('memory_limit',"16M");

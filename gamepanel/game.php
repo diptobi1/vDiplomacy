@@ -549,11 +549,7 @@ class panelGame extends Game
 						
 					if( $this->phase == 'Pre-game'&& count($this->Members->ByCountryID)>0 )
 					{
-						$buf .= '<label>Join for</label> <em>'.$this->minimumBet.libHTML::points().'</em> as: <select name="countryID">';
-						foreach($this->Variant->countries as $id=>$name)
-							if (!isset($this->Members->ByCountryID[($id +1)]))
-								$buf .= '<option value="'.($id +1).'" />'.$name.'</option>';
-						$buf .= '</select>';
+						$buf .= $this->Members->selectCountryPreGame();
 					}
 					elseif( $this->phase == 'Pre-game' )
 					{

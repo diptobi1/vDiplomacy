@@ -219,5 +219,36 @@ class panelMembers extends Members
 
 		return $this->occupationBarCache;
 	}
+	
+	/**
+	 * A form showing a selection of available countries Pregame
+	 * @return string
+	 */
+	public function selectCountryPreGame()
+	{	
+		
+		$buf = '<label>Join for</label> <em>'.$this->Game->minimumBet.libHTML::points().'</em> as: ';
+		
+		if( 1==count($this->Game->Variant->countries) - count($this->ByCountryID) )
+		{
+			// If there is only one available country use a single Join-target instead of the selection-box
+			foreach($this->Game->Variant->countries as $id=>$name)
+				if (!isset($this->ByCountryID[($id +1)]))
+					$buf .= '<span class="country'.($id +1).'">'.l_t($name).'</span>'.
+							'<input type="hidden" name="countryID" value="'.($id +1).'" />';
+		}
+		else
+		{
+			$buf .= '<select name="countryID">';
+			
+			foreach($this->Game->Variant->countries as $id=>$name)
+				if (!isset($this->ByCountryID[($id +1)]))
+					$buf .= '<option value="'.($id +1).'" />'.$name.'</option>';
+			
+			$buf .= '</select>';
+		}		
+		return $buf;
+	}
+	
 }
 ?>

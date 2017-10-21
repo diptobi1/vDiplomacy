@@ -9,8 +9,8 @@ class DutchRevoltVariant extends WDVariant {
 	public $fullName    ='The Dutch Revolt';
 	public $description ='The Diplomacy map of the Low Countries halfway the 16th century.';
 	public $author      ='sqrg (with help from Oli)';
-	public $version     = '1';
-	public $codeVersion = '2.0.2';
+	public $version     = '1.1';
+	public $codeVersion = '2.1';
 
 	public $countries=array('England', 'France', 'Spain', 'Munster', 'Holland');
 
@@ -28,6 +28,7 @@ class DutchRevoltVariant extends WDVariant {
 		$this->variantClasses['OrderInterface']     = 'DutchRevolt';
 		$this->variantClasses['processOrderBuilds'] = 'DutchRevolt';
 		$this->variantClasses['userOrderBuilds']    = 'DutchRevolt';
+		
 	}
 
 	public function turnAsDate($turn) {

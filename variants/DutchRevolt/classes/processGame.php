@@ -32,4 +32,26 @@ class DutchRevoltVariant_processGame extends processGame {
 		else
 			return parent::changePhase(); // Except those two phases above behave normally
 	}
+
+	protected function updateOwners()
+	{
+		
+		parent::updateOwners();
+		
+		global $DB;
+
+		// Check SCs of Spain...
+		list($SpainSCs) = $DB->sql_row('
+			SELECT count(*) FROM wD_TerrStatus ts
+			INNER JOIN wD_Territories t ON ( t.id = ts.terrID AND t.supply="Yes" )
+			WHERE ts.gameID = '.$this->id.' AND ts.countryID = 3 AND t.mapID=32 AND ts.terrID != 9');
+		
+		// If the country of Spain has no SCs besides Spain, it becomes "neutral"
+		if ($SpainSCs == 0)	
+			$DB->sql_put('UPDATE wD_TerrStatus SET countryID = 0 WHERE gameID = '.$this->id.' AND terrID = 9');
+		else
+			$DB->sql_put('UPDATE wD_TerrStatus SET countryID = 3 WHERE gameID = '.$this->id.' AND terrID = 9');
+		
+	}
+	
 }

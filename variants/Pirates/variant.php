@@ -20,10 +20,11 @@
 	---
 
 	Changelog:
-	1.0: first install
+	1.0:   first install
 	1.0.5: many combat issues fixed...
 	1.0.6: No more hurricanes on deleted territories...
 	1.0.7: 1 terrotory missed for transform
+	1.1:   clippers only retreat to an adjacent territory. 
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -36,8 +37,8 @@ class PiratesVariant extends WDVariant {
 	public $description='Pirates, European powers and privateers all fighting it out on the high seas of the Caribbean - what more could you want? ';
 	public $author     ='Gavin Atkinson';
 	public $adapter    ='Gavin Atkinson, Oliver Auth';
-	public $version    ='I';
-	public $codeVersion='1.0.8';	
+	public $version    ='II';
+	public $codeVersion='1.1';	
 	
 	public $countries=array('Spain','England','France','Holland','Dunkirkers','Henry Morgan','Francois l Olonnais','Isaac Rochussen','The Infamous El Guapo','Daniel "The Exterminator" Montbars','Roche "The Rock" Braziliano','Bartolomeu "The Portuguese" de la Cueva','Daniel "The Terror" Johnson');	
 
@@ -80,7 +81,11 @@ class PiratesVariant extends WDVariant {
 		// Hurricane:
 		$this->variantClasses['OrderArchiv']        = 'Pirates';
 		$this->variantClasses['processMembers']     = 'Pirates';		
-		$this->variantClasses['processOrderBuilds'] = 'Pirates';		
+		$this->variantClasses['processOrderBuilds'] = 'Pirates';	
+		
+		// Only 1-space-retreats
+		$this->variantClasses['userOrderRetreats']  = 'Pirates';
+		
 	}
 	
 	public function countryID($countryName)

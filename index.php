@@ -351,70 +351,79 @@ class libHome
 		// Select by id, prints replies and new threads
 		global $DB, $Misc, $User;
 
-		$tabl = $DB->sql_tabl("
-			SELECT m.id as postID, t.id as threadID, m.type, m.timeSent, IF(t.replies IS NULL,m.replies,t.replies) as replies,
-				IF(t.subject IS NULL,m.subject,t.subject) as subject,
-				m.anon,
-				u.id as userID, u.username, u.vpoints, IF(s.userID IS NULL,0,1) as online, u.type as userType,
-				SUBSTRING(m.message,1,100) as message, m.latestReplySent, t.fromUserID as threadStarterUserID
-			FROM wD_ForumMessages m
-			INNER JOIN wD_Users u ON ( m.fromUserID = u.id )
-			LEFT JOIN wD_Sessions s ON ( m.fromUserID = s.userID )
-			LEFT JOIN wD_ForumMessages t ON ( m.toID = t.id AND t.type = 'ThreadStart' AND m.type = 'ThreadReply' )
-			ORDER BY m.timeSent DESC
-			LIMIT 50");
+		$thread_tabl = $DB->sql_tabl("SELECT id FROM wD_ForumMessages WHERE type = 'ThreadStart'  
+			ORDER BY latestReplySent DESC LIMIT 10");
+
 		$oldThreads=0;
 		$threadCount=0;
 
 		$threadIDs = array();
 		$threads = array();
-
-		while(list(
-				$postID, $threadID, $type, $timeSent, $replies, $subject,
-				$anon,
-				$userID, $username, $points, $online, $userType, $message, $latestReplySent,$threadStarterUserID
-			) = $DB->tabl_row($tabl))
-		{
 		
-			// Anonymize the forum posts on the home-screen too
-			if ($anon == 'Yes')
-			{
-				$username = 'Anon';
-				$userID = 0;
-				$points = '??';
-				$userType = 'User';
-			}
-			// End anonymizer
+		while(list($my_threadID) = $DB->tabl_row($thread_tabl))
+		{
 			
-			$threadCount++;
+			$tabl = $DB->sql_tabl("
+				SELECT m.id as postID, t.id as threadID, m.type, m.timeSent, IF(t.replies IS NULL,m.replies,t.replies) as replies,
+					IF(t.subject IS NULL,m.subject,t.subject) as subject,
+					m.anon,
+					u.id as userID, u.username, u.vpoints, IF(s.userID IS NULL,0,1) as online, u.type as userType,
+					SUBSTRING(m.message,1,100) as message, m.latestReplySent, t.fromUserID as threadStarterUserID
+				FROM wD_ForumMessages m
+				INNER JOIN wD_Users u ON ( m.fromUserID = u.id )
+				LEFT JOIN wD_Sessions s ON ( m.fromUserID = s.userID )
+				LEFT JOIN wD_ForumMessages t ON ( m.toID = t.id AND t.type = 'ThreadStart' AND m.type = 'ThreadReply' )
+				WHERE m.toID = ".$my_threadID." OR m.id = ".$my_threadID." 
+				ORDER BY m.timeSent DESC
+				LIMIT 4");
 
-			if( $threadID )
-				$iconMessage=libHTML::forumMessage($threadID, $postID);
-			else
-				$iconMessage=libHTML::forumMessage($postID, $postID);
-
-			if ( $type == 'ThreadStart' ) $threadID = $postID;
-
-			if( !isset($threads[$threadID]) )
+			while(list(
+					$postID, $threadID, $type, $timeSent, $replies, $subject,
+					$anon,
+					$userID, $username, $points, $online, $userType, $message, $latestReplySent,$threadStarterUserID
+				) = $DB->tabl_row($tabl))
 			{
-				if(strlen($subject)>30) $subject = substr($subject,0,40).'...';
-				$threadIDs[] = $threadID;
-				$threads[$threadID] = array('subject'=>$subject, 'replies'=>$replies,
-					'posts'=>array(),'threadStarterUserID'=>$threadStarterUserID);
+			
+				// Anonymize the forum posts on the home-screen too
+				if ($anon == 'Yes')
+				{
+					$username = 'Anon';
+					$userID = 0;
+					$points = '??';
+					$userType = 'User';
+				}
+				// End anonymizer
+				
+				$threadCount++;
+
+				if( $threadID )
+					$iconMessage=libHTML::forumMessage($threadID, $postID);
+				else
+					$iconMessage=libHTML::forumMessage($postID, $postID);
+
+				if ( $type == 'ThreadStart' ) $threadID = $postID;
+
+				if( !isset($threads[$threadID]) )
+				{
+					if(strlen($subject)>30) $subject = substr($subject,0,40).'...';
+					$threadIDs[] = $threadID;
+					$threads[$threadID] = array('subject'=>$subject, 'replies'=>$replies,
+						'posts'=>array(),'threadStarterUserID'=>$threadStarterUserID);
+				}
+
+				$message=Message::refilterHTML($message);
+
+				if( strlen($message) >= 50 ) $message = substr($message,0,50).'...';
+
+				$message = '<div class="message-contents threadID'.$threadID.'" fromUserID="'.$userID.'">'.$message.'</div>';
+
+				$threads[$threadID]['posts'][] = array(
+					'iconMessage'=>$iconMessage,'userID'=>$userID, 'username'=>$username,
+					'message'=>$message,'points'=>$points, 'online'=>$online, 'userType'=>$userType, 'timeSent'=>$timeSent
+				);
 			}
-
-			$message=Message::refilterHTML($message);
-
-			if( strlen($message) >= 50 ) $message = substr($message,0,50).'...';
-
-			$message = '<div class="message-contents threadID'.$threadID.'" fromUserID="'.$userID.'">'.$message.'</div>';
-
-			$threads[$threadID]['posts'][] = array(
-				'iconMessage'=>$iconMessage,'userID'=>$userID, 'username'=>$username,
-				'message'=>$message,'points'=>$points, 'online'=>$online, 'userType'=>$userType, 'timeSent'=>$timeSent
-			);
 		}
-
+		
 		$buf = '';
 		$threadCount=0;
 		foreach($threadIDs as $threadID)

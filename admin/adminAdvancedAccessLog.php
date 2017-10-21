@@ -148,14 +148,13 @@ elseif ($userIDs.$checkIPsLong.$gameIDs != '')
 	$timetable = array();
 	$lastkey = 0;
 	$lastday = '';
-	
+
 	while ( list($userID, $username, $time, $ip, $action, $gameID, $countryID) = $DB->tabl_row($tabl) )
 	{
 		if ($gameID != '')
 			$game_users[$gameID][] = $userID;	
 		$ip_users[$ip][] = $userID;
 		
-
 		if ($gameID != 0 && !isset($countries[$gameID]))
 		{
 			$Variant=libVariant::loadFromGameID($gameID);
@@ -192,6 +191,13 @@ elseif ($userIDs.$checkIPsLong.$gameIDs != '')
 				'countryID'=> $countryID
 			);
 		}
+	}
+
+	// Exit if there are no matches found....
+	if (!(isset($ip_users)))
+	{
+		print "<strong>No matches found.</strong>";
+		return;
 	}
 	
 	asort ($ip_users);
