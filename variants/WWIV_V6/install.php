@@ -331,7 +331,7 @@ $territoryRawData=array(
 	array('Almaty (alm)', 'Land', 'Yes', 8, 1804, 317, 1804, 317),
 	array('Ashgabat (ash)', 'Land', 'Yes', 0, 1671, 344, 1671, 344),
 	array('Azerbaijan (aze)', 'Land', 'Yes', 0, 1582, 348, 1582, 348),
-	array('Baghdad (bag)', 'Coast', 'Yes', 0, 1581, 416, 1581, 416),
+	array('Baghdad (bag)', 'Land', 'Yes', 0, 1581, 416, 1581, 416),
 	array('Baluchestan (blc)', 'Coast', 'No', 18, 1701, 463, 1701, 463),
 	array('Irkutsk (irk)', 'Land', 'Yes', 0, 1999, 247, 1999, 247),
 	array('Islamabad (isl)', 'Land', 'Yes', 0, 1771, 418, 1771, 418),
@@ -347,7 +347,7 @@ $territoryRawData=array(
 	array('Shiraz (shi)', 'Coast', 'Yes', 18, 1671, 441, 1671, 441),
 	array('Srednesibirskoye Ploskogor\\\'ye (srd)', 'Coast', 'No', 0, 1937, 134, 1937, 134),
 	array('Tabriz (tab)', 'Land', 'Yes', 18, 1601, 393, 1601, 393),
-	array('Tehran (teh)', 'Coast', 'Yes', 18, 1647, 391, 1647, 391),
+	array('Tehran (teh)', 'Land', 'Yes', 18, 1647, 391, 1647, 391),
 	array('Tibet (tib)', 'Land', 'No', 0, 1896, 413, 1896, 413),
 	array('Turkmenistan (tur)', 'Land', 'No', 0, 1702, 357, 1702, 357),
 	array('Tyva (tyv)', 'Land', 'No', 0, 1854, 257, 1854, 257),
@@ -2355,6 +2355,7 @@ if (!file_exists('variants/'.$this->name.'/cache/sampleMap.png'))
 	copy ('variants/'.$this->name.'/resources/sampleMap.png','variants/'.$this->name.'/cache/sampleMap.png');
 
 ?>
+
 
 
 
