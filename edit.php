@@ -658,6 +658,11 @@ function display_interface() {
             list($x, $y) = $DB->sql_row($sql);
             if ($x > 0 && $y > 0) {
                 $imgSrc = 'variants/' . $Variant->name . '/resources/' . ($mapsize == 'small' ? 'small' : '') . 'map.png';
+				
+				// If there is no smallmap we will only use the largemap...
+				if (!(file_exists ($imgSrc)))
+	                $imgSrc = 'variants/' . $Variant->name . '/resources/map.png';
+
                 list($width, $height) = getimagesize($imgSrc);
 
                 if (($x < 300) || ($width < 600))
