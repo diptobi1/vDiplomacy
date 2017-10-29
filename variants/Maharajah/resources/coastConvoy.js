@@ -81,7 +81,21 @@ function coastConvoy_loadModel(Coasts)
 				function(AnyNode) { return ( AnyNode.id == WithFleetTerr.id ); }
 			);
 			return ns.Path;
-		}
+		},
+		
+		pathArmyToCoastWithoutFleet: function(StartTerr, EndTerr, WithoutFleetTerr) {
+			var ns=this.nodeSetClass();
+			ns.routeSetStart(
+				StartTerr, 
+				function(EndNode) { return ( EndNode.id == EndTerr.id ); },
+				function(AllNode) { return (( AllNode.type == 'Sea' ||
+						(Coasts.inArray(AllNode.id) && 
+							!Object.isUndefined(Units.find(function(p){return (p[1].terrID==AllNode.id && p[1].type=='Fleet');})))) 
+							&& AllNode.id != WithoutFleetTerr.id ); },
+				function(AnyNode) { return true; }
+			);
+			return ns.Path;
+		},
 		
 	});
 }	
