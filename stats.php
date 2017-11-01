@@ -50,6 +50,7 @@ if ($variantID != 0)
 	$g_info['Drawn'] = 0;
 	$g_info['Winner-takes-all']         = 0;
 	$g_info['Points-per-supply-center'] = 0;
+	$g_info['Unranked']                 = 0;
 	
 	for ($i=1; $i<=count($variant->countries)+1; $i++)		
 	{
@@ -140,7 +141,8 @@ if ($variantID != 0)
 		fclose($css);
 
 		print '<li><b>Pottype:</b><ul><li>Winner-takes-all: '.$g_info['Winner-takes-all'].' game'.($g_info['Winner-takes-all']!=1?'s':'').'</li>';
-		print '<li>Points-per-supply-center: '.$g_info['Points-per-supply-center'].' game'.($g_info['Points-per-supply-center']!=1?'s':'').'</li></ul>';
+		print '<li>Points-per-supply-center: '.$g_info['Points-per-supply-center'].' game'.($g_info['Points-per-supply-center']!=1?'s':'').'</li>';
+		print '<li>Unranked: '.$g_info['Unranked'].' game'.($g_info['Unranked']!=1?'s':'').'</li></ul>';
 
 		print '<li><b>Results:</b><ul><li>Solo: '.$g_info['Solo'].' game'.($g_info['Solo']!=1?'s':'').'</li>';
 		print '<li>Drawn:'.$g_info['Drawn'].' game'.($g_info['Drawn']!=1?'s':'').'</li>';
