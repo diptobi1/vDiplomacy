@@ -71,31 +71,43 @@ class Message
 		
 		$anon = 'No';
 		
-		$search = $message . $subject;
+		$gameID = array(); $search = $subject . $message;
 		
 		// Check if there is a link to an anon game in the message or the subject.
-		$gameID=preg_replace('/.*gameID[:= _]?([0-9]+).*/i' , '\1' , $search);
-		if ($gameID != $search)
-			list($anon)=$DB->sql_row('SELECT anon FROM wD_Games WHERE phase != "Finished" AND id = '.$gameID);
+		preg_match_all ('/gameID[:= _]?([0-9]+)/i', $search, $gameID);
+		if (empty ($gameID[1]))
+			$anonIDs = 0;
+		else
+		{
+			$gameIDs = array_unique($gameID[1]);
+			list($anonIDs)=$DB->sql_row('
+				SELECT count(*) FROM wD_Games g LEFT JOIN wD_Members m ON (m.gameID = g.id)
+					WHERE phase != "Finished"
+					AND anon="Yes"
+					AND g.id IN ('.implode (",", $gameIDs).')
+					AND m.userID='.$fromUserID);
+		}
 
 		// If there is nothing in the message-body test the subject of the thread-start
-		if ($anon != 'Yes' && $toID != 0)
+		if ($anonIDs == 0 && $toID != 0)
 		{
-			list($subject)=$DB->sql_row('SELECT subject FROM wD_ForumMessages WHERE id = '.$toID);
-			$gameID=preg_replace('/.*gameID[:= _]?([0-9]+).*/i' , '\1' , $subject);
-			if ($gameID != $subject)
-				list($anon)=$DB->sql_row('SELECT anon FROM wD_Games WHERE phase != "Finished" AND id = '.$gameID);
+			list($search)=$DB->sql_row('SELECT subject FROM wD_ForumMessages WHERE id = '.$toID);
+			preg_match_all ('/gameID[:= _]?([0-9]+)/i', $search, $gameID);
+			if (empty ($gameID[1]))
+				$anonIDs = 0;
+			else
+			{
+				$gameIDs = array_unique($gameID[1]);
+				list($anonIDs)=$DB->sql_row('
+					SELECT count(*) FROM wD_Games g LEFT JOIN wD_Members m ON (m.gameID = g.id)
+						WHERE phase != "Finished"
+						AND anon="Yes"
+						AND g.id IN ('.implode (",", $gameIDs).')
+						AND m.userID='.$fromUserID);
+			}
 		}
 		
-		// IF the game is anon, check if the user in question is a member of this game...
-		if ($anon == 'Yes')
-		{		
-			list($id)=$DB->sql_row('SELECT id FROM wD_Members WHERE gameID = '.$gameID.' AND userID = '.$fromUserID);		
-			if ($id < 1)
-				$anon = 'No';
-		}
-		
-		return ($anon=='Yes'?'Yes':'No');
+		return (($anonIDs > 0)?'Yes':'No');
 	}
 	
 	/**
