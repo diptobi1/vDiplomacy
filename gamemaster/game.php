@@ -671,6 +671,9 @@ class processGame extends Game
 		}
 		$this->Members->updateReliabilityStats();
 		
+		// Check if any votes now passed (because of countries send in CD....)
+		if ($this->phase != "Finished") $this->applyVotes();
+		
 		// At last update the CC and IP information
 		$this->Members->updateCCIP();
 	}
