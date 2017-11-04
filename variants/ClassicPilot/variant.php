@@ -31,6 +31,7 @@ class ClassicPilotVariant extends WDVariant {
 	public $description='This variant is based on a play test previous to the original classic Diplomacy map of Europe. It is recreated here based on an article describing some of the improvements required. Alas I can not find the original article. This first version makes one small change, removing Heligoland Bight, however the gameplay effect on both Bermany and English openings is immense.';
 	public $author='Orathaic - based on an article by Allan B Cahlamer';
 	public $version='0.1';
+	public $codeVersion='1.1';
 	public $countries=array('England', 'France', 'Italy', 'Germany', 'Austria', 'Turkey', 'Russia');
 
 	public function __construct() {
