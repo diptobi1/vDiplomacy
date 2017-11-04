@@ -329,6 +329,7 @@ $bordersRawData=array(
 	array('Cisalpine Republic','Adriatic Sea','Yes','No'),
 	array('Liguria','Piedmont','No','Yes'),
 	array('Liguria','Marseilles','Yes','Yes'),
+	array('Liguria','Gulf of Lyon','Yes','No'),
 	array('Piedmont','Lucerne','No','Yes'),
 	array('Piedmont','Marseilles','No','Yes'),
 	array('Lucerne','Marseilles','No','Yes'),

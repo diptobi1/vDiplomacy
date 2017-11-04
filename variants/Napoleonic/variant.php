@@ -33,7 +33,7 @@ class NapoleonicVariant extends WDVariant {
 	public $author     = 'Firehawk';
 	public $adapter    = 'Firehawk';
 	public $version    = '1';
-	public $codeVersion= '1.0.1';
+	public $codeVersion= '1.0.2';
 	public $homepage   = 'http://diplomail.ru';
 
 	public $countries=array('Austria', 'Britain', 'Denmark', 'France', 'Naples', 'Prussia', 'Russia', 'Spain','Sweden', 'Turkey');
