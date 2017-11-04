@@ -21,6 +21,7 @@
 
 	Changelog:
 	1.0: first install
+	1.1  : only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -33,7 +34,8 @@ class War2020Variant extends WDVariant {
 	public $description='In 2020 a world war breaks out';
 	public $author     ='Jason B.';
 	public $adapter    ='kaner406 & Oliver Auth';
-	public $codeVersion='1.0.1';
+	public $version    ='1';
+	public $codeVersion='1.1';
 
 	public $countries=array('Australia', 'USA', 'OAS', 'EU', 'South Africa', 'India', 'OPEC', 'China', 'Russia', 'Japan');
 

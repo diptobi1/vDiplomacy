@@ -20,8 +20,11 @@
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
-class Fog_processGame extends processGame
+class RatWarsVariant_processGame extends processGame
 {
+	/*
+	 * Fog_processGame
+	 */
 	// After the game is finished delete the map images with hidden territories
 	// New map-images with all visible will be created...
 	protected function setPhase($phase, $gameOver='')
@@ -29,11 +32,11 @@ class Fog_processGame extends processGame
 		parent::setPhase($phase, $gameOver);
 		if ( $this->phase == 'Finished' ) $this->wipeCache($this->id);
 	}
-}
 
-class CustomStart_processGame extends Fog_processGame
-{
-	protected function changePhase() {
+	/*
+	 * CustomStart_processGame
+	 */
+	 protected function changePhase() {
 		if( $this->phase == 'Pre-game' )
 		{
 			// Builds first after the game starts
@@ -60,5 +63,3 @@ class CustomStart_processGame extends Fog_processGame
 			return parent::changePhase(); // Except those two phases above behave normally
 	}
 }
-
-class RatWarsVariant_processGame extends CustomStart_processGame {}

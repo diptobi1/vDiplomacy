@@ -22,6 +22,7 @@
 	Changelog:
 	1.0: first install
 	1.0.1: new format of the names-overlay.
+	1.1  : only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
 	
 */
 
@@ -35,7 +36,7 @@ class Europe1939Variant extends WDVariant {
 	public $author     ='Mikalis Kamaritis';
 	public $adapter    ='Mikalis Kamaritis';
 	public $version    ='I';	
-	public $codeVersion='1.0.1';	
+	public $codeVersion='1.1';	
 		
 	public $countries=array('Britain', 'France', 'Germany', 'Spain', 'Italy', 'Poland', 'USSR', 'Turkey');
 

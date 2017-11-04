@@ -21,7 +21,8 @@
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
-class CustomStart_processGame extends processGame {
+// CustomStart code
+class BalkanWarsVIVariant_processGame extends processGame {
 
 	protected function changePhase() {
 		if( $this->phase == 'Pre-game' )
@@ -51,4 +52,3 @@ class CustomStart_processGame extends processGame {
 	}
 }
 
-class BalkanWarsVIVariant_processGame extends CustomStart_processGame {}

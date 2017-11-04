@@ -28,6 +28,7 @@
 	1.1.1: but does not work again... (disabled)
 	1.1.2: Now the proper fix...
 	1.2:   Big codeing-error fixed for the neutral Support-Hold orders.
+	1.3  : only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
 	
 */
 
@@ -43,7 +44,7 @@ class VikingVariant extends WDVariant {
 	public $adapter    ='kaner406 / Oliver Auth';
 	public $homepage   ='http://www.variantbank.org/results/rules/v/viking4.htm';
 	public $version    ='4.0';	
-	public $codeVersion='1.2';	
+	public $codeVersion='1.3';	
 	
 	public $countries=array('Arab Caliphates','Burgundy','Danmark','Eastern Roman Empire','France','Slavic Nations','Norge','Sverige');	
 

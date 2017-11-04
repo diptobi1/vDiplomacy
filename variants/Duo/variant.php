@@ -22,6 +22,7 @@
 	Changelog:
 	0.8: initial release
 	0.9: big codecleanup, doTo: neutral units movement
+	0.20 : only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
 
 */
 
@@ -36,7 +37,7 @@ class DuoVariant extends WDVariant {
 	public $author='Frank Hegermann';
 	public $adapter='Oliver Auth';
 	public $version='1.0';
-	public $codeVersion='0.11';
+	public $codeVersion='0.20';
 	public $homepage='http://www.dipwiki.com/?title=Duo';
 
 	public $countries=array('Red','Green');

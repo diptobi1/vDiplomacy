@@ -20,8 +20,11 @@
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
-class SeaSc_processGame extends processGame
+class MateAgainstMateVariant_processGame extends processGame
 {
+	/*
+	 * SeaSc_processGame
+	 */
 	protected function updateOwners()
 	{
 		parent::updateOwners();
@@ -59,10 +62,10 @@ class SeaSc_processGame extends processGame
 			}
 		}
 	}
-}
-
-class NeutralUnits_processGame extends SeaSc_processGame
-{
+	
+	/*
+	 * NeutralUnits_processGame
+	 */
 	function process()
 	{
 		global $DB;
@@ -78,6 +81,5 @@ class NeutralUnits_processGame extends SeaSc_processGame
 				parent::process();
 		}	
 	}
+	
 }
-
-class MateAgainstMateVariant_processGame extends NeutralUnits_processGame {}

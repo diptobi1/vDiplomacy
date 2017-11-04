@@ -23,6 +23,7 @@
 	1.0: first install
 	1.0.1: hotfix for the coast (will need a better solution later)
 	1.0.2: finally convoys work now.
+	1.1  : only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
 	
 */
 
@@ -38,7 +39,7 @@ class Zeus5Variant extends WDVariant {
 	public $adapter    ='kaner406 & Oliver Auth';
 	public $homepage   ='http://www.dipwiki.com/index.php?title=Zeus';
 	public $version    ='5';
-	public $codeVersion='1.0.2';	
+	public $codeVersion='1.1';	
 	
 	public $countries=array('United Kingdom', 'United States', 'Italy', 'Germany', 'Japan', 'China', 'Soviet Union');	
 

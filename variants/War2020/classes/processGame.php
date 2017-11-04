@@ -2,9 +2,12 @@
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
-class CustomStart_processGame extends processGame {
+class War2020Variant_processGame extends processGame {
 
-	protected function changePhase() {
+	/*
+	 * CustomStart_processGame
+	 */
+	 protected function changePhase() {
 		if( $this->phase == 'Pre-game' )
 		{
 			// Builds first after the game starts
@@ -31,5 +34,3 @@ class CustomStart_processGame extends processGame {
 			return parent::changePhase(); // Except those two phases above behave normally
 	}
 }
-
-class War2020Variant_processGame extends CustomStart_processGame {}

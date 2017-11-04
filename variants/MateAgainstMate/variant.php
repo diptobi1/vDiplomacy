@@ -29,7 +29,8 @@
 	2.0.1: fixed error in the sea-SC code
 	2.0.2: border error fixed
 	2.1:   Big code-cleanup (not only) for the neutral player and minor improvements
-	
+	2.2  : only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
+
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -42,7 +43,8 @@ class MateAgainstMateVariant extends WDVariant {
 	public $description='The Mate Against Mate variant is an alternate history starting in 1973 allowing 8 players to struggle for control over Australia and surrounding territories.';
 	public $author     ='Gavin Atkinson';
 	public $adapter    ='Gavin Atkinson / Emmanuele Ravaioli / Oliver Auth';
-	public $version    ='2.1.1';
+	public $version    ='1';
+	public $codeVersion='2.2';
 
 	public $countries=array(
 		'Indonesia','Western Australia','South Australia','Tasmania',

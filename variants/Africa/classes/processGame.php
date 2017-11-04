@@ -2,7 +2,8 @@
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
-class NeutralUnits_processGame extends processGame
+// Neutral Units - code
+class AfricaVariant_processGame extends processGame
 {
 	function process()
 	{
@@ -20,5 +21,3 @@ class NeutralUnits_processGame extends processGame
 		}	
 	}
 }
-
-class AfricaVariant_processGame extends NeutralUnits_processGame {}

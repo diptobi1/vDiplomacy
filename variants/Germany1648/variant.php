@@ -22,6 +22,7 @@
 	Changelog:
 	1.0: initial version
 	1.1: really big code cleanup
+	1.2: only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
 	
 */
 
@@ -36,7 +37,7 @@ class Germany1648Variant extends WDVariant {
 	public $author     ='Emmanuele Ravaioli (Tadar Es Darden)';
 	public $adapter    ='Emmanuele Ravaioli / Oliver Auth';
 	public $version    ='1.0';
-	public $codeVersion='1.1.4';
+	public $codeVersion='1.2';
 
 	public $countries=array(
 		'Austrian Habsburg','Spanish Habsburg','Wettin','Bavarian Wittelsbach','Palatinate Wittelsbach','Hohenzollern','Ecclesiastic Lands');

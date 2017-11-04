@@ -20,8 +20,12 @@
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
-class NeutralUnits_processGame extends processGame
+class RinascimentoVariant_processGame extends processGame
 {
+	/*
+	 * NeutralUnits_processGame
+	 */
+	 
 	function process()
 	{
 		global $DB;
@@ -38,5 +42,3 @@ class NeutralUnits_processGame extends processGame
 		}	
 	}
 }
-
-class RinascimentoVariant_processGame extends NeutralUnits_processGame {}

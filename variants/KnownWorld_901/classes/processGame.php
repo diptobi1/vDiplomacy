@@ -21,7 +21,8 @@
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
-class NeutralUnits_processGame extends processGame
+// Neutral units
+class KnownWorld_901Variant_processGame extends processGame
 {
 
 	// Check if we might need a Build-phase for the "neutral units"
@@ -86,4 +87,3 @@ class NeutralUnits_processGame extends processGame
 	}
 }
 
-class KnownWorld_901Variant_processGame extends NeutralUnits_processGame {}

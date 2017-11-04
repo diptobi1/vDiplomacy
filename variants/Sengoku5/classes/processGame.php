@@ -20,9 +20,14 @@
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
-class NeutralUnits_processGame extends processGame
+class Sengoku5Variant_processGame extends processGame
 {
-	function process()
+	
+	/*
+	 * NeutralUnits_processGame
+	 */
+	 
+	 function process()
 	{
 		global $DB;
 		parent::process();
@@ -38,5 +43,3 @@ class NeutralUnits_processGame extends processGame
 		}	
 	}
 }
-
-class Sengoku5Variant_processGame extends NeutralUnits_processGame {}

@@ -31,6 +31,7 @@
 	1.5:   Edited icons for supply centers in large map / Edited SC_large file, now 19x20 (31-07-2010)
 	1.5.1: Fixed error in new pot disribution.
 	1.6:   Finally the new "neutral units code" and some bigger code cleanups.
+	1.7  : only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -44,7 +45,7 @@ class RinascimentoVariant extends WDVariant {
 	public $author     ='Emmanuele Ravaioli (Tadar Es Darden) and Francesco Malossini';
 	public $adapter    ='Emmanuele Ravaioli / Oliver Auth';
 	public $version    ='1.6';
-	public $codeVersion='1.6.2';
+	public $codeVersion='1.7';
 
 	public $countries=array(
 		'Ferrara','Firenze','French','Genova','Milano','Napoli','Pisa',

@@ -20,8 +20,12 @@
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
-class Fog_processGame extends processGame
+class TenSixtySixVariant_processGame extends processGame
 {
+	/*
+	 * Fog_processGame
+	 */
+
 	// After the game is finished delete the map images with hidden territories
 	// New map-images with all visible will be created...
 	protected function setPhase($phase, $gameOver='')
@@ -29,10 +33,10 @@ class Fog_processGame extends processGame
 		parent::setPhase($phase, $gameOver);
 		if ( $this->phase == 'Finished' ) $this->wipeCache($this->id);
 	}
-}
-
-class NeutralUnits_processGame extends Fog_processGame
-{
+	
+	/*
+	 * NeutralUnits_processGame
+	 */
 	function process()
 	{
 		global $DB;
@@ -49,7 +53,4 @@ class NeutralUnits_processGame extends Fog_processGame
 		}	
 	}
 }
-
-class TenSixtySixVariant_processGame extends NeutralUnits_processGame {}
-
 ?>

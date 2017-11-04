@@ -22,7 +22,7 @@
 	Changelog:
 	1.0:   initial release
 	1.0.1: better rules.html (thanks Gavin)
-	
+	1.1  : only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -36,7 +36,7 @@ class BalkanWarsVIVariant extends WDVariant {
 	public $author     ='Brad Wilson based on earlier designs by Fred Davis and others...';
 	public $adapter    ='Oliver Auth';
 	public $version    ='6';
-	public $codeVersion='1.0.4';
+	public $codeVersion='1.1';
 	public $homepage   ='http://members.cox.net/boris_spider/hrules/BW6.html';
 	
 	public $countries=array('Albania','Bulgaria','Greece','Rumania','Serbia','Turkey');

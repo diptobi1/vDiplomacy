@@ -21,9 +21,12 @@
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
-class CustomStart_processGame extends processGame {
+class Zeus5Variant_processGame extends processGame {
 
-	protected function changePhase() {
+	/*
+	 * CustomStart_processGame
+	 */
+	 protected function changePhase() {
 		if( $this->phase == 'Pre-game' )
 		{
 			// Builds first after the game starts
@@ -49,11 +52,11 @@ class CustomStart_processGame extends processGame {
 		else
 			return parent::changePhase(); // Except those two phases above behave normally
 	}
-}
 
-class NeutralUnits_processGame extends CustomStart_processGame
-{
-	function process()
+	/*
+	 * NeutralUnits_processGame
+	 */
+	 function process()
 	{
 		global $DB;
 		parent::process();
@@ -69,5 +72,3 @@ class NeutralUnits_processGame extends CustomStart_processGame
 		}	
 	}
 }
-
-class Zeus5Variant_processGame extends NeutralUnits_processGame {}

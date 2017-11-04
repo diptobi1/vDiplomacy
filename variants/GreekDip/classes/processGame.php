@@ -19,7 +19,8 @@
 
 */
 
-class BiddingStart_processGame extends processGame
+// Bidding start
+class GreekDipVariant_processGame extends processGame
 {
 	function process()
 	{
@@ -53,5 +54,3 @@ class BiddingStart_processGame extends processGame
 	}
 	
 }
-
-class GreekDipVariant_processGame extends BiddingStart_processGame {}

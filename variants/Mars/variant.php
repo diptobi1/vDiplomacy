@@ -19,6 +19,11 @@
 	
 	If you have questions or suggestions send me a mail: Oliver.Auth@rhoen.de
 
+	---
+	
+	Changelog:
+	1.0: initial release
+	1.1: only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -32,7 +37,7 @@ class MarsVariant extends WDVariant {
 	public $author     ='kaner406';
 	public $adapter    ='kaner406 & Oliver Auth';
 	public $version    ='1.0';
-	public $codeVersion='1.0';
+	public $codeVersion='1.1';
 
 	public $countries=array('Amazonia','Mareotia','Noachtia','Cydonia','Arkadia','Alborian');
 
