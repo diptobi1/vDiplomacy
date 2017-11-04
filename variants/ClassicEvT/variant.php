@@ -20,8 +20,8 @@
 	---
 	
 	Changelog:
-	1.0:   initial version
-	
+	1.0: initial version
+	1.1: better readable maps from the classic variant
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -33,7 +33,7 @@ class ClassicEvTVariant extends WDVariant {
 	public $fullName   ='Classic - England* Vs Turkey';
 	public $description='The standard Diplomacy map of Europe, but with England and Turkey as the only playable countries. To offset the imbalance of Englands start, his fleets now start in open seas';
 	public $adapter    = 'Orathaic';
-	public $version    = '1.0';
+	public $version    = '1.1';
 
 	public $countries=array('England','Turkey');
 
