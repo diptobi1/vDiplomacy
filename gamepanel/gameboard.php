@@ -72,8 +72,8 @@ class panelGameBoard extends panelGame
 			<p id="History" class="lightgrey"></p>
 		</div>';
 
-		if ($User->phaseCount < 30)
-			$map .= '<p style="text-align:center">Tip: Failed orders are usually only displayed on the largemap (<a href="'.$largemapLink.'" class="light"><img src="'.l_s('images/historyicons/external.png').'">).</p>';
+		if ($User->phaseCount < 30 && $this->phase != 'Pre-game')
+			$map .= '<p style="text-align:center">Tip: Failed orders are usually only displayed on the largemap (<a href="'.$largemapLink.'" class="light"><img src="'.l_s('images/historyicons/external.png').'"></a>).</p>';
 		
 		if ($User->colorCorrect != 'Off')
 			$map .= '<script type="text/javascript">var colorCorrect="&colorCorrect='.$User->colorCorrect.'";</script>';
