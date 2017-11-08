@@ -19,6 +19,11 @@ class adminActionsVDip extends adminActions
 				'description' => 'Recalculate the CC and IP matches for a given game.',
 				'params' => array('gameID'=>'Game ID')
 			),
+			'potModifier' => array(
+				'name' => 'Change the vDip-value of the game.',
+				'description' => 'Changes the vDip-points-value of the game by dividing the vDip-points of the game with the modifier. A necative vDip-score is set to 0.',
+				'params' => array('gameID'=>'Game ID', 'modifier'=>'Modifier for the point distribution')
+			),
 			'tempBan' => array(
 				'name' => 'Temporary ban a player',
 				'description' => 'How many days should the player be blocked from joining or creating new games.',
@@ -441,6 +446,26 @@ class adminActionsVDip extends adminActions
 		return $info;
 	
 	}
+	
+	public function potModifier(array $params)
+	{
+		global $DB;
+		$gameID   = (int)$params['gameID'];
+		$modifier = (int)$params['modifier'];
+
+		list($gamePhase)=$DB->sql_row("SELECT phase FROM wD_Games WHERE id = ".$gameID);
+		if ($gamePhase == 'Finished')
+			return "Can't set modifier on finished game.";
+		
+		if ($modifier < 1 || $modifier > 10)
+			return 'Unreasonable modifier. No changes made...';
+			
+		list($old_modifier)=$DB->sql_row("SELECT potModifier FROM wD_Games WHERE id = ".$gameID);
+		$DB->sql_put("UPDATE wD_Games SET potModifier = '".$modifier."' WHERE id = ".$gameID);		
+		
+		return 'This game vDip-modifier changed from '.$old_modifier.' to '.$modifier.'.';
+	
+	}	
 	
 }
 ?>

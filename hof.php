@@ -156,7 +156,7 @@ elseif(isset($_REQUEST['gameID']))
 						<TH class="cellb" align="right">Rr</TH>
 						<TH class="cellb" align="right">Dif</TH>
 						<TH class="cellb" align="right">mV</TH>
-						<TH class="cellb" align="right">gV</TH>
+						<TH class="cellb" align="right">gV'.($Game->potModifier > 1 ? '/'.$Game->potModifier : '').'</TH>
 						<TH class="cellb" align="right">Ch</TH>						
 					</THEAD>';
 		 

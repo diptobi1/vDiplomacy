@@ -241,10 +241,14 @@ class panelGame extends Game
 
 		
 		if ($this->pot > 0 || ($this->pot == 0 && count($this->Members->ByID) == 0 && $this->minimumBet != 0) )
-			$leftBottom .= l_t('Pot:').' <span class="gamePot">'.$this->pot.' '.libHTML::points().'</span> - ';
+			$leftBottom .= l_t('Pot:').' <span class="gamePot">'.$this->pot.' '.libHTML::points().'</span>';
 		else
-			$leftBottom .= '<i><a class="light" href="features.php#4_4">'.l_t('Unrated').'</a></i> - ';
+			$leftBottom .= '<i><a class="light" href="features.php#4_4">'.l_t('Unrated').'</a></i>';
 
+		if ($this->potModifier > 1)
+			$leftBottom .= ' / ('.libHTML::vpoints().'<a href="features.php#2_11"> = <b>1/'.$this->potModifier.'</b></a>)';
+			
+		$leftBottom .= ' - ';
 		$leftBottom .= $date;
 
 		$leftTop .= '</div>';

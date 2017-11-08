@@ -304,6 +304,12 @@ class Game
 	public $fixStart;
 	
 	/**
+	 * Admins may set a modifier to allow a smaller effect on point-distribution for disrupted games 
+	 */
+	public $potModifier;
+	
+	
+	/**
 	 * @param int/array $gameData The game ID of the game to load, or the array of its database row
 	 * @param string[optional] $lockMode The database locking phase to use; no locking by default
 	 */
@@ -516,6 +522,7 @@ class Game
 			g.noProcess,
 			g.fixStart,
 			g.blockVotes,
+			g.potModifier,
 			g.missingPlayerPolicy
 			FROM wD_Games g
 			WHERE g.id=".$this->id.' '.$this->lockMode);

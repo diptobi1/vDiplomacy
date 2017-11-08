@@ -1018,9 +1018,13 @@ $sql[]="ALTER TABLE wD_Backup_Games CHANGE `potType` `potType` enum('Winner-take
 $sql[]="ALTER TABLE wD_Backup_Games CHANGE `pressType` `pressType` enum('Regular','PublicPressOnly','NoPress','RulebookPress') NOT NULL DEFAULT 'Regular';";
 $sql[]="ALTER TABLE wD_Games CHANGE `pressType` `pressType` enum('Regular','PublicPressOnly','NoPress','RulebookPress') NOT NULL DEFAULT 'Regular';";
 
+// VDip 56
+$sql[]="ALTER TABLE `wD_Games` ADD `potModifier` tinyint(3) unsigned NOT NULL DEFAULT '0';";
+$sql[]="ALTER TABLE `wD_Backup_Games` ADD `potModifier` tinyint(3) unsigned NOT NULL DEFAULT '0';";
+
 // Set the correct version-information in the database	
 $sql[]="UPDATE `wD_Misc`     SET `value` = '142' WHERE `name` = 'Version';";
-$sql[]="UPDATE `wD_vDipMisc` SET `value` = '56'  WHERE `name` = 'Version';";
+$sql[]="UPDATE `wD_vDipMisc` SET `value` = '57'  WHERE `name` = 'Version';";
 
 // Create a default Admin-Account
 require_once ('lib/auth.php');

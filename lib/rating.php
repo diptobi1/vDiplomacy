@@ -120,7 +120,7 @@ class libRating
 		$keys = array_keys($Members);
 		for ($i=0; $i<(count($Members) - 1) ; $i++)
 			for ($j=$i+1; $j<count($Members); $j++)
-				self::calcVDipMatch($Game, $Members[$keys[$i]], $Members[$keys[$j]]);	
+				self::calcVDipMatch($Game, $Members[$keys[$i]], $Members[$keys[$j]]);
 		return ($Members);
 	}
 		
@@ -199,7 +199,11 @@ class libRating
 		
 		// The more people the more important a game...
 		$gV = $K * pow(((count($Game->Variant->countries) -1) / count($Game->Variant->countries)),2.7);
-	
+
+		// Mods can devalue a game in case of cheating...
+		if ($Game->potModifier > 1)
+			$gV = $gV / $Game->potModifier;
+		
 		// Do not count Rinascimento games
 		if ($Game->Variant->name =='Rinascimento') $gV=0;
 		
@@ -219,6 +223,10 @@ class libRating
 		// Calculate Points-change
 		$Ch1 = round(($Rr1 - $Re1) * $mV * $gV,2);
 		$Ch2 = round(($Rr2 - $Re2) * $mV * $gV,2);
+		
+		// No negative-modifiers in case of cheating...
+		if ($Game->potModifier > 1 && $Ch1 < 0) $Ch1 = 0;
+		if ($Game->potModifier > 1 && $Ch2 < 0) $Ch2 = 0;
 		
 		// Save the results in the match-arrays
 		$Member1['matches'][$Member2['userID']] = array (
