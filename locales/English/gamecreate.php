@@ -60,7 +60,7 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 				$('fixStart').value= 'No';
 				$('fixStart').disabled= false;
 			}
-			if (this.selectedIndex == 28) $('phaseHoursText').show(); else $('phaseHoursText').hide();">
+			if (this.selectedIndex == 29) $('phaseHoursText').show(); else $('phaseHoursText').hide();">
 		<?php
 			$phaseList = array(5,7, 10, 15, 20, 30,
 				60, 120, 240, 360, 480, 600, 720, 840, 960, 1080, 1200, 1320,
@@ -81,8 +81,9 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 			  this.value = parseInt(this.value);
 			  if (this.value == 'NaN' ) this.value = 24;
 			  if (this.value < 1 ) this.value = 1;
-			  document.getElementById('phaseMinutes').selectedIndex = 28;
-			  document.getElementById('phaseMinutes').options[28].value = this.value * 60;
+			  if (this.value > 200 ) this.value = 200;
+			  document.getElementById('phaseMinutes').selectedIndex = 29;
+			  document.getElementById('phaseMinutes').options[29].value = this.value * 60;
 			  document.getElementById('wait').selectedIndex = 17;" > hours.
 		</span>
 
