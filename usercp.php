@@ -119,6 +119,7 @@ if ( isset($_REQUEST['userForm']) )
 				'pointNClick opt in'=>'pointNClick',
 				'Add greyout overlay'=>'terrGrey',
 				'greyout intensity' => 'greyOut',
+				'cssStyle'=>'cssStyle',
 				'Remove scrollbars from smallmap'=>'scrollbars',				
 				'Homepage'=>'homepage','Comment'=>'comment');
 

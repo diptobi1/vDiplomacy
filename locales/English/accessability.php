@@ -55,17 +55,13 @@ defined('IN_CODE') or die('This script can not be run by itself.');
 		Print the countryname on the map.
 	</li>
 
-	<li class="formlisttitle">Color vision deficiency setting:</li>
+	<li class="formlisttitle">Site style:</li>
 	<li class="formlistfield">
-		<select name="userForm[colorCorrect]">
-			<option value='Off'        <?php if($User->colorCorrect=='Off')         print "selected"; ?>>Off</option>
-			<option value='Protanope'  <?php if($User->colorCorrect=='Protanope')   print "selected"; ?>>Protanope</option>
-			<option value='Deuteranope'<?php if($User->colorCorrect=='Deuteranope') print "selected"; ?>>Deuteranope</option>
-			<option value='Tritanope'  <?php if($User->colorCorrect=='Tritanope')   print "selected"; ?>>Tritanope</option>
-		</select>
+		<input type="radio" name="userForm[cssStyle]" value="vDip"   <?php if($User->cssStyle=='vDip')    print "checked"; ?>>vDip
+		<input type="radio" name="userForm[cssStyle]" value="webDip" <?php if($User->cssStyle=='webDip')  print "checked"; ?>>webDip
 	</li>
 	<li class="formlistdesc">
-		Does enhance the colors of the maps for different types of color blindness. (Does not work for the Haven variant, sorry)
+		Choose the site-style / colors of vDiplomacy. You can use the default vDip-colors or the original webDip-colors. <b>You might need to update twice for this to take effect.</b>
 	</li>
 
 <?php

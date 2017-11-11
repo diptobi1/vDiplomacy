@@ -254,6 +254,13 @@ class User {
 	 * @var int
 	 */
 	public $integrityBalance;
+	
+	/**
+	 * cssStyle
+	 * Display the site in webdip or vDip style...
+	 * @var 'vDip' or 'webDip'
+	 */
+	public $cssStyle;
 
 	/**
 	 * Give this user a supplement of points
@@ -392,6 +399,7 @@ class User {
 					'pointNClick'=>'',
 					'terrGrey'=>'',
 					'greyOut'=>'',
+					'cssStyle'=>'',
 					'scrollbars'=>'',
 				'hideEmail'=>'','showEmail'=>'', 'homepage'=>'','comment'=>'');
 
@@ -546,7 +554,15 @@ class User {
 			else
 				$SQLVars['scrollbars'] = "No";
 		}
-	
+		
+		if( isset($userForm['cssStyle']) )
+		{
+			if ( $userForm['cssStyle'] == "webDip" )
+				$SQLVars['cssStyle'] = "webDip";
+			else
+				$SQLVars['cssStyle'] = "vDip";
+		}
+
 		if( isset($userForm['locale']) )
 		{
 			if( !in_array($userForm['locale'], Config::$availablelocales) )
@@ -627,6 +643,7 @@ class User {
 			u.tempBan,
 			u.vpoints,
 			u.integrityBalance,
+			u.cssStyle,
 			IF(s.userID IS NULL,0,1) as online,
 			u.deletedCDs
 			FROM wD_Users u

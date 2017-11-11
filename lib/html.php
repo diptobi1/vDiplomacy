@@ -392,6 +392,8 @@ class libHTML
 	 */
 	static public function prebody ( $title )
 	{
+		global $User;
+		
 		/* Instead of many small css files only load one big file:
 		$variantCSS=array();
 		foreach(Config::$variants as $variantName)
@@ -411,7 +413,16 @@ class libHTML
 		}
 		$variantCSS = '<link rel="stylesheet" href="'.$CSSname.'" type="text/css" />';
 		// End alternate CSS file patch
-		
+
+		switch ($User->cssStyle)
+		{
+			case 'webDip':
+				$cssAdd = '/webDip';
+				break;
+			case 'vDip':
+			default:
+				$cssAdd = '/vDip';
+		}
 		/*
 		 * This line when included in the header caused certain translated hyphenated letters to come out as black diamonds with question marks.
 		 * 
@@ -427,9 +438,9 @@ class libHTML
 		<meta name="keywords" content="'.l_t('diplomacy,diplomacy game,online diplomacy,classic diplomacy,web diplomacy,diplomacy board game,play diplomacy,php diplomacy').'" />
 		<link rel="shortcut icon" href="'.STATICSRV.l_s('favicon.ico').'" />
 		<link rel="icon" href="'.STATICSRV.l_s('favicon.ico').'" />
-		<link rel="stylesheet" href="'.CSSDIR.l_s('/global.css?ver=1').'" type="text/css" />
-		<link rel="stylesheet" href="'.CSSDIR.l_s('/gamepanel.css').'" type="text/css" />
-		<link rel="stylesheet" href="'.CSSDIR.l_s('/home.css').'" type="text/css" />
+		<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/global.css?ver=1').'" type="text/css" />
+		<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/gamepanel.css').'" type="text/css" />
+		<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/home.css').'" type="text/css" />
 
 		<link rel="apple-touch-icon-precomposed" href="'.STATICSRV.'apple-touch-icon.png" />
 		'.$variantCSS.'
