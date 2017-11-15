@@ -121,6 +121,10 @@ class libVariant {
 		// Delete the css-cache too
 		foreach (glob(libCache::Dirname('css').'/variants-*.css') as $cssfilename)
 			unlink($cssfilename);			
+			
+		// Delete the samplemap-cache too
+		foreach (glob(self::cacheDir($variantName).'/*.png') as $pngfilename)
+			unlink($pngfilename);			
 	}
 
 	/**

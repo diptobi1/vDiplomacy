@@ -1,8 +1,9 @@
-﻿<?php
+<?php
+
 defined('IN_CODE') or die('This script can not be run by itself.');
 
-class AfricaVariant_adjudicatorPreGame extends adjudicatorPreGame {
-
+class AfricaVariant_adjudicatorPreGame extends adjudicatorPreGame
+{
 	protected $countryUnits = array(
 		'DRC'           => array('Kinshasa'=>'Fleet'  , 'Lubumbashi'=>'Army'  , '&Eacute;quateur'=>'Army'),
 		'Egypt'         => array('Cairo'=>'Fleet'     , 'Alexandria'=>'Army'  , 'Luxor'=>'Army'),
@@ -14,5 +15,4 @@ class AfricaVariant_adjudicatorPreGame extends adjudicatorPreGame {
 		'South Africa'  => array('Cape Town'=>'Fleet' , 'Johannesburg'=>'Army', 'Durban'=>'Army'),
 		'Neutral units' => array('Tripoli'=>'Army'    , 'Mogadishu'=>'Fleet'  , 'Zimbabwe'=>'Army', 'Gao'=>'Army', 'Timbuktu'=>'Army', 'Kivu'=>'Army', 'Tunisia'=>'Army'),
 	);
-
 }

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
 	Copyright (C) 2011 Milan Mach
 
@@ -15,13 +15,13 @@
 	See the GNU General Public License for more details.
 
 	You should have received a copy of the GNU Affero General Public License
-	along with webDiplomacy. If not, see <http://www.gnu.org/licenses/>.
+
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
-class HussiteVariant_adjudicatorPreGame extends adjudicatorPreGame {
-
+class HussiteVariant_adjudicatorPreGame extends adjudicatorPreGame
+{
 	protected $countryUnits = array(
 		'Bavaria' => array(
 			'München'	=>'Army',
@@ -59,7 +59,6 @@ class HussiteVariant_adjudicatorPreGame extends adjudicatorPreGame {
 		'Taborites' => array(
 			'Tabor'    =>'Army',
 			'Pisek'    =>'Army',
-			'Rokitzan' =>'Army') 
+			'Rokitzan' =>'Army')
 	);
-
 }

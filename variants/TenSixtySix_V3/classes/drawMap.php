@@ -35,6 +35,16 @@ class TenSixtySix_V3Variant_drawMap extends TenSixtySixVariant_drawMap
 			);
 		}
 	}
+	
+	// Failsave for the initial-units drawn on a sea-space in FogOfWar (Channel Islands)
+	public function addUnit($terrName, $unitType)
+	{
+		if (!isset($this->army_c[$this->unit_c[$terrName]]))
+			$this->army_c[$this->unit_c[$terrName]] = $this->army_c[2];
+		if (!isset($this->fleet_c[$this->unit_c[$terrName]]))
+			$this->fleet_c[$this->unit_c[$terrName]] = $this->fleet_c[2];
+		parent::addUnit($terrName, $unitType);
+	}
 
 }
 

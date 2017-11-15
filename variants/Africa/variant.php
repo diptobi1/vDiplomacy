@@ -11,7 +11,7 @@ class AfricaVariant extends WDVariant {
 	public $author     ='Tristan';
 	public $adapter    ='Tristan, kaner406 & Oli';
 	public $version    ='1.0';
-	public $codeVersion='1.1';
+	public $codeVersion='1.2';
 
 	public $countries=array('DRC','Egypt','Ethiopia','Madagascar','Mali','Morocco','Nigeria','South Africa');
 

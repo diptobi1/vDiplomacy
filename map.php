@@ -68,7 +68,7 @@ if( isset($_REQUEST['countryNames']))
 else
 	define('COUNTRYNAMES',0);
 
-if( !IGNORECACHE && !PREVIEW)
+if( !IGNORECACHE && !PREVIEW && !isset($_REQUEST['variantID']))
 {
 	// We might be able to fetch the map from the cache
 	
@@ -220,6 +220,7 @@ $tabl = $DB->sql_tabl($sql);
 $owners = array();
 while(list($terrID, $terrName, $terrType, $countryID, $standoff, $supply) = $DB->tabl_row($tabl))
 {
+
 	if ( $terrType == 'Sea' )
 	{
 		// Set owner to false so that units will draw their countryID flag
@@ -242,6 +243,31 @@ while(list($terrID, $terrName, $terrType, $countryID, $standoff, $supply) = $DB-
 		// Only draw standoffs if we're in the retreats phase, or we're viewing that large map
 		if ( !HIDEMOVES && $standoff == 'Yes' ) $drawMap->drawStandoff($terrID);
 	}
+}
+
+// vDip: Pre-game or variant-page-preview: Add the initial units:
+if( $turn==-1 )
+{
+	class adjudicatorPreGame // Fake to copy the protected countryUnits in a public startingUnits variable...
+	{
+		public $startingUnits = array();
+		function __construct()
+		{
+			if (isset($this->countryUnits))
+				$this->startingUnits = $this->countryUnits;
+		}
+	}
+	
+	// Generate the TerrID => Names array
+	$terrIDByName = array();
+	$tabl = $DB->sql_tabl("SELECT id, name FROM wD_Territories WHERE mapID=".$Variant->mapID);
+	while(list($id, $name) = $DB->tabl_row($tabl))
+		$terrIDByName[$name]=$id;
+	
+	$pregame = $Variant->adjudicatorPreGame();
+	foreach ($pregame->startingUnits as $Country=>$units)
+		foreach ($units as $terrName => $unitType)
+			$drawMap->addUnit($terrIDByName[$terrName], $unitType);
 }
 
 if( isset($_REQUEST['variantID']) )
