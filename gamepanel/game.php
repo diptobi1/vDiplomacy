@@ -330,7 +330,7 @@ class panelGame extends Game
 					array(l_t('Mon'), l_t('Tue'), l_t('Wed'), l_t('Thu'), l_t('Fri'), l_t('Sat'), l_t('Sun')), $this->noProcess));
 
 		if ( $alternatives )
-			return '<div class="titleBarLeftSide" style="float:left">
+			return '<div class="titleBarLeftSide">
 				<span class="gamePotType">'.implode(', ',$alternatives).'</span>
 				</div>
 			<div style="clear:both"></div>
