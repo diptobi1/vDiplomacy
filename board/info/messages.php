@@ -42,7 +42,7 @@ print '<div class="variant'.$Game->Variant->name.'">';
 
 ini_set('memory_limit',"16M");
 $CB = $Game->Variant->Chatbox();
-print '<table>'.$CB->getMessages( -1, $pager->SQLLimit()).'</table>';
+print '<table class="archive-messages-table">'.$CB->getMessages( -1, $pager->SQLLimit()).'</table>';
 
 // Set the global messages as seen (usefull in Nopress games to remove the newmessage-icon after a Gamemaster post)
 if( is_object($Member) )
