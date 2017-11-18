@@ -120,6 +120,7 @@ if ( isset($_REQUEST['userForm']) )
 				'Add greyout overlay'=>'terrGrey',
 				'greyout intensity' => 'greyOut',
 				'cssStyle'=>'cssStyle',
+				'forceDesktop'=>'forceDesktop',
 				'Remove scrollbars from smallmap'=>'scrollbars',				
 				'Homepage'=>'homepage','Comment'=>'comment');
 

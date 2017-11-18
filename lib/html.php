@@ -439,10 +439,10 @@ class libHTML
 		<meta name="keywords" content="'.l_t('diplomacy,diplomacy game,online diplomacy,classic diplomacy,web diplomacy,diplomacy board game,play diplomacy,php diplomacy').'" />
 		<link rel="shortcut icon" href="'.STATICSRV.l_s('favicon.ico').'" />
 		<link rel="icon" href="'.STATICSRV.l_s('favicon.ico').'" />
-		<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/global.css?ver=1').'" type="text/css" />
-		<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/gamepanel.css').'" type="text/css" />
-		<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/home.css').'" type="text/css" />
-
+		<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/global.css').'?ver='.CSSVERSION.'" type="text/css" />
+		<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/gamepanel.css').'?ver='.CSSVERSION.'" type="text/css" />
+		<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/home.css').'?ver='.CSSVERSION.'" type="text/css" />'.
+		($User->forceDesktop == 'No' ?'<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/mobile.css').'?ver='.CSSVERSION.'" type="text/css" />':'').'
 		<link rel="apple-touch-icon-precomposed" href="'.STATICSRV.'apple-touch-icon.png" />
 		'.$variantCSS.'
 		<script type="text/javascript" src="useroptions.php"></script>

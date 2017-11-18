@@ -9,6 +9,23 @@ body {
 	text-align: center;
 	color: #2d2c2e;
 }
+/*
+body:before {
+  content: "";
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -10;
+  background: url(../../images/background_2.jpg) no-repeat center center;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+*/
 div.content-title-header {
     border-bottom:#bbb 1px solid !important;
 }
@@ -44,7 +61,7 @@ span.points {
 		only (1234D) */
 	white-space: nowrap;
 }
-input[type="text"], input[type="submit"], input[type="password"], textarea, select, .buttonIA, #orderLineIA  {
+input[type="text"], input[type="submit"], input[type="password"], textarea, select {
 	font-size: 14px;
 	/*background-color: #eaffea;*/
 	border: 1px solid #c1c1c1;
@@ -289,7 +306,7 @@ a.light {
 	margin-right: auto;
 	margin-top:0;
 	margin-bottom:0;
-	width: 800px;
+	max-width: 800px;
 }
 #logo {
 	padding:0;
@@ -341,7 +358,7 @@ a.light {
 			because IE doesn't support min-width.. */
 	margin: 0;
 	padding: 0;
-	width: 800px;
+	max-width: 800px;
 	background-color: #6898A1;
 	font-size: 0;
 	height: 5px;
@@ -354,7 +371,7 @@ div.content {
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 5px;
-	width: 750px;
+	max-width: 750px;
 	/*background-color: #fff;*/
 	/*border: 1px solid #aaa;*/
 	padding: 15px 24px;	
@@ -364,7 +381,7 @@ div.content-bare {
 	position: relative;
 	margin-left: auto;
 	margin-right: auto;
-	width: 798px; /* 800-2x1px border*/
+	max-width: 798px; /* 800-2x1px border*/
 }
 div.content-notice {
 	text-align: left;
@@ -372,7 +389,7 @@ div.content-notice {
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 5px;
-	width: 768px;
+	max-width: 768px;
 	/*background-color: #fff;*/
 	/*border: 1px solid #aaa;*/
 	padding: 8px 15px;	
@@ -401,8 +418,8 @@ div.content-home-updates {
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 5px;
-	padding:0;	
-	width: 750px;
+	padding:0;
+	max-width: 750px;
 	padding-left: 24px;
 	padding-right: 24px;
 	border: 1px solid #aaa;
@@ -412,13 +429,13 @@ div.content-home-updates {
 	margin-top:0;
 	}
 #content-publicforum {
-	width: 710px;
+	max-width: 710px;
 	height: auto;
 	margin-left:auto;
 	margin-right:auto;
 }
 div.forum {
-	width: 710px;
+	max-width: 710px;
 	margin-left:auto;
 	margin-right:auto;
 	overflow:auto;
@@ -562,6 +579,7 @@ div.gamelistings-tabs a:hover {
 	margin-left:10px;
 	margin-right:10px;
 	font-size:15px;
+	word-wrap: break-word;
 }
 .message-foot-notification {
 	font-size:14px;
@@ -577,7 +595,7 @@ form {
 }
 
 .reply {
-	width: 630px;
+	max-width: 630px;
 	margin-left: auto;
 	margin-right: auto;
 	padding-top:10px;
@@ -706,11 +724,28 @@ TD.army, div.army {
 	color:#34870b;
 }
 
-
 span.orderNotice {
 	font-weight:bold;
 }
 .likeMessageToggleLink, .likeCount {
 	font-size:8pt;
 	font-style:italic;
+}
+
+tr[class^="replyalternate"]{
+	word-wrap: break-word;
+}
+#chatboxscroll > TABLE.chatbox{
+	table-layout: fixed;
+}
+input[id^="UpdateButton"]{
+	margin-top: 10px;
+	width: auto !important;
+}
+input[id^="FinalizeButton"]{
+	margin-top: 10px;
+	width: auto !important;
+}
+.archive-messages-table{
+	table-layout: fixed;
 }

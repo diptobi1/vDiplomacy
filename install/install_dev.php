@@ -1025,9 +1025,12 @@ $sql[]="ALTER TABLE `wD_Backup_Games` ADD `potModifier` tinyint(3) unsigned NOT 
 // VDip 58
 $sql[]="ALTER TABLE wD_Users ADD `cssStyle` enum('vDip','webDip') DEFAULT 'vDip';";
 
+// VDip 59
+$sql[]="ALTER TABLE wD_Users ADD `forceDesktop` enum('Yes','No') DEFAULT 'No';";
+
 // Set the correct version-information in the database	
 $sql[]="UPDATE `wD_Misc`     SET `value` = '142' WHERE `name` = 'Version';";
-$sql[]="UPDATE `wD_vDipMisc` SET `value` = '58'  WHERE `name` = 'Version';";
+$sql[]="UPDATE `wD_vDipMisc` SET `value` = '59'  WHERE `name` = 'Version';";
 
 // Create a default Admin-Account
 require_once ('lib/auth.php');
