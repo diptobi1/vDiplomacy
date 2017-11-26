@@ -27,14 +27,17 @@ class ImperiumVariant_adjSupportMove extends adjSupportMove
 	protected function attacked()
 	{
 		global $Game;
+		
 		foreach($this->attackers as $attacker)
- 		{
+		{
+			
 			if ( in_array($attacker->id, $Game->Variant->river_moves) )
 				continue; // If we're attacked from across a river, it doesn't break support
+			
 			if ( isset($this->supporting->defender) )
 				if ( $attacker->id == $this->supporting->defender->id )
 					continue; // The unit attacking me is the unit I'm supporting against
-
+			
 			try
 			{
 				if ( $attacker->compare('attackStrength','>',0) )

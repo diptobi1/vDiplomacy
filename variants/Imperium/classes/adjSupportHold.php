@@ -1,6 +1,6 @@
 <?php
 /*
-	Copyright (C) 2010 Oliver Auth
+	Copyright (C) 2017 Oliver Auth
 
 	This file is part of the Imperium variant for webDiplomacy
 
@@ -27,13 +27,13 @@ class ImperiumVariant_adjSupportHold extends adjSupportHold
 	protected function attacked()
 	{
 		global $Game;
-		
+
 		foreach($this->attackers as $attacker)
 		{
+			
 			// If we're attacked from across a river, it doesn't break support
-			if ( in_array($attacker->id, $Game->Variant->river_moves) ) {
-				continue;
-			}
+			if ( in_array($attacker->id, $Game->Variant->river_moves) ) continue;
+			
 			try
 			{
 				if ( $attacker->compare('attackStrength','>',0) )
@@ -45,7 +45,7 @@ class ImperiumVariant_adjSupportHold extends adjSupportHold
 				else $p = $pe;
 			}
 		}
-
+		
 		if ( isset($p) ) throw $p;
 		else return false;
 	}

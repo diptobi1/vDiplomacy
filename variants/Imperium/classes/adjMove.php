@@ -1,6 +1,6 @@
 <?php
 /*
-	Copyright (C) 2012 Oliver Auth
+	Copyright (C) 2017 Oliver Auth
 
 	This file is part of the Imperium variant for webDiplomacy
 
@@ -24,12 +24,7 @@ defined('IN_CODE') or die('This script can not be run by itself.');
 class ImperiumVariant_adjMove extends adjMove
 {
 
-	function __construct($id, $countryID)
-	{		
-		parent::__construct($id, $countryID);
-	}	
-
-	// because it's private, the original defenderMoving can not acessed here...
+	// because it's private, the original defenderMoving can not accessed in the child...
 	private function defenderMoving()
 	{
 		return parent::defenderMoving();
@@ -39,11 +34,11 @@ class ImperiumVariant_adjMove extends adjMove
 	{
 		global $Game;
 		$prevent = parent::_preventStrength();
-		// If we're moving across a river, reduce the strength
-		if (in_array($this->id, $Game->Variant->river_moves)) {
-			$prevent['min'] = $prevent['min'] - 1;
-			$prevent['max'] = $prevent['max'] - 1;
-			if (isset($prevent['paradox'])) $prevent['paradox']--;
+		// If we're not moving across a river, reduce the strength
+		if (!(in_array($this->id, $Game->Variant->river_moves)))
+		{
+			$prevent['min']++;
+			$prevent['max']++;
 		}
 		return $prevent;
 	}
@@ -51,13 +46,14 @@ class ImperiumVariant_adjMove extends adjMove
 	protected function _attackStrength()
 	{
 		global $Game;
-		$attackStrength = parent::_attackStrength();
-		// Check rivers again before returning attackStrength
-		if ( in_array($this->id, $Game->Variant->river_moves) ) {
-			$attackStrength['min'] = $attackStrength['min']-1;
-			$attackStrength['max'] = $attackStrength['max']-1;
+		$attack = parent::_attackStrength();
+		// Check rivers before returning attack
+		if (!( in_array($this->id, $Game->Variant->river_moves) ))
+		{
+			$attack['min']++;
+			$attack['max']++;
 		}
-		return $attackStrength;
+		return $attack;
 	}
 	
 }

@@ -35,7 +35,7 @@
 	2.0:   code improvments ruver rule now fully implemented.
 	2.0.1: fixed: missing standoffs
 	2.0.2: fixed: very old bug. Strength was reduced by 0.5 instead of 1.
-
+	2.1:   looks like the Strenght-reduction by 1 caused all sort of errors. Now I increased all other strengths by 1...
 
 */
 
@@ -49,7 +49,7 @@ class ImperiumVariant extends WDVariant {
 	public $description='The German Tribes invade the Roman Empire';
 	public $author     ='Martin Asal';
 	public $adapter    ='Oliver Auth / Carey Jensen';
-	public $version    ='2.0.1';
+	public $version    ='2.1';
 	public $homepage   ='http://www.me-asal.de/imperium/index_eng.htm';
 
 	public $countries=array('Alamanni', 'Franci', 'Gothi', 'Hunni', 'Saxones', 'Vandali');
