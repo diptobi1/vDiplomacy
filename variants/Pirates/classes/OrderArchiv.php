@@ -28,18 +28,22 @@ class Hurricane_OrderArchiv extends OrderArchiv
 		parent::__construct();
 		$this->countryIDToName[]='Hurricane';
 	}
+	
 }
 
 class NewUnitNames_OrderArchiv extends Hurricane_OrderArchiv
 {
-	public function OutputOrders()
+	public function OutputOrder($order)
 	{
-		$ret=parent::OutputOrders();
+		$ret=parent::OutputOrder($order);
 		$ret = str_replace("fleet","clipper",$ret);
-		$ret = str_replace("army","frigate",$ret);
+		if ($order['countryID'] == 14)
+			$ret = str_replace("army","hurricane",$ret);
+		else
+			$ret = str_replace("army","frigate",$ret);
+			
 		return $ret;
 	}
-
 }
 
 class Transform_OrderArchiv extends NewUnitNames_OrderArchiv

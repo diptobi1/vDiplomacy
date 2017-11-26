@@ -21,9 +21,9 @@
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
-require_once ('variants/Pirates/classes/adjMove.php');
+/* I need to duplicate the PiratesVariant_adjMove here too... */
 
-class PiratesVariant_adjHeadToHeadMove extends PiratesVariant_adjMove
+class PiratesVariant_adjHeadToHeadMove extends adjHeadToHeadMove
 {
 
 	function __construct($id, $countryID)
@@ -31,58 +31,87 @@ class PiratesVariant_adjHeadToHeadMove extends PiratesVariant_adjMove
 		parent::__construct($id, $countryID);
 	}	
 
-	protected function _success()
+	protected function supportStrength($checkCountryID=false)
 	{
-		try
+		global $Game;
+		$min = 1;
+		$max = 1;
+		
+		if ( $this->countryID == 14 ) {
+			$min += 3;
+			$max += 3;
+		} elseif ( in_array($this->id, $Game->Variant->fregatte) ) {
+			$min += 0.5;
+			$max += 0.5;
+		}
+		
+		foreach($this->supporters as $supporter)
 		{
 			/*
-			 * Checking that our attack strength is greater than 0 is a roundabout
-			 * way of checking whether we have a path to the destination. If we don't
-			 * our attack strength is 0, and empty territories are considered to have
-			 * a hold strength of 0.
+			 * If specified then countries are checked to ensure no-one can
+			 * give attack support against their own countryID
 			 */
-			if ( ! $this->compare('attackStrength', '>', 0 ) )
-				return false;
-		}
-		catch(adjParadoxException $p)
-		{ }
-		
-		if ( isset($this->defender) )
-		{
+			if ( $checkCountryID and $this->defender->countryID == $supporter->countryID )
+				continue;
+			
 			try
 			{
-				// We're in a head to head and I don't have more attack strength than the defender
-				if ( ! $this->compare('attackStrength', '>', array($this->defender, 'defendStrength') ) )
-					return false;
+				if( $supporter->success() )
+				{
+					$min++;
+					$max++;
+				}
 			}
 			catch(adjParadoxException $pe)
 			{
+				$max++; // It is a possible supporter
 				if ( isset($p) ) $p->downSizeTo($pe);
 				else $p = $pe;
 			}
 		}
 		
-		// I need to have more attack strength than each preventer
-		foreach($this->preventers as $preventer)
-		{
-			try
-			{
-				if ( ! $this->compare('attackStrength', '>', array($preventer, 'preventStrength') ) )
-					return false;
-			}
-			catch(adjParadoxException $pe)
-			{
-				if ( isset($p) ) $p->downSizeTo($pe);
-				else $p = $pe;
-			}
-		}
+		$support = array('min'=>$min,'max'=>$max);
+		if ( isset($p) )
+			$support['paradox'] = $p;
 		
-		if ( isset($p) ) throw $p;
-		else return true;
+		return $support;
 	}
 	
-	protected function _defendStrength()
+	protected function _holdStrength()
 	{
-		return $this->supportStrength();
+		global $Game;
+		try
+		{
+			if ( $this->success() )
+			{
+				$min = 0;
+				$max = 0;
+			}
+			else
+			{
+				$min = 1;
+				$max = 1;
+			}
+		}
+		catch(adjParadoxException $p)
+		{
+			$min = 0;
+			$max = 1;
+		}
+		
+		if ( $this->countryID == 14 ) {
+			$min += 3;
+			$max += 3;
+		} elseif ( in_array($this->id, $Game->Variant->fregatte) ) {
+			$min += 0.5;
+			$max += 0.5;
+		}
+		
+		$holdStrength = array('min'=>$min,'max'=>$max);
+		if ( isset($p) )
+			$holdStrength['paradox'] = $p;
+		
+		return $holdStrength;
 	}
+	
 }

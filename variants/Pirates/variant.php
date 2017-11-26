@@ -25,7 +25,8 @@
 	1.0.6: No more hurricanes on deleted territories...
 	1.0.7: 1 terrotory missed for transform
 	1.1:   clippers only retreat to an adjacent territory. 
-	1.2  : only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
+	1.2:   only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
+	1.3:   bugfixes for the hurricane
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -39,7 +40,7 @@ class PiratesVariant extends WDVariant {
 	public $author     ='Gavin Atkinson';
 	public $adapter    ='Gavin Atkinson, Oliver Auth';
 	public $version    ='II';
-	public $codeVersion='1.2';	
+	public $codeVersion='1.3';	
 	
 	public $countries=array('Spain','England','France','Holland','Dunkirkers','Henry Morgan','Francois l Olonnais','Isaac Rochussen','The Infamous El Guapo','Daniel "The Exterminator" Montbars','Roche "The Rock" Braziliano','Bartolomeu "The Portuguese" de la Cueva','Daniel "The Terror" Johnson');	
 

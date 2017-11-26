@@ -41,12 +41,12 @@ class PiratesVariant_adjMove extends adjMove
 		$min = 1;
 		$max = 1;
 		
-		if ( in_array($this->id, $Game->Variant->fregatte) ) {
-			$min += 0.5;
-			$max += 0.5;
-		} elseif ( $this->countryID == 14 ) {
+		if ( $this->countryID == 14 ) {
 			$min += 3;
 			$max += 3;
+		} elseif ( in_array($this->id, $Game->Variant->fregatte) ) {
+			$min += 0.5;
+			$max += 0.5;
 		}
 		
 		foreach($this->supporters as $supporter)
@@ -103,12 +103,12 @@ class PiratesVariant_adjMove extends adjMove
 			$max = 1;
 		}
 		
-		if ( in_array($this->id, $Game->Variant->fregatte) ) {
-			$min += 0.5;
-			$max += 0.5;
-		} elseif ( $this->countryID == 14 ) {
+		if ( $this->countryID == 14 ) {
 			$min += 3;
 			$max += 3;
+		} elseif ( in_array($this->id, $Game->Variant->fregatte) ) {
+			$min += 0.5;
+			$max += 0.5;
 		}
 		
 		$holdStrength = array('min'=>$min,'max'=>$max);
