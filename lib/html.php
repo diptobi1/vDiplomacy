@@ -414,15 +414,23 @@ class libHTML
 		$variantCSS = '<link rel="stylesheet" href="'.$CSSname.'" type="text/css" />';
 		// End alternate CSS file patch
 
-		switch ($User->cssStyle)
+		if (isset($User))
 		{
-			case 'webDip':
-				$cssAdd = '/webDip';
-				break;
-			case 'vDip':
-			default:
-				$cssAdd = '/vDip';
+			switch ($User->cssStyle)
+			{
+				case 'webDip':
+					$cssAdd = '/webDip';
+					break;
+				case 'vDip':
+				default:
+					$cssAdd = '/vDip';
+			}
+			$forceDesktop = $User->forceDesktop;
+		} else {
+			$cssAdd = '/vDip';
+			$forceDesktop = 'No';
 		}
+			
 		/*
 		 * This line when included in the header caused certain translated hyphenated letters to come out as black diamonds with question marks.
 		 * 
@@ -442,7 +450,7 @@ class libHTML
 		<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/global.css').'?ver='.CSSVERSION.'" type="text/css" />
 		<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/gamepanel.css').'?ver='.CSSVERSION.'" type="text/css" />
 		<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/home.css').'?ver='.CSSVERSION.'" type="text/css" />'.
-		($User->forceDesktop == 'No' ?'<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/mobile.css').'?ver='.CSSVERSION.'" type="text/css" />':'').'
+		($forceDesktop == 'No' ?'<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/mobile.css').'?ver='.CSSVERSION.'" type="text/css" />':'').'
 		<link rel="apple-touch-icon-precomposed" href="'.STATICSRV.'apple-touch-icon.png" />
 		'.$variantCSS.'
 		<script type="text/javascript" src="useroptions.php"></script>
