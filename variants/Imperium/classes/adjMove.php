@@ -34,11 +34,11 @@ class ImperiumVariant_adjMove extends adjMove
 	{
 		global $Game;
 		$prevent = parent::_preventStrength();
-		// If we're not moving across a river, reduce the strength
-		if (!(in_array($this->id, $Game->Variant->river_moves)))
+		// If we're moving across a river, reduce the strength
+		if (in_array($this->id, $Game->Variant->river_moves))
 		{
-			$prevent['min']++;
-			$prevent['max']++;
+			$prevent['min']--;
+			$prevent['max']--;
 		}
 		return $prevent;
 	}
@@ -48,10 +48,10 @@ class ImperiumVariant_adjMove extends adjMove
 		global $Game;
 		$attack = parent::_attackStrength();
 		// Check rivers before returning attack
-		if (!( in_array($this->id, $Game->Variant->river_moves) ))
+		if ( in_array($this->id, $Game->Variant->river_moves) )
 		{
-			$attack['min']++;
-			$attack['max']++;
+			$attack['min']--;
+			$attack['max']--;
 		}
 		return $attack;
 	}
