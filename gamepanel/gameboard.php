@@ -120,7 +120,7 @@ class panelGameBoard extends panelGame
 							</div>' : '').'
 							
 							<a id="LargeMapLink" href="'.$largemapLink.'" target="_blank" class="light"> <div class="button">
-								<img src="images/historyicons/external.png"> Big map
+								<img src="images/historyicons/bigmap.png"> Big map
 							</div> </a>
 						</div>
 						<div id="History" class="lightgrey"></div>

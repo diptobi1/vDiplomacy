@@ -146,7 +146,7 @@ function loadMap(gameID, currentTurn, newTurn)
 	$('LargeMapLink').innerHTML = 
 			'<a id="LargeMapLink" href="map.php?gameID='+gameID+'&turn='+newTurn+'&mapType=large'
 				+'" target="blank" class="light">'+'<div class="button">'
-				+'<img src="images/historyicons/external.png"> Big map</div> </a>';
+				+'<img src="images/historyicons/bigmap.png"> Big map</div> </a>';
 	
 	// Update the source for the map image
 	$('mapImage').src = 'map.php?gameID='+gameID+'&turn='+newTurn;
