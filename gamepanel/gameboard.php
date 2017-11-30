@@ -56,21 +56,76 @@ class panelGameBoard extends panelGame
 		}
 		
 
-		$map = '
+/*		$map = '
 		<div id="mapstore">
 			<img id="mapImage" src="'.$smallmapLink.'" alt=" " title="'.l_t('The small map for the current phase. If you are starting a new turn this will show the last turn\'s orders').'" />
 			<p class="lightgrey" style="text-align:center">
 				<a class="mapnav" href="#" onClick="loadMap('.$this->id.','.$mapTurn.',-1); return false;">
-				<img id="Start" src="'.l_s('images/historyicons/Start_disabled.png').'" alt="'.l_t('Start').'" title="'.l_t('View the map from the first turn').'" /></a>
-				<a class="mapnav" href="#" onClick="loadMapStep('.$this->id.','.$mapTurn.',-1); return false;"><img id="Backward" src="'.l_s('images/historyicons/Backward_disabled.png').'" alt="'.l_t('Backward').'" title="'.l_t('View the map from the previous turn').'" /></a>
-				<a class="mapnav" href="#" onClick="toggleMoves('.$this->id.','.$mapTurn.'); return false;"><img id="NoMoves" src="images/historyicons/'.($User->options->value['showMoves'] == 'No'? 'show':'hide').'moves.png" alt="NoMoves" title="Toggle movement lines" /></a>
-				<a id="LargeMapLink" class="mapnav" href="'.$largemapLink.'" target="_blank" class="light"><img src="'.l_s('images/historyicons/external.png').'" alt="'.l_t('Open large map').'" title="'.l_t('This button will open the large map in a new window. The large map shows all the moves, and is useful when the small map isn\'t clear enough.').'" /></a></span>
-				<a class="mapnav" href="#" onClick="loadMapStep('.$this->id.','.$mapTurn.',1); return false;"><img id="Forward" src="'.l_s('images/historyicons/Forward_disabled.png').'" alt="'.l_t('Forward').'" title="'.l_t('View the map from the next turn').'" /></a>
-				<a class="mapnav" href="#" onClick="loadMap('.$this->id.','.$mapTurn.','.$mapTurn.'); return false;"><img id="End" src="'.l_s('images/historyicons/End_disabled.png').'" alt="'.l_t('End').'" title="'.l_t('View the map from the most recent turn').'" /></a>'.
+					<img id="Start" src="'.l_s('images/historyicons/Start_disabled.png').'" alt="'.l_t('Start').'" title="'.l_t('View the map from the first turn').'" />
+				</a>
+				<a class="mapnav" href="#" onClick="loadMapStep('.$this->id.','.$mapTurn.',-1); return false;">
+					<img id="Backward" src="'.l_s('images/historyicons/Backward_disabled.png').'" alt="'.l_t('Backward').'" title="'.l_t('View the map from the previous turn').'" />
+				</a>
+				<a class="mapnav" href="#" onClick="toggleMoves('.$this->id.','.$mapTurn.'); return false;">
+					<img id="NoMoves" src="images/historyicons/'.($User->options->value['showMoves'] == 'No'? 'show':'hide').'moves.png" alt="NoMoves" title="Toggle movement lines" />
+				</a>
+				<a id="LargeMapLink" class="mapnav" href="'.$largemapLink.'" target="_blank" class="light">
+					<img src="'.l_s('images/historyicons/external.png').'" alt="'.l_t('Open large map').'" title="'.l_t('This button will open the large map in a new window. The large map shows all the moves, and is useful when the small map isn\'t clear enough.').'" /></a></span>
+				<a class="mapnav" href="#" onClick="loadMapStep('.$this->id.','.$mapTurn.',1); return false;">
+				<img id="Forward" src="'.l_s('images/historyicons/Forward_disabled.png').'" alt="'.l_t('Forward').'" title="'.l_t('View the map from the next turn').'" />
+				</a>
+				<a class="mapnav" href="#" onClick="loadMap('.$this->id.','.$mapTurn.','.$mapTurn.'); return false;">
+				<img id="End" src="'.l_s('images/historyicons/End_disabled.png').'" alt="'.l_t('End').'" title="'.l_t('View the map from the most recent turn').'" />
+				</a>'.
 				($this->Members->isJoined() ? '<a class="mapnav" href="#" onClick="togglePreview('.$this->id.','.$mapTurn.'); return false;"><img id="Preview" src="images/historyicons/Preview.png" alt="PreviewMoves" title="Show server side stored orders on the map" /></a>' : '').'
 			</p>
 			<p id="History" class="lightgrey"></p>
 		</div>';
+		
+/*
+			<div class="sitesection">
+				<section>
+					<div class="boxhandle" title="hide/show section"></div><h2 class="boxtitle">Show Map</h2>
+				</section>
+			</div>
+*/
+
+		$map = '
+					<div id="mapstore" class="boxdetail center">
+						
+						<div class="map">
+							<img id="mapImage" src="'.$smallmapLink.'" alt=" " title="'.l_t('The small map for the current phase. If you are starting a new turn this will show the last turn\'s orders').'" />
+						</div>
+						<div class="maptools">
+							<div class="maphistory">
+								<div class="button" onClick="loadMap('.$this->id.','.$mapTurn.',-1); return false;">
+									<img id="Start" src="'.l_s('images/historyicons/Start_disabled.png').'" alt="'.l_t('Start').'" title="'.l_t('View the map from the first turn').'" />
+								</div>
+								<div class="button" onClick="loadMapStep('.$this->id.','.$mapTurn.',-1); return false;">
+									<img id="Backward" src="'.l_s('images/historyicons/Backward_disabled.png').'" alt="'.l_t('Backward').'" title="'.l_t('View the map from the previous turn').'" />
+								</div>
+								<div class="button" onClick="loadMapStep('.$this->id.','.$mapTurn.',1); return false;">
+									<img id="Forward" src="'.l_s('images/historyicons/Forward_disabled.png').'" alt="'.l_t('Forward').'" title="'.l_t('View the map from the next turn').'" />
+								</div>
+								<div class="button" onClick="loadMap('.$this->id.','.$mapTurn.','.$mapTurn.'); return false;">
+									<img id="End" src="'.l_s('images/historyicons/End_disabled.png').'" alt="'.l_t('End').'" title="'.l_t('View the map from the most recent turn').'" />
+								</div>
+							</div>
+							<div class="button" onClick="toggleMoves('.$this->id.','.$mapTurn.'); return false;">
+								<img id="NoMoves" src="images/historyicons/'.($User->options->value['showMoves'] == 'No'? 'show':'hide').'moves.png" alt="NoMoves" title="Toggle movement lines" /> Toggle moves
+							</div>
+							'.($this->Members->isJoined() ? '
+							<div class="button" href="#" onClick="togglePreview('.$this->id.','.$mapTurn.'); return false;">
+								<img id="Preview" src="images/historyicons/Preview.png" alt="PreviewMoves" title="Show server side stored orders on the map" /> Preview
+							</div>' : '').'
+							
+							<a id="LargeMapLink" href="'.$largemapLink.'" target="_blank" class="light"> <div class="button">
+								<img src="images/historyicons/external.png"> Big map
+							</div> </a>
+						</div>
+						<div id="History" class="lightgrey"></div>
+					</div>
+		';
 
 		if ($User->phaseCount < 30 && $this->phase != 'Pre-game')
 			$map .= '<p style="text-align:center">Tip: Failed orders are usually only displayed on the largemap (<a href="'.$largemapLink.'" class="light"><img src="'.l_s('images/historyicons/external.png').'"></a>).</p>';

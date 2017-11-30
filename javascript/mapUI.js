@@ -28,15 +28,14 @@ var preview='';
 function toggleMoves(gameID, currentTurn) {
 	if (noMoves == '') {
 		noMoves = '&hideMoves';
-		$('NoMoves').src = 'images/historyicons/showmoves.png';
+		$('NoMoves').src = "images/historyicons/showmoves.png";
 	} else {
 		noMoves = '';
-		$('NoMoves').src = 'images/historyicons/hidemoves.png';
+		$('NoMoves').src = "images/historyicons/hidemoves.png";
 	}
 	loadMapStep(gameID, currentTurn, 0)	
 	loadMap(gameID, currentTurn, turn)
 }
-
 // Toggle the display of the Move arrows.
 function togglePreview(gameID, currentTurn) {
 	turn = currentTurn
@@ -145,10 +144,9 @@ function loadMap(gameID, currentTurn, newTurn)
 	
 	// Update the link to the large map
 	$('LargeMapLink').innerHTML = 
-			' <a href="map.php?gameID='+gameID+'&turn='+newTurn+'&mapType=large'+'" target="blank" class="light">'+
-			'<img src="'+l_s('images/historyicons/external.png')+'" alt="'+l_t('Open large map')+'" ' +
-			'title="'+l_t('This button will open the large map in a new window. The large ' +
-			'map shows all the moves, and is useful when the small map isn\'t clear enough.')+'" /><\/a>';
+			'<a id="LargeMapLink" href="map.php?gameID='+gameID+'&turn='+newTurn+'&mapType=large'
+				+'" target="blank" class="light">'+'<div class="button">'
+				+'<img src="images/historyicons/external.png"> Big map</div> </a>';
 	
 	// Update the source for the map image
 	$('mapImage').src = 'map.php?gameID='+gameID+'&turn='+newTurn;
