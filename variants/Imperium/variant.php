@@ -37,6 +37,8 @@
 	2.0.2: fixed: very old bug. Strength was reduced by 0.5 instead of 1.
 	2.1:   looks like the Strenght-reduction by 1 caused all sort of errors. Now I increased all other strengths by 1...
 	2.1.1: Maybe the error was more the paradox-reduction... Now strenght -1
+	2.1.2: An attack across a river with "0" fails even against empty territories. 
+	       In this case set the strenght min/max to 0.5. This fails against everything else, but not against empty territories
 
 */
 
@@ -50,7 +52,7 @@ class ImperiumVariant extends WDVariant {
 	public $description='The German Tribes invade the Roman Empire';
 	public $author     ='Martin Asal';
 	public $adapter    ='Oliver Auth / Carey Jensen';
-	public $version    ='2.1.1';
+	public $version    ='2.1.2';
 	public $homepage   ='http://www.me-asal.de/imperium/index_eng.htm';
 
 	public $countries=array('Alamanni', 'Franci', 'Gothi', 'Hunni', 'Saxones', 'Vandali');
