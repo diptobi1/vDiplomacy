@@ -185,7 +185,7 @@ class panelGameBoard extends panelGame
 	 * form, which board.php processes.
 	 * @return string
 	 */
-	function votes()
+/*	function votes()
 	{
 		global $User;
 		if ( ( $this->phase == 'Pre-game' || $this->phase == 'Finished' ) ||
@@ -220,7 +220,10 @@ class panelGameBoard extends panelGame
 			</td>
 			</tr>
 			</table>';
-		
+
+		// vDip vote-Buttons do not need a table:
+		$buf = '<div class="bar membersList memberVotePanel"><a name="votebar"></a>'.$this->showVoteForm($vVote, $vCancel);
+			
 		return $buf . '</div>';
 	}
 
@@ -232,6 +235,7 @@ class panelGameBoard extends panelGame
 	 * @param array $vCancel Votes which can be cancelled
 	 * @return string
 	 */
+/*
 	function showVoteForm($vVote, $vCancel)
 	{
 		$buf = '<form onsubmit="return confirm(\''. l_t("Are you sure you want to cast this vote?").'\');" action="board.php?gameID='.$this->id.'#votebar" method="post">';
@@ -270,7 +274,82 @@ class panelGameBoard extends panelGame
 
 		return $buf;
 	}
+*/	
+	function votes()
+	{
+		global $User;
+		if ( ( $this->phase == 'Pre-game' || $this->phase == 'Finished' ) ||
+			!isset($this->Members->ByUserID[$User->id]) ||
+			$this->Members->ByUserID[$User->id]->status != 'Playing')
+			return '';
+		
+		if ($this->adminLock == 'Yes') return '';
 
+		$vAllowed = Members::$votes;
+		$vSet = $this->Members->ByUserID[$User->id]->votes;
+		$vPassed = $this->Members->votesPassed();
+
+		$vCancel=array();
+		$vVote=array();
+		
+		foreach($vAllowed as $vote) $votesCast[$vote]=array();
+			
+		foreach($this->Members->ByStatus['Playing'] as $Member)
+			foreach ($Member->votes as $vote)
+				$votesCast[$vote][] = $Member->country;
+		
+		$buf = '<div class="bar membersList memberVotePanel"><a name="votebar"></a><div class="votes">';
+		$buf .= '<form action="board.php?gameID='.$this->id.'#votebar" method="post">';
+		$buf .= '<input type="hidden" name="formTicket" value="'.libHTML::formTicket().'" />';
+		
+		foreach($vAllowed as $vote)
+		{
+			if (strpos($this->blockVotes,$vote)!== false) continue;
+
+			if(in_array($vote, $vSet))
+			{
+				if(!in_array($vote, $vPassed))
+					$buf .= $this->voteHTML($vote, $votesCast[$vote], true);
+			}
+			else
+				$buf .= $this->voteHTML($vote, $votesCast[$vote], false);
+		}
+		$buf .= '</form><div style="clear:both"></div></div><div class="hr"></div>';
+			
+		return $buf;
+	}
+
+	function voteHTML($vote, $votesActiveBy, $voteActive)
+	{
+		
+		global $User;
+		
+		if ( $vote == 'Pause' && $this->processStatus == 'Paused' ) $vote = 'Unpause';
+
+		if ($voteActive){
+			$style    = "button setvote";
+			$question = l_t("Are you sure you want to withdraw your ".$vote." vote?");
+		} else {
+			$style    = "button";
+			$question = l_t("Are you sure you want to cast this ".$vote." vote?");
+		}
+
+		$voteCountries = implode (", ", $votesActiveBy);
+		$voteCountries = str_replace($this->Members->ByUserID[$User->id]->country, "You", $voteCountries);
+		if ( $vote == 'Draw' && $this->drawType == 'draw-votes-hidden' ) {
+			$voteCountries = "(draw votes are hidden)";
+		}
+		
+		$voteActiveImage = (($voteCountries != '' && $voteCountries != '(draw votes are hidden)')  ? ' <img src="images/icons/alert.png">' : '');
+		$buttonTitle     = ($voteCountries != '' ? 'title = "Voted: '.$voteCountries.'"' : ''); ;
+		
+		$buf = '<button class="'.$style.'" name="'.$vote.'" onclick="return confirm(\''. $question.'\');" '
+				.$buttonTitle.'/> <img src="images/icons/vote_'.strtolower($vote).'.png"> '.$vote.$voteActiveImage.'</button>';
+
+		return $buf;
+	}
+
+	
 	public function __construct($gameData)
 	{
 		parent::__construct($gameData);

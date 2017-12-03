@@ -8,7 +8,7 @@
 }
 
 .gamePanel {
-	width:90%;
+	width:100%;
 	color: #333;
 	margin:0 auto;
 }
@@ -468,3 +468,22 @@ button {
 	width:38px;
 }
 
+/*############## votes ############*/
+.votes {
+	text-align:center;
+}
+.votes .button {
+	width:122px;
+	height:25px;
+	line-height:21px;
+	display:inline-block;
+	position:relative;
+	font-size: 14px;	
+	border:2px solid #d4cfc9;
+}
+.votes .button.setvote {
+	border:2px solid #6D5238;
+}
+.votes h2 {
+	display:inline-block;
+}
