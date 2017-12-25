@@ -64,15 +64,6 @@ defined('IN_CODE') or die('This script can not be run by itself.');
 		Choose the site-style / colors of vDiplomacy. You can use the default vDip-colors or the original webDip-colors. <b>You might need to update twice for this to take effect.</b>
 	</li>
 
-	<li class="formlisttitle">Always use desktop-version (even on mobile):</li>
-	<li class="formlistfield">
-		<input type="radio" name="userForm[forceDesktop]" value="Yes"   <?php if($User->forceDesktop=='Yes')    print "checked"; ?>>Yes
-		<input type="radio" name="userForm[forceDesktop]" value="No" <?php if($User->forceDesktop=='No')  print "checked"; ?>>No
-	</li>
-	<li class="formlistdesc">
-		If you have trouble with the mobile version of the site always use the desktop version.
-	</li>
-
 <?php
 /*
  * This is done in PHP because Eclipse complains about HTML syntax errors otherwise

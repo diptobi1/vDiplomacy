@@ -67,7 +67,7 @@ class libHTML
 
 	static function platinum()
 	{
-		return ' <img src="'.l_s('images/icons/platinum.png').'" alt="(P)" title="'.l_t('Co - Site Owner').'" />';
+		return ' <img src="'.l_s('images/icons/platinum.png').'" alt="(P)" title="'.l_t('Donator - platinum').'" />';
 	}
 
 	static function gold()
@@ -83,6 +83,21 @@ class libHTML
 	static function bronze()
 	{
 		return ' <img src="'.l_s('images/icons/bronze.png').'" alt="(B)" title="'.l_t('Donator - bronze').'" />';
+	}
+	
+	static function service()
+	{
+		return ' <img src="'.l_s('images/icons/service.png').'" alt="(P)" title="'.l_t('Service Award').'" />';
+	}
+	
+	static function owner()
+	{
+		return ' <img src="'.l_s('images/icons/owner.png').'" alt="(P)" title="'.l_t('Site Co-Owner').'" />';
+	}
+	
+	static function adamantium()
+	{
+		return ' <img src="'.l_s('images/icons/adamantium.png').'" alt="(P)" title="'.l_t('Donator - adamantium').'" />';
 	}
 
 	static function devbronze()
@@ -392,6 +407,8 @@ class libHTML
 	 */
 	static public function prebody ( $title )
 	{
+		$jsVersion = JSVERSION;  // increment this to force clients to reload their JS files
+
 		global $User;
 		
 		/* Instead of many small css files only load one big file:
@@ -418,17 +435,12 @@ class libHTML
 		{
 			switch ($User->cssStyle)
 			{
-				case 'webDip':
-					$cssAdd = '/webDip';
-					break;
+				case 'webDip':	$cssAdd = '/webDip'; break;
 				case 'vDip':
-				default:
-					$cssAdd = '/vDip';
+				default:		$cssAdd = '/vDip';
 			}
-			$forceDesktop = $User->forceDesktop;
 		} else {
 			$cssAdd = '/vDip';
-			$forceDesktop = 'No';
 		}
 			
 		/*
@@ -447,10 +459,9 @@ class libHTML
 		<meta name="keywords" content="'.l_t('diplomacy,diplomacy game,online diplomacy,classic diplomacy,web diplomacy,diplomacy board game,play diplomacy,php diplomacy').'" />
 		<link rel="shortcut icon" href="'.STATICSRV.l_s('favicon.ico').'" />
 		<link rel="icon" href="'.STATICSRV.l_s('favicon.ico').'" />
-		<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/global.css').'?ver='.CSSVERSION.'" type="text/css" />
-		<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/gamepanel.css').'?ver='.CSSVERSION.'" type="text/css" />
-		<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/home.css').'?ver='.CSSVERSION.'" type="text/css" />'.
-		($forceDesktop == 'No' ?'<link rel="stylesheet" href="'.CSSDIR.$cssAdd.l_s('/mobile.css').'?ver='.CSSVERSION.'" type="text/css" />':'').'
+		<link rel="stylesheet" id="global-css"     href="'.CSSDIR.$cssAdd.l_s('/global.css').'?ver='.CSSVERSION.'" type="text/css" />
+		<link rel="stylesheet" id="game-panel-css" href="'.CSSDIR.$cssAdd.l_s('/gamepanel.css').'?ver='.CSSVERSION.'" type="text/css" />
+		<link rel="stylesheet" id="home-css"       href="'.CSSDIR.$cssAdd.l_s('/home.css').'?ver='.CSSVERSION.'" type="text/css" />
 		<link rel="apple-touch-icon-precomposed" href="'.STATICSRV.'apple-touch-icon.png" />
 		'.$variantCSS.'
 		<script type="text/javascript" src="useroptions.php"></script>
@@ -459,8 +470,10 @@ class libHTML
 		<link rel="stylesheet" type="text/css" href="'.STATICSRV.l_s('contrib/js/pushup/src/css/pushup.css').'" />
 		<script type="text/javascript" src="'.STATICSRV.l_j('contrib/js/pushup/src/js/pushup.js').'"></script>
 		<script type="text/javascript">
-		STATICSRV="'.STATICSRV.'";
+		    STATICSRV="'.STATICSRV.'";
+		    var cssDirectory = "'.CSSDIR.$cssAdd.'";
 		</script>
+		<script type="text/javascript" src="'.l_j('javascript/desktopMode.js').'?ver='.$jsVersion.'"></script>
 		<title>'.l_t('%s - vDiplomacy',$title).'</title>
 		
 		<script type ="text/javascript" src="contrib/cookieWarning/warnCookies.js"></script>
@@ -470,7 +483,8 @@ class libHTML
 		<script type ="text/javascript" src="javascript/chat.js"></script>
 	</head>';
 	}
-
+	
+	
 	/**
 	 * Print the HTML which comes before the main content; title, menu, notification bar.
 	 *
@@ -707,13 +721,12 @@ class libHTML
 		$links=array();
 
 		// Items displayed in the menu
-		$links['index.php']=array('name'=>'Home', 'inmenu'=>TRUE, 'title'=>"See what's happening");
-		if( isset(Config::$customForumURL) ) {
+		$links['index.php']=array('name'=>'Home', 'inmenu'=>TRUE, 'title'=>"See what's happening");  
+	    if( isset(Config::$customForumURL) ) {
 			$links[Config::$customForumURL]=array('name'=>'Forum', 'inmenu'=>TRUE, 'title'=>"The forum; chat, get help, help others, arrange games, discuss strategies");
-		} else {
+        } else {
 			$links['forum.php']=array('name'=>'Forum', 'inmenu'=>TRUE, 'title'=>"The forum; chat, get help, help others, arrange games, discuss strategies");
-		}
-		
+        }
 		$links['gamelistings.php']=array('name'=>'Games', 'inmenu'=>TRUE, 'title'=>"Game listings; a searchable list of the games on this server");
 
 		if (is_object($User))
@@ -730,7 +743,7 @@ class libHTML
 				$links['usercp.php']=array('name'=>'Settings', 'inmenu'=>TRUE, 'title'=>"Change your user specific settings");
 			}
 		}
-		$links['help.php']=array('name'=>'Help', 'inmenu'=>TRUE, 'title'=>'Get help and information; guides, intros, FAQs, stats, links');
+		$links['help.php']=array('name'=>'Help/Donate', 'inmenu'=>TRUE, 'title'=>'Get help and information; guides, intros, FAQs, stats, links');
 
 		// Items not displayed on the menu
 		$links['map.php']=array('name'=>'Map', 'inmenu'=>FALSE);
@@ -998,8 +1011,10 @@ class libHTML
 		$cookiesWarning='<div id="cookiesWarning"></div><script language="JavaScript" type="text/javascript">checkCookieExist();</script>';
 	
 		// Version, sourceforge and HTML compliance logos
-		return $cookiesWarning.l_t('based on webDiplomacy version <strong>%s</strong> vDip.%s',number_format(VERSION/100,2),VDIPVERSION.'<br />
-			<a href="https://github.com/Sleepcap/vDiplomacy" class="light">GitHub Project</a> | <a href="modforum.php" class="light">Contact Moderator</a>');
+		return $cookiesWarning.l_t('based on webDiplomacy version <strong>%s</strong>-vDip.<strong>%s</strong>',number_format(VERSION/100,2),VDIPVERSION.'<br />
+			<a href="http://github.com/Sleepcap/vDiplomacy" class="light">GitHub Project</a> | 
+			<a href="http://github.com/Sleepcap/vDiplomacy/issues" class="light">Bug Reports</a> | 
+			<a href="modforum.php" class="light">Contact Moderator</a>');
 	}
 
 	/*
@@ -1080,7 +1095,7 @@ class libHTML
 		
 		if( is_object($Locale) )
 			$Locale->onFinish();
-		
+
 		// Add the javascript includes:
 		$footerIncludes = array();
 		$footerIncludes[] = l_j('../locales/layer.js');
@@ -1135,6 +1150,17 @@ class libHTML
 				'.(Config::$debug ? 'alert(e);':'').'
 				}
 			}, this);
+			var toggle = localStorage.getItem("desktopEnabled");
+			var toggleElem = document.getElementById(\'js-desktop-mode\');
+            if (toggle == "true") {
+                if(toggleElem !== null) {
+                    toggleElem.innerHTML = "Disable Desktop Mode";
+                }
+            } else {
+                if(toggleElem !== null) {
+                    toggleElem.innerHTML = "Enable Desktop Mode";
+                }
+            }
 		</script>
 		';
 		

@@ -36,6 +36,7 @@
 	1.1.7: Movment fix for some borders
 	1.1.7.1: Movment fix for some borders
 	1.1.7.3: Movment fix for some borders
+	1.1.7.4: Movment fix for some borders
 		   
 */
 
@@ -48,7 +49,7 @@ class WorldVariant extends WDVariant {
 	public $author     = 'David Norman';
 	public $adapter    = 'Carey Jensen / Kestas J. Kuliukas / Oliver Auth';
 	public $version    = 'IX';
-	public $codeVersion= '1.1.7.3';
+	public $codeVersion= '1.1.7.4';
 	public $homepage   = 'http://www.variantbank.org/results/rules/w/worlddip9.htm';
 
 	public $countries=array( 'Argentina','Brazil','China','Europe','Frozen-Antarctica',

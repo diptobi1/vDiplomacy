@@ -263,13 +263,6 @@ class User {
 	public $cssStyle;
 	
 	/**
-	 * forceDesktop
-	 * Display the site always in desktop-mode (even if on mobile)
-	 * @var 'yes' or 'no'
-	 */
-	public $forceDesktop;
-
-	/**
 	 * Give this user a supplement of points
 	 *
 	 * @param $userID The user ID
@@ -536,14 +529,6 @@ class User {
 				$SQLVars['pointNClick'] = "No";
 		}
 		
-		if( isset($userForm['forceDesktop']) )
-		{
-			if ( $userForm['forceDesktop'] == "Yes" )
-				$SQLVars['forceDesktop'] = "Yes";
-			else
-				$SQLVars['forceDesktop'] = "No";
-		}
-		
 		if( isset($userForm['terrGrey']) )
 		{
 			if ( $userForm['terrGrey'] == "all" )
@@ -660,7 +645,6 @@ class User {
 			u.vpoints,
 			u.integrityBalance,
 			u.cssStyle,
-			u.forceDesktop,
 			IF(s.userID IS NULL,0,1) as online,
 			u.deletedCDs
 			FROM wD_Users u

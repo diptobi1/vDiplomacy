@@ -25,9 +25,9 @@
 defined('IN_CODE') or die('This script can not be run by itself.');
 
 define("VERSION", 142);
-define("VDIPVERSION", 59);
-define("CSSVERSION", 5);
-define("JSVERSION", 6);
+define("VDIPVERSION", 60);
+define("CSSVERSION", 7);
+define("JSVERSION", 7);
 
 // Some integer values which are named for clarity.
 

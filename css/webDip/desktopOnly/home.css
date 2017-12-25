@@ -11,7 +11,7 @@
 	text-align:right;
 	font-size:14px;
 	font-style:italic;	
-	background-color:transparent;
+	background-color:#fff;
 	padding-left:10px;
 	padding-bottom:15px;
 	border-left:1px solid #c1c1c1;
@@ -55,8 +55,8 @@ td.homeNoticesPMs textarea, td.homeNoticesGame textarea {
 }
 
 td.homeMessages, td.homeGameNotices, td.homeGamesStats, td.homeNoticesPMs, td.homeNoticesGame {
-	/*border:1px solid #aaa;*/
-	background-color: transparent;
+	border:1px solid #aaa;
+	background-color: #fff;
 	padding:0 !important;
 	margin:0;
 	}
@@ -82,6 +82,8 @@ td.homeGamesStats {
 	/*width:auto;*/
 }
 
+
+
 td.homeSplit {
 	width:5px;
 	border:0;
@@ -94,7 +96,7 @@ div.homeHeader {
 	font-weight:bold;
 	font-size:16px;
 	text-align: center;
-	color: #524234;
+	color: #009902;
 	padding-top: 3px;
 }
 
@@ -166,47 +168,4 @@ td.homeGameNotices .homeForumSubject {
 .homeForumMessage {
 	color: #39383A;
 	/*color:#666;*/
-}
-
-@media only screen and (max-width: 800px) {
-	table.homeTable {
-		table-layout: fixed;
-	}
-	table.homeTable td {
-		display: block;
-	}
-	table.homeTable tr {
-		display: flex;
-		flex-direction: column;
-	}
-	table.homeTable .homeMessages{
-		order: 3;
-	}
-	table.homeTable .homeGameNotices{
-		order: 2;
-	}
-	table.homeTable .homeGamesStats{
-		order: 1;
-	}
-
-	td.homeMessages {
-		width:100%;
-		max-width: 100%;
-	}
-
-	td.homeGameNotices {
-		width:100%;
-		max-width: 100%;
-		margin-top: 5px;
-	}
-
-	td.homeGamesStats {
-		width:100%;
-		max-width: 100%;
-		margin-top: 5px;
-	}
-	.homeForumGroup {
-		font-size:16px;
-	}
-
 }

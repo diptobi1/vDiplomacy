@@ -749,3 +749,120 @@ input[id^="FinalizeButton"]{
 .archive-messages-table{
 	table-layout: fixed;
 }
+
+@media only screen and (max-width: 500px){
+	#logo{
+		position: relative;
+		width: 60%;
+		display: block;
+		margin: 0 auto;
+	}
+}
+@media only screen and (max-width: 800px) and (min-width: 500px){
+	#logo{
+		position: relative;
+		width: 40%;
+		display: block;
+		margin: 0 auto;
+	}
+}
+
+@media only screen and (max-width: 800px) {
+	body {
+		font-size: 16px;
+		padding: 10px;
+	}
+	span.logon {
+		font-size:14px;
+	}
+	#header-container {
+		height: auto;
+		padding: 10px;
+		margin: -10px -10px 0;
+	}
+	#header-welcome{
+		margin-top: 15px;
+		text-align: center;
+	}
+	#header-welcome a:first-child {
+		word-wrap: break-word;
+	}
+	#header-goto {
+		margin-top: 10px;
+		text-align: center;
+		clear: inherit;
+	}
+	#header-goto a{
+		display: inline-block;
+		margin-top: 5px;
+	}
+	#seperator{
+		margin: 0 -10px;
+	}
+	#seperator-fixed{
+		display: none;
+	}
+	div.content{
+		padding: 15px 10px;
+	}
+	img {
+		max-width: 100%;
+		height: auto;
+	}
+	div.gamelistings-tabs {
+		font-size: 16px;
+	}
+	div.gamelistings-tabs a{
+		display: block;
+		margin-top: 10px;
+	}
+	ul.formlist{
+		margin: 0;
+	}
+	input[type="text"], input[type="submit"], input[type="password"], textarea, select{
+		font-size: 16px;
+		width: 100%;
+	}
+	textarea{
+		resize: vertical;
+	}
+	.message-subject{
+		text-align: center;
+	}
+	.message-head{
+		text-align: center;
+		float: none;
+	}
+	.reply > .message-head{
+		text-align: right;
+		float: right;
+		word-wrap: break-word;
+		max-width: 100%;
+	}
+	.thread > .message-subject{
+		text-align: inherit;
+	}
+	.thread > .message-head{
+		text-align: right;
+		float: right;
+		word-wrap: break-word;
+		max-width: 100%;
+	}
+	div.hr, div.hrthin {
+		width:100%;
+	}
+	TD.uniticon {
+		width:15%;
+		text-align:right;
+	}
+	TD.time {
+		width:20% !important;
+	}
+	#chatboxtabs {
+		font-size: 16px !important;
+		padding-bottom: 10px;
+	}
+	.message-contents{
+		word-wrap: break-word;
+	}
+}

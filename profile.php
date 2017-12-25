@@ -708,8 +708,11 @@ print '<p><ul class="formlist">';
 
 if ( $UserProfile->type['ForumModerator'] || $UserProfile->type['Admin'] )
 {
-	print '<li><strong>'.l_t('Mod/Admin team').'</strong></li>';
-	print '<li>&nbsp;</li>';
+	if ($UserProfile->id !=15658)
+	{
+		print '<li><strong>'.l_t('Mod/Admin team').'</strong></li>';
+		print '<li>&nbsp;</li>';
+	}
 }
 
 if ( $UserProfile->online )

@@ -79,8 +79,11 @@ td.homeGameNotices {
 
 td.homeGamesStats {
 	width:284px; /* 800px = 250+250+(300-6[borders]-10[table dividers])*/
+	max-width:284px;
 	/*width:auto;*/
 }
+
+
 
 td.homeSplit {
 	width:5px;
@@ -166,47 +169,4 @@ td.homeGameNotices .homeForumSubject {
 .homeForumMessage {
 	color: #39383A;
 	/*color:#666;*/
-}
-
-@media only screen and (max-width: 800px) {
-	table.homeTable {
-		table-layout: fixed;
-	}
-	table.homeTable td {
-		display: block;
-	}
-	table.homeTable tr {
-		display: flex;
-		flex-direction: column;
-	}
-	table.homeTable .homeMessages{
-		order: 3;
-	}
-	table.homeTable .homeGameNotices{
-		order: 2;
-	}
-	table.homeTable .homeGamesStats{
-		order: 1;
-	}
-
-	td.homeMessages {
-		width:100%;
-		max-width: 100%;
-	}
-
-	td.homeGameNotices {
-		width:100%;
-		max-width: 100%;
-		margin-top: 5px;
-	}
-
-	td.homeGamesStats {
-		width:100%;
-		max-width: 100%;
-		margin-top: 5px;
-	}
-	.homeForumGroup {
-		font-size:16px;
-	}
-
 }

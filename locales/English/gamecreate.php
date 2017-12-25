@@ -141,7 +141,8 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 
 		<strong>Default:</strong> <?php print $defaultPoints.libHTML::points(); ?>
 	</li>
-	
+
+<ul class="formlist">
 <?php
 if( count(Config::$variants)==1 )
 {
@@ -227,6 +228,47 @@ else
 	setExtOptions(<?php print $first;?>);
 	</script>
 	
+</ul>
+
+<li class="formlisttitle">
+	<img src="images/icons/lock.png" alt="Private" /> Password protect (optional):
+</li>
+<li class="formlistfield">
+	<ul>
+		<li>Password: <input type="password" name="newGame[password]" value="" size="30" /></li>
+		<li>Confirm: <input type="password" name="newGame[passwordcheck]" value="" size="30" /></li>
+	</ul>
+</li>
+<li class="formlistdesc">
+	<strong>This is optional.</strong> If you set this only people who know the password will be able to join.<br /><br />
+
+	<strong>Default:</strong> No password set
+</li>
+
+<div class="hr"></div>
+
+<div id="AdvancedSettingsButton">
+<ul class="formlist">
+	<li class="formlisttitle">
+		<a href="#" onclick="$('AdvancedSettings').show(); $('AdvancedSettingsButton').hide(); return false;">
+		Open Advanced Settings
+		</a>
+	</li>
+	<li class="formlistdesc">
+		Advanced settings allowing extra customization of games for seasoned players, allowing
+		different map choices, alternate rules, and non-standard timing options.<br /><br />
+
+		The default settings are fine for <strong>new players</strong>.
+	</li>
+</ul>
+</div>
+
+<div id="AdvancedSettings" style="<?php print libHTML::$hideStyle; ?>">
+
+<h3>Advanced settings</h3>
+
+<ul class="formlist">
+	
 	<div id="potType">
 		<li class="formlisttitle">Pot type:</li>
 		<li class="formlistfield">
@@ -240,7 +282,7 @@ else
 			<strong>Default:</strong> Winner-takes-all (WTA)
 		</li>
 	</div>
-
+	
 	<li class="formlisttitle">
 		Anonymous players:
 	</li>
@@ -301,32 +343,6 @@ else
 	
 		<br /><br /><strong>Default:</strong> Nothing selected. Process on all days of the week.
 	</li>
-	
-</ul>
-
-<div class="hr"></div>
-
-<div id="AdvancedSettingsButton">
-<ul class="formlist">
-	<li class="formlisttitle">
-		<a href="#" onclick="$('AdvancedSettings').show(); $('AdvancedSettingsButton').hide(); return false;">
-		Open Advanced Settings
-		</a>
-	</li>
-	<li class="formlistdesc">
-		Advanced settings allowing extra customization of games for seasoned players, allowing
-		different map choices, alternate rules, and non-standard timing options.<br /><br />
-
-		The default settings are fine for <strong>new players</strong>.
-	</li>
-</ul>
-</div>
-
-<div id="AdvancedSettings" style="<?php print libHTML::$hideStyle; ?>">
-
-<h3>Advanced settings</h3>
-
-<ul class="formlist">
 
 	<li class="formlisttitle">
 		Joining pre-game period length: (5 minutes - 10 days)
@@ -518,25 +534,17 @@ else
 		<br /><br /><strong>Default:</strong> 0 (no fixed game duration / default number of SCs needed)
 	</li>
 
-	<?php
-		if ($User->id == 5)
-			print '
-				<li class="formlisttitle">
-					Chess Timer:
-				</li>
-				<li class="formlistfield">
-					<b>Hours: </b><input type="text" name="newGame[chessTime]" value="0" size="8">
-				</li>
-				<li class="formlistdesc">
-					If you want a chesstimer you can enter the time each player has on it\'s clock here.
-				</li>
-			';
-		else
-			print '
-				<input type="hidden" name="newGame[chessTime]" value="0"
-			';
-	?>
-	
+<!-- 
+	<li class="formlisttitle">
+		Chess Timer:
+	</li>
+	<li class="formlistfield">
+		<b>Hours: </b><input type="text" name="newGame[chessTime]" value="0" size="8">
+	</li>
+	<li class="formlistdesc">
+		If you want a chesstimer you can enter the time each player has on it\'s clock here.
+	</li>
+-->	
 	<li class="formlisttitle">
 		Moderated game:
 	</li>
@@ -549,49 +557,27 @@ else
 			<?php if (!$User->DirectorLicense()) print "disabled"; ?> >Yes
 	</li>
 	<li class="formlistdesc">
-		If set to yes you are given extra moderator-powers to manage this game.<br />
+		If set to yes you are given extra moderator-powers to manage this game.<br /><br />
+		You can force extends, pauses and have many other options running the game.<br />
+		If you select Yes, you are not automatically playing in this game, you are the moderator.
+		You need to join this game once it's created if you want to play a country.<br />
+		If you want to enable the players to choose their countries select any country in the "Country assignment" list. You will still need to join this game once it's created.<br /><br />
 		You need to have at least <b>25</b> non-live games with more than 2 players completed and a reliability-rating of <b>R97</b> or better to moderate a game.
 		<br /><br />
 		<strong>Default:</strong> No, there is no moderator for this game.
 	</li>
 
 	<span id="GDoptions" style="<?php print libHTML::$hideStyle; ?>">
-	
 		<li class="formlisttitle">
 			Game description (required for moderated games):
 		</li>
 		<li class="formlistfield">
 			<TEXTAREA name="newGame[description]" ROWS="4"></TEXTAREA>
 		<li class="formlistdesc">
-			Please enter a brief description about your game and custom rules here.
+			Please enter a brief description about your game and custom rules here.<br />
 		</li>
-	
 	</span>
-
-<!-- 
- 
-		You can force extends, pauses and have many other options running the game.<br />
-		If you select Yes, you are not automatically playing in this game, you are the moderator.
-		You need to join this game once it's created if you want to play a country.<br />
-		If you want to enable the players to choose their countries select any country in the "Country assignment" list. You will still need to join this game once it's created.
--->
-	
-	<li class="formlisttitle">
-		<img src="images/icons/lock.png" alt="Private" /> Password protect (<span id="PWOpt">optional</span><span id="PWReq" style="<?php print libHTML::$hideStyle;?>">required for moderated games</span>):
-	</li>
-	<li class="formlistfield">
-		<ul>
-			<li>Password: <input type="password" name="newGame[password]" value="" size="30" /></li>
-			<li>Confirm: <input type="password" name="newGame[passwordcheck]" value="" size="30" /></li>
-		</ul>
-	</li>
-	<li class="formlistdesc">
-		<strong>This is optional.</strong> If you set this only people who know the password will be able to join.<br /><br />
-
-		<strong>Default:</strong> No password set
-	</li>
-
-<!-- 
+ <!-- 
 	<li class="formlisttitle">
 		No moves received options:
 	</li>
@@ -612,7 +598,7 @@ else
 
 		<strong>Default:</strong> Normal
 	</li>
-	 -->
+-->	
 </ul>
 
 </div>
