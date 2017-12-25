@@ -464,23 +464,22 @@ class libHTML
 		<link rel="stylesheet" id="home-css"       href="'.CSSDIR.$cssAdd.l_s('/home.css').'?ver='.CSSVERSION.'" type="text/css" />
 		<link rel="apple-touch-icon-precomposed" href="'.STATICSRV.'apple-touch-icon.png" />
 		'.$variantCSS.'
-		<script type="text/javascript" src="useroptions.php"></script>
-		<script type="text/javascript" src="'.STATICSRV.l_j('contrib/js/prototype.js').'"></script>
-		<script type="text/javascript" src="'.STATICSRV.l_j('contrib/js/scriptaculous.js').'"></script>
+		<script type="text/javascript" src="useroptions.php"'.'?ver='.JSVERSION.'></script>
+		<script type="text/javascript" src="'.STATICSRV.l_j('contrib/js/prototype.js').'?ver='.JSVERSION.'"></script>
+		<script type="text/javascript" src="'.STATICSRV.l_j('contrib/js/scriptaculous.js').'?ver='.JSVERSION.'"></script>
 		<link rel="stylesheet" type="text/css" href="'.STATICSRV.l_s('contrib/js/pushup/src/css/pushup.css').'" />
-		<script type="text/javascript" src="'.STATICSRV.l_j('contrib/js/pushup/src/js/pushup.js').'"></script>
+		<script type="text/javascript" src="'.STATICSRV.l_j('contrib/js/pushup/src/js/pushup.js').'?ver='.JSVERSION.'"></script>
 		<script type="text/javascript">
 		    STATICSRV="'.STATICSRV.'";
 		    var cssDirectory = "'.CSSDIR.$cssAdd.'";
+		    var cssVersion = "'.CSSVERSION.'";
 		</script>
-		<script type="text/javascript" src="'.l_j('javascript/desktopMode.js').'?ver='.$jsVersion.'"></script>
+		<script type="text/javascript" src="'.l_j('javascript/desktopMode.js').'?ver='.JSVERSION.'"></script>
 		<title>'.l_t('%s - vDiplomacy',$title).'</title>
 		
 		<script type ="text/javascript" src="contrib/cookieWarning/warnCookies.js"></script>
 		<link href="contrib/cookieWarning/cookies.css" title="Cookies\' warning" rel="stylesheet" type="text/css" />
 
-		<link href="css/chat.css" rel="stylesheet" type="text/css" />
-		<script type ="text/javascript" src="javascript/chat.js"></script>
 	</head>';
 	}
 	
@@ -1011,7 +1010,9 @@ class libHTML
 		$cookiesWarning='<div id="cookiesWarning"></div><script language="JavaScript" type="text/javascript">checkCookieExist();</script>';
 	
 		// Version, sourceforge and HTML compliance logos
-		return $cookiesWarning.l_t('based on webDiplomacy version <strong>%s</strong>-vDip.<strong>%s</strong>',number_format(VERSION/100,2),VDIPVERSION.'<br />
+		return $cookiesWarning.l_t('
+			<a class="light" id="js-desktop-mode" style="cursor: pointer; color: #006699;" onclick="toggleDesktopMode()">Enable Desktop Mode</a><br /><br />
+			based on webDiplomacy version <strong>%s</strong>-vDip.<strong>%s</strong>',number_format(VERSION/100,2),VDIPVERSION.'<br />
 			<a href="http://github.com/Sleepcap/vDiplomacy" class="light">GitHub Project</a> | 
 			<a href="http://github.com/Sleepcap/vDiplomacy/issues" class="light">Bug Reports</a> | 
 			<a href="modforum.php" class="light">Contact Moderator</a>');

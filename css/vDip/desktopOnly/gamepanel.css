@@ -32,10 +32,10 @@
 	margin-right:2%;
 	border:0;
 }
-/*.gamePanel .bar {
+.gamePanel .bar {
 	border-left: 1px solid #cecece;
 	border-right: 1px solid #cecece;
-	}*/
+	}
 .barAlt1, .barAltLight1 {
 	background-color:transparent;/*#f5f5f5 !important;*/
 	}
