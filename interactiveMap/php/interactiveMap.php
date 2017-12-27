@@ -293,15 +293,13 @@ class IAmap extends drawMap {
     
     protected function jsFooterScript() {
         global $User;
-        
-        if(isset($User->pointNClick)){    
-            libHTML::$footerScript[] = 'interactiveMap.options.scrollbars = '.($User->scrollbars=='Yes' ? 'true' : 'false');
-            libHTML::$footerScript[] = 'interactiveMap.options.greyOut = '.($User->terrGrey=='off' ? 'false' : 'true');
-            libHTML::$footerScript[] = 'interactiveMap.options.unitGreyOut = '.($User->terrGrey=='all' ? 'true' : 'false');
-            libHTML::$footerScript[] = 'interactiveMap.options.greyOutIntensity = 0.'.$User->greyOut;
-        }
+          
+        libHTML::$footerScript[] = 'interactiveMap.options.scrollbars = '.($User->options->value['scrollbars']=='No' ? 'false' : 'true');
+        libHTML::$footerScript[] = 'interactiveMap.options.greyOut = '.($User->options->value['terrGrey']=='No grey-out' ? 'false' : 'true');
+        libHTML::$footerScript[] = 'interactiveMap.options.unitGreyOut = '.($User->options->value['terrGrey']=='Highlight own units and order options' ? 'true' : 'false');
+        libHTML::$footerScript[] = 'interactiveMap.options.greyOutIntensity = 0.'.substr($User->options->value['greyOut'],0,2);
 			
-	libHTML::$footerScript[]   = 'loadIA();';
+		libHTML::$footerScript[]   = 'loadIA();';
     }
     
     public function jsLoadInteractiveMap() {

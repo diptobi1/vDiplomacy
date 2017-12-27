@@ -396,7 +396,7 @@ interactiveMap.interface.options.load = function(){
     function buildSlider() {
         var track = $("track");
         interactiveMap.interface.options.sliderControl = new Control.Slider(track.firstChild, track, {
-            range: $R(0.1,0.9),
+            values: new Array(0.1,0.3,0.5,0.7,0.9), //5 options: 10%, 30%, 50%, 70%, 90%
             sliderValue: interactiveMap.options.greyOutIntensity,
             onChange: function(value) {
                 interactiveMap.options.greyOutIntensity = value;
@@ -449,13 +449,13 @@ interactiveMap.interface.options.load = function(){
 		interactiveMap.interface.options.element.hide(); 
 		$("options").disabled = false;
 						
-		/* update user options for interactive map in database (vdip options menu has to be installed!) */
+		/* update user options for interactive map in database */
 		if(interactiveMap.saveIAoptionsOnDatabase)
 			new Ajax.Request('usercp.php',{
 				parameters: {
-					"userForm[terrGrey]": (!interactiveMap.options.greyOut)?'off':(interactiveMap.options.unitGreyOut)?'all':'selected',
+					"userForm[terrGrey]": (!interactiveMap.options.greyOut)?'No grey-out':(interactiveMap.options.unitGreyOut)?'Highlight own units and order options':'Highlight only order options',
 					"userForm[scrollbars]": interactiveMap.options.scrollbars?'Yes':'No',
-					"userForm[greyOut]": Math.floor(interactiveMap.options.greyOutIntensity*100)
+					"userForm[greyOut]": interactiveMap.options.greyOutIntensity*100+' %'/*Math.floor(interactiveMap.options.greyOutIntensity*100)*/
 				}
 			});
 	});

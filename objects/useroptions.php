@@ -35,21 +35,33 @@ class UserOptions {
 	public $id;
 
 	public static $defaults = array(
-        	'colourblind' => 'No',
+        'colourblind' => 'No',
 		'displayUpcomingLive' => 'Yes',
-		'showMoves' => 'Yes'
+		'showMoves' => 'Yes',
+		'pointNClick' => 'Yes',
+		'terrGrey' => 'Highlight only order options',
+		'greyOut' => '50 %',
+		'scrollbars' => 'Yes'
 	);
 
 	public static $titles = array(
 		'colourblind' => 'Colourblindness',
 		'displayUpcomingLive' => 'Display upcoming live games',
-		'showMoves' => 'Show move arrows on the game map'
+		'showMoves' => 'Show move arrows on the game map',
+		'pointNClick' => 'Activate interactive map',
+		'terrGrey' => 'Interactive Map: Territory-grey-out',
+		'greyOut' => 'Interactive Map: Grey-out-intensity',
+		'scrollbars' => 'Interactive Map: Display large maps in small frame with scrollbars'
 	);
 
 	public static $possibleValues = array( 
 		'colourblind' => array('No','Protanope','Deuteranope','Tritanope'),
 		'displayUpcomingLive' => array('Yes','No'),
-		'showMoves' => array('Yes','No')
+		'showMoves' => array('Yes','No'),
+		'pointNClick' => array('Yes','No'),
+		'terrGrey' => array('Highlight own units and order options','Highlight only order options','No grey-out'),
+		'greyOut' => array('10 %', '30 %', '50 %', '70 %', '90 %'),
+		'scrollbars' => array('Yes','No')
 	);
 
 	public $value;

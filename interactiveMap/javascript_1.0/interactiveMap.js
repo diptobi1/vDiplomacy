@@ -21,7 +21,7 @@ var interactiveMap = new Object();
 //autosave
 interactiveMap.autosave = false;
 
-//save the IA settings made by the user via the interface in the usersettings on the database (only works with vdip implementation of IA settings!)
+//save the IA settings made by the user via the interface in the usersettings on the database
 interactiveMap.saveIAoptionsOnDatabase = true;
 
 //hidden map to detect territories

@@ -287,6 +287,8 @@ class OrderInterface
 	}
 
 	protected function jsLoadBoard() {
+		global $User;
+		
 		libHTML::$footerIncludes[] = l_j('board/model.js');
 		libHTML::$footerIncludes[] = l_j('board/load.js');
 		libHTML::$footerIncludes[] = l_j('orders/order.js');
@@ -296,7 +298,7 @@ class OrderInterface
 		foreach(array('loadTerritories','loadBoardTurnData','loadModel','loadBoard','loadOrdersModel','loadOrdersForm','loadOrdersPhase') as $jf)
 			libHTML::$footerScript[] = l_jf($jf).'();';
 		
-		if(/*$User->pointNClick=='Yes'*/true){
+		if($User->options->value['pointNClick']=='Yes'){
 			require_once(l_r('interactiveMap/php/interactiveMap.php'));
 			$IAmap = getIAmapObject();
 			$IAmap->jsLoadInteractiveMap();
