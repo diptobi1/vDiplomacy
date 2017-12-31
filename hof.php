@@ -47,7 +47,15 @@ $alternate = false;
 if(isset($_REQUEST['userID']))
 {
 	$userID = (int)$_REQUEST['userID'];
-	$UserProfile = new User($userID);
+	try
+	{
+		$UserProfile = new User($userID);
+	}
+	catch (Exception $e)
+	{
+		libHTML::error(l_t("Invalid user ID given."));
+	}
+	
 	print '<b>Stats for </b>'.$UserProfile->profile_link().':<br><br>';
 		
 	print '<TABLE class="sortable">
