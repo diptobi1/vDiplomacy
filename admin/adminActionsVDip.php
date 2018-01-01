@@ -336,6 +336,7 @@ class adminActionsVDip extends adminActions
 	
 	public function ChangeDirectorLicense(array $params)
 	{
+		global $DB;
 
 		$userID = (int)$params['userID'];
 		$params['newLicense'] = strtoupper(substr($params['newLicense'],0,1));
