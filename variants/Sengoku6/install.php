@@ -37,7 +37,7 @@ $territoryRawData=array(
 	array('Mutsu', 'Coast', 'Yes', 6, 1458, 330, 729, 165),
 	array('Nagato', 'Coast', 'Yes', 2, 312, 1016, 156, 508),
 	array('North Pacific Ocean', 'Sea', 'No', 0, 1460, 1154, 730, 577),
-	array('North Sea of Japan', 'Sea', 'No', 0, 964, 318, 482, 159),
+	array('North Sea of Japan', 'Sea', 'No', 0, 1054, 285, 482, 159),
 	array('Osumi (3)', 'Coast', 'Yes', 1, 254, 1416, 127, 708),
 	array('Owari (7)', 'Coast', 'Yes', 3, 960, 936, 480, 468),
 	array('Satsuma (2)', 'Coast', 'Yes', 1, 200, 1336, 100, 668),

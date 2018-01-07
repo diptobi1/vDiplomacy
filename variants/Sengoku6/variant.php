@@ -35,7 +35,7 @@ class Sengoku6Variant extends Sengoku5Variant {
 	public $author     ='Benjamin Hester';
 	public $adapter    ='Oliver Auth';
 	public $version    ='6';
-	public $codeVersion='1.1.1';
+	public $codeVersion='1.1.2';
 
 	public $countries=array('Shimazu','Mori','Oda','Hojo','Uesugi');
 
