@@ -122,9 +122,40 @@ if( $User->type['Admin'] ) {
 			if( ! file_exists($logfile) ) {
 				print '<p class="notice">'.l_t('No log file found for this gameID/countryID.').'</p>';
 			} else {
-				print '<pre>'.file_get_contents($logfile).'</pre>';
+				
+				$orderlog = file($logfile);
+
+				global $DB;
+				
+				$Variant=libVariant::loadFromGameID($viewOrderLogGameID);
+				$tabl = $DB->sql_tabl("SELECT id, name FROM wD_Territories WHERE mapID=".$Variant->mapID);
+				while(list($id, $name) = $DB->tabl_row($tabl))
+					$orderlog = str_replace('"'.$id.'"','"'.$id.'"/'.$name,$orderlog);
+				
+				$orderlog = str_replace('""','-',$orderlog);
+				$orderlog = str_replace('"','',$orderlog);
+				$orderlog = str_replace('{','',$orderlog);
+				$orderlog = str_replace('[','',$orderlog);
+				$orderlog = str_replace(']','',$orderlog);
+				$orderlog = str_replace('}, ','<br>',$orderlog);
+				$orderlog = str_replace('}','',$orderlog);
+				$orderlog = str_replace('}','',$orderlog);
+
+				print '<pre>';
+				foreach ($orderlog as $logLine)
+					print $logLine;
+				print '</pre>';
 			}
 
+			if ($viewOrderLogCountryID == 0)
+			{
+				print '<p class="notice">';
+				$Variant=libVariant::loadFromGameID($viewOrderLogGameID);
+				foreach ($Variant->countries as $id => $countryName)
+					print $id."=".$countryName." / ";
+				print '</p>';
+			}
+			
 			unset($logfile);
 		}
 	} else {
