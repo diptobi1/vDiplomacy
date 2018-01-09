@@ -155,12 +155,12 @@ class adminActions extends adminActionsForms
 				'description' => 'Alter which player has which country. Enter a list like so:
 					"<em>R,T,A,G,U,F,E</em>".<br />
 					The result will be that England will be set to Russia, France to Turkey, etc.<br /><br />
+					Changing the countries of a variant for which the first letter of the countries are not distinct countryID numbers must be used instead.<br /><br />
 					If you aren\'t sure about the order of each country just enter the gameID without anything else and the list of
 					countries in the order will be output.<br /><br />
 					To prevent people sharing invalid info before the countries have been reallocated only no-message games
 					can have their countries reallocated; messages should be enabled only after the countries have been reallocated.<br /><br />
-					(The substitution string to reverse the reallocation will be generated, in case you need to reverse the reallocation.)<br />
-					(If changing the countries of a variant for which the first letter of the countries are not distinct countryID numbers must be used instead.)<br />
+					The substitution string to reverse the reallocation will be generated, in case you need to reverse the reallocation.<br />
 					(Alternatively you can enter [userID1]=[countryLetter1],[userID2]=[countryLetter2],etc)',
 				'params' => array(
 					'gameID'=>'Game ID',
@@ -319,11 +319,17 @@ class adminActions extends adminActionsForms
 			{
 				$index++;
 				$countryLetter=strtoupper(substr($country,0,1));
-				$c[$countryLetter] = '#'.$index.": ".$country;
+				$cl[$countryLetter] = '#'.$index.": ".$country;
+				$ci[$index] = '#'.$index.": ".$country;
 			}
-			$ids=array_keys($c);
+			$ids=array_keys($cl);
+			
+			if (count($cl) < count($Variant->countries))
+				$example = "<br>".l_t("The first letter of the countries are not distinct. CountryID numbers must be used instead.");
+			else
+				$example = l_t("e.g. \"%s\"\" would change nothing",implode(',',$ids));
 
-			return implode('<br />',$c)."<br />".l_t("e.g. \"%s\"\" would change nothing",implode(',',$ids));
+			return implode('<br />',$ci)."<br />".$example;
 		}
 
 		$reallocations=explode(',',$params['reallocations']);
