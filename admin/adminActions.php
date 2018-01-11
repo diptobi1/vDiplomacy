@@ -320,7 +320,7 @@ class adminActions extends adminActionsForms
 				$index++;
 				$countryLetter=strtoupper(substr($country,0,1));
 				$cl[$countryLetter] = '#'.$index.": ".$country;
-				$ci[$index] = '#'.$index.": ".$country;
+				$ci[$index] = '#'.$index.": ".$country." (".$Game->Members->ByCountryID[$index]->username.")";
 			}
 			$ids=array_keys($cl);
 			
@@ -408,7 +408,7 @@ class adminActions extends adminActionsForms
 			list($userID)=$DB->sql_row("SELECT userID FROM wD_Members WHERE gameID=".$Game->id." AND countryID=".$oldCountryID." FOR UPDATE");
 			$newUserIDByNewCountryID[$newCountryID]=$userID;
 
-			$changes[] = l_t("Changed %s (#%s) to %s (#%s).",$Variant->countries[$oldCountryID-1],$oldCountryID,$Variant->countries[$newCountryID-1],$newCountryID);
+			$changes[] = l_t("Changed %s from %s (#%s) to %s (#%s).",$Game->Members->ByCountryID[$oldCountryID]->username,$Variant->countries[$oldCountryID-1],$oldCountryID,$Variant->countries[$newCountryID-1],$newCountryID);
 			$changeBack[$newCountryID]=$oldCountryID;
 		}
 
@@ -425,7 +425,7 @@ class adminActions extends adminActionsForms
 			$DB->sql_put("UPDATE wD_Members SET userID=".$userID." WHERE gameID=".$Game->id." AND countryID=".$newCountryID);
 		$DB->sql_put("COMMIT");
 
-		return l_t('In this game these countries were successfully swapped:').'<br />'.implode(',<br />', $changes).'.<br />
+		return l_t('In this game these countries were successfully swapped:').'<br /><br />'.implode(',<br />', $changes).'.<br /><br />
 			'.l_t('These changes can be reversed with "%s"',$changeBackStr);
 	}
 
