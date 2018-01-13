@@ -169,7 +169,7 @@ class libRelations {
 			foreach ($users as $userID)
 			{
 				$groupUser = new User($userID);
-				$html .= '<TR><TD style="border: 1px solid #666">'.$groupUser->profile_link().'</TD>';
+				$html .= '<TR><TD style="border: 1px solid #666">'.$groupUser->profile_link().' - #'.$groupUser->id.'</TD>';
 				if ($User->type['Moderator'])
 					$html .= '<TD style="border: 1px solid #666"><form method="post" style="display:inline;">
 					<input hidden name="RemoveUserID" value="'.$groupUser->id.'">
