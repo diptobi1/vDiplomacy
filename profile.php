@@ -253,11 +253,11 @@ if ( isset($_REQUEST['detail']) )
 						$Variant=libVariant::loadFromGameID($gameID);
 						print '<li>';
 						if ($forcedByMod) print '<s>';
-						print l_t('Game:').' <strong><a href="board.php?gameID='.$gameID.'">'.$name.'</a></strong>,
-							'.l_t('country #:').' <strong>'.$countryID.'</strong>,
-							'.l_t('turn:').' <strong>'.$Variant->turnAsDate($turn).'</strong>,
-							'.l_t('bet:').' <strong>'.$bet.'</strong>,
-							'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>';
+						print 	l_t('Game:').' <strong><a href="board.php?gameID='.$gameID.'">'.$name.'</a></strong>, 
+								'.l_t('country:').' <strong>'.$Variant->countries[$countryID - 1].'</strong><ul>
+								'.l_t('turn:').' <strong>'.$Variant->turnAsDate($turn).'</strong>,
+								'.l_t('bet:').' <strong>'.$bet.libHTML::points().'</strong>,
+								'.l_t('supply centers:').' <strong>'.$SCCount.'</strong></ul>';
 						if ($forcedByMod) print '</s>';
 						print '</li>';
 					}
@@ -305,11 +305,11 @@ if ( isset($_REQUEST['detail']) )
 							$Variant=libVariant::loadFromGameID($gameID);
 							print '<li>';
 							if ($ignoreNMR) print '<s>';
-							print 	l_t('Game:').' <strong><a href="board.php?gameID='.$gameID.'">'.$name.'</a></strong>,
-									'.l_t('country #:').' <strong>'.$countryID.'</strong>,
+							print 	l_t('Game:').' <strong><a href="board.php?gameID='.$gameID.'">'.$name.'</a></strong>, 
+									'.l_t('country:').' <strong>'.$Variant->countries[$countryID - 1].'</strong><ul>
 									'.l_t('turn:').' <strong>'.$Variant->turnAsDate($turn).'</strong>,
-									'.l_t('bet:').' <strong>'.$bet.'</strong>,
-									'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>';
+									'.l_t('bet:').' <strong>'.$bet.libHTML::points().'</strong>,
+									'.l_t('supply centers:').' <strong>'.$SCCount.'</strong></ul>';
 							if ($ignoreNMR) print '</s>';
 							print '</li>';
 						}
