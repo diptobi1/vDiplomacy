@@ -89,6 +89,7 @@ class OrderArchiv {
 				break;
 			case 'disband':
 				$buffer .= 'The '.$order['unitType']." at ".$this->terrIDToName[$order['terrID']]." disband";
+				break;
 			case 'build army':
 			case 'build fleet':
 				$buffer .= 'Build '.($order['type']=='build army'?'army':'fleet').' at '.$this->terrIDToName[$order['terrID']];
@@ -98,6 +99,7 @@ class OrderArchiv {
 				break;
 			case 'destroy':
 				$buffer .= 'Destroy the unit at '.$this->terrIDToName[$order['terrID']];
+				break;
 			default:
 				$buffer .= "The ".$order['unitType']." at ".$this->terrIDToName[$order['terrID']]." ".$order['type'].
 					($order['toTerrID'] ? " to ".$this->terrIDToName[$order['toTerrID']] : '' ).
@@ -242,8 +244,6 @@ class OrderArchiv {
 
 print '<h3>Order history (last 20 turns):</h3>';
 print '<div class="variant'.$Game->Variant->name.'">';
-
-ini_set('memory_limit',"16M");
 
 $OA=$Game->Variant->OrderArchiv();
 print '<table>'.$OA->OutputHTML().'</table>';
