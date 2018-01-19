@@ -175,8 +175,12 @@ class InstallTerritory {
 
 
 		// Unit destroy SQL (may take a long time and require a deep recursion depth)
-		$sql[] = self::unitDestroyIndexSQL($mapID);
+//		$sql[] = self::unitDestroyIndexSQL($mapID);
 
+		$unitDestroyIndexCountrySQL = array();
+		$unitDestroyIndexCountrySQL = self::unitDestroyIndexSQL($mapID);
+		foreach ($unitDestroyIndexCountrySQL as $countryID => $unitDestroyIndexArray)
+			$sql[] = $unitDestroyIndexArray;
 
 		return $sql;
 	}
@@ -209,8 +213,8 @@ class InstallTerritory {
 				$HomeSCs[$Territory->countryID][] = $Territory;
 			}
 		}
-
-		$UnitDestroyIndexRows=array();
+		
+		$UnitDestroyIndexSQLArray = array();
 		$unitTypes=array('Army','Fleet');
 		foreach($HomeSCs as $countryID=>$countryHomeSCs)
 		{
@@ -312,6 +316,7 @@ class InstallTerritory {
 			sort($sortBuffer);
 			//if( $countryID == 7 ) die(implode('<br />',$sortBuffer)); // For debugging
 			
+			$UnitDestroyIndexRows=array();
 			$destroyIndex=1; // First means first chosen to disband
 			foreach($sortBuffer as $sortKey)
 			{
@@ -319,9 +324,11 @@ class InstallTerritory {
 				$UnitDestroyIndexRows[]="(".$mapID.",".$countryID.",".$terrID.",'".$unitType."',".$destroyIndex.")";
 				$destroyIndex++;
 			}
+			$UnitDestroyIndexSQLArray[] = 'INSERT INTO wD_UnitDestroyIndex (mapID, countryID, terrID, unitType, destroyIndex) VALUES '.implode(',',$UnitDestroyIndexRows);
+			
 		}
 
-		return 'INSERT INTO wD_UnitDestroyIndex (mapID, countryID, terrID, unitType, destroyIndex) VALUES '.implode(',',$UnitDestroyIndexRows);
+		return $UnitDestroyIndexSQLArray;
 	}
 	
 	/**
