@@ -2913,6 +2913,7 @@ $bordersRawData=array(
 	array('Rio De Janeiro (rio)','Sao Paulo (sao)','Yes','Yes'),
 	array('Rio De Janeiro (rio)','South West Atlantic (swa)','Yes','No'),
 	array('Rio De Janeiro (rio)','South West Atlantic - north west sea lane (N.W. swa)','Yes','No'),
+	array('Rio De Janeiro (rio)','Mid South Atlantic Ocean - south sea lane (Sth. msa)','Yes','No'),
 	array('Rio De Janeiro (rio)','Mid South Atlantic Ocean - west sea lane (Wst. msa)','Yes','No'),
 	array('Rondonia (ron)','Santa Cruz (scz)','No','Yes'),
 	array('Ross Sea (ros)','Pitcairn Island - south east sea lane (S.E. pit)','Yes','No'),
@@ -3441,6 +3442,7 @@ if (!file_exists('variants/'.$this->name.'/cache/sampleMap.png'))
 	copy ('variants/'.$this->name.'/resources/sampleMap.png','variants/'.$this->name.'/cache/sampleMap.png');
 
 ?>
+
 
 
 
