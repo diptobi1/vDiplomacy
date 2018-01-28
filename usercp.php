@@ -97,10 +97,31 @@ if ( isset($_REQUEST['emailToken']))
 
 if ( isset($_REQUEST['userForm']) )
 {
+	
+	// A small hack for the RSS-Button
+	if (isset($_POST['rssButton']))
+	{
+		if ($_POST['rssButton'] != "Delete")
+		{
+			do {
+				$rssID = ''; $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				$max = mb_strlen($keyspace, '8bit') - 1;
+				for ($i = 0; $i < 30; ++$i)
+					$rssID .= $keyspace[random_int(0, $max)];
+				
+				$DB->sql_put("UPDATE wD_Users SET rssID = '".$rssID."' WHERE id = ".$User->id);
+				list($ok) = $DB->sql_row('SELECT count(*) FROM wD_Users WHERE rssID="'.$rssID.'"');
+			} while ($ok > 1);	
+		} else {
+			$DB->sql_put("UPDATE wD_Users SET rssID = '' WHERE id = ".$User->id);
+		}
+	}
+		
 	$formOutput = '';
-
+	
 	try
 	{
+		
 		$errors = array();
 
 		$SQLVars = User::processForm($_REQUEST['userForm'], $errors);

@@ -1027,9 +1027,12 @@ $sql[]="ALTER TABLE wD_Users ADD `cssStyle` enum('vDip','webDip') DEFAULT 'vDip'
 
 // VDip 59-60 (added and removed a feature)
 
+// VDip 61
+$sql[]="ALTER TABLE `wD_Users` ADD `rssID` varchar(30) NOT NULL DEFAULT '';";
+
 // Set the correct version-information in the database	
 $sql[]="UPDATE `wD_Misc`     SET `value` = '142' WHERE `name` = 'Version';";
-$sql[]="UPDATE `wD_vDipMisc` SET `value` = '60'  WHERE `name` = 'Version';";
+$sql[]="UPDATE `wD_vDipMisc` SET `value` = '61'  WHERE `name` = 'Version';";
 
 // Create a default Admin-Account
 require_once ('lib/auth.php');
