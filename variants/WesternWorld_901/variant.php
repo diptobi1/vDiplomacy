@@ -34,7 +34,7 @@ class WesternWorld_901Variant extends WDVariant {
 	public $author     ='David E. Cohen';
 	public $adapter    ='Yuriy Hryniv aka Flame';
 	public $version    ='4.0';
-	public $codeVersion='1.0.0';
+	public $codeVersion='1.0.1';
 	public $homepage  ='http://diplomiscellany.tripod.com/id16.html';
 
 	public $countries=array('Arabia','Byzantinum','Denmark','Egypt','France','Germany','Khazaria','Rus','Spain');

@@ -35,7 +35,7 @@ $territoryRawData=array(
 	array('Kipchak', 'Coast', 'No', 0, 1111, 583, 1111, 583),
 	array('Kyzyl Kum', 'Land', 'No', 0, 1150, 752, 1150, 752),
 	array('Khorasan', 'Land', 'No', 0, 1147, 875, 1147, 875),
-	array('Sijistan', 'Land', 'No', 0, 1130, 947, 1130, 947),
+	array('Sijistan', 'Land', 'No', 0, 1099, 900, 1099, 900),
 	array('Basra', 'Land', 'No', 1, 1081, 998, 1081, 998),
 	array('Nefud', 'Land', 'No', 0, 890, 958, 890, 958),
 	array('Mecca', 'Land', 'No', 0, 794, 977, 794, 977),
@@ -75,8 +75,8 @@ $territoryRawData=array(
 	array('Sea of Tyre', 'Sea', 'No', 0, 748, 898, 748, 898),
 	array('West Euxine Sea', 'Sea', 'No', 0, 720, 632, 720, 632),
 	array('East Euxine Sea', 'Sea', 'No', 0, 830, 682, 830, 682),
-	array('North Khazar Sea', 'Sea', 'No', 0, 1006, 648, 1006, 648),
-	array('South Khazar Sea', 'Sea', 'No', 0, 1038, 758, 1038, 758),
+	array('North Khazar Sea', 'Sea', 'No', 0, 1019, 680, 1019, 680),
+	array('South Khazar Sea', 'Sea', 'No', 0, 1035, 725, 1035, 725),
 	array('Karelia', 'Coast', 'No', 0, 690, 230, 690, 230),
 	array('Esteland', 'Coast', 'Yes', 10, 650, 310, 650, 310),
 	array('Livonia', 'Coast', 'No', 0, 573, 339, 573, 339),
@@ -371,6 +371,7 @@ $bordersRawData=array(
 	array('Abodrite Sea','Borussia','Yes','No'),
 	array('Abodrite Sea','Pomerania','Yes','No'),
 	array('Abodrite Sea','Veletia (North Coast)','Yes','No'),
+	array('Abodrite Sea','Jelling','Yes','No'),
 	array('Lettish Sea','Finnish Sea','Yes','No'),
 	array('Lettish Sea','Livonia','Yes','No'),
 	array('Lettish Sea','Borussia','Yes','No'),
@@ -667,4 +668,173 @@ InstallTerritory::runSQL($this->mapID);
 InstallCache::terrJSON($this->territoriesJSONFile(),$this->mapID);
 
 // Copy the smallmap-sample to the cache-directory to avoid a screwed variantpage (there is no smallmap available)
-copy ('variants/'.$this->name.'/resources/sampleMap.png','variants/'.$this->name.'/cache/sampleMap.png');
+//copy ('variants/'.$this->name.'/resources/sampleMap.png','variants/'.$this->name.'/cache/sampleMap.png');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
