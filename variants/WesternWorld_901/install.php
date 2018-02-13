@@ -279,6 +279,7 @@ $bordersRawData=array(
 	array('Kyzyl Kum','Khorasan','No','Yes'),
 	array('Kyzyl Kum','Urgench','No','Yes'),
 	array('Khorasan','Sijistan','No','Yes'),
+	array('Khorasan','Urgench','No','Yes'),
 	array('Khorasan','Alidistan','No','Yes'),
 	array('Sijistan','Basra','No','Yes'),
 	array('Sijistan','Alidistan','No','Yes'),
@@ -669,6 +670,7 @@ InstallCache::terrJSON($this->territoriesJSONFile(),$this->mapID);
 
 // Copy the smallmap-sample to the cache-directory to avoid a screwed variantpage (there is no smallmap available)
 //copy ('variants/'.$this->name.'/resources/sampleMap.png','variants/'.$this->name.'/cache/sampleMap.png');
+
 
 
 
