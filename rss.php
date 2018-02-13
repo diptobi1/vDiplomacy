@@ -35,15 +35,15 @@ header("Content-Type: application/rss+xml; charset=ISO-8859-1");
 
 list($userID, $name)= $DB->sql_row('SELECT id, username FROM wD_Users WHERE rssID="'.$rssID.'"');
 
-$rssLink = 'http://'.str_replace("rss.php","",$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']);
-$rssfeed = '<?xml version="1.0" encoding="ISO-8859-1"?>';
-$rssfeed .= '<rss version="2.0">';
-$rssfeed .= '<channel>';
-$rssfeed .= "<title>".$name."'s VDiplomacy RSS feed</title>";
-$rssfeed .= '<link>http://'.$_SERVER['SERVER_NAME'].'</link>';
-$rssfeed .= '<description>This is the personal vDip RSS-feed of '.$name.'.</description>';
-$rssfeed .= '<language>en-us</language>';
-$rssfeed .= '<copyright>Copyright (C) 2018 vDiplomacy.com</copyright>';
+$rssLink = "http://".str_replace("rss.php","",$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']);
+$rssfeed = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
+$rssfeed .= "<rss version=\"2.0\">\n";
+$rssfeed .= "<channel>\n";
+$rssfeed .= "<title>".$name."'s VDiplomacy RSS feed</title>\n";
+$rssfeed .= "<link>http://".$_SERVER['SERVER_NAME']."</link>\n";
+$rssfeed .= "<description>This is the personal vDip RSS-feed of ".$name.".</description>\n";
+$rssfeed .= "<language>en-us</language>\n";
+$rssfeed .= "<copyright>Copyright (C) 2018 vDiplomacy.com</copyright>\n";
  
 $tabl=$DB->sql_tabl('SELECT type, text, linkName, linkID, timeSent FROM wD_Notices
 	WHERE toUserID = "'.$userID.'" AND substring(linkName,1,3) <> "To:"
@@ -56,18 +56,21 @@ while(list($type, $text, $linkName, $linkID, $timeSent) = $DB->tabl_row($tabl))
 	else
 		$link = $rssLink."/profile.php?userID=".$linkID."#message";
 		
+	$text = html_entity_decode ($text, ENT_QUOTES | ENT_XHTML | ENT_HTML5, 'ISO-8859-1');
 	$text = strip_tags ($text);
+	$text = str_replace("&","-",$text);
 	
-	$rssfeed .= '<item>';
-	$rssfeed .= '<title>'.$linkName.'</title>';
-	$rssfeed .= '<description>'.$text.'</description>';
-	$rssfeed .= '<link>'.$link.'</link>';
-	$rssfeed .= '<pubDate>'.date("D, d M Y H:i:s O", $timeSent).'</pubDate>';
-	$rssfeed .= '</item>';
+	$rssfeed .= "<item>\n";
+	$rssfeed .= "<title>".$linkName."</title>\n";
+	$rssfeed .= "<description>".$text."</description>\n";
+	$rssfeed .= "<guid>".$link."time".$timeSent."</guid>\n";
+	$rssfeed .= "<link>".$link."</link>\n";
+	$rssfeed .= "<pubDate>".date("D, d M Y H:i:s O", $timeSent)."</pubDate>\n";
+	$rssfeed .= "</item>\n";
 }
  
-$rssfeed .= '</channel>';
-$rssfeed .= '</rss>';
+$rssfeed .= "</channel>\n";
+$rssfeed .= "</rss>\n";
 
 echo $rssfeed;
 ?>
