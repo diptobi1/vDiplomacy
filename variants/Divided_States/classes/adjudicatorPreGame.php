@@ -24,7 +24,7 @@ class CustomStartVariant_adjudicatorPreGame extends adjudicatorPreGame
 {
 
 	protected $countryUnits = array(
-		'Neutrals'=> array('Calgary (CAL)'=>'Army', 'Saskatoon (SKT)'=>'Army', 'Sudbury (SUD)'=>'Army', 'Gatineau (GAT)'=>'Army',
+		'Neutrals'=> array('Saskatoon (SKT)'=>'Army', 'Sudbury (SUD)'=>'Army', 'Gatineau (GAT)'=>'Army',
 		'Fort Rupert (FRU)'=>'Army', 'Saguenay (SGU)'=>'Army', 'St. Johns (SJH)'=>'Army', 'Prince Edward Island (PEI)'=>'Army', 'Monterrey (MTE)'=>'Army',
 		'Durango (DUR)'=>'Army', 'Mazatlan (MAZ)'=>'Army')
 	);
