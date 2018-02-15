@@ -38,15 +38,16 @@ interactiveMap.parameters = {
     fleetName: 'Fleet',
     imgHold: 'interactiveMap/images/Hold.png',
     imgMove: 'interactiveMap/images/Move.png',
-    imgSHold: 'interactiveMap/images/SupportHold.png',
-    imgSMove: 'interactiveMap/images/SupportMove.png',
+    imgSupporthold: 'interactiveMap/images/SupportHold.png',
+    imgSupportmove: 'interactiveMap/images/SupportMove.png',
     imgConvoy: 'interactiveMap/images/Convoy.png',
     imgDestroy: 'interactiveMap/images/Destroy.png',
     imgBuildArmy: 'interactiveMap/images/BuildArmy.png',
     imgBuildFleet: 'interactiveMap/images/BuildFleet.png',
     imgWait: 'interactiveMap/images/Hold.png',
     imgRetreat: 'interactiveMap/images/Retreat.png',
-    imgDisband: 'interactiveMap/images/Destroy.png'
+    imgDisband: 'interactiveMap/images/Destroy.png',
+	imgReset: 'interactiveMap/images/Reset.png'
 };
 
 //Only for Fog-Variants
@@ -182,7 +183,6 @@ interactiveMap.onClick = function(event) {
      * onClick-function (main part)
      */
     if (interactiveMap.ready && interactiveMap.activated && !OrdersHTML.finalized) {
-        interactiveMap.interface.orderMenu.element.hide();
         var coor = getCoor(event);
         interactiveMap.selectedTerritoryID = getTerritory(coor.x, coor.y);
         if (interactiveMap.selectedTerritoryID != null) {
