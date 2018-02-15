@@ -20,7 +20,8 @@
 	---
 
 	Changelog:
-	1.0.0:   initial release
+	1.0.0: initial release
+	1.1.0: missing OrderArchiv (needed for neutral player)
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -34,7 +35,7 @@ class WesternWorld_901Variant extends WDVariant {
 	public $author     ='David E. Cohen';
 	public $adapter    ='Yuriy Hryniv aka Flame';
 	public $version    ='4.0';
-	public $codeVersion='1.0.2';
+	public $codeVersion='1.1.0';
 	public $homepage  ='http://diplomiscellany.tripod.com/id16.html';
 
 	public $countries=array('Arabia','Byzantinum','Denmark','Egypt','France','Germany','Khazaria','Rus','Spain');
