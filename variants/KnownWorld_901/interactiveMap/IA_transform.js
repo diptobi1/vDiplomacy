@@ -52,124 +52,79 @@ function loadIAtransform() {
     }
 
     function addOrderMenuTransformButton() {
+        var origCreate = interactiveMap.interface.orderMenu.create;
+		
         interactiveMap.interface.orderMenu.create = function() {
-            if (typeof interactiveMap.interface.orderMenu.element == "undefined") {
-                interactiveMap.interface.orderMenu.element = new Element('div', {'id': 'orderMenu'});
-                interactiveMap.interface.orderMenu.element.setStyle({
-                    position: 'absolute',
-                    zIndex: interactiveMap.visibleMap.greyOutLayer.canvasElement.style.zIndex + 1,
-                    width: '12px'
-                            //width: '200px'
-                            //backgroundColor: 'white'
-                });
-                var orderMenuOpt = {
-                    'id': '',
-                    'src': '',
-                    'title': '',
-                    'style': 'margin-left:5px;\n\
-                background-color:LightGrey;\n\
-                border:1px solid Grey;\n\
-                display:none;',
-                    'onmouseover': 'this.setStyle({"backgroundColor":"GhostWhite"})',
-                    'onmouseout': 'this.setStyle({"backgroundColor":"LightGrey"})',
-                    'onmousedown': 'this.setStyle({"backgroundColor":"LightBlue"})',
-                    'onmouseup': 'interactiveMap.interface.orderMenu.element.hide()',
-                    'onclick': ''
-                };
-
-                switch (context.phase) {
-                    case "Diplomacy":
-                        orderMenuOpt.id = 'imgHold';
-                        orderMenuOpt.src = interactiveMap.parameters.imgHold;
-                        orderMenuOpt.onclick = 'interactiveMap.sendOrder("Hold")';
-                        orderMenuOpt.title = 'hold';
-                        interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuOpt)).observe('load', function() {
-                            interactiveMap.interface.orderMenu.showElement(this);
-                        });
-
-                        orderMenuOpt.id = 'imgMove';
-                        orderMenuOpt.src = interactiveMap.parameters.imgMove;
-                        orderMenuOpt.onclick = 'interactiveMap.sendOrder("Move")';
-                        orderMenuOpt.title = 'move';
-                        interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuOpt)).observe('load', function() {
-                            interactiveMap.interface.orderMenu.showElement(this);
-                        });
-
-                        orderMenuOpt.id = 'imgSHold';
-                        orderMenuOpt.src = interactiveMap.parameters.imgSHold;
-                        orderMenuOpt.onclick = 'interactiveMap.sendOrder("Support hold")';
-                        orderMenuOpt.title = 'support hold';
-                        interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuOpt)).observe('load', function() {
-                            interactiveMap.interface.orderMenu.showElement(this);
-                        });
-
-                        orderMenuOpt.id = 'imgSMove';
-                        orderMenuOpt.src = interactiveMap.parameters.imgSMove;
-                        orderMenuOpt.onclick = 'interactiveMap.sendOrder("Support move")';
-                        orderMenuOpt.title = 'support move';
-                        interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuOpt)).observe('load', function() {
-                            interactiveMap.interface.orderMenu.showElement(this);
-                        });
-
-                        orderMenuOpt.id = 'imgConvoy';
-                        orderMenuOpt.src = interactiveMap.parameters.imgConvoy;
-                        orderMenuOpt.onclick = 'interactiveMap.sendOrder("Convoy")';
-                        orderMenuOpt.title = 'convoy';
-                        interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuOpt)).observe('load', function() {
-                            interactiveMap.interface.orderMenu.showElement(this);
-                        });
-
-                        orderMenuOpt.id = 'imgTransform';
-                        orderMenuOpt.src = 'variants/KnownWorld_901/interactiveMap/IA_transform.png';
-                        orderMenuOpt.onclick = 'interactiveMap.sendOrder("Transform")';
-                        orderMenuOpt.title = 'transform';
-                        interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuOpt)).observe('load', function() {
-                            interactiveMap.interface.orderMenu.showElement(this);
-                        });
-                        break;
-                }
-                $('mapCanDiv').appendChild(interactiveMap.interface.orderMenu.element).hide();
-            }
+			origCreate();
+			
+			if($("imgTransform")==null){
+				interactiveMap.parameters.imgTransform = 'variants/KnownWorld_901/interactiveMap/IA_transform.png';
+				interactiveMap.interface.orderMenu.createButtonSet('Transform','transform');
+			}
         };
 
-        interactiveMap.interface.orderMenu.show = function(coor) {
+        interactiveMap.interface.orderMenu.show = function(coor, drawResetButton) {
             function getPosition(coor) {
-                var width = interactiveMap.interface.orderMenu.element.getWidth();
-                if (coor.x < width / 2)
-                    return 0;
-                else if (coor.x > (interactiveMap.visibleMap.mainLayer.canvasElement.width - width / 2))
-                    return (interactiveMap.visibleMap.mainLayer.canvasElement.width - width);
-                else
-                    return (coor.x - width / 2);
-            }
+				var width = interactiveMap.interface.orderMenu.element.getWidth();
+				if (coor.x < width/2)
+					return 0;
+				else if (coor.x > (interactiveMap.visibleMap.mainLayer.canvasElement.width - width/2))
+					return (interactiveMap.visibleMap.mainLayer.canvasElement.width - width);
+				else
+					return (coor.x - width/2);
+			}
 
-            switch (context.phase) {
-                case 'Diplomacy':
-                    interactiveMap.interface.orderMenu.showElement($("imgMove"));
-                    interactiveMap.interface.orderMenu.showElement($("imgHold"));
-                    interactiveMap.interface.orderMenu.showElement($("imgSMove"));
-                    interactiveMap.interface.orderMenu.showElement($("imgSHold"));
-                    interactiveMap.interface.orderMenu.showElement($("imgConvoy"));
-                    interactiveMap.interface.orderMenu.showElement($("imgTransform"));
-                    if (interactiveMap.currentOrder != null) {//||(unit(interactiveMap.selectedTerritoryID)&&(Territories.get(interactiveMap.selectedTerritoryID).type=="Coast")&&(Territories.get(interactiveMap.selectedTerritoryID).Unit.type=="Army")))
-                        if ((interactiveMap.currentOrder.Unit.type == "Fleet") || (Territories.get(interactiveMap.selectedTerritoryID).type != "Coast"))
-                            interactiveMap.interface.orderMenu.hideElement($("imgConvoy"));
-                        if ((interactiveMap.currentOrder.Unit.Territory.type !== "Coast") || !interactiveMap.currentOrder.Unit.Territory.coastParent.supply)
-                            interactiveMap.interface.orderMenu.hideElement($("imgTransform"));
-                        interactiveMap.interface.orderMenu.element.show();
-                    } else {
-                        if ((Territories.get(interactiveMap.selectedTerritoryID).type == "Coast") && !Object.isUndefined(Territories.get(interactiveMap.selectedTerritoryID).Unit) && (Territories.get(interactiveMap.selectedTerritoryID).Unit.type == "Army")) {
-                            interactiveMap.interface.orderMenu.hideElement($("imgMove"));
-                            interactiveMap.interface.orderMenu.hideElement($("imgHold"));
-                            interactiveMap.interface.orderMenu.hideElement($("imgSMove"));
-                            interactiveMap.interface.orderMenu.hideElement($("imgSHold"));
-                            interactiveMap.interface.orderMenu.hideElement($("imgTransform"));
-                            interactiveMap.interface.orderMenu.showElement($("imgConvoy"));
-                            interactiveMap.interface.orderMenu.element.show();
-                        }
-                    }
-                    break;
-            }
+			/*
+			 * If current coordinates for display of the order menu are given, use these.
+			 * If no coordinates are given, use the last coordinates given.
+			 */
+			if(Object.isUndefined(coor))
+				coor = {x:new Number(interactiveMap.currentOrder.Unit.Territory.smallMapX), y:new Number(interactiveMap.currentOrder.Unit.Territory.smallMapY)};
+
+			/*
+			 * Draw a complete set of order buttons by default 
+			 */
+			if(Object.isUndefined(drawResetButton)){
+				drawResetButton = false;
+			}
+
+			// first hide all order buttons from previous action
+			interactiveMap.interface.orderMenu.hideAll();
+
+			// draw a reset button or draw the complete order menu
+			if (drawResetButton){
+				// show the reset button corresponding to current order
+				interactiveMap.interface.orderMenu.showElement($('imgReset'+interactiveMap.interface.orderMenu.getShortName(interactiveMap.currentOrder.interactiveMap.orderType)));
+
+				interactiveMap.interface.orderMenu.element.show();
+
+			} else {
+				//show all order buttons that are activated for the current phase / situation
+				interactiveMap.interface.orderMenu.showAllRegular();
+
+				// make additional phase specific adjustments
+				switch (context.phase) {
+					case 'Diplomacy':
+						if (interactiveMap.currentOrder != null) {//||(unit(interactiveMap.selectedTerritoryID)&&(Territories.get(interactiveMap.selectedTerritoryID).type=="Coast")&&(Territories.get(interactiveMap.selectedTerritoryID).Unit.type=="Army")))
+							if ((interactiveMap.currentOrder.Unit.type == "Fleet") || (Territories.get(interactiveMap.selectedTerritoryID).type != "Coast"))
+								interactiveMap.interface.orderMenu.hideElement($("imgConvoy"));
+							if ((interactiveMap.currentOrder.Unit.Territory.type !== "Coast") || !interactiveMap.currentOrder.Unit.Territory.coastParent.supply)
+								interactiveMap.interface.orderMenu.hideElement($("imgTransform"));
+							interactiveMap.interface.orderMenu.element.show();
+						} else {
+							if ((Territories.get(interactiveMap.selectedTerritoryID).type == "Coast") && !Object.isUndefined(Territories.get(interactiveMap.selectedTerritoryID).Unit) && (Territories.get(interactiveMap.selectedTerritoryID).Unit.type == "Army")) {
+								interactiveMap.interface.orderMenu.hideElement($("imgMove"));
+								interactiveMap.interface.orderMenu.hideElement($("imgHold"));
+								interactiveMap.interface.orderMenu.hideElement($("imgSupportmove"));
+								interactiveMap.interface.orderMenu.hideElement($("imgSupporthold"));
+								interactiveMap.interface.orderMenu.hideElement($("imgTransform"));
+								interactiveMap.interface.orderMenu.showElement($("imgConvoy"));
+								interactiveMap.interface.orderMenu.element.show();
+							}
+						}
+						break;
+				}
+			}
 
             var height = interactiveMap.interface.orderMenu.element.getHeight();
             interactiveMap.interface.orderMenu.element.setStyle({
@@ -183,8 +138,6 @@ function loadIAtransform() {
 
         MyOrders.pluck('interactiveMap').map(function(IA) {
             IA.setOrder = function(value) {
-                interactiveMap.interface.orderMenu.element.hide();
-
                 if (this.orderType != null) {
                     interactiveMap.errorMessages.uncompletedOrder();
                     return;
@@ -217,6 +170,10 @@ function loadIAtransform() {
                 value = (value == "Convoy") ? "Move" : value;
 
                 this.enterOrder('type', value);
+				
+				if(!this.Order.isComplete)
+					// display reset button if order is not completed
+					interactiveMap.interface.orderMenu.show(undefined, true);
             };
 
             IA.printType = function() {
