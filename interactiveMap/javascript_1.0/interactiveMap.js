@@ -189,6 +189,8 @@ interactiveMap.onClick = function(event) {
         interactiveMap.selectedTerritoryID = getTerritory(coor.x, coor.y);
         if (interactiveMap.selectedTerritoryID != null) {
             if ((interactiveMap.currentOrder == null) || (interactiveMap.currentOrder.interactiveMap.orderType == null)) {
+				interactiveMap.interface.orderMenu.element.hide();
+				
                 if ((!Object.isUndefined(Territories.get(interactiveMap.selectedTerritoryID).Unit) && (context.phase != "Builds")) || (!Object.isUndefined(MyOrders[0]) && (context.phase == "Builds"))) {
                     var currOrder = (context.phase == "Retreats") ? MyOrders.detect(function(o) {
                         return o.Unit.Territory.coastParentID == interactiveMap.selectedTerritoryID;
