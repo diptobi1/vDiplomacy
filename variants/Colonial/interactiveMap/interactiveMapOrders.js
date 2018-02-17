@@ -40,8 +40,6 @@ interactiveMap.loadOrders = function() {
 
         IA.orderType = null;
         IA.setOrder = function(value) {
-            interactiveMap.interface.orderMenu.element.hide();
-
             if (this.orderType != null) {
                 interactiveMap.errorMessages.uncompletedOrder();
                 return;
@@ -58,7 +56,7 @@ interactiveMap.loadOrders = function() {
                     return;
                 }
                 
-            if (value == "TSR" && MyOrders.any(function(myO){return myO.viaConvoy == 'TSR' && myO != o;})){
+            if (value == "TSR" && MyOrders.any(function(myO){return myO.viaConvoy == 'TSR' && myO != o && myO.isComplete;})){
                 alert("Only one unit per turn can use the TSR!");
                 interactiveMap.abortOrder();
                 return;
@@ -119,6 +117,11 @@ interactiveMap.loadOrders = function() {
             value = (value == "Convoy" || value == "TSR") ? "Move" : value;
 
             this.enterOrder('type', value);
+			
+			
+			if(!this.Order.isComplete)
+			// display reset button if order is not completed
+			interactiveMap.interface.orderMenu.show(undefined, true);
         };
 
         IA.enterOrder = function(name, value) {
@@ -127,7 +130,7 @@ interactiveMap.loadOrders = function() {
                 this.print(name, value);
                 this.getTerrChoices();
                 if (Object.isUndefined(this.terrChoices[0]))
-                    interactiveMap.greyOut.draw();
+                    interactiveMap.greyOut.draw(new Array());
                 else
                     interactiveMap.greyOut.draw(this.terrChoices);
                 if (this.Order.isComplete)
