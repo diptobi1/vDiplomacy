@@ -195,7 +195,7 @@ interactiveMap.interface.orderMenu.createButtonSet = function(ordertype, name){
 		'onclick': 'interactiveMap.sendOrder("'+ordertype+'")'
 	};
 	// create the order button:
-	interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuAttr)).observe('load',function(){interactiveMap.interface.orderMenu.showElement(this);});
+	interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuAttr));
 	
 	// create the reset button:
 	
@@ -212,7 +212,7 @@ interactiveMap.interface.orderMenu.createButtonSet = function(ordertype, name){
 	wrapper.appendChild(new Element('img', {'src': orderMenuAttr.src, 'style': 'top:5px;position:relative'}));
 	wrapper.appendChild(new Element('img', {'src': interactiveMap.parameters.imgReset, 'style': 'left:0px;top:0px;position:absolute'}));
 	
-	interactiveMap.interface.orderMenu.element.appendChild(wrapper).observe('load',function(){interactiveMap.interface.orderMenu.showElement(this);});
+	interactiveMap.interface.orderMenu.element.appendChild(wrapper);
 }
 
 /*
@@ -313,15 +313,14 @@ interactiveMap.interface.orderMenu.show = function(coor, drawResetButton) {
 interactiveMap.interface.orderMenu.showElement = function(element){
     if(element.style.display == "none"){
         element.show();
-        var width = element.width;  //fix for safari which do not like element.width in the term below!
-        interactiveMap.interface.orderMenu.element.style.width = (interactiveMap.interface.orderMenu.element.getWidth()+width+parseInt(element.style.marginLeft))+"px";
+        interactiveMap.interface.orderMenu.element.style.width = (interactiveMap.interface.orderMenu.element.getWidth()+interactiveMap.parameters.imgWidth+parseInt(element.style.marginLeft))+"px";
     }
 };
 
 interactiveMap.interface.orderMenu.hideElement = function(element){
     if(element.style.display != "none"){
         element.hide();
-        interactiveMap.interface.orderMenu.element.style.width = (interactiveMap.interface.orderMenu.element.getWidth()-element.width-parseInt(element.style.marginLeft))+"px";
+        interactiveMap.interface.orderMenu.element.style.width = (interactiveMap.interface.orderMenu.element.getWidth()-interactiveMap.parameters.imgWidth-parseInt(element.style.marginLeft))+"px";
     }
 };
 

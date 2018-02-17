@@ -47,7 +47,9 @@ interactiveMap.parameters = {
     imgWait: 'interactiveMap/images/Hold.png',
     imgRetreat: 'interactiveMap/images/Retreat.png',
     imgDisband: 'interactiveMap/images/Destroy.png',
-	imgReset: 'interactiveMap/images/Reset.png'
+	imgReset: 'interactiveMap/images/Reset.png',
+	
+	imgWidth: 15
 };
 
 //Only for Fog-Variants
