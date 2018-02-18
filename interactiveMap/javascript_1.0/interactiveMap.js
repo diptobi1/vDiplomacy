@@ -48,8 +48,6 @@ interactiveMap.parameters = {
     imgRetreat: 'interactiveMap/images/Retreat.png',
     imgDisband: 'interactiveMap/images/Destroy.png',
 	imgReset: 'interactiveMap/images/Reset.png',
-	
-	imgWidth: 15
 };
 
 //Only for Fog-Variants
@@ -63,7 +61,8 @@ interactiveMap.options = {
     scrollbars: true,       //if false scrollbars on the map are removed
     greyOut: false,         //possible territories for an order are greyed out or not
     unitGreyOut: false,     //own units are highlighted if no order is submitted at the moment
-    greyOutIntensity: 0.4   //0 - now intensity; 1 - black
+    greyOutIntensity: 0.4,  //0 - now intensity; 1 - black
+	buttonWidth: 15			//width of the on-map buttons (in px)
 };
 
 

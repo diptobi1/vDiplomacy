@@ -177,42 +177,78 @@ interactiveMap.interface.orderMenu.getShortName = function(ordertype){
  * @param name: The name that should be displayed as tooltip
  */
 interactiveMap.interface.orderMenu.createButtonSet = function(ordertype, name){
+	/*
+	 * HTML Structure of order Menu:
+	 * Top element: DIV orderMenu
+	 * each button:
+	 *	<span buttonWrapper for switching visibility of button>
+	 *		<span button with actual responses to user input>
+	 *			<img imgSources>[<img>]
+	 *		</span>
+	 *	</span>
+	 */
+	
 	var shortname = interactiveMap.interface.orderMenu.getShortName(ordertype);
 	
-	// the html attributes used for the buttons
-	var orderMenuAttr = {
+	var imgSrc = interactiveMap.parameters['img'+shortname];
+	
+	// the html attributes used for the button wrappers
+	var buttonWrapperAttr = {
 		'id': 'img'+shortname,
-		'src': interactiveMap.parameters['img'+shortname],
-		'title': name,
 		'style': 'margin-left:5px;\n\
-			background-color:LightGrey;\n\
-			border:1px solid Grey;\n\
-			display:none;',
+			display:none;'
+	};
+	
+	// attributes and styles for buttons
+	var buttonAttr = {
+		'title': name,
 		'onmouseover': 'this.setStyle({"backgroundColor":"GhostWhite"})',
 		'onmouseout': 'this.setStyle({"backgroundColor":"LightGrey"})',
 		'onmousedown': 'this.setStyle({"backgroundColor":"LightBlue"})',
 		'onmouseup': 'interactiveMap.interface.orderMenu.element.hide()',
 		'onclick': 'interactiveMap.sendOrder("'+ordertype+'")'
 	};
+	var buttonStyles = {
+		'background-color': 'LightGrey',
+		'border': '1px solid Grey',
+		'position':'relative',
+		'height':interactiveMap.options.buttonWidth+'px',
+		'width':interactiveMap.options.buttonWidth+'px',
+		'display':'inline-block',
+	}
+	
+	//style of the image sources
+	var imgStyles = {
+		'position':'absolute',
+		'top':'0px',
+		'left': '0px',
+		'width':interactiveMap.options.buttonWidth+'px'
+	}
+	
 	// create the order button:
-	interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuAttr));
+	var orderButton = new Element('span',buttonAttr).setStyle(buttonStyles);
+	orderButton.appendChild(new Element('img', {'src':imgSrc}).setStyle(imgStyles));
+	
+	var orderButtonWrapper = new Element('span', buttonWrapperAttr);
+	orderButtonWrapper.appendChild(orderButton);
+	
+	interactiveMap.interface.orderMenu.element.appendChild(orderButtonWrapper);
 	
 	// create the reset button:
+	// update button specific data
+	buttonWrapperAttr.id = 'imgReset'+shortname;
+	buttonAttr.onclick = 'interactiveMap.abortOrder()';
+	buttonAttr.title = 'reset order: '+ordertype;
 	
-	// Instead of just printing an img, the reset button is composed by two imgs,
-	// the order img and the reset img, that are put together in a wrapper-div
-	orderMenuAttr.id = 'imgReset'+shortname;
-	// create wrapper div
-	orderMenuAttr.onclick = 'interactiveMap.abortOrder()';
-	orderMenuAttr.title = 'reset order: '+ordertype;
+	var resetButton = new Element('span', buttonAttr).setStyle(buttonStyles);
+	// reset button consists of 2 img (reset img and orig order img)
+	resetButton.appendChild(new Element('img', {'src': imgSrc}).setStyle(imgStyles));
+	resetButton.appendChild(new Element('img', {'src': interactiveMap.parameters.imgReset}).setStyle(imgStyles));
 	
-	var wrapper = new Element('span', orderMenuAttr).setStyle({'position':'relative','top':'-5px'});
+	var resetButtonWrapper = new Element('span', buttonWrapperAttr);
+	resetButtonWrapper.appendChild(resetButton);
 	
-	// create reset button by placing normal order image and reset cross on top of each other
-	wrapper.appendChild(new Element('img', {'src': orderMenuAttr.src, 'style': 'top:5px;position:relative'}));
-	wrapper.appendChild(new Element('img', {'src': interactiveMap.parameters.imgReset, 'style': 'left:0px;top:0px;position:absolute'}));
-	
-	interactiveMap.interface.orderMenu.element.appendChild(wrapper);
+	interactiveMap.interface.orderMenu.element.appendChild(resetButtonWrapper);
 }
 
 /*
@@ -313,14 +349,14 @@ interactiveMap.interface.orderMenu.show = function(coor, drawResetButton) {
 interactiveMap.interface.orderMenu.showElement = function(element){
     if(element.style.display == "none"){
         element.show();
-        interactiveMap.interface.orderMenu.element.style.width = (interactiveMap.interface.orderMenu.element.getWidth()+interactiveMap.parameters.imgWidth+parseInt(element.style.marginLeft))+"px";
+        interactiveMap.interface.orderMenu.element.style.width = (interactiveMap.interface.orderMenu.element.getWidth()+interactiveMap.options.buttonWidth+parseInt(element.style.marginLeft))+"px";
     }
 };
 
 interactiveMap.interface.orderMenu.hideElement = function(element){
     if(element.style.display != "none"){
         element.hide();
-        interactiveMap.interface.orderMenu.element.style.width = (interactiveMap.interface.orderMenu.element.getWidth()-interactiveMap.parameters.imgWidth-parseInt(element.style.marginLeft))+"px";
+        interactiveMap.interface.orderMenu.element.style.width = (interactiveMap.interface.orderMenu.element.getWidth()-interactiveMap.options.buttonWidth-parseInt(element.style.marginLeft))+"px";
     }
 };
 
@@ -329,8 +365,8 @@ interactiveMap.interface.orderMenu.hideAll = function(){
 }
 
 interactiveMap.interface.orderMenu.showAllRegular = function(){
-	// display all regular buttons (no reset buttons, stored as img in contrast to span wrapper for reset button)
-	interactiveMap.interface.orderMenu.element.childElements().each(function(e){if(e.tagName=="IMG") interactiveMap.interface.orderMenu.showElement(e)});
+	// display all regular buttons (no reset buttons)
+	interactiveMap.interface.orderMenu.element.childElements().each(function(e){if(!e.id.includes("Reset")) interactiveMap.interface.orderMenu.showElement(e)});
 }
 /*
  * enables/disables the activate-Button
