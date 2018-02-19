@@ -33,8 +33,6 @@ class MoveFlags_drawMap extends drawMap
 	}
 }
 
-
-
 class CustomCountryIcons_drawMap extends MoveFlags_drawMap
 {
 	// Arrays for the custom icons:
@@ -61,10 +59,10 @@ class CustomCountryIcons_drawMap extends MoveFlags_drawMap
 	{
 		$terrName=$this->territoryNames[$terrID];
 		$this->unit_c[$terrID]=$countryID;
-		$this->unit_c[array_search($terrName. " (North coast)" ,$this->territoryNames)]=$countryID;
-		$this->unit_c[array_search($terrName. " (East coast)"  ,$this->territoryNames)]=$countryID;
-		$this->unit_c[array_search($terrName. " (South coast)" ,$this->territoryNames)]=$countryID;
-		$this->unit_c[array_search($terrName. " (West coast)"  ,$this->territoryNames)]=$countryID;
+		$this->unit_c[array_search($terrName. " (North Coast)" ,$this->territoryNames)]=$countryID;
+		$this->unit_c[array_search($terrName. " (East Coast)"  ,$this->territoryNames)]=$countryID;
+		$this->unit_c[array_search($terrName. " (South Coast)" ,$this->territoryNames)]=$countryID;
+		$this->unit_c[array_search($terrName. " (West Coast)"  ,$this->territoryNames)]=$countryID;
 		parent::colorTerritory($terrID, $countryID);
 	}
 	
@@ -184,7 +182,6 @@ class MultiLayerMap_drawMap extends Transform_drawMap
 		$this->mergeMaps();
 		parent::writeToBrowser();
 	}
-	
 
 }
 
@@ -196,13 +193,10 @@ class ZoomMap_drawMap extends MultiLayerMap_drawMap
 		parent::__construct(false);
 	}
 	
-	
 	protected function loadOrderArrows()
 	{
 		$this->smallmap=true;
-		
-			parent::loadOrderArrows();
-		
+		parent::loadOrderArrows();
 		$this->smallmap=false;
 	}
 	
@@ -224,10 +218,8 @@ class ZoomMap_drawMap extends MultiLayerMap_drawMap
 	
 }
 
-
 class ResetPaletteVariant_drawMap extends ZoomMap_drawMap
 {
-	
 	public $countColor=0;
 	public $setColors=false;
 
@@ -247,28 +239,30 @@ class ResetPaletteVariant_drawMap extends ZoomMap_drawMap
 			parent::loadOrderArrows();
 	}
 	
-	// After 220 territories reset the palette, so there is enough color for the units left.
 	public function colorTerritory($terrID, $countryID)
 	{
 
 		$this->countColor++;
 
-		
-		//512 is territory count
+		// After 220 territories reset the palette, so there is enough color for the units left.
 		if (($this->countColor == 620) or ($this->countColor == 508))
 		{
-			
 			$w = $this->map['width'];
 			$h = $this->map['height'];
 			$im = imagecreate($this->map['width'], $this->map['height']);
 			imagecopyresampled($im, $this->map2['image'], 0, 0, 0, 0, $w, $h, $w, $h);
 			imagecopyresampled($im, $this->map['image'], 0, 0, 0, 0, $w, $h, $w, $h);
-			imagetruecolortopalette($im, true, 1024);
+			imagetruecolortopalette($im, true, 256);
 			$this->map['image']=$im;
+		}
+		
+		if ($this->countColor == 220)
+		{
 			$this->setColors=true;
 			$this->loadColors();
 			$this->loadOrderArrows();
 		}
+		
 		parent::colorTerritory($terrID, $countryID);
 	}
 	
@@ -401,7 +395,6 @@ class NeutralScBox_drawMap extends ResetPaletteVariant_drawMap
 	**/
 	public function ColorTerritory($terrID, $countryID)
 	{
-		
 
 		if ((isset($this->nsc_info[$terrID][0])) && $countryID==0)
 		{
@@ -439,58 +432,58 @@ class Divided_StatesVariant_drawMap extends NeutralScBox_drawMap {
 	}
 	
 	protected $countryColors = array(
-        0=> array(226, 198, 158), /* Neutral */
-         1=> array(0,200,28),  /* Maine */
-         2=> array(215,57,17),  /* New-Hampshire */
-         3=> array(0,101,11),  /* Vermont  */
-         4=> array(128,91,124),  /* Massachusetts */
-         5=> array(255,253,51),  /* Rhode-Island   */
-         6=> array(135,165,215),  /* Connecticut  */
-         7=> array(196,150,18),  /* New-York  */
-         8=> array(238,247,130),  /* New-Jersey */
-         9=> array(41,37,104),  /* Pennsylvania */
-         10=> array(238,74,181),  /* Delaware  */
-         11=> array(115,113,14),  /* Maryland */
-         12=> array(183,183,183),  /* Virginia   */
-         13=> array(0,182,184),  /* North-Carolina  */
-         14=> array(162,9,50),  /* South-Carolina  */
-         15=> array(255,185,86),  /* Georgia */
-         16=> array(197,251,67),  /* Florida */
-         17=> array(111,13,3),  /* Alabama  */
-         18=> array(120,14,136),  /* Mississippi */
-         19=> array(159,125,78),  /* Tennessee   */
-         20=> array(255,145,214),  /* Kentucky  */
-         21=> array(104,104,104),  /* West-Virginia  */
-         22=> array(255,156,0),  /* Ohio */
-         23=> array(0,250,44),  /* Michigan */
-         24=> array(212,0,0),  /* Indiana  */
-         25=> array(254,254,254),  /* Illinois */
-         26=> array(244,232,26),  /* Wisconsin   */
-         27=> array(112,63,145),  /* Minnesota  */
-         28=> array(118,139,26),  /* Iowa  */
-         29=> array(176,154,145),  /* Missouri */
-         30=> array(207,250,250),  /* Arkansas */
-         31=> array(57,108,71),  /* Louisiana  */
-         32=> array(90,96,173),  /* Texas */
-         33=> array(235,83,233),  /* Oklahoma   */
-         34=> array(215,149,79),  /* Kansas  */
-         35=> array(159,85,15),  /* Nebraska  */
-         36=> array(0,122,124),  /* South-Dakota */
-         37=> array(235,196,58),  /* North-Dakota */
-         38=> array(230,105,116),  /* Montana  */
-         39=> array(61,230,106),  /* Wyoming */
-         40=> array(224,198,221),  /* Colorado   */
-         41=> array(255,201,0),  /* New-Mexico  */
-         42=> array(204,174,88),  /* Arizona  */
-         43=> array(142,176,173),  /* Utah */
-         44=> array(255,241,190),  /* Nevada */
-         45=> array(186,183,108),  /* Idaho  */
-         46=> array(0,181,107),  /* Washington */
-         47=> array(10,35,192),  /* Oregon   */
-         48=> array(109,19,103),  /* California  */
-         49=> array(254,155,157),  /* Alaska  */
-         50=> array(71,151,251),  /* Hawaii */
-		 51=> array(226, 198, 158) /* Neutral */
+         0=> array(226,198,158), /* Neutral */
+		 1=> array(  0,200, 28), /* Maine */
+		 2=> array(215, 57, 17), /* New-Hampshire */
+		 3=> array(  0,101, 11), /* Vermont  */
+		 4=> array(128, 91,124), /* Massachusetts */
+		 5=> array(255,253, 51), /* Rhode-Island   */
+		 6=> array(135,165,215), /* Connecticut  */
+		 7=> array(196,150, 18), /* New-York  */
+		 8=> array(238,247,130), /* New-Jersey */
+		 9=> array( 41, 37,104), /* Pennsylvania */
+		10=> array(238, 74,181), /* Delaware  */
+		11=> array(115,113, 14), /* Maryland */
+		12=> array(183,183,183), /* Virginia   */
+		13=> array(  0,182,184), /* North-Carolina  */
+		14=> array(162,  9, 50), /* South-Carolina  */
+		15=> array(255,185, 86), /* Georgia */
+		16=> array(197,251, 67), /* Florida */
+		17=> array(111, 13,  3), /* Alabama  */
+		18=> array(120, 14,136), /* Mississippi */
+		19=> array(159,125, 78), /* Tennessee   */
+		20=> array(255,145,214), /* Kentucky  */
+		21=> array(104,104,104), /* West-Virginia  */
+		22=> array(255,156,  0), /* Ohio */
+		23=> array(  0,250, 44), /* Michigan */
+		24=> array(212,  0,  0), /* Indiana  */
+		25=> array(254,254,254), /* Illinois */
+		26=> array(244,232, 26), /* Wisconsin   */
+		27=> array(112, 63,145), /* Minnesota  */
+		28=> array(118,139, 26), /* Iowa  */
+		29=> array(176,154,145), /* Missouri */
+		30=> array(207,250,250), /* Arkansas */
+		31=> array( 57,108, 71), /* Louisiana  */
+		32=> array( 90, 96,173), /* Texas */
+		33=> array(235, 83,233), /* Oklahoma   */
+		34=> array(215,149, 79), /* Kansas  */
+		35=> array(159, 85, 15), /* Nebraska  */
+		36=> array(  0,122,124), /* South-Dakota */
+		37=> array(235,196, 58), /* North-Dakota */
+		38=> array(230,105,116), /* Montana  */
+		39=> array( 61,230,106), /* Wyoming */
+		40=> array(224,198,221), /* Colorado   */
+		41=> array(255,201,  0), /* New-Mexico  */
+		42=> array(204,174, 88), /* Arizona  */
+		43=> array(142,176,173), /* Utah */
+		44=> array(255,241,190), /* Nevada */
+		45=> array(186,183,108), /* Idaho  */
+		46=> array(  0,181,107), /* Washington */
+		47=> array( 10, 35,192), /* Oregon   */
+		48=> array(109, 19,103), /* California  */
+		49=> array(254,155,157), /* Alaska  */
+		50=> array( 71,151,251), /* Hawaii */
+		51=> array(226,198,158)  /* Neutral */
 	);
 
 	// The resources (map and default icons)

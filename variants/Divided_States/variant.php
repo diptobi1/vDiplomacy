@@ -16,6 +16,11 @@
 
 	You should have received a copy of the GNU Affero General Public License
 	along with webDiplomacy. If not, see <http://www.gnu.org/licenses/>.
+	
+	Changelog:
+	1.0: initial version
+	1.1: Error with the order-arrows fixed.
+	
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -29,7 +34,7 @@ class Divided_StatesVariant extends WDVariant {
 	public $author     = 'Technostar';
 	public $adapter    = 'Technostar, Oliver Auth';
 	public $version    = '1';
-	public $codeVersion= '1.0.1';
+	public $codeVersion= '1.1';
 	
 	public $countries=array('Maine','New-Hampshire','Vermont','Massachusetts','Rhode-Island','Connecticut','New-York','New-Jersey','Pennsylvania','Delaware','Maryland','Virginia','North-Carolina','South-Carolina','Georgia','Florida','Alabama','Mississippi','Tennessee','Kentucky','West-Virginia','Ohio','Michigan','Indiana','Illinois','Wisconsin','Minnesota','Iowa','Missouri','Arkansas','Louisiana','Texas','Oklahoma','Kansas','Nebraska','South-Dakota','North-Dakota','Montana','Wyoming','Colorado','New-Mexico','Arizona','Utah','Nevada','Idaho','Washington','Oregon','California','Alaska','Hawaii');
 
