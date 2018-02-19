@@ -153,7 +153,7 @@ $territoryRawData=array(
 	array('Lombardy', 'Coast', 'No', 0, 384, 638, 384, 638),
 	array('Friesland', 'Coast', 'No', 0, 309, 432, 309, 432),
 	array('Franconia', 'Land', 'No', 6, 367, 470, 367, 470),
-	array('Lothairingia', 'Land', 'Yes', 10, 275, 472, 275, 472),
+	array('Lothairingia', 'Coast', 'Yes', 10, 275, 472, 275, 472),
 	array('Upper Burgundy', 'Land', 'No', 0, 308, 591, 308, 591),
 	array('Lower Burgundy', 'Coast', 'Yes', 10, 309, 651, 309, 651),
 	array('Narbonne', 'Coast', 'Yes', 5, 282, 631, 282, 631),
@@ -670,6 +670,7 @@ InstallCache::terrJSON($this->territoriesJSONFile(),$this->mapID);
 
 // Copy the smallmap-sample to the cache-directory to avoid a screwed variantpage (there is no smallmap available)
 //copy ('variants/'.$this->name.'/resources/sampleMap.png','variants/'.$this->name.'/cache/sampleMap.png');
+
 
 
 
