@@ -32,6 +32,18 @@ interactiveMap.interface.options = new Object();
  * creates the button interface above the map
  */
 interactiveMap.interface.create = function() {
+	
+	// --- initialisations for mobile version support ---
+	
+	// add listener which checks for change of window size -> adjust map size for and switch from / to mobile verion if needed
+	window.addEventListener("resize", function(){interactiveMap.interface.reload();});
+	
+	// check if mobile version might be needed
+	this.mobileVersion = window.matchMedia( "only screen and (max-width: 800px)" ).matches && localStorage.getItem("desktopEnabled") != "true";
+
+	
+	// --- create button interface below the map --
+	
     var orderDiv = $("orderDiv"+context.memberID);
     var IAswitch = orderDiv.insertBefore(new Element('div',{'id':'IAswitch', 'class':'gamelistings-tabs'}), $('orderFormElement'));
     //create Pseudolinks to use the tab-styles
@@ -113,11 +125,56 @@ interactiveMap.interface.createOrderButtons = function() {
     return orderButtons;
 };
 
+interactiveMap.interface.mobileVersion = false;
+/*
+ * Reloads the interface if a change in window size is observed.
+ * 
+ * If no change to mobile version happened -> just readjust srollbars
+ * 
+ * else: Do also reload orderMenu in case the button size has to be adjusted
+ */
+interactiveMap.interface.reload = function() {	
+	var mobileVersionSwitch = !(interactiveMap.interface.mobileVersion == (window.matchMedia( "only screen and (max-width: 800px)" ).matches && localStorage.getItem("desktopEnabled") != "true"));
+	
+	if(mobileVersionSwitch){
+		// change to mobile version happened
+		interactiveMap.interface.mobileVersion = !interactiveMap.interface.mobileVersion;
+	
+		if(interactiveMap.options.buttonWidthAutomatic)
+			// reload the ordermenu interface
+			this.orderMenu.reload();
+	}
+	
+	// readjust the scrollbars (only effect if srollbars are enabled in menu)
+	this.options.updateScrollbars();
+}
+
+interactiveMap.interface.orderMenu.reload = function() {
+	// reload ordermenu interface (by removing the exisiting one and recall the load function)
+	if(!(typeof this.element == "undefined")){
+		this.element.remove();
+		this.element = undefined;
+	}
+	this.load();
+}
+
+interactiveMap.interface.orderMenu.load = function() {	
+	if(interactiveMap.options.buttonWidthAutomatic){
+		if(interactiveMap.interface.mobileVersion)
+			interactiveMap.options.buttonWidth = interactiveMap.parameters.largeButtonSize;
+		else
+			interactiveMap.options.buttonWidth = interactiveMap.parameters.smallButtonSize;
+	}
+	
+	// does nothing if menu is already created
+	this.create();
+}
+
 /*
  * creates the menu that appears when a user clicks on the map
  */
 interactiveMap.interface.orderMenu.create = function() {
-    if (typeof interactiveMap.interface.orderMenu.element == "undefined") {
+	if (typeof interactiveMap.interface.orderMenu.element == "undefined") {
         interactiveMap.interface.orderMenu.element = new Element('div', {'id': 'orderMenu'});
         interactiveMap.interface.orderMenu.element.setStyle({
             position: 'absolute',
@@ -442,6 +499,7 @@ interactiveMap.interface.options.show = function() {
     this.updateGreyOut();
     this.updateUnitGreyOut();
     this.updateScrollbars();
+	this.updateButtonSize();
     interactiveMap.insertMessage("Options",true, true);
     
     $('options').disabled = true;
@@ -485,7 +543,10 @@ interactiveMap.interface.options.load = function(){
     interactiveMap.interface.options.element.appendChild(new Element("h1").update("InteractiveMap Options:"));
     this.scrollbarsButton = interactiveMap.interface.options.element.appendChild(new Element("p")).appendChild(new Element("button", {'id': 'largeMap', 'class':'buttonIA form-submit'})).update("Toggle scrollbars on map");
     this.scrollbarsButton.observe('click', this.largeMap.bind(this));
-        
+	
+	this.buttonSizeButton = interactiveMap.interface.options.element.appendChild(new Element("p")).appendChild(new Element("button", {'id': 'buttonSize', 'class':'buttonIA form-submit'}));
+	this.buttonSizeButton.observe('click', this.buttonSize.bind(this));
+	
     this.greyOutButton = interactiveMap.interface.options.element.appendChild(new Element("p")).appendChild(new Element("Button", {'id': 'greyOut', 'class':'buttonIA form-submit'}));
     this.greyOutButton.observe('click', this.greyOut.bind(this));
         
@@ -535,11 +596,15 @@ interactiveMap.interface.options.largeMap = function() {
 interactiveMap.interface.options.updateScrollbars = function(){
     if(interactiveMap.options.scrollbars){
         interactiveMap.visibleMap.element.setStyle({
-            width: (new Number(interactiveMap.visibleMap.oldMap.width) + 10) + 'px',
+            width: (((interactiveMap.interface.mobileVersion)?$("mapstore").getWidth():new Number(interactiveMap.visibleMap.oldMap.width)) + 10) + 'px',
             height: (new Number(interactiveMap.visibleMap.oldMap.height) + 10) + 'px',
             overflow: 'auto',
             left: '0px'
         });
+		
+				
+		// use screen width for mobile version instead
+		interactiveMap.visibleMap.element.setStyle({width: $("mapstore").getWidth() + 'px'});
     }else if(interactiveMap.visibleMap.element.style.overflow !== 'visible'){
         interactiveMap.visibleMap.element.scrollTop = 0;
         interactiveMap.visibleMap.element.scrollLeft = 0;
@@ -555,6 +620,35 @@ interactiveMap.interface.options.updateScrollbars = function(){
     }
 };
 
+
+/*
+ * Switch between small and large order menu buttons
+ */
+interactiveMap.interface.options.buttonSize = function() {
+	
+	// switch between automatic, small, large
+	if(interactiveMap.options.buttonWidthAutomatic) {
+		interactiveMap.options.buttonWidthAutomatic = false;
+		interactiveMap.options.buttonWidth = interactiveMap.parameters.smallButtonSize;
+	} else if(interactiveMap.options.buttonWidth <= interactiveMap.parameters.smallButtonSize)
+		interactiveMap.options.buttonWidth = interactiveMap.parameters.largeButtonSize;
+	else
+		interactiveMap.options.buttonWidthAutomatic = true;
+	
+	this.updateButtonSize();
+}
+
+interactiveMap.interface.options.updateButtonSize = function() {
+	if(interactiveMap.options.buttonWidthAutomatic)
+		interactiveMap.interface.options.buttonSizeButton.update("Switch to SMALL buttons");
+	else if(interactiveMap.options.buttonWidth <= interactiveMap.parameters.smallButtonSize) 
+		interactiveMap.interface.options.buttonSizeButton.update("Switch to LARGE buttons");
+	else
+		interactiveMap.interface.options.buttonSizeButton.update("Switch to AUTOMATIC mode");
+
+	// reload order Menu
+	interactiveMap.interface.orderMenu.reload();
+}
 
 /*
  * toggles the greyOut of territories during the orders

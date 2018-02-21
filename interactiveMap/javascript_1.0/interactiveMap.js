@@ -48,6 +48,9 @@ interactiveMap.parameters = {
     imgRetreat: 'interactiveMap/images/Retreat.png',
     imgDisband: 'interactiveMap/images/Destroy.png',
 	imgReset: 'interactiveMap/images/Reset.png',
+	
+	smallButtonSize: 15,
+	largeButtonSize: 30,
 };
 
 //Only for Fog-Variants
@@ -62,7 +65,8 @@ interactiveMap.options = {
     greyOut: false,         //possible territories for an order are greyed out or not
     unitGreyOut: false,     //own units are highlighted if no order is submitted at the moment
     greyOutIntensity: 0.4,  //0 - now intensity; 1 - black
-	buttonWidth: 15			//width of the on-map buttons (in px)
+	buttonWidth: 15,		//width of the on-map buttons (in px)
+	buttonWidthAutomatic: true //automatically choose large buttons for mobile devices (small screens)
 };
 
 
@@ -77,7 +81,7 @@ function loadIA(variantName, verify) {
     //orderEle = $("orderFormElement");
 
     interactiveMap.interface.create();
-    interactiveMap.hiddenMap.load();
+	interactiveMap.hiddenMap.load();
 
     //the HTML-Element of the map
     interactiveMap.visibleMap.oldMap = $("mapImage");
@@ -282,7 +286,7 @@ interactiveMap.activate = function(activated) {
     if(interactiveMap.activated != activated){
         interactiveMap.activated = activated;
         interactiveMap.visibleMap.load();
-        interactiveMap.interface.orderMenu.create();
+        interactiveMap.interface.orderMenu.load();
         interactiveMap.interface.toggle();
         if(interactiveMap.activated) {
             interactiveMap.resetOrder();
