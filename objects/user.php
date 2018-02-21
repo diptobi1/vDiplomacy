@@ -220,6 +220,7 @@ class User {
 	public $terrGrey;
 	public $greyOut;
 	public $scrollbars;
+	public $buttonWidth;
 	
 	/*
 	 * User has the right to create directed games, even if he does not met the criteria, 
@@ -402,6 +403,7 @@ class User {
 					'cssStyle'=>'',
 					'forceDesktop'=>'',
 					'scrollbars'=>'',
+					'buttonWidth'=>'',
 				'hideEmail'=>'','showEmail'=>'', 'homepage'=>'','comment'=>'');
 
 		$userForm = array();
@@ -556,6 +558,16 @@ class User {
 				$SQLVars['scrollbars'] = "No";
 		}
 		
+		if( isset($userForm['buttonWidth']) )
+		{
+			if ( $userForm['buttonWidth'] == "auto" )
+				$SQLVars['buttonWidth'] = "auto";
+			else if ( $userForm['buttonWidth'] == "large" )
+				$SQLVars['buttonWidth'] = "large";
+			else
+				$SQLVars['buttonWidth'] = "small";
+		}
+		
 		if( isset($userForm['cssStyle']) )
 		{
 			if ( $userForm['cssStyle'] == "webDip" )
@@ -640,6 +652,7 @@ class User {
 			u.terrGrey,
 			u.greyOut,
 			u.scrollbars,
+			u.buttonWidth,
 			u.directorLicense,
 			u.tempBan,
 			u.vpoints,

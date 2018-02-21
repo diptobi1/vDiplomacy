@@ -572,7 +572,8 @@ interactiveMap.interface.options.load = function(){
 				parameters: {
 					"userForm[terrGrey]": (!interactiveMap.options.greyOut)?'off':(interactiveMap.options.unitGreyOut)?'all':'selected',
 					"userForm[scrollbars]": interactiveMap.options.scrollbars?'Yes':'No',
-					"userForm[greyOut]": Math.floor(interactiveMap.options.greyOutIntensity*100)
+					"userForm[greyOut]": Math.floor(interactiveMap.options.greyOutIntensity*100),
+					"userForm[buttonWidth]":(interactiveMap.options.buttonWidthAutomatic)?'auto':(interactiveMap.options.buttonWidth <= interactiveMap.parameters.smallButtonSize)?'small':'large'
 				}
 			});
 	});
