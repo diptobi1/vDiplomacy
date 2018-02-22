@@ -49,11 +49,13 @@ var origCreate = interactiveMap.interface.orderMenu.create;
  * creates the menu that appears when a user clicks on the map
  */
 interactiveMap.interface.orderMenu.create = function() {	
-	origCreate();
+	if (typeof interactiveMap.interface.orderMenu.element == "undefined") { 
+		origCreate();
 			
-	if(context.phase == "Diplomacy" && $("imgTSR")==null){
-		interactiveMap.interface.orderMenu.createButtonSet('TSR','Trans-Siberian Railroad (TSR)');
-		interactiveMap.interface.orderMenu.createButtonSet('Suez','use Suez Canal');
+		if(context.phase == "Diplomacy"){
+			interactiveMap.interface.orderMenu.createButtonSet('TSR','Trans-Siberian Railroad (TSR)');
+			interactiveMap.interface.orderMenu.createButtonSet('Suez','use Suez Canal');
+		}
 	}   
 };
 

@@ -55,9 +55,9 @@ function loadIAtransform() {
         var origCreate = interactiveMap.interface.orderMenu.create;
 		
         interactiveMap.interface.orderMenu.create = function() {
-			origCreate();
+			if (typeof interactiveMap.interface.orderMenu.element == "undefined") { 
+				origCreate();
 			
-			if($("imgTransform")==null){
 				interactiveMap.parameters.imgTransform = 'variants/KnownWorld_901/interactiveMap/IA_transform.png';
 				interactiveMap.interface.orderMenu.createButtonSet('Transform','transform');
 			}
