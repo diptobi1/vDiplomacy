@@ -32,7 +32,6 @@ interactiveMap.interface.options = new Object();
  * creates the button interface above the map
  */
 interactiveMap.interface.create = function() {
-	
 	// --- initialisations for mobile version support ---
 	
 	// add listener which checks for change of window size -> adjust map size for and switch from / to mobile verion if needed
@@ -146,7 +145,8 @@ interactiveMap.interface.reload = function() {
 	}
 	
 	// readjust the scrollbars (only effect if srollbars are enabled in menu)
-	this.options.updateScrollbars();
+	if(!Object.isUndefined(interactiveMap.visibleMap.element))
+		this.options.updateScrollbars();
 }
 
 interactiveMap.interface.orderMenu.reload = function() {
@@ -155,7 +155,10 @@ interactiveMap.interface.orderMenu.reload = function() {
 		this.element.remove();
 		this.element = undefined;
 	}
-	this.load();
+	
+	if(interactiveMap.activated)
+		this.load(); //the orderMenu itself can only be securely loaded, if the interactiveMap is activated
+		// on activation load is called anyway
 }
 
 interactiveMap.interface.orderMenu.load = function() {	
