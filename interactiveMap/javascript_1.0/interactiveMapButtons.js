@@ -598,17 +598,16 @@ interactiveMap.interface.options.largeMap = function() {
 };
 
 interactiveMap.interface.options.updateScrollbars = function(){
-    if(interactiveMap.options.scrollbars){
-        interactiveMap.visibleMap.element.setStyle({
-            width: (((interactiveMap.interface.mobileVersion)?$("mapstore").getWidth():new Number(interactiveMap.visibleMap.oldMap.width)) + 10) + 'px',
-            height: (new Number(interactiveMap.visibleMap.oldMap.height) + 10) + 'px',
-            overflow: 'auto',
-            left: '0px'
-        });
-		
-				
-		// use screen width for mobile version instead
-		interactiveMap.visibleMap.element.setStyle({width: $("mapstore").getWidth() + 'px'});
+    //only adjust width (add srollbars), if really needed because of size of map
+	var newWidth = ((interactiveMap.interface.mobileVersion)?$("mapstore").getWidth():new Number(interactiveMap.visibleMap.oldMap.width)) + 10;	
+	
+	if(interactiveMap.options.scrollbars && newWidth < interactiveMap.hiddenMap.canvasElement.width){		
+		interactiveMap.visibleMap.element.setStyle({
+			width: newWidth + 'px',
+			height: (new Number(interactiveMap.visibleMap.oldMap.height) + 10) + 'px',
+			overflow: 'auto',
+			left: '0px'
+		});
     }else if(interactiveMap.visibleMap.element.style.overflow !== 'visible'){
         interactiveMap.visibleMap.element.scrollTop = 0;
         interactiveMap.visibleMap.element.scrollLeft = 0;
