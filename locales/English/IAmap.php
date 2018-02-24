@@ -49,6 +49,16 @@ defined('IN_CODE') or die('This script can not be run by itself.');
 	<li class="formlistdesc">
 		Adds or removes scrollbars if the interactive map is activated, so large maps can be displayed on the whole screen or only in a small frame.
 	</li>
+	
+	<li class="formlisttitle">Button size:</li>
+	<li class="formlistfield">
+		<input type="radio" name="userForm[buttonWidth]" value="auto" <?php if($User->buttonWidth=='auto') print "checked"; ?>>Automatic
+		<input type="radio" name="userForm[buttonWidth]" value="large"  <?php if($User->buttonWidth=='large')  print "checked"; ?>>Large
+		<input type="radio" name="userForm[buttonWidth]" value="small"  <?php if($User->buttonWidth=='small')  print "checked"; ?>>Small
+	</li>
+	<li class="formlistdesc">
+		Choose the button size for the on-map order menu. "Automatic" chooses large buttons if the website is displayed in mobile view and small buttons otherwise. 
+	</li>
 
 	<li class="formlisttitle">Opt out:</li>
 	<li class="formlistfield">

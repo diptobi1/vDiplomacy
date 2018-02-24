@@ -38,15 +38,19 @@ interactiveMap.parameters = {
     fleetName: 'Fleet',
     imgHold: 'interactiveMap/images/Hold.png',
     imgMove: 'interactiveMap/images/Move.png',
-    imgSHold: 'interactiveMap/images/SupportHold.png',
-    imgSMove: 'interactiveMap/images/SupportMove.png',
+    imgSupporthold: 'interactiveMap/images/SupportHold.png',
+    imgSupportmove: 'interactiveMap/images/SupportMove.png',
     imgConvoy: 'interactiveMap/images/Convoy.png',
     imgDestroy: 'interactiveMap/images/Destroy.png',
     imgBuildArmy: 'interactiveMap/images/BuildArmy.png',
     imgBuildFleet: 'interactiveMap/images/BuildFleet.png',
     imgWait: 'interactiveMap/images/Hold.png',
     imgRetreat: 'interactiveMap/images/Retreat.png',
-    imgDisband: 'interactiveMap/images/Destroy.png'
+    imgDisband: 'interactiveMap/images/Destroy.png',
+	imgReset: 'interactiveMap/images/Reset.png',
+	
+	smallButtonSize: 15,
+	largeButtonSize: 30,
 };
 
 //Only for Fog-Variants
@@ -60,7 +64,9 @@ interactiveMap.options = {
     scrollbars: true,       //if false scrollbars on the map are removed
     greyOut: false,         //possible territories for an order are greyed out or not
     unitGreyOut: false,     //own units are highlighted if no order is submitted at the moment
-    greyOutIntensity: 0.4   //0 - now intensity; 1 - black
+    greyOutIntensity: 0.4,  //0 - now intensity; 1 - black
+	buttonWidth: 15,		//width of the on-map buttons (in px)
+	buttonWidthAutomatic: true //automatically choose large buttons for mobile devices (small screens)
 };
 
 
@@ -75,7 +81,7 @@ function loadIA(variantName, verify) {
     //orderEle = $("orderFormElement");
 
     interactiveMap.interface.create();
-    interactiveMap.hiddenMap.load();
+	interactiveMap.hiddenMap.load();
 
     //the HTML-Element of the map
     interactiveMap.visibleMap.oldMap = $("mapImage");
@@ -182,11 +188,12 @@ interactiveMap.onClick = function(event) {
      * onClick-function (main part)
      */
     if (interactiveMap.ready && interactiveMap.activated && !OrdersHTML.finalized) {
-        interactiveMap.interface.orderMenu.element.hide();
         var coor = getCoor(event);
         interactiveMap.selectedTerritoryID = getTerritory(coor.x, coor.y);
         if (interactiveMap.selectedTerritoryID != null) {
             if ((interactiveMap.currentOrder == null) || (interactiveMap.currentOrder.interactiveMap.orderType == null)) {
+				interactiveMap.interface.orderMenu.element.hide();
+				
                 if ((!Object.isUndefined(Territories.get(interactiveMap.selectedTerritoryID).Unit) && (context.phase != "Builds")) || (!Object.isUndefined(MyOrders[0]) && (context.phase == "Builds"))) {
                     var currOrder = (context.phase == "Retreats") ? MyOrders.detect(function(o) {
                         return o.Unit.Territory.coastParentID == interactiveMap.selectedTerritoryID;
@@ -279,7 +286,7 @@ interactiveMap.activate = function(activated) {
     if(interactiveMap.activated != activated){
         interactiveMap.activated = activated;
         interactiveMap.visibleMap.load();
-        interactiveMap.interface.orderMenu.create();
+        interactiveMap.interface.orderMenu.load();
         interactiveMap.interface.toggle();
         if(interactiveMap.activated) {
             interactiveMap.resetOrder();

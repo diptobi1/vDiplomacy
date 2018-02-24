@@ -32,6 +32,17 @@ interactiveMap.interface.options = new Object();
  * creates the button interface above the map
  */
 interactiveMap.interface.create = function() {
+	// --- initialisations for mobile version support ---
+	
+	// add listener which checks for change of window size -> adjust map size for and switch from / to mobile verion if needed
+	window.addEventListener("resize", function(){interactiveMap.interface.reload();});
+	
+	// check if mobile version might be needed
+	this.mobileVersion = window.matchMedia( "only screen and (max-width: 800px)" ).matches && localStorage.getItem("desktopEnabled") != "true";
+
+	
+	// --- create button interface below the map --
+	
     var orderDiv = $("orderDiv"+context.memberID);
     var IAswitch = orderDiv.insertBefore(new Element('div',{'id':'IAswitch', 'class':'gamelistings-tabs'}), $('orderFormElement'));
     //create Pseudolinks to use the tab-styles
@@ -113,11 +124,60 @@ interactiveMap.interface.createOrderButtons = function() {
     return orderButtons;
 };
 
+interactiveMap.interface.mobileVersion = false;
+/*
+ * Reloads the interface if a change in window size is observed.
+ * 
+ * If no change to mobile version happened -> just readjust srollbars
+ * 
+ * else: Do also reload orderMenu in case the button size has to be adjusted
+ */
+interactiveMap.interface.reload = function() {	
+	var mobileVersionSwitch = !(interactiveMap.interface.mobileVersion == (window.matchMedia( "only screen and (max-width: 800px)" ).matches && localStorage.getItem("desktopEnabled") != "true"));
+	
+	if(mobileVersionSwitch){
+		// change to mobile version happened
+		interactiveMap.interface.mobileVersion = !interactiveMap.interface.mobileVersion;
+	
+		if(interactiveMap.options.buttonWidthAutomatic)
+			// reload the ordermenu interface
+			this.orderMenu.reload();
+	}
+	
+	// readjust the scrollbars (only effect if srollbars are enabled in menu)
+	if(!Object.isUndefined(interactiveMap.visibleMap.element))
+		this.options.updateScrollbars();
+}
+
+interactiveMap.interface.orderMenu.reload = function() {
+	// reload ordermenu interface (by removing the exisiting one and recall the load function)
+	if(!(typeof this.element == "undefined")){
+		this.element.remove();
+		this.element = undefined;
+	}
+	
+	if(interactiveMap.activated)
+		this.load(); //the orderMenu itself can only be securely loaded, if the interactiveMap is activated
+		// on activation load is called anyway
+}
+
+interactiveMap.interface.orderMenu.load = function() {	
+	if(interactiveMap.options.buttonWidthAutomatic){
+		if(interactiveMap.interface.mobileVersion)
+			interactiveMap.options.buttonWidth = interactiveMap.parameters.largeButtonSize;
+		else
+			interactiveMap.options.buttonWidth = interactiveMap.parameters.smallButtonSize;
+	}
+	
+	// does nothing if menu is already created
+	this.create();
+}
+
 /*
  * creates the menu that appears when a user clicks on the map
  */
 interactiveMap.interface.orderMenu.create = function() {
-    if (typeof interactiveMap.interface.orderMenu.element == "undefined") {
+	if (typeof interactiveMap.interface.orderMenu.element == "undefined") {
         interactiveMap.interface.orderMenu.element = new Element('div', {'id': 'orderMenu'});
         interactiveMap.interface.orderMenu.element.setStyle({
             position: 'absolute',
@@ -126,100 +186,36 @@ interactiveMap.interface.orderMenu.create = function() {
             //width: '200px'
                     //backgroundColor: 'white'
         });
-        var orderMenuOpt = {
-            'id': '',
-            'src': '',
-            'title': '',
-            'style': 'margin-left:5px;\n\
-                background-color:LightGrey;\n\
-                border:1px solid Grey;\n\
-                display:none;',
-            'onmouseover': 'this.setStyle({"backgroundColor":"GhostWhite"})',
-            'onmouseout': 'this.setStyle({"backgroundColor":"LightGrey"})',
-            'onmousedown': 'this.setStyle({"backgroundColor":"LightBlue"})',
-            'onmouseup': 'interactiveMap.interface.orderMenu.element.hide()',
-            'onclick': ''
-        };
-
+        
         switch (context.phase) {
             case "Diplomacy":
-                orderMenuOpt.id = 'imgHold';
-                orderMenuOpt.src = interactiveMap.parameters.imgHold;
-                orderMenuOpt.onclick = 'interactiveMap.sendOrder("Hold")';
-                orderMenuOpt.title = 'hold';
-                interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuOpt)).observe('load',function(){interactiveMap.interface.orderMenu.showElement(this);});
-
-                orderMenuOpt.id = 'imgMove';
-                orderMenuOpt.src = interactiveMap.parameters.imgMove;
-                orderMenuOpt.onclick = 'interactiveMap.sendOrder("Move")';
-                orderMenuOpt.title = 'move';
-                interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuOpt)).observe('load',function(){interactiveMap.interface.orderMenu.showElement(this);});;
-
-                orderMenuOpt.id = 'imgSHold';
-                orderMenuOpt.src = interactiveMap.parameters.imgSHold;
-                orderMenuOpt.onclick = 'interactiveMap.sendOrder("Support hold")';
-                orderMenuOpt.title = 'support hold';
-                interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuOpt)).observe('load',function(){interactiveMap.interface.orderMenu.showElement(this);});;
-
-                orderMenuOpt.id = 'imgSMove';
-                orderMenuOpt.src = interactiveMap.parameters.imgSMove;
-                orderMenuOpt.onclick = 'interactiveMap.sendOrder("Support move")';
-                orderMenuOpt.title = 'support move';
-                interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuOpt)).observe('load',function(){interactiveMap.interface.orderMenu.showElement(this);});;
-
-                orderMenuOpt.id = 'imgConvoy';
-                orderMenuOpt.src = interactiveMap.parameters.imgConvoy;
-                orderMenuOpt.onclick = 'interactiveMap.sendOrder("Convoy")';
-                orderMenuOpt.title = 'convoy';
-                interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuOpt)).observe('load',function(){interactiveMap.interface.orderMenu.showElement(this);});;
-                break;
+				interactiveMap.interface.orderMenu.createButtonSet('Hold','hold');
+				interactiveMap.interface.orderMenu.createButtonSet('Move','move');
+				interactiveMap.interface.orderMenu.createButtonSet('Support hold','support hold');
+				interactiveMap.interface.orderMenu.createButtonSet('Support move','support move');
+				interactiveMap.interface.orderMenu.createButtonSet('Convoy','convoy');
+				break;
             case "Builds":
                 if (MyOrders.length == 0) {
                     interactiveMap.interface.orderMenu.element.appendChild(new Element('p', {'style': 'background-color:LightGrey;border:1px solid Grey'}).update("No orders this phase!"));
                 } else if (MyOrders[0].type == "Destroy") {
-                    orderMenuOpt.id = 'imgDestroy';
-                    orderMenuOpt.src = interactiveMap.parameters.imgDestroy;
-                    orderMenuOpt.onclick = 'interactiveMap.sendOrder("Destroy")';
-                    orderMenuOpt.title = 'destroy';
-                    interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuOpt)).observe('load',function(){interactiveMap.interface.orderMenu.showElement(this);});;
+					interactiveMap.interface.orderMenu.createButtonSet('Destroy','destroy');
                 } else {
-                    orderMenuOpt.id = 'imgBuildArmy';
-                    orderMenuOpt.src = interactiveMap.parameters.imgBuildArmy;
-                    orderMenuOpt.onclick = 'interactiveMap.sendOrder("Build Army")';
-                    orderMenuOpt.title = 'build '+interactiveMap.parameters.armyName;
-                    interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuOpt)).observe('load',function(){interactiveMap.interface.orderMenu.showElement(this);});;
-
-                    orderMenuOpt.id = 'imgBuildFleet';
-                    orderMenuOpt.src = interactiveMap.parameters.imgBuildFleet;
-                    orderMenuOpt.onclick = 'interactiveMap.sendOrder("Build Fleet")';
-                    orderMenuOpt.title = 'build '+interactiveMap.parameters.fleetName;
-                    interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuOpt)).observe('load',function(){interactiveMap.interface.orderMenu.showElement(this);});;
-
-                    orderMenuOpt.id = 'imgWait';
-                    orderMenuOpt.src = interactiveMap.parameters.imgWait;
-                    orderMenuOpt.onclick = 'interactiveMap.sendOrder("Wait")';
-                    orderMenuOpt.title = 'wait/postpone build';
-                    interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuOpt)).observe('load',function(){interactiveMap.interface.orderMenu.showElement(this);});;
-                }
+					interactiveMap.interface.orderMenu.createButtonSet('Build Army','build '+interactiveMap.parameters.armyName);
+					interactiveMap.interface.orderMenu.createButtonSet('Build Fleet','build '+interactiveMap.parameters.fleetName);
+					interactiveMap.interface.orderMenu.createButtonSet('Wait','wait/postpone build');
+				}
                 break;
             case "Retreats":
                 if (MyOrders.length == 0) {
                     interactiveMap.interface.orderMenu.element.appendChild(new Element('p', {'style': 'background-color:LightGrey;border:1px solid Grey'}).update("No orders this phase!"));
                 } else {
-                    orderMenuOpt.id = 'imgRetreat';
-                    orderMenuOpt.src = interactiveMap.parameters.imgRetreat;
-                    orderMenuOpt.onclick = 'interactiveMap.sendOrder("Retreat")';
-                    orderMenuOpt.title = 'retreat';
-                    interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuOpt)).observe('load',function(){interactiveMap.interface.orderMenu.showElement(this);});;
-
-                    orderMenuOpt.id = 'imgDisband';
-                    orderMenuOpt.src = interactiveMap.parameters.imgDisband;
-                    orderMenuOpt.onclick = 'interactiveMap.sendOrder("Disband")';
-                    orderMenuOpt.title = 'disband';
-                    interactiveMap.interface.orderMenu.element.appendChild(new Element('img', orderMenuOpt)).observe('load',function(){interactiveMap.interface.orderMenu.showElement(this);});;
+					interactiveMap.interface.orderMenu.createButtonSet('Retreat','retreat');
+					interactiveMap.interface.orderMenu.createButtonSet('Disband','disband');
                 }
         }
-        $('mapCanDiv').appendChild(interactiveMap.interface.orderMenu.element).hide();
+		       
+		$('mapCanDiv').appendChild(interactiveMap.interface.orderMenu.element).hide();
         
                     
         //var orderMenuElements = $A(interactiveMap.interface.orderMenu.element.childNodes);
@@ -228,10 +224,97 @@ interactiveMap.interface.orderMenu.create = function() {
     }
 };
 
+// creates a short name for orderMenu buttons that is used for ids and resource files
+interactiveMap.interface.orderMenu.getShortName = function(ordertype){
+	return ordertype.replace(/\s/,'');//remove spaces
+}
+
+/**
+ * Creates a set of button and corresponding reset button. Buttons are added
+ * to orderMenu.
+ * 
+ * @param ordertype: The order type as used everywhere else internally
+ * @param name: The name that should be displayed as tooltip
+ */
+interactiveMap.interface.orderMenu.createButtonSet = function(ordertype, name){
+	/*
+	 * HTML Structure of order Menu:
+	 * Top element: DIV orderMenu
+	 * each button:
+	 *	<span buttonWrapper for switching visibility of button>
+	 *		<span button with actual responses to user input>
+	 *			<img imgSources>[<img>]
+	 *		</span>
+	 *	</span>
+	 */
+	
+	var shortname = interactiveMap.interface.orderMenu.getShortName(ordertype);
+	
+	var imgSrc = interactiveMap.parameters['img'+shortname];
+	
+	// the html attributes used for the button wrappers
+	var buttonWrapperAttr = {
+		'id': 'img'+shortname,
+		'style': 'margin-left:5px;\n\
+			display:none;'
+	};
+	
+	// attributes and styles for buttons
+	var buttonAttr = {
+		'title': name,
+		'onmouseover': 'this.setStyle({"backgroundColor":"GhostWhite"})',
+		'onmouseout': 'this.setStyle({"backgroundColor":"LightGrey"})',
+		'onmousedown': 'this.setStyle({"backgroundColor":"LightBlue"})',
+		'onmouseup': 'interactiveMap.interface.orderMenu.element.hide()',
+		'onclick': 'interactiveMap.sendOrder("'+ordertype+'")'
+	};
+	var buttonStyles = {
+		'background-color': 'LightGrey',
+		'border': '1px solid Grey',
+		'position':'relative',
+		'height':interactiveMap.options.buttonWidth+'px',
+		'width':interactiveMap.options.buttonWidth+'px',
+		'display':'inline-block',
+	}
+	
+	//style of the image sources
+	var imgStyles = {
+		'position':'absolute',
+		'top':'0px',
+		'left': '0px',
+		'width':interactiveMap.options.buttonWidth+'px'
+	}
+	
+	// create the order button:
+	var orderButton = new Element('span',buttonAttr).setStyle(buttonStyles);
+	orderButton.appendChild(new Element('img', {'src':imgSrc}).setStyle(imgStyles));
+	
+	var orderButtonWrapper = new Element('span', buttonWrapperAttr);
+	orderButtonWrapper.appendChild(orderButton);
+	
+	interactiveMap.interface.orderMenu.element.appendChild(orderButtonWrapper);
+	
+	// create the reset button:
+	// update button specific data
+	buttonWrapperAttr.id = 'imgReset'+shortname;
+	buttonAttr.onclick = 'interactiveMap.abortOrder()';
+	buttonAttr.title = 'reset order: '+ordertype;
+	
+	var resetButton = new Element('span', buttonAttr).setStyle(buttonStyles);
+	// reset button consists of 2 img (reset img and orig order img)
+	resetButton.appendChild(new Element('img', {'src': imgSrc}).setStyle(imgStyles));
+	resetButton.appendChild(new Element('img', {'src': interactiveMap.parameters.imgReset}).setStyle(imgStyles));
+	
+	var resetButtonWrapper = new Element('span', buttonWrapperAttr);
+	resetButtonWrapper.appendChild(resetButton);
+	
+	interactiveMap.interface.orderMenu.element.appendChild(resetButtonWrapper);
+}
+
 /*
  * adds the needed options and make the orderMenu visible
  */
-interactiveMap.interface.orderMenu.show = function(coor) {
+interactiveMap.interface.orderMenu.show = function(coor, drawResetButton) {
     function getPosition(coor) {
         var width = interactiveMap.interface.orderMenu.element.getWidth();
         if (coor.x < width/2)
@@ -241,58 +324,84 @@ interactiveMap.interface.orderMenu.show = function(coor) {
         else
             return (coor.x - width/2);
     }
-
-    switch (context.phase) {
-        case 'Builds':
-            if (MyOrders.length != 0) {
-                if (MyOrders[0].type == "Destroy") {
-                    if (interactiveMap.currentOrder != null) {
-                        interactiveMap.interface.orderMenu.element.show();
-                    }
-                } else {
-                    var SupplyCenter = SupplyCenters.detect(function(sc){return sc.id == interactiveMap.selectedTerritoryID});
-                    if ((!Object.isUndefined(SupplyCenter)) && (!interactiveMap.isUnitIn(interactiveMap.selectedTerritoryID))) {
-                        if (SupplyCenter.type != "Coast")
-                            interactiveMap.interface.orderMenu.hideElement($("imgBuildFleet"));
-                        else
-                            interactiveMap.interface.orderMenu.showElement($("imgBuildFleet"));
-                        interactiveMap.interface.orderMenu.element.show();
-                    }
-                }
-            }
-            break;
-        case 'Diplomacy':
-            interactiveMap.interface.orderMenu.showElement($("imgMove"));
-            interactiveMap.interface.orderMenu.showElement($("imgHold"));
-            interactiveMap.interface.orderMenu.showElement($("imgSMove"));
-            interactiveMap.interface.orderMenu.showElement($("imgSHold"));
-            interactiveMap.interface.orderMenu.showElement($("imgConvoy"));
-                if (interactiveMap.currentOrder != null) {//||(unit(interactiveMap.selectedTerritoryID)&&(Territories.get(interactiveMap.selectedTerritoryID).type=="Coast")&&(Territories.get(interactiveMap.selectedTerritoryID).Unit.type=="Army")))
-                    if ((interactiveMap.currentOrder.Unit.type == "Fleet") || (Territories.get(interactiveMap.selectedTerritoryID).type != "Coast"))
-                        interactiveMap.interface.orderMenu.hideElement($("imgConvoy"));
-                    interactiveMap.interface.orderMenu.element.show();
-                } else {
-                    if ((Territories.get(interactiveMap.selectedTerritoryID).type == "Coast") && !Object.isUndefined(Territories.get(interactiveMap.selectedTerritoryID).Unit) && (Territories.get(interactiveMap.selectedTerritoryID).Unit.type == "Army")) {
-                        interactiveMap.interface.orderMenu.hideElement($("imgMove"));
-                        interactiveMap.interface.orderMenu.hideElement($("imgHold"));
-                        interactiveMap.interface.orderMenu.hideElement($("imgSMove"));
-                        interactiveMap.interface.orderMenu.hideElement($("imgSHold"));
-                        interactiveMap.interface.orderMenu.showElement($("imgConvoy"));
-                        interactiveMap.interface.orderMenu.element.show();
-                    }
-                }
-            break;
-        case 'Retreats':
-            if (MyOrders.length != 0) {
-                if (interactiveMap.currentOrder != null)
-                    interactiveMap.interface.orderMenu.element.show();
-            }
-            break;
-    }
+	
+	/*
+	 * If current coordinates for display of the order menu are given, use these.
+	 * If no coordinates are given, use the last coordinates given.
+	 */
+	if(Object.isUndefined(coor))
+		coor = {x:new Number(interactiveMap.currentOrder.Unit.Territory.smallMapX), y:new Number(interactiveMap.currentOrder.Unit.Territory.smallMapY)};
+	
+	/*
+	 * Draw a complete set of order buttons by default 
+	 */
+	if(Object.isUndefined(drawResetButton)){
+		drawResetButton = false;
+	}
+	
+	// first hide all order buttons from previous action
+	interactiveMap.interface.orderMenu.hideAll();
+	
+	// draw a reset button or draw the complete order menu
+	if (drawResetButton){
+		// show the reset button corresponding to current order
+		interactiveMap.interface.orderMenu.showElement($('imgReset'+interactiveMap.interface.orderMenu.getShortName(interactiveMap.currentOrder.interactiveMap.orderType)));
+		
+		interactiveMap.interface.orderMenu.element.show();
+		
+	} else {
+		//show all order buttons that are activated for the current phase / situation
+		interactiveMap.interface.orderMenu.showAllRegular();
+		
+		// make additional phase specific adjustments
+		switch (context.phase) {
+			case 'Builds':
+				if (MyOrders.length != 0) {
+					if (MyOrders[0].type == "Destroy") {
+						if (interactiveMap.currentOrder != null) {
+							interactiveMap.interface.orderMenu.element.show();
+						}
+					} else {
+						var SupplyCenter = SupplyCenters.detect(function(sc){return sc.id == interactiveMap.selectedTerritoryID});
+						if ((!Object.isUndefined(SupplyCenter)) && (!interactiveMap.isUnitIn(interactiveMap.selectedTerritoryID))) {
+							if (SupplyCenter.type != "Coast")
+								interactiveMap.interface.orderMenu.hideElement($("imgBuildFleet"));
+							else
+								interactiveMap.interface.orderMenu.showElement($("imgBuildFleet"));
+							interactiveMap.interface.orderMenu.element.show();
+						}
+					}
+				}
+				break;
+			case 'Diplomacy':
+				if (interactiveMap.currentOrder != null) {//||(unit(interactiveMap.selectedTerritoryID)&&(Territories.get(interactiveMap.selectedTerritoryID).type=="Coast")&&(Territories.get(interactiveMap.selectedTerritoryID).Unit.type=="Army")))
+					if ((interactiveMap.currentOrder.Unit.type == "Fleet") || (Territories.get(interactiveMap.selectedTerritoryID).type != "Coast"))
+						interactiveMap.interface.orderMenu.hideElement($("imgConvoy"));
+					interactiveMap.interface.orderMenu.element.show();
+				} else {
+					if ((Territories.get(interactiveMap.selectedTerritoryID).type == "Coast") && !Object.isUndefined(Territories.get(interactiveMap.selectedTerritoryID).Unit) && (Territories.get(interactiveMap.selectedTerritoryID).Unit.type == "Army")) {
+						interactiveMap.interface.orderMenu.hideElement($("imgMove"));
+						interactiveMap.interface.orderMenu.hideElement($("imgHold"));
+						interactiveMap.interface.orderMenu.hideElement($("imgSupportmove"));
+						interactiveMap.interface.orderMenu.hideElement($("imgSupporthold"));
+						interactiveMap.interface.orderMenu.showElement($("imgConvoy"));
+						interactiveMap.interface.orderMenu.element.show();
+					}
+				}
+				break;
+			case 'Retreats':
+				if (MyOrders.length != 0) {
+					if (interactiveMap.currentOrder != null)
+						interactiveMap.interface.orderMenu.element.show();
+				}
+				break;
+		}
+		
+	} 
     
     var height = interactiveMap.interface.orderMenu.element.getHeight();
     interactiveMap.interface.orderMenu.element.setStyle({
-        top: (((coor.y + 25 + height)>interactiveMap.visibleMap.mainLayer.canvasElement.height)?interactiveMap.visibleMap.mainLayer.canvasElement.height-height:coor.y + 25) + 'px',
+        top: (((coor.y + height)>interactiveMap.visibleMap.mainLayer.canvasElement.height)?interactiveMap.visibleMap.mainLayer.canvasElement.height-height:coor.y) + 'px',
         left: getPosition(coor) + 'px'
     });
 };
@@ -300,18 +409,25 @@ interactiveMap.interface.orderMenu.show = function(coor) {
 interactiveMap.interface.orderMenu.showElement = function(element){
     if(element.style.display == "none"){
         element.show();
-        var width = element.width;  //fix for safari which do not like element.width in the term below!
-        interactiveMap.interface.orderMenu.element.style.width = (interactiveMap.interface.orderMenu.element.getWidth()+width+parseInt(element.style.marginLeft))+"px";
+        interactiveMap.interface.orderMenu.element.style.width = (interactiveMap.interface.orderMenu.element.getWidth()+interactiveMap.options.buttonWidth+parseInt(element.style.marginLeft))+"px";
     }
 };
 
 interactiveMap.interface.orderMenu.hideElement = function(element){
     if(element.style.display != "none"){
         element.hide();
-        interactiveMap.interface.orderMenu.element.style.width = (interactiveMap.interface.orderMenu.element.getWidth()-element.width-parseInt(element.style.marginLeft))+"px";
+        interactiveMap.interface.orderMenu.element.style.width = (interactiveMap.interface.orderMenu.element.getWidth()-interactiveMap.options.buttonWidth-parseInt(element.style.marginLeft))+"px";
     }
 };
 
+interactiveMap.interface.orderMenu.hideAll = function(){
+	interactiveMap.interface.orderMenu.element.childElements().each(interactiveMap.interface.orderMenu.hideElement);
+}
+
+interactiveMap.interface.orderMenu.showAllRegular = function(){
+	// display all regular buttons (no reset buttons)
+	interactiveMap.interface.orderMenu.element.childElements().each(function(e){if(!e.id.includes("Reset")) interactiveMap.interface.orderMenu.showElement(e)});
+}
 /*
  * enables/disables the activate-Button
  */
@@ -386,6 +502,7 @@ interactiveMap.interface.options.show = function() {
     this.updateGreyOut();
     this.updateUnitGreyOut();
     this.updateScrollbars();
+	this.updateButtonSize();
     interactiveMap.insertMessage("Options",true, true);
     
     $('options').disabled = true;
@@ -429,7 +546,10 @@ interactiveMap.interface.options.load = function(){
     interactiveMap.interface.options.element.appendChild(new Element("h1").update("InteractiveMap Options:"));
     this.scrollbarsButton = interactiveMap.interface.options.element.appendChild(new Element("p")).appendChild(new Element("button", {'id': 'largeMap', 'class':'buttonIA form-submit'})).update("Toggle scrollbars on map");
     this.scrollbarsButton.observe('click', this.largeMap.bind(this));
-        
+	
+	this.buttonSizeButton = interactiveMap.interface.options.element.appendChild(new Element("p")).appendChild(new Element("button", {'id': 'buttonSize', 'class':'buttonIA form-submit'}));
+	this.buttonSizeButton.observe('click', this.buttonSize.bind(this));
+	
     this.greyOutButton = interactiveMap.interface.options.element.appendChild(new Element("p")).appendChild(new Element("Button", {'id': 'greyOut', 'class':'buttonIA form-submit'}));
     this.greyOutButton.observe('click', this.greyOut.bind(this));
         
@@ -455,7 +575,8 @@ interactiveMap.interface.options.load = function(){
 				parameters: {
 					"userForm[terrGrey]": (!interactiveMap.options.greyOut)?'off':(interactiveMap.options.unitGreyOut)?'all':'selected',
 					"userForm[scrollbars]": interactiveMap.options.scrollbars?'Yes':'No',
-					"userForm[greyOut]": Math.floor(interactiveMap.options.greyOutIntensity*100)
+					"userForm[greyOut]": Math.floor(interactiveMap.options.greyOutIntensity*100),
+					"userForm[buttonWidth]":(interactiveMap.options.buttonWidthAutomatic)?'auto':(interactiveMap.options.buttonWidth <= interactiveMap.parameters.smallButtonSize)?'small':'large'
 				}
 			});
 	});
@@ -477,13 +598,16 @@ interactiveMap.interface.options.largeMap = function() {
 };
 
 interactiveMap.interface.options.updateScrollbars = function(){
-    if(interactiveMap.options.scrollbars){
-        interactiveMap.visibleMap.element.setStyle({
-            width: (new Number(interactiveMap.visibleMap.oldMap.width) + 10) + 'px',
-            height: (new Number(interactiveMap.visibleMap.oldMap.height) + 10) + 'px',
-            overflow: 'auto',
-            left: '0px'
-        });
+    //only adjust width (add srollbars), if really needed because of size of map
+	var newWidth = ((interactiveMap.interface.mobileVersion)?$("mapstore").getWidth():new Number(interactiveMap.visibleMap.oldMap.width)) + 10;	
+	
+	if(interactiveMap.options.scrollbars && newWidth < interactiveMap.hiddenMap.canvasElement.width){		
+		interactiveMap.visibleMap.element.setStyle({
+			width: newWidth + 'px',
+			height: (new Number(interactiveMap.visibleMap.oldMap.height) + 10) + 'px',
+			overflow: 'auto',
+			left: '0px'
+		});
     }else if(interactiveMap.visibleMap.element.style.overflow !== 'visible'){
         interactiveMap.visibleMap.element.scrollTop = 0;
         interactiveMap.visibleMap.element.scrollLeft = 0;
@@ -499,6 +623,35 @@ interactiveMap.interface.options.updateScrollbars = function(){
     }
 };
 
+
+/*
+ * Switch between small and large order menu buttons
+ */
+interactiveMap.interface.options.buttonSize = function() {
+	
+	// switch between automatic, small, large
+	if(interactiveMap.options.buttonWidthAutomatic) {
+		interactiveMap.options.buttonWidthAutomatic = false;
+		interactiveMap.options.buttonWidth = interactiveMap.parameters.smallButtonSize;
+	} else if(interactiveMap.options.buttonWidth <= interactiveMap.parameters.smallButtonSize)
+		interactiveMap.options.buttonWidth = interactiveMap.parameters.largeButtonSize;
+	else
+		interactiveMap.options.buttonWidthAutomatic = true;
+	
+	this.updateButtonSize();
+}
+
+interactiveMap.interface.options.updateButtonSize = function() {
+	if(interactiveMap.options.buttonWidthAutomatic)
+		interactiveMap.interface.options.buttonSizeButton.update("Switch to SMALL buttons");
+	else if(interactiveMap.options.buttonWidth <= interactiveMap.parameters.smallButtonSize) 
+		interactiveMap.interface.options.buttonSizeButton.update("Switch to LARGE buttons");
+	else
+		interactiveMap.interface.options.buttonSizeButton.update("Switch to AUTOMATIC mode");
+
+	// reload order Menu
+	interactiveMap.interface.orderMenu.reload();
+}
 
 /*
  * toggles the greyOut of territories during the orders

@@ -142,7 +142,8 @@ if ( isset($_REQUEST['userForm']) )
 				'greyout intensity' => 'greyOut',
 				'cssStyle'=>'cssStyle',
 				'forceDesktop'=>'forceDesktop',
-				'Remove scrollbars from smallmap'=>'scrollbars',				
+				'Remove scrollbars from smallmap'=>'scrollbars',
+				'Button size'=>'buttonWidth',
 				'Homepage'=>'homepage','Comment'=>'comment');
 
                 $User->options->set($_REQUEST['userForm']);
