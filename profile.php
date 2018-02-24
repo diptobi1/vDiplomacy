@@ -661,8 +661,34 @@ if ( $User->type['Moderator'])
 		<a onmouseover="showI();"; onmouseout="hideWMTT();" href="#">
 		<strong>'.libReliability::integrityRating($UserProfile).'</strong></a> (<strong>'.$UserProfile->cdTakenCount.'</strong> CD takeovers + <strong>'.$UserProfile->integrityBalance.'</strong> balance)</li>';
 
+print '</ul>';
 
-print '</ul></li></div>';
+if ( $User->type['Moderator'])
+{
+	print '<li>&nbsp;</li>';
+
+	$tabl = $DB->sql_tabl("SELECT b.blockUserID, u.username FROM wD_BlockUser b LEFT JOIN wD_Users u ON (b.blockUserID = u.id) WHERE b.userID = ".$UserProfile->id);
+	if ($DB->last_affected() != 0)
+	{
+		print '<li><strong>'.l_t('Blocklist').':</strong>';
+		print '<ul class="gamesublist">';
+		while(list($blockUserID,$name)=$DB->tabl_row($tabl))
+			print '<li><a href="profile.php?userID='.$blockUserID.'">'.$name.'</a></li>';
+		print '</ul>';
+	}
+	$tabl = $DB->sql_tabl("SELECT b.userID, u.username FROM wD_BlockUser b LEFT JOIN wD_Users u ON (b.userID = u.id) WHERE b.blockUserID = ".$UserProfile->id);
+	if ($DB->last_affected() != 0)
+	{
+		print '<li><strong>'.l_t('Blocked by').':</strong>';
+		print '<ul class="gamesublist">';
+		while(list($blockUserID,$name)=$DB->tabl_row($tabl))
+			print '<li><a href="profile.php?userID='.$blockUserID.'">'.$name.'</a></li>';
+		print '</ul>';
+	}
+	print '</ul>';
+}
+
+print '</li></div>';
 
 print "<h2>".$UserProfile->username;
 if ( $User->type['User'] && $UserProfile->type['User'] && ! ( $User->id == $UserProfile->id || $UserProfile->type['Moderator'] || $UserProfile->type['Guest'] || $UserProfile->type['Admin'] ) )

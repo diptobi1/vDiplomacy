@@ -177,11 +177,15 @@ class InstallTerritory {
 		// Unit destroy SQL (may take a long time and require a deep recursion depth)
 //		$sql[] = self::unitDestroyIndexSQL($mapID);
 
-		$unitDestroyIndexCountrySQL = array();
-		$unitDestroyIndexCountrySQL = self::unitDestroyIndexSQL($mapID);
-		foreach ($unitDestroyIndexCountrySQL as $countryID => $unitDestroyIndexArray)
-			$sql[] = $unitDestroyIndexArray;
+//		$unitDestroyIndexCountrySQL = array();
+//		$unitDestroyIndexCountrySQL = self::unitDestroyIndexSQL($mapID);
+//		foreach ($unitDestroyIndexCountrySQL as $countryID => $unitDestroyIndexArray)
+//			$sql[] = $unitDestroyIndexArray;
 
+		// VDip change: istead of one large SQL to insert the index all at once (for one large variant about 50.000 values)
+		// make a SQL for each country.
+		$sql = array_merge ( $sql, self::unitDestroyIndexSQL($mapID) );
+		
 		return $sql;
 	}
 

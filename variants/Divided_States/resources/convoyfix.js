@@ -1,5 +1,5 @@
 
-function FixLargeConvoys()
+function NewConvoyCode()
 {
 	MyOrders.map(function(OrderObj)
 	{

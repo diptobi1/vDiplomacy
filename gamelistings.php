@@ -87,7 +87,7 @@ function printAndFindTab()
 	$tabs['Search']=l_t("The full game listing search panel");
 
 
-	$tab = 'Active';
+	$tab = 'New';
 	$tabNames = array_keys($tabs);
 
 	if( isset($_REQUEST['gamelistType']) && in_array($_REQUEST['gamelistType'], $tabNames) )
