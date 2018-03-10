@@ -27,6 +27,7 @@
 	1.6: minor tweaks
 	1.6.1: small adjustments for the new variant.php code
 	1.6.2: fixed: spelling error on smallmap
+	1.6.3: Milan was set to coast. Now it's a land-territory.
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -39,7 +40,8 @@ class ClassicMilanVariant extends WDVariant {
 	public $description= 'The classic map with a new province named Milan in Italy';
 	public $author     = 'John Norris';
 	public $adapter    = 'Oliver Auth';
-	public $version    = '1.6.2';
+	public $version    = '1.0';
+	public $codeVersion= '1.6.3';
 	public $homepage   = 'http://www.variantbank.org/results/rules/m/milan.htm';
 
 	public $countries=array('England', 'France', 'Italy', 'Germany', 'Austria', 'Turkey', 'Russia');
