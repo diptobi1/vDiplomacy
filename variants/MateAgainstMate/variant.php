@@ -30,7 +30,7 @@
 	2.0.2: border error fixed
 	2.1:   Big code-cleanup (not only) for the neutral player and minor improvements
 	2.2  : only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
-
+	2.2.1: color fixes for the largemap
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -44,7 +44,7 @@ class MateAgainstMateVariant extends WDVariant {
 	public $author     ='Gavin Atkinson';
 	public $adapter    ='Gavin Atkinson / Emmanuele Ravaioli / Oliver Auth';
 	public $version    ='1';
-	public $codeVersion='2.2';
+	public $codeVersion='2.2.1';
 
 	public $countries=array(
 		'Indonesia','Western Australia','South Australia','Tasmania',
