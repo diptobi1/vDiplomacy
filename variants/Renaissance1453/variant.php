@@ -26,6 +26,7 @@
 	
 	Changelog:
 	1.0: initial release
+	1.0.1: supplyCenterTarget set to 18
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -40,7 +41,7 @@ class Renaissance1453Variant extends WDVariant {
 	public $adapter ='Enriador / Oliver Auth';
 	public $homepage = 'http://www.dipwiki.com/index.php?title=Renaissance';
 	public $version ='1';
-	public $codeVersion ='1.0';
+	public $codeVersion ='1.0.1';
 
 	public $countries=array('Venice', 'Spain', 'France', 'England', 'Poland-Lithuania', 'Holy Roman Empire', 'Turkey');
 
@@ -49,6 +50,11 @@ class Renaissance1453Variant extends WDVariant {
 
 		$this->variantClasses['drawMap']            = 'Renaissance1453';
 		$this->variantClasses['adjudicatorPreGame'] = 'Renaissance1453';
+	}
+
+	public function initialize() {
+		parent::initialize();
+		$this->supplyCenterTarget = 18;
 	}
 	
 	public function turnAsDate($turn) {
