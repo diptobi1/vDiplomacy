@@ -3,33 +3,7 @@ function loadCoastConvoyOrders(convoyCoasts) {
         MyOrders.map(function(o) {
                 var IA = o.interactiveMap;
 
-                IA.setOrderPart = function(terrID, coordinates) {
-                        switch (this.orderType) {
-                                case "Move":
-                                        this.setMove(terrID, coordinates);
-                                        break;
-                                case "Support hold":
-                                        this.setSupportHold(terrID);
-                                        break;
-                                case "Support move":
-                                        this.setSupportMove(terrID, coordinates);
-                                        break;
-                                case "Support move from":
-                                        this.setSupportMoveFrom(terrID);
-                                        break;
-                                case "Convoy":
-                                        this.setConvoy(terrID, coordinates);
-                                        break;
-
-                                case "Retreat":
-                                        this.setRetreat(terrID, coordinates);
-                                        break;
-                        }
-                };
-
-                IA.convoyOnClick = "";
-
-                IA.setConvoy = function(terrID, coordinates) {
+                IA.setConvoy = function(terrID) {
                         if (Territories.get(terrID).type == "Coast" && !(convoyCoasts.include(terrID) && this.isUnitIn(terrID) && Territories.get(terrID).Unit.type == "Fleet"))
                                 this.finishConvoy(terrID);
                         else {
@@ -62,23 +36,73 @@ function loadCoastConvoyOrders(convoyCoasts) {
                                 this.convoyChain.push(terrID);
                                 interactiveMap.insertMessage(Territories.get(terrID).name);
 
-                                this.getTerrChoices();
+                                this.getTerrChoices(); 
                                 interactiveMap.greyOut.draw(this.terrChoices);
 
-                                if (this.convoyOnClick != "") {
-                                        $("imgConvoy").writeAttribute('onClick', this.convoyOnClick);
-                                        this.convoyOnClick = "";
-                                }
-
-                                if (convoyCoasts.include(terrID) && this.isUnitIn(terrID) && Territories.get(terrID).Unit.type == "Fleet")
-                                        this.convoyOnClick = interactiveMap.interface.orderMenu.showFinishCoast(coordinates);
+                                if (convoyCoasts.include(terrID) && this.isUnitIn(terrID) && Territories.get(terrID).Unit.type == "Fleet" && this.convoyChain.length > 1)
+                                    interactiveMap.interface.orderMenu.showElement($("imgConvoy")); // use convoy button to finish convoys on ConvoyCoasts with fleets
+								else
+									interactiveMap.interface.orderMenu.hideElement($("imgConvoy"));
                         }
                 };
 
-                IA.finishCoastConvoy = function() {
-                        this.finishConvoy(this.convoyChain.pop());
-                        $("imgConvoy").writeAttribute('onClick', this.convoyOnClick);
+                IA.finishCoastConvoy = function(terrID) {
+					this.finishConvoy(terrID);
                 };
+				
+				
+				/*
+				 * As Convoy button is used to end convoy on Convoy Coast with 
+				 * fleet, different actions have to be taken, if setConvoy is 
+				 * called via the Convoy-Button.
+				 */
+				var origSetOrder = IA.setOrder;
+				
+				IA.setOrder = function(value){
+					var terrID = this.convoyChain.last();
+					if(this.orderType == "Convoy" && value == "Convoy" && !Object.isUndefined(terrID) && Territories.get(terrID).type == "Coast" && convoyCoasts.include(terrID) && this.convoyChain.length > 1)
+						this.finishCoastConvoy(this.convoyChain.pop());
+					else
+						(origSetOrder.bind(this))(value);
+				}
+				
+				/*
+				 * Add CoastConvoys to terrChoices for convoys
+				 */
+				IA.getTerrChoices = function() {
+					switch (this.orderType) {
+						case "Move":
+							this.terrChoices = o.Unit.getMovableTerritories().pluck('id');
+							break;
+						case "Support hold":
+							this.terrChoices = o.Unit.getSupportHoldChoices();
+							break;
+						case "Support move":
+							this.terrChoices = o.Unit.getSupportMoveToChoices().select(function(c) {
+								return (o.Unit.getSupportMoveFromChoices(Territories.get(c)).length != 0);
+							});
+							break;
+						case "Support move to":
+							this.terrChoices = o.Unit.getSupportMoveFromChoices(o.ToTerritory);
+							break;
+						case "Convoy":
+							var currentUnit = Object.isUndefined(this.convoyChain[0]) ? this.Order.Unit : Territories.get(this.convoyChain[this.convoyChain.length - 1]).Unit;
+							this.terrChoices = currentUnit.getBorderUnits().select(function(u) {
+								return u.Territory.type == "Sea" || convoyCoasts.include(u.terrID);   //adjacent fleets <---- include Convoy coasts
+							}).pluck("terrID");
+							if (currentUnit.type == "Fleet")
+								this.terrChoices = this.terrChoices.concat(currentUnit.Territory.getBorderTerritories().select(function(t) {
+									return t.type == "Coast";       //adjacent coast if at least one fleet in convoyChain
+								}).pluck('id'));
+							this.terrChoices = this.terrChoices.select(function(terrID) {
+								return (this.convoyChain.indexOf(terrID) == -1) && (terrID != this.Order.Unit.terrID);   //remove already used fleets and army's origin
+							}, this);
+							break;
+
+						case "Retreat":
+							this.terrChoices = o.toTerrChoices.keys();
+					}
+				};
         });
 
 }

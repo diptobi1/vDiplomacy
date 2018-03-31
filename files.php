@@ -21,10 +21,10 @@ $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '' ;
 // Users can only access these 3 directories.
 $basedir = isset($_REQUEST['basedir']) ? $_REQUEST['basedir'] : '/'; 
 switch($basedir) {
-	case '/classes/'        : $basedir = '/classes/';       break;
-	case '/resources/'      : $basedir = '/resources/';     break;
-        case '/interactiveMap/' : $basedir = '/interactiveMap/';break;
-	default           : $basedir = '/';
+	case '/classes/'        : $basedir = '/classes/';        break;
+	case '/resources/'      : $basedir = '/resources/';      break;
+	case '/interactiveMap/' : $basedir = '/interactiveMap/'; break;
+	default                 : $basedir = '/';
 }
 
 // The filename (only letters, numbers and "." or "-" allowed...
@@ -49,14 +49,16 @@ switch($msg) {
 // You can't edit or upload a modified install.php. It causes all sort of strange problems.
 if (($action == 'upload' || $action == 'filesave') && $file=='install.php')
 {
-	$msg = 'Editing or uploading of a modified install.php is for experts only.<br>Please contakt an admin if you leally need to do this.';
+	$msg = 'Editing or uploading of a modified install.php is for experts only.<br>Please contakt an admin if you really need to do this.';
 	$action = ''; $file='';
 }
 
-// You can't edit or upload a modified install.php. It causes all sort of strange problems.
-if (($action == 'upload' || $action == 'filesave') && $file=='variant.php' && !file_exists("variants/".Config::$variants[$variantID]."/install.php"))
+// You can't edit or upload a modified variant.php. It causes all sort of strange problems.
+// if (($action == 'upload' || $action == 'filesave') && $file=='variant.php' && !file_exists("variants/".Config::$variants[$variantID]."/install.php"))
+if (($action == 'upload' || $action == 'filesave') && $file=='variant.php')
 {
-	$msg = "You can't edit or upload variants.php while in edit-mode.";
+//	$msg = "You can't edit or upload variant.php while in edit-mode.";
+	$msg = 'Editing or uploading of a modified variant.php is for experts only.<br>Please contakt an admin if you really need to do this.';
 	$action = ''; $file='';
 }
 
@@ -324,8 +326,8 @@ if ($variantID != 0)
 
 			if ($edit == 'on')
 			{
-				// Add a delete and edit button if we have a developer: (But on on install.php, and not on variant.php if we are still in edit-mode.
-				if ($file != "install.php" && !($file == "variant.php" && !file_exists($variantbase."/install.php")))
+				// Add a delete and edit button if we have a developer: (But not on install.php, and not on variant.php (if we are still in edit-mode).
+				if ($file != "install.php" && $file != "variant.php")
 				{
 					print('<td><a href="' . $_SERVER['SCRIPT_NAME'].'?variantID='.$variantID.'&action=delete&file='.$file.'&basedir='.$dirname.'">Delete</a></td>');
 					print('<td><a href="' . $_SERVER['SCRIPT_NAME'].'?variantID='.$variantID.'&action=edit&file='.$file.'&basedir='.$dirname.'">Edit</a></td>');

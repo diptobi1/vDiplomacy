@@ -37,7 +37,7 @@ interactiveMap.resetOrder = function() {
     interactiveMap.draw();
     if ((context.phase == "Builds") && (MyOrders.length != 0) && (MyOrders[0].type != "Destroy"))
         interactiveMap.greyOut.draw(SupplyCenters.select(function(n) {
-            return MyOrders.pluck("ToTerritory").indexOf(n) == -1
+            return MyOrders.pluck("ToTerritory").collect(function(t){if(!Object.isUndefined(t)) return t.coastParent;}).indexOf(n) == -1 && n.coast != "Child";
         }).pluck("id"));
     else if ((context.phase == "Retreats") && (MyOrders.length != 0))
         interactiveMap.greyOut.draw(MyOrders.pluck("Unit").pluck("terrID"));
@@ -155,8 +155,6 @@ interactiveMap.loadOrders = function() {
 
         IA.orderType = null;
         IA.setOrder = function(value) {
-            interactiveMap.interface.orderMenu.element.hide();
-
             if (this.orderType != null) {
                 interactiveMap.errorMessages.uncompletedOrder();
                 return;
@@ -215,6 +213,10 @@ interactiveMap.loadOrders = function() {
             value = (value == "Convoy") ? "Move" : value;
 
             this.enterOrder('type', value);
+			
+			if(!this.Order.isComplete)
+				// display reset button if order is not completed
+				interactiveMap.interface.orderMenu.show(undefined, true);
         };
 
         IA.enterOrder = function(name, value) {
@@ -223,7 +225,7 @@ interactiveMap.loadOrders = function() {
                 this.print(name, value);
                 this.getTerrChoices();
                 if (Object.isUndefined(this.terrChoices[0]))
-                    interactiveMap.greyOut.draw();
+                    interactiveMap.greyOut.draw(new Array());
                 else
                     interactiveMap.greyOut.draw(this.terrChoices);
                 if (this.Order.isComplete)

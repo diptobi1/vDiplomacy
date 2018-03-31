@@ -299,6 +299,8 @@ class IAmap extends drawMap {
             libHTML::$footerScript[] = 'interactiveMap.options.greyOut = '.($User->terrGrey=='off' ? 'false' : 'true');
             libHTML::$footerScript[] = 'interactiveMap.options.unitGreyOut = '.($User->terrGrey=='all' ? 'true' : 'false');
             libHTML::$footerScript[] = 'interactiveMap.options.greyOutIntensity = 0.'.$User->greyOut;
+			libHTML::$footerScript[] = 'interactiveMap.options.buttonWidthAutomatic = '.($User->buttonWidth == 'auto' ? 'true' : 'false');
+			libHTML::$footerScript[] = 'interactiveMap.options.buttonWidth = '.($User->buttonWidth == 'small' ? 'interactiveMap.parameters.smallButtonSize' : 'interactiveMap.parameters.largeButtonSize');
         }
 			
 	libHTML::$footerScript[]   = 'loadIA();';

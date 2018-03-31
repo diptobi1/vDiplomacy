@@ -12,6 +12,12 @@
 	color: #333;
 	margin:0 auto;
 }
+
+.buttonIA {
+	font-size: 12px;
+	margin-right: 2px;
+}
+
 .memberVotes {
 	font-weight:bold;
 	}

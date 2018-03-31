@@ -172,10 +172,10 @@ else
 					continue;
 					
 				$Variant = libVariant::loadFromVariantName($variantName);
-				$checkboxes[$variantName] = '<option value="'.$variantID.'"'.(($first=='')?' selected':'').'>'.$variantName.'</option>';
+				$checkboxes[$Variant->fullName] = '<option value="'.$variantID.'"'.(($first=='')?' selected':'').'>'.$Variant->fullName.'</option>';
 				if($first=='') {
 					$first='"'.$variantID.'"';
-					$defaultName=$variantName;
+					$defaultName=$Variant->fullName;
 				}
 				print "case \"".$variantID."\":\n";
 				print 'document.getElementById(\'desc\').innerHTML = "<a class=\'light\' href=\'variants.php?variantID='.$variantID.'\'>'.$Variant->fullName.'</a><hr style=\'color: #aaa\'>'.$Variant->description.'";'."\n";		

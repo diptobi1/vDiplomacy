@@ -64,6 +64,31 @@ defined('IN_CODE') or die('This script can not be run by itself.');
 		Choose the site-style / colors of vDiplomacy. You can use the default vDip-colors or the original webDip-colors. <b>You might need to update twice for this to take effect.</b>
 	</li>
 
+	<li class="formlisttitle">RSS ID:</li>
+	<li class="formlistfield">
+<?php
+	list($rssID) = $DB->sql_row("SELECT rssID FROM wD_Users WHERE id=".$User->id);
+	if ($rssID == '')
+		print "You don't have a valid RSS ID.";
+	else
+		print "Your current RSS id: <b>".$rssID."</b>";
+?>
+		<input type="submit" class="form-submit notice" name="rssButton" value="Generate new"> <input type="submit" class="form-submit notice" name="rssButton" value="Delete"><br>
+	</li>
+<?php
+	$rssLink = 'http://'.$_SERVER['HTTP_HOST'].str_replace("usercp", "rss", $_SERVER['PHP_SELF']).'?rssID='.$rssID;
+	if ($rssID != '') print '
+		<li class="formlistfield">
+			You can access your personal RSS feed with the following link:
+			<ul><li><b>
+			<a href="'.$rssLink.'">'.$rssLink.'</a>
+			</b></li></ul>
+		</li>';
+?>
+	<li class="formlistdesc">
+		To access your personal RSS-feed you need to generate a separate RSS id. Make sure no one has access to this ID. If in doubt generate a new one.
+	</li>
+	
 <?php
 /*
  * This is done in PHP because Eclipse complains about HTML syntax errors otherwise

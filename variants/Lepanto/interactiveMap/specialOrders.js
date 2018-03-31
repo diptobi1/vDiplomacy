@@ -9,9 +9,7 @@ loadSpecialOrders = function(){
             var setOrder = IA.setOrder.bind(IA);
             
             IA.setOrder = function(value){
-                interactiveMap.interface.orderMenu.element.hide();
-
-                if (this.orderType != null) {
+				if (this.orderType != null) {
                     interactiveMap.errorMessages.uncompletedOrder();
                     return;
                 }
@@ -29,8 +27,6 @@ loadSpecialOrders = function(){
         var setOrder2 = IA.setOrder.bind(IA);
             
         IA.setOrder = function(value){
-            interactiveMap.interface.orderMenu.element.hide();
-           
             if (this.orderType != null) {
                 interactiveMap.errorMessages.uncompletedOrder();
                 return;

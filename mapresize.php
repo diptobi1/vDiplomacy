@@ -17,13 +17,16 @@ if ($_SERVER['REQUEST_METHOD'] != "POST") {
 			
 	// Admins only
 	if ($edit=true)  {
-		print '<li class="formlisttitle"><form enctype="multipart/form-data" action="'.$_SERVER['PHP_SELF'].'" method="POST">';
-		print '<input type="hidden" name="MAX_FILE_SIZE" value="100000" />';
-		print 'Choose a picture in PNG-format to upload: <input name="imgfile" type="file" />';
-		print '<li class="formlisttitle">Target resolution: Width (max 2000):  <input type="text" name="new_x" size="4">';	
-		print ' - Height (max 2000): <input type="text" name="new_y" size="4"><br>';	
-		print '<li class="formlisttitle"><input type="submit" value="Upload File" />';
-		print '</form>';
+		print 'If you enter a factor, target-width and target-height are discarded. If you only enter a width or only a height, the other parameter is set automatically.<br>
+				The target picture has a maximum width and height of 2000 pixels each, and a minimum of 100 pixels each.<hr>
+				<form enctype="multipart/form-data" action="'.$_SERVER['PHP_SELF'].'" method="POST">
+					<input type="hidden" name="MAX_FILE_SIZE" value="100000" />
+					<li>Choose a picture in PNG-format to upload: <input name="imgfile" type="file" /></li>
+					<li>Set a resize-factor: <input type="text" name="factor" size="4"></li>
+					<li>Target resolution: Width (max 2000):  <input type="text" name="new_x" size="4">
+					 - Height (max 2000): <input type="text" name="new_y" size="4"></li>
+					<li><input type="submit" value="Upload File" />
+				</form>';
 	} else {
 		print "Admins and devs only";
 	}
@@ -37,14 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] != "POST") {
 	set_time_limit(190);
 	ini_set('memory_limit','100M');
 
-	$new_x = (isset($_POST['new_x'])) ? (int)$_POST['new_x'] : '250';  // 
-	$new_y = (isset($_POST['new_y'])) ? (int)$_POST['new_y'] : '250';  // 
+	$factor = (isset($_POST['factor'])) ? (int)$_POST['factor'] : '0';
+	$new_x  = (isset($_POST['new_x']))  ? (int)$_POST['new_x']  : '0';
+	$new_y  = (isset($_POST['new_y']))  ? (int)$_POST['new_y']  : '0';
 
-	if ($new_x < 100) $new_x=100;
-	if ($new_x > 2000) $new_x=2000;
-	if ($new_y < 100) $new_y=100;
-	if ($new_y > 2000) $new_y=2000;
-	
 	$img=imagecreatefromstring(file_get_contents(UPTMP));
 
 	if (imageistruecolor($img))
@@ -52,6 +51,22 @@ if ($_SERVER['REQUEST_METHOD'] != "POST") {
 		
 	$width=imagesx($img);
 	$height=imagesy($img);
+
+	if ($factor != 0)
+	{
+		$new_x=round($width * $factor);
+		$new_y=round($height * $factor);
+	}
+	elseif ($new_x == 0)
+		$new_x = round($width * $new_y / $height);
+	elseif ($new_y == 0)
+		$new_y = round($height * $new_x / $width);
+	
+	if ($new_x < 100) $new_x=100;
+	if ($new_x > 2000) $new_x=2000;
+	if ($new_y < 100) $new_y=100;
+	if ($new_y > 2000) $new_y=2000;
+
 	
 	// Output original Image:
 	imagepng($img, libCache::dirID('users',$User->id).'/resize_orig.png');
@@ -105,11 +120,12 @@ if ($_SERVER['REQUEST_METHOD'] != "POST") {
 		}
 
 	}
+
 	imagepng($img,libCache::dirID('users',$User->id).'/resize_wo_br.png');
 
 	// create new picture
 	$img_new=imagecreate($new_x,$new_y);
-	imagecopyresized($img_new,$img,0,0,0,0,$new_x,$new_y,$width,$height);
+	imagecopyresized($img_new,$img,0,0,0,0,$new_x,$new_y,$width-1,$height-1);
 	imagedestroy($img);	
 	imagepng($img_new,libCache::dirID('users',$User->id).'/resize_new.png');
 
