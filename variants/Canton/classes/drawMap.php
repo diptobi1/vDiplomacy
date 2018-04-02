@@ -10,7 +10,7 @@
 	or (at your option) any later version.
 
 	The Canton variant for webDiplomacy is distributed in the hope that it will
-	be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
+	be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the GNU General Public License for more details.
 
@@ -38,7 +38,7 @@ class CustomIcons_drawmap extends drawmap
 		}
 		parent::loadImages();
 	}
-	
+
 	// Save the countryID for every colored Territory (and their coasts)
 	public function colorTerritory($terrID, $countryID)
 	{
@@ -47,13 +47,13 @@ class CustomIcons_drawmap extends drawmap
 			$this->unit_c[$id]=$countryID;
 		parent::colorTerritory($terrID, $countryID);
 	}
-	
+
 	// Overwrite the country if a unit needs to draw a flag (and don't draw the flag) -> we use custom icons instead
 	public function countryFlag($terrName, $countryID)
 	{
 		$this->unit_c[$terrName]=$countryID;
 	}
-	
+
 	// Draw the custom icons:
 	public function addUnit($terrName, $unitType)
 	{
@@ -78,10 +78,10 @@ class CantonVariant_drawMap extends CustomIcons_drawmap {
 		4 => array(164, 198,  57), // Holland
 		5 => array(227,  38,  54), // Japan
 		6 => array(178, 190, 181), // Russia
-		7 => array(255, 140,   0), // Turkey
+		7 => array(255, 140,   0)  // Turkey
 	);
 
-	
+
 	/**
 	 * Resources, all required except names, which will be drawn on by the computer if not supplied.
 	 * @return array[$resourceName]=$resourceLocation

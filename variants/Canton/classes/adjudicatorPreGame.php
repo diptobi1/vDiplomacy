@@ -10,7 +10,7 @@
 	or (at your option) any later version.
 
 	The Canton variant for webDiplomacy is distributed in the hope that it will
-	be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
+	be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the GNU General Public License for more details.
 
@@ -23,7 +23,7 @@ defined('IN_CODE') or die('This script can not be run by itself.');
 class CantonVariant_adjudicatorPreGame extends adjudicatorPreGame {
 
 	protected $countryUnits = array(
-		'Britain' => array('Madras'   =>'Fleet', 'Delhi'   =>'Army' , 'Calcutta'   =>'Army'),
+		'Britain' => array('Madras'   =>'Fleet', 'Delhi'   =>'Army',  'Calcutta'   => 'Army'),
 		'France'  => array('Hanoi'    =>'Army' , 'Hue'     =>'Army' , 'Saigon'     =>'Fleet'),
 		'Holland' => array('Sumatra'  =>'Fleet', 'Java'    =>'Fleet', 'Borneo'     =>'Fleet'),
 		'Japan'   => array('Kyoto'    =>'Army' , 'Tokyo'   =>'Fleet', 'Sasebo'     =>'Fleet'),
