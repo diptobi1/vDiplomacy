@@ -71,17 +71,15 @@ if ( ($edit == true) && (isset($_REQUEST['action'])) && ($variantID != 0) )
 		$line = rtrim(fgets($handle));
 		
 		if (strpos($line,'protected $countryUnits = array(') > 0 && $found == 0)
+        {
 			$found = 1;
-
-		if (strpos($line,$countryName) > 0 && $found == 1)
-		{
-			$newAdjudicatorPreGame[]=$newUnits;
+            $newAdjudicatorPreGame[]=$line;
+            $newAdjudicatorPreGame[]=$newUnits;
+        }
+        elseif (strpos($line,$countryName) > 0 && $found == 1)
 			$found = 2;
-		}
 		else
-		{
 			$newAdjudicatorPreGame[]=$line;
-		}
 	}
 	fclose($handle);
 
@@ -109,8 +107,9 @@ if ($variantID != 0)
 	foreach ($Variant->countries as $countryID => $name)
 	{
 		$oldUnits = "";
-		foreach ($pregame->startingUnits[$name] as $terrName => $unitType)
-			$oldUnits .= '<input type="hidden" name="oldUnits['.$terrName.']" value="'.$unitType.'">';
+        if (isset($pregame->startingUnits[$name]))
+            foreach ($pregame->startingUnits[$name] as $terrName => $unitType)
+                $oldUnits .= '<input type="hidden" name="oldUnits['.$terrName.']" value="'.$unitType.'">';
 
 		$addUnitSelect='<option value="0" selected>Add a starting unit:</option>';
 		foreach ($terrNameByID as $id => $TerrName)
@@ -130,43 +129,43 @@ if ($variantID != 0)
 							<select name="TerrName" onchange="this.form.submit();">'.$addUnitSelect.'</select>
 						</form>
 					</td>
-				</tr>';
-	
-		foreach ($pregame->startingUnits[$name] as $terrName => $unitType)
-		{
-			print '
-				<tr>
-                    <td></td>
-					<td>'.$terrName.'</td>
-					<td>
-						<form style="display: inline" method="get" name="changeUnit">
-							<input type="hidden" name="tab" value="Units">
-							<input type="hidden" name="action" value="changeUnit">
-							<input type="hidden" name="variantID" value="'.$variantID.'">
-							<input type="hidden" name="countryID" value="'.$countryID.'">
-							<input type="hidden" name="TerrName" value="'.$terrName.'">
-							'.$oldUnits.'
-							<select name="unitType" onchange="this.form.submit();">
-								<option value="Army" '.($unitType == 'Army' ? 'selected' : '').'>Army</option>
-								<option value="Fleet"'.($unitType == 'Army' ? '' : 'selected').'>Fleet</option>
-							</select>
-						</form>
-					</td>
-					<td>
-						<form style="display: inline" method="get" name="deleteUnit">
-							<input type="hidden" name="tab" value="Units">
-							<input type="hidden" name="action" value="deleteUnit">
-							<input type="hidden" name="variantID" value="'.$variantID.'">
-							<input type="hidden" name="countryID" value="'.$countryID.'">
-							<input type="hidden" name="TerrName" value="'.$terrName.'">
-							'.$oldUnits.'
-							<input type="submit" class="form-submit" name="deleteUnit" value="Delete unit" />
-						</form>
-					</td>
 					<td style=" width: 100%;"></td>
 				</tr>';
-		}
-		print '</table>';
+	
+        if (isset($pregame->startingUnits[$name]))
+            foreach ($pregame->startingUnits[$name] as $terrName => $unitType)
+                print '
+                    <tr>
+                        <td></td>
+                        <td>'.$terrName.'</td>
+                        <td>
+                            <form style="display: inline" method="get" name="changeUnit">
+                                <input type="hidden" name="tab" value="Units">
+                                <input type="hidden" name="action" value="changeUnit">
+                                <input type="hidden" name="variantID" value="'.$variantID.'">
+                                <input type="hidden" name="countryID" value="'.$countryID.'">
+                                <input type="hidden" name="TerrName" value="'.$terrName.'">
+                                '.$oldUnits.'
+                                <select name="unitType" onchange="this.form.submit();">
+                                    <option value="Army" '.($unitType == 'Army' ? 'selected' : '').'>Army</option>
+                                    <option value="Fleet"'.($unitType == 'Army' ? '' : 'selected').'>Fleet</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>
+                            <form style="display: inline" method="get" name="deleteUnit">
+                                <input type="hidden" name="tab" value="Units">
+                                <input type="hidden" name="action" value="deleteUnit">
+                                <input type="hidden" name="variantID" value="'.$variantID.'">
+                                <input type="hidden" name="countryID" value="'.$countryID.'">
+                                <input type="hidden" name="TerrName" value="'.$terrName.'">
+                                '.$oldUnits.'
+                                <input type="submit" class="form-submit" name="deleteUnit" value="Delete unit" />
+                            </form>
+                        </td>
+                        <td style=" width: 100%;"></td>
+                    </tr>';
+ 		print '</table>';
 	}
 }
 
