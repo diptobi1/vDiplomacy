@@ -61,8 +61,10 @@ if ($edit == true)
             $line = rtrim(fgets($handle));
 
 			// Skip all variables and replace them by the new ones.
-			if (strpos($line,"public \$fullName") > 0 && isset($_REQUEST['submitBase']))
+			if (strpos($line,"public \$name") > 0 && isset($_REQUEST['submitBase']))
 			{
+                $newVariant[] = $line;
+                
 				do {
 					$line = rtrim(fgets($handle));
 				} while ((strpos($line,"public") > 0)  != '' && !(feof($handle)));
