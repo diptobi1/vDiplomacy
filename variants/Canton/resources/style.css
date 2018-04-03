@@ -9,10 +9,10 @@
 .variantCanton .country6 { color: #3B3F3C ! important; } /* Russia */
 .variantCanton .country7 { color: #BC6400 ! important; } /* Turkey */
 
-.variantCanton .occupationBar1 { color: #007FFF ! important; } /* Britain */
-.variantCanton .occupationBar2 { color: #FFBF00 ! important; } /* China */
-.variantCanton .occupationBar3 { color: #89CFF0 ! important; } /* France */
-.variantCanton .occupationBar4 { color: #A4C639 ! important; } /* Holland */
-.variantCanton .occupationBar5 { color: #E32636 ! important; } /* Japan */
-.variantCanton .occupationBar6 { color: #B2BEB5 ! important; } /* Russia */
-.variantCanton .occupationBar7 { color: #FF8C00 ! important; } /* Turkey */
+.variantCanton .occupationBar1 { background-color: #007FFF; } /* Britain */
+.variantCanton .occupationBar2 { background-color: #FFBF00; } /* China */
+.variantCanton .occupationBar3 { background-color: #89CFF0; } /* France */
+.variantCanton .occupationBar4 { background-color: #A4C639; } /* Holland */
+.variantCanton .occupationBar5 { background-color: #E32636; } /* Japan */
+.variantCanton .occupationBar6 { background-color: #B2BEB5; } /* Russia */
+.variantCanton .occupationBar7 { background-color: #FF8C00; } /* Turkey */
