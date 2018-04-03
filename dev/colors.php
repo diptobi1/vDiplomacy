@@ -26,6 +26,13 @@ defined('IN_CODE') or die('This script can not be run by itself.');
 
 if ($edit == true && (isset($_REQUEST['submitColors'])) )
 {
+	foreach ($Variant->countries as $countryID => $name)
+	{
+		if (isset($_REQUEST['font'][$countryID]))
+			$_REQUEST['font'][$countryID] = '#'.substr(preg_replace('/[^a-fA-F0-9]/', '', $_REQUEST['font'][$countryID] ),0,6);
+		if (isset($_REQUEST['occupationBar'][$countryID]))
+			$_REQUEST['occupationBar'][$countryID] = '#'.substr(preg_replace('/[^a-fA-F0-9]/', '', $_REQUEST['occupationBar'][$countryID] ),0,6);
+	}
 	
 	copy('variants/'.Config::$variants[$variantID].'/classes/drawMap.php', 'variants/'.Config::$variants[$variantID].'/cache/'.date("ymd-His").'-col-drawmap.php');
 	copy('variants/'.Config::$variants[$variantID].'/resources/style.css', 'variants/'.Config::$variants[$variantID].'/cache/'.date("ymd-His").'-col-style.css');
@@ -43,10 +50,10 @@ if ($edit == true && (isset($_REQUEST['submitColors'])) )
 		{
 			foreach ($Variant->countries as $countryID => $name)
 			{
-				$color = $_REQUEST['drawMap'][$countryID];
-				$r=hexdec(substr($color,1,2)); if (strlen($r)<3) $r=' '.$r; if (strlen($r)<3) $r=' '.$r;
-				$g=hexdec(substr($color,3,2)); if (strlen($g)<3) $g=' '.$g; if (strlen($g)<3) $g=' '.$g;
-				$b=hexdec(substr($color,5,2)); if (strlen($b)<3) $b=' '.$b; if (strlen($b)<3) $b=' '.$b;
+				$color = substr(preg_replace('/[^a-fA-F0-9]/', '', $_REQUEST['drawMap'][$countryID]),0,6);
+				$r=hexdec(substr($color,0,2)); if (strlen($r)<3) $r=' '.$r; if (strlen($r)<3) $r=' '.$r;
+				$g=hexdec(substr($color,2,2)); if (strlen($g)<3) $g=' '.$g; if (strlen($g)<3) $g=' '.$g;
+				$b=hexdec(substr($color,4,2)); if (strlen($b)<3) $b=' '.$b; if (strlen($b)<3) $b=' '.$b;
 				$newDrawmap[]="\t\t".$countryID." => array(".$r.", ".$g.", ".$b."), // ".$name;
 			}
 			
@@ -64,9 +71,8 @@ if ($edit == true && (isset($_REQUEST['submitColors'])) )
 	foreach ($Variant->countries as $id => $name)
 		fwrite($handle, '.variant'.Config::$variants[$variantID].' .country'.($id).' { color: '.$_REQUEST['font'][($id)].' ! important; } /* '.$name.' */'."\n");
 	fwrite($handle, "\n");
-	foreach (array_slice($Variant->countries,1)
-	as $id => $name)
-		fwrite($handle, '.variant'.Config::$variants[$variantID].' .occupationBar'.($id + 1).' { color: '.$_REQUEST['occupationBar'][($id + 1)].' ! important; } /* '.$name.' */'."\n");
+	foreach (array_slice($Variant->countries,1) as $id => $name)
+		fwrite($handle, '.variant'.Config::$variants[$variantID].' .occupationBar'.($id + 1).' { background-color: '.$_REQUEST['occupationBar'][($id + 1)].'; } /* '.$name.' */'."\n");
 	fclose($handle);
 	array_shift($Variant->countries);
 	
