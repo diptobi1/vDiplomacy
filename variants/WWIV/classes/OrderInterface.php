@@ -37,20 +37,4 @@ class BuildAnywhere_OrderInterface extends OrderInterface
 	}
 }
 
-class ConvoyFix_OrderInterface extends BuildAnywhere_OrderInterface
-{
-	protected function jsLoadBoard()
-	{
-		global $Variant;
-
-		parent::jsLoadBoard();
-		if( $this->phase=='Diplomacy' )
-		{
-			libHTML::$footerIncludes[] = '../variants/'.$Variant->name.'/resources/convoyfix.js';
-			foreach(libHTML::$footerScript as $index=>$script)
-				libHTML::$footerScript[$index]=str_replace('loadOrdersPhase();','loadOrdersPhase();NewConvoyCode();', $script);
-		}
-	}
-}
-
-class WWIVVariant_OrderInterface extends ConvoyFix_OrderInterface {}
+class WWIVVariant_OrderInterface extends BuildAnywhere_OrderInterface {}

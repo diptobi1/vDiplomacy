@@ -27,6 +27,7 @@
 	1.0.2: territory-names improvements
 	1.1:   new convoy-code (does no longer verify the javascript-path, because browsers couldn't handle the JS)
 	1.1.1: Now working for retreats too: The player that owns Constantinople may move a fleet directly from the Black Sea to the Aegean Sea, or vice-versa. 
+ *  1.1.3: convoy fix code removed as no longer needed
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');

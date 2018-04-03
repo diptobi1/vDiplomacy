@@ -24,17 +24,4 @@
 defined('IN_CODE') or die('This script can not be run by itself.');
 
 class ClassicAnkaraCrescentVariant_OrderInterface extends OrderInterface
-{
-	protected function jsLoadBoard()
-	{
-		global $Variant;
-
-		parent::jsLoadBoard();
-		if( $this->phase=='Diplomacy' )
-		{
-			libHTML::$footerIncludes[] = '../variants/'.$Variant->name.'/resources/convoyfix.js';
-			foreach(libHTML::$footerScript as $index=>$script)
-				libHTML::$footerScript[$index]=str_replace('loadOrdersPhase();','loadOrdersPhase();NewConvoyCode();', $script);
-		}
-	}
-}
+{}
