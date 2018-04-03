@@ -42,13 +42,13 @@ if ($edit == true)
 		copy('variants/'.Config::$variants[$variantID].'/variant.php', 'variants/'.Config::$variants[$variantID].'/cache/'.date("ymd-His").'-base-variant.php');
 
 		// Validate the input:
-		$fullName    = (isset($_REQUEST['fullName'])    ? substr(preg_replace('/[^a-zA-Z0-9 \?\.,]/', '', $_REQUEST['fullName']),0,20)    : '');
-		$description = (isset($_REQUEST['description']) ? substr(preg_replace('/[^a-zA-Z0-9 \?\.,]/', '', $_REQUEST['description']),0,20) : '');
-		$author      = (isset($_REQUEST['author'])      ? substr(preg_replace('/[^a-zA-Z0-9 \?\.,]/', '', $_REQUEST['author']),0,20)      : '');
-		$adapter     = (isset($_REQUEST['adapter'])     ? substr(preg_replace('/[^a-zA-Z0-9 \?\.,]/', '', $_REQUEST['adapter']),0,20)     : '');
-		$version     = (isset($_REQUEST['version'])     ? substr(preg_replace('/[^a-zA-Z0-9 \?\.,]/', '', $_REQUEST['version']),0,20)     : '');
-		$codeVersion = (isset($_REQUEST['codeVersion']) ? substr(preg_replace('/[^0-9\.]/',           '', $_REQUEST['codeVersion']),0,10) : '');
-		$homepage    = (isset($_REQUEST['homepage'])    ? substr(preg_replace('/[^a-zA-Z0-9\:\/ \?\.,]/','', $_REQUEST['homepage']),0,30) : '');
+		$fullName    = (isset($_REQUEST['fullName'])    ? substr(preg_replace('/[^a-zA-Z0-9\(\)\=\& \-\?\.,]/', '',    $_REQUEST['fullName']),0,150)    : '');
+		$description = (isset($_REQUEST['description']) ? substr(preg_replace('/[^a-zA-Z0-9\(\)\=\& \-\?\.,]/', '',    $_REQUEST['description']),0,150) : '');
+		$author      = (isset($_REQUEST['author'])      ? substr(preg_replace('/[^a-zA-Z0-9\(\)\=\& \-\?\.,]/', '',    $_REQUEST['author']),0,150)      : '');
+		$adapter     = (isset($_REQUEST['adapter'])     ? substr(preg_replace('/[^a-zA-Z0-9\(\)\=\& \-\?\.,]/', '',    $_REQUEST['adapter']),0,150)     : '');
+		$version     = (isset($_REQUEST['version'])     ? substr(preg_replace('/[^a-zA-Z0-9\(\)\=\& \-\?\.,]/', '',    $_REQUEST['version']),0,10)      : '');
+		$codeVersion = (isset($_REQUEST['codeVersion']) ? substr(preg_replace('/[^0-9\.]/',           '',            $_REQUEST['codeVersion']),0,10)  : '');
+		$homepage    = (isset($_REQUEST['homepage'])    ? substr(preg_replace('/[^a-zA-Z0-9\:\/\-\=\(\)\& \?\.,]/','', $_REQUEST['homepage']),0,150)    : '');
 		
 		if (isset($_REQUEST['country']))
 			foreach ($_REQUEST['country'] as $id => $name)
