@@ -45,7 +45,7 @@ if( isset($_REQUEST['forgotPassword']) and $User->type['Guest'] )
 				<ul class="formlist">
 				<li class="formlisttitle">'.l_t('Username').'</li>
 				<li class="formlistfield"><input type="text" tabindex="1" maxlength=30 size=15 name="forgotUsername"></li>
-				<li class="formlistdesc">'.l_t('The webDiplomacy username of the account which you can\'t log in to.').'</li>
+				<li class="formlistdesc">'.l_t('The vDiplomacy username of the account which you can\'t log in to.').'</li>
 				<li><input type="submit" class="form-submit" value="'.l_t('Send code').'"></li>
 				</ul>
 			</form>
@@ -62,7 +62,7 @@ if( isset($_REQUEST['forgotPassword']) and $User->type['Guest'] )
 
 			require_once(l_r('objects/mailer.php'));
 			$Mailer = new Mailer();
-			$Mailer->Send(array($forgottenUser->email=>$forgottenUser->username), l_t('webDiplomacy forgotten password verification link'),
+			$Mailer->Send(array($forgottenUser->email=>$forgottenUser->username), l_t('vDiplomacy forgotten password verification link'),
 l_t("You can use this link to get a new password generated:")."<br>
 ".libAuth::email_validateURL($forgottenUser->email)."&forgotPassword=3<br><br>
 
@@ -148,7 +148,7 @@ if( isset($_REQUEST['resendUsername']) and $User->type['Guest'] )
 }
 
 if( ! $User->type['User'] ) {
-	print libHTML::pageTitle(l_t('Log on'),l_t('Enter your webDiplomacy account username and password to log into your account.'));
+	print libHTML::pageTitle(l_t('Log on'),l_t('Enter your vDiplomacy account username and password to log into your account.'));
 	print '
 		<form action="./index.php" method="post">
 
@@ -156,12 +156,12 @@ if( ! $User->type['User'] ) {
 
 		<li class="formlisttitle">'.l_t('Username').'</li>
 		<li class="formlistfield"><input type="text" tabindex="1" maxlength=30 size=15 name="loginuser"></li>
-		<li class="formlistdesc">'.l_t('Your webDiplomacy username. If you don\'t have one please '.
+		<li class="formlistdesc">'.l_t('Your vDiplomacy username. If you don\'t have one please '.
 			'<a href="register.php" class="light">register</a>.').'</li>
 
 		<li class="formlisttitle">'.l_t('Password').'</li>
 		<li class="formlistfield"><input type="password" tabindex="2" maxlength=30 size=15 name="loginpass"></li>
-		<li class="formlistdesc">'.l_t('Your webDiplomacy password.').'</li>
+		<li class="formlistdesc">'.l_t('Your vDiplomacy password.').'</li>
 
 		<li class="formlisttitle">'.l_t('Remember me').'</li>
 		<li class="formlistfield"><input type="checkbox" /></li>
@@ -181,7 +181,7 @@ if( ! $User->type['User'] ) {
 			</ul>
 		</p>';
 } else {
-	print libHTML::pageTitle('Log off','Log out of your webDiplomacy account, to prevent other users of this computer accessing it.');
+	print libHTML::pageTitle('Log off','Log out of your vDiplomacy account, to prevent other users of this computer accessing it.');
 	print '<form action="./logon.php" method="get">
 		<p class="notice"><input type="hidden" name="logoff" value="on">
 		<input type="submit" class="form-submit" value="'.l_t('Log off').'"></p>
