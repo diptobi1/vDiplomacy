@@ -32,6 +32,7 @@
 	1.0.9: fixed: spelling error
 	1.1:   fixed: spelling error / small improvements
 	1.1.1: fixed: wrong link in rules.html
+	1.1.2: fixed: spelling error in pregame setup
 
 */
 
@@ -45,7 +46,7 @@ class SouthAmerica8Variant extends WDVariant {
 	public $description='A variant with a map of South America for 8 players.';
 	public $author     ='Benjamin Hester';
 	public $adapter    ='Oliver Auth';
-	public $version    ='1.1.1';
+	public $version    ='1.1.2';
 	public $homepage   ='http://www.variantbank.org/results/rules/s/sasupremacy.htm';
 
 	public $countries=array('Argentina','Bolivia','Brazil','Chile','Colombia','Paraguay','Peru','Venezuela');
