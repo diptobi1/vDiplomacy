@@ -54,20 +54,5 @@ class BuildAnyHome_OrderInterface extends StraitsRule_OrderInterface {
 		}
 	}
 }
-class ConvoyFix_OrderInterface extends BuildAnyHome_OrderInterface
-{
-	protected function jsLoadBoard()
-	{
-		global $Variant;
 
-		parent::jsLoadBoard();
-		if( $this->phase=='Diplomacy' )
-		{
-			libHTML::$footerIncludes[] = '../variants/'.$Variant->name.'/resources/convoyfix.js';
-			foreach(libHTML::$footerScript as $index=>$script)
-				libHTML::$footerScript[$index]=str_replace('loadOrdersPhase();','loadOrdersPhase();NewConvoyCode();', $script);
-		}
-	}
-}
-
-class Imperial2Variant_OrderInterface extends ConvoyFix_OrderInterface {}
+class Imperial2Variant_OrderInterface extends BuildAnyHome_OrderInterface {}

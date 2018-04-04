@@ -30,6 +30,7 @@
 	1.1.8: more memory for the drawmap-code
 	1.1.10:  small improvements, so the map work with the edit-tool
 	1.2  : only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
+	1.2  : convoy fix code removed as no longer needed
 	
 */
 

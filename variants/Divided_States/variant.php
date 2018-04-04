@@ -20,6 +20,7 @@
 	Changelog:
 	1.0: initial version
 	1.1: Error with the order-arrows fixed.
+    1.1: convoy fix code removed as no longer needed
 	
 */
 
