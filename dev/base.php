@@ -52,7 +52,7 @@ if ($edit == true)
 		
 		if (isset($_REQUEST['country']))
 			foreach ($_REQUEST['country'] as $id => $name)
-				$_REQUEST['country'][$id] = substr(preg_replace('/[^a-zA-Z0-9 ]/','',$name),0,20);
+				$_REQUEST['country'][$id] = substr(preg_replace('/[^a-zA-Z0-9- ]/','',$name),0,20);
 
 		$newVariant = array();
 		$handle = fopen('variants/'.Config::$variants[$variantID].'/variant.php', 'r');
