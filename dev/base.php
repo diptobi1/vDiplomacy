@@ -36,7 +36,7 @@ if ($edit == true)
 	if (isset($_REQUEST['deleteCountry']))
 		array_pop($_REQUEST['country']);
 	
-	if (isset($_REQUEST['submitBase']) || (isset($_REQUEST['country'])))
+	if (isset($_REQUEST['submitBase']) || (isset($_REQUEST['country'])) || (isset($_REQUEST['EditToDo'])) )
 	{
 		
 		copy('variants/'.Config::$variants[$variantID].'/variant.php', 'variants/'.Config::$variants[$variantID].'/cache/'.date("ymd-His").'-base-variant.php');
@@ -47,13 +47,29 @@ if ($edit == true)
 		$author      = (isset($_REQUEST['author'])      ? substr(preg_replace('/[^a-zA-Z0-9\(\)\=\& \-\?\.,]/', '',    $_REQUEST['author']),0,150)      : '');
 		$adapter     = (isset($_REQUEST['adapter'])     ? substr(preg_replace('/[^a-zA-Z0-9\(\)\=\& \-\?\.,]/', '',    $_REQUEST['adapter']),0,150)     : '');
 		$version     = (isset($_REQUEST['version'])     ? substr(preg_replace('/[^a-zA-Z0-9\(\)\=\& \-\?\.,]/', '',    $_REQUEST['version']),0,10)      : '');
-		$codeVersion = (isset($_REQUEST['codeVersion']) ? substr(preg_replace('/[^0-9\.]/',           '',            $_REQUEST['codeVersion']),0,10)  : '');
+		$codeVersion = (isset($_REQUEST['codeVersion']) ? substr(preg_replace('/[^0-9\.]/',                     '',    $_REQUEST['codeVersion']),0,10)  : '');
 		$homepage    = (isset($_REQUEST['homepage'])    ? substr(preg_replace('/[^a-zA-Z0-9\:\/\-\=\(\)\& \?\.,]/','', $_REQUEST['homepage']),0,150)    : '');
 		
 		if (isset($_REQUEST['country']))
 			foreach ($_REQUEST['country'] as $id => $name)
 				$_REQUEST['country'][$id] = substr(preg_replace('/[^a-zA-Z0-9- ]/','',$name),0,20);
 
+		if (isset($_REQUEST['EditToDo']))
+		{
+			$toDo=$_REQUEST['EditToDo'];
+			if ($toDo == '')
+			{
+				if (file_exists('variants/'.Config::$variants[$variantID].'/toDo.txt'))
+					unlink ('variants/'.Config::$variants[$variantID].'/toDo.txt');
+			}
+			else
+			{
+				$toDo = str_ireplace("<END-TA-DO-NOT-EDIT>", "</textarea>", $toDo);
+				$toDo = stripslashes($toDo);
+				file_put_contents('variants/'.Config::$variants[$variantID].'/toDo.txt', $toDo);	
+			}
+		}
+				
 		$newVariant = array();
 		$handle = fopen('variants/'.Config::$variants[$variantID].'/variant.php', 'r');
 		while (!(feof($handle)))
@@ -114,6 +130,8 @@ if ($variantID != 0)
 	$Variant = libVariant::loadFromVariantID($variantID);
 	libVariant::setGlobals($Variant);
 
+	$toDo = ( (file_exists('variants/'.Config::$variants[$variantID].'/toDo.txt')) ? file_get_contents('variants/'.Config::$variants[$variantID].'/toDo.txt') : '');
+	
 	print '
 		<div class="hr"></div>
 		<style type="text/css"> td { padding:2px; font-weight: bold; white-space: nowrap;} </style>
@@ -125,7 +143,22 @@ if ($variantID != 0)
 			<tr><td>Starting year:  </td> <td>'.$Variant->turnAsDate(0).     '</td> <td style=" width: 100%;"></td></tr>
 			<tr><td>SCs for victory:</td> <td>'.$Variant->supplyCenterTarget.'</td> <td style=" width: 100%;"></td></tr>
 		</table>
-		<div class="hr"></div>
+		<div class="hr"></div>'
+		.($edit == true ? '
+			<b>ToDo:</b><span id="EditToDoButton"> (<a href="#" onclick="$(\'ToDoNoteBox\').show(); $(\'ToDoNoteText\').hide(); $(\'EditToDoButton\').hide(); return false;">Edit</a>)</span>
+			<table>
+				<td>
+					<span id="ToDoNoteText" style="font-weight: normal;">'.str_ireplace("\n", "<br />", $toDo).'</span>
+					<span id="ToDoNoteBox" style="display:none;">
+						<form method="post" style="display:inline;">
+							<textarea name="EditToDo" style="width:100%;height:200px">'.str_ireplace("</textarea>", "<END-TA-DO-NOT-EDIT>", $toDo).'</textarea>
+							<table><td align="right"><input type="Submit" value="Submit" /></td></table>
+							
+						</form>				
+					</span>
+				</td>
+			</table>
+			<div class="hr"></div>' : '').'
 		<form style="display: inline" method="get" name="basevalues">
 			<input type="hidden" name="tab" value="Base">
 			<input type="hidden" name="variantID" value="'.$variantID.'">'.
