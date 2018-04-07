@@ -33,8 +33,8 @@ class CustomIcons_drawmap extends drawmap
 		$this->army_c[0]  = $this->loadImage('variants/Canton/resources/armyNeutral.png');
 		$this->fleet_c[0] = $this->loadImage('variants/Canton/resources/fleetNeutral.png');
 		for ($i=1; $i<=count($GLOBALS['Variants'][VARIANTID]->countries); $i++) {
-			$this->army_c[$i]  = $this->loadImage('variants/Canton/resources/army' .$GLOBALS['Variants'][VARIANTID]->countries[$i-1].'.png');
-			$this->fleet_c[$i] = $this->loadImage('variants/Canton/resources/fleet'.$GLOBALS['Variants'][VARIANTID]->countries[$i-1].'.png');
+			$this->army_c[$i]  = $this->loadImage('variants/Canton/resources/'.($this->smallmap ? 'small' : '' ).'army' .$GLOBALS['Variants'][VARIANTID]->countries[$i-1].'.png');
+			$this->fleet_c[$i] = $this->loadImage('variants/Canton/resources/'.($this->smallmap ? 'small' : '' ).'fleet'.$GLOBALS['Variants'][VARIANTID]->countries[$i-1].'.png');
 		}
 		parent::loadImages();
 	}
