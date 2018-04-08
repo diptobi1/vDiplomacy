@@ -155,10 +155,15 @@ function write_changes() {
         $DB->sql_put('UPDATE wD_Territories SET name="' . $name . '" WHERE mapID=' . $mapID . ' AND id=' . $terrID);
     if ($countryID >= 0 && $terrID != '0')
         $DB->sql_put('UPDATE wD_Territories SET countryID="' . $countryID . '" WHERE mapID=' . $mapID . ' AND id=' . $terrID);
-    if (($name != '') && ($terrID == '0')) {
-        list($terrID) = $DB->sql_row('SELECT id FROM wD_Territories WHERE mapID=' . $mapID . ' ORDER BY id DESC LIMIT 1;');
-        $terrID++;
-        $DB->sql_put('INSERT INTO wD_Territories (mapid,type,id,name,coastParentID) VALUES (' . $mapID . ',"Coast",' . $terrID . ',"' . $name . '",' . $terrID . ')');
+    if (($name != '') && ($terrID == '0'))
+	{
+        list($duplicate) = $DB->sql_row('SELECT COUNT(*) FROM wD_Territories WHERE mapID=' . $mapID . ' AND name="'.$name.'"');
+		if ($duplicate == 0)
+		{
+			list($terrID) = $DB->sql_row('SELECT id FROM wD_Territories WHERE mapID=' . $mapID . ' ORDER BY id DESC LIMIT 1;');
+			$terrID++;
+			$DB->sql_put('INSERT INTO wD_Territories (mapid,type,id,name,coastParentID) VALUES (' . $mapID . ',"Coast",' . $terrID . ',"' . $name . '",' . $terrID . ')');
+		}
     }
     if ($set_link != '') {
         $toTerrID = substr($set_link, 2);
