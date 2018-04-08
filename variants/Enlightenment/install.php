@@ -384,6 +384,7 @@ $bordersRawData=array(
 	array('Syria','Arabia','No','Yes'),
 	array('Syria','Cairo','Yes','Yes'),
 	array('Syria','Armenia','No','Yes'),
+	array('Syria','Eastern Mediterranean Sea','Yes','No'),
 	array('Arabia','Cairo','No','Yes'),
 	array('Cairo','Eastern Mediterranean Sea','Yes','No'),
 	array('Cairo','Tripoli','Yes','Yes'),
