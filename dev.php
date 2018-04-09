@@ -57,13 +57,25 @@ foreach($tabs as $tabChoice=>$tabTitle)
 print '</div><br>';
 
 // Define some form-elemets needed by all dev-tools.
-asort(Config::$variants);
+$allVariants = Config::$variants;
+if (isset(Config::$devs))
+{
+	foreach (Config::$devs as $devName => $devVariantsArray)
+	{
+		foreach ($devVariantsArray as $activeVariantName)
+		{
+			$activeVariantID = array_search ($activeVariantName, $allVariants);
+			$allVariants[$activeVariantID] = '=> '.$allVariants[$activeVariantID].' ('.$devName.')';
+		}
+	}
+}
+asort($allVariants);
 $selectVariantForm = 
 	'<form style="display: inline" method="get" name="set_map">
 	<input type="hidden" name="tab" value="'.$tab.'" />
 	<select name="variantID" onchange="this.form.submit();">'
 	.($variantID == 0 ? '<option value="0" selected>Choose a variant...</option>' : '');
-foreach ( Config::$variants as $id=>$name )
+foreach ($allVariants as $id=>$name )
 	$selectVariantForm .= '<option value="'.$id.'"'.($id == $variantID ? ' selected':'').'>'.$name.'</option>';
 $selectVariantForm .= '</select></form>';
 
