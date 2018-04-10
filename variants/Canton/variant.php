@@ -23,7 +23,7 @@
 	1.0:   initial version
 	1.0.1: improved unit-placement
 	1.0.2: fixed a problem with thy occupation-bar
-	1.1:   new unit-icons for the smallmap
+	1.2:   new unit-icons for the smallmap
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -37,7 +37,7 @@ class CantonVariant extends WDVariant {
 	public $author      ='Paul Webb';
 	public $adapter     ='Enriador / Oliver Auth';
 	public $version     ='1';
-	public $codeVersion ='1.1';
+	public $codeVersion ='1.2';
 	public $homepage    ='http://www.dipwiki.com/index.php?title=Canton';
 
 	public $countries=array('Britain', 'China', 'France', 'Holland', 'Japan', 'Russia', 'Turkey');
@@ -45,8 +45,9 @@ class CantonVariant extends WDVariant {
 	public function __construct() {
 		parent::__construct();
 
-		$this->variantClasses['drawMap']            = 'Canton';
-		$this->variantClasses['adjudicatorPreGame'] = 'Canton';
+		$this->variantClasses['adjudicatorPreGame'] = $this->name;
+		$this->variantClasses['drawMap']            = $this->name;
+		$this->variantClasses['OrderInterface']     = $this->name;
 	}
 
 	public function turnAsDate($turn) {
