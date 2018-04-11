@@ -34,7 +34,7 @@ class MachiavelliVariant extends WDVariant {
 	public $author      ='Andrew Jameson (original design by S. Craig Taylor and James B. Wood)';
 	public $adapter     ='Enriador & Oliver Auth';
 	public $version     ='1';
-	public $codeVersion ='1.0';
+	public $codeVersion ='1.0.1';
 	public $homepage    ='http://www.dipwiki.com/?title=Machiavelli';
 
 	public $countries=array('Austria','Florence','France','Milan','Naples','Papacy','Turkey','Venice');

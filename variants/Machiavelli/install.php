@@ -263,6 +263,7 @@ $bordersRawData=array(
 	array('Croatia','Istria','Yes','Yes'),
 	array('Croatia','Dalmatia','Yes','Yes'),
 	array('Croatia','Bosnia','No','Yes'),
+	array('Croatia','Upper Adriatic Sea','Yes','No'),
 	array('Istria','Upper Adriatic Sea','Yes','No'),
 	array('Dalmatia','Herzogovina','Yes','Yes'),
 	array('Dalmatia','Bosnia','No','Yes'),
