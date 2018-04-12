@@ -21,6 +21,7 @@
 	
 	Changelog:
 	1.0: initial version
+	1.1: bugfix with the custom units code and the buildanywhere
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -34,7 +35,7 @@ class MachiavelliVariant extends WDVariant {
 	public $author      ='Andrew Jameson (original design by S. Craig Taylor and James B. Wood)';
 	public $adapter     ='Enriador & Oliver Auth';
 	public $version     ='1';
-	public $codeVersion ='1.0.1';
+	public $codeVersion ='1.1';
 	public $homepage    ='http://www.dipwiki.com/?title=Machiavelli';
 
 	public $countries=array('Austria','Florence','France','Milan','Naples','Papacy','Turkey','Venice');
@@ -42,16 +43,16 @@ class MachiavelliVariant extends WDVariant {
 	public function __construct() {
 		parent::__construct();
 
-		$this->variantClasses['drawMap']            = 'Machiavelli';
-		$this->variantClasses['adjudicatorPreGame'] = 'Machiavelli';
+		$this->variantClasses['drawMap']            = $this->name;
+		$this->variantClasses['adjudicatorPreGame'] = $this->name;
 
 		// Custom icon units
-		$this->variantClasses['OrderInterface']     = 'Machiavelli';
+		$this->variantClasses['OrderInterface']     = $this->name;
 		
 		// Build anywhere
-		$this->variantClasses['OrderInterface']     = 'Machiavelli';
-		$this->variantClasses['processOrderBuilds'] = 'Machiavelli';
-		$this->variantClasses['userOrderBuilds']    = 'Machiavelli';
+		$this->variantClasses['OrderInterface']     = $this->name;
+		$this->variantClasses['processOrderBuilds'] = $this->name;
+		$this->variantClasses['userOrderBuilds']    = $this->name;
 
 	}
 

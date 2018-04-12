@@ -43,9 +43,12 @@ class CustomIcons_OrderInterface extends BuildAnywhere_OrderInterface
 	protected function jsLoadBoard() {
 		parent::jsLoadBoard();
 
-		libHTML::$footerIncludes[] = '../variants/Machiavelli/resources/iconscorrect.js';
-		foreach(libHTML::$footerScript as $index=>$script)
-			libHTML::$footerScript[$index]=str_replace('loadOrdersModel();','loadOrdersModel();IconsCorrect();', $script);
+		if( $this->phase=='Diplomacy' )
+		{
+			libHTML::$footerIncludes[] = '../variants/Machiavelli/resources/iconscorrect.js';
+			foreach(libHTML::$footerScript as $index=>$script)
+				libHTML::$footerScript[$index]=str_replace('loadOrdersModel();','loadOrdersModel();IconsCorrect();', $script);
+		}
 	}
 }
 
