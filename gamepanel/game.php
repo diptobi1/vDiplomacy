@@ -199,7 +199,7 @@ class panelGame extends Game
 			$buf .= '<img src="images/icons/lock.png" alt="Locked" title="Game is currently locked by an admin (usually to fix some errors)." /> ';
 			
 		if( $this->private )
-			$buf .= '<img src="'.l_s('images/icons/lock.png').'" alt="'.l_t('Private').'" title="'.l_t('This is a private game; password needed!').'" /> ';
+			$buf .= '<img src="'.l_s('images/icons/lock.png').'" alt="'.l_t('Private').'" title="'.l_t('This is a private game; invite code needed!').'" /> ';
 
 		return $buf;
 	}
@@ -465,12 +465,12 @@ class panelGame extends Game
 	}
 
 	/**
-	 * The password box for joining private games
+	 * The invite code box for joining private games
 	 * @return string
 	 */
 	private static function passwordBox()
 	{
-		return ' <span class="gamePasswordBox"><label>'.l_t('Password:').'</label> <input type="password" name="gamepass" size="10" /></span> ';
+		return ' <span class="gamePasswordBox"><label>'.l_t('Invite Code:').'</label> <input type="password" name="gamepass" size="10" /></span> ';
 	}
 
 	/**

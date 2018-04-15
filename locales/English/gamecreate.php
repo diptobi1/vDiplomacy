@@ -231,11 +231,11 @@ else
 </ul>
 
 <li class="formlisttitle">
-	<img src="images/icons/lock.png" alt="Private" /> Password protect (optional):
+	<img src="images/icons/lock.png" alt="Private" /> Add Invite Code (optional):
 </li>
 <li class="formlistfield">
 	<ul>
-		<li>Password: <input type="password" name="newGame[password]" value="" size="30" /></li>
+		<li>Invite Code: <input type="password" name="newGame[password]" value="" size="30" /></li>
 		<li>Confirm: <input type="password" name="newGame[passwordcheck]" value="" size="30" /></li>
 	</ul>
 </li>
