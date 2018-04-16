@@ -170,7 +170,6 @@ td.homeGameNotices .homeForumSubject {
 	/*color:#666;*/
 }
 
-/*############## Mobile media ############*/
 @media only screen and (max-width: 800px) {
 	table.homeTable {
 		table-layout: fixed;
