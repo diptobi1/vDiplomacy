@@ -116,7 +116,10 @@ get the same number of points as a surviving player with only one!)
 <p class="intro">
 New players get only 100 points to start out with, but don't worry about losing all your points! If a game ends and
 you have less than 100 points (including the points you have bet into any other games which you're still playing in) then
-you get topped back up to your starting 100 points!
+you get topped back up to your starting 100 points as long as you did not abandon the game.<br />
+If you let your country slip into by a Civil Disorder and just leave the game you won't get your points back.
+Civil Disorders are highly disruptive to a game as all players involved need to renegotiate with the new player taking the
+country in Civil-Disorder or if no replacement-player takes the country the whole game is screwed.
 </p>
 
 <h4>Discipline!</h4>

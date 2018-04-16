@@ -21,6 +21,7 @@
 
 	Changelog:
 	1.0:   initial version
+	1.0.1: names-overlay improvements
 	
 */
 
@@ -35,7 +36,7 @@ class Classic1913Variant extends WDVariant {
 	public $author='Enriador';
 	public $adapter ='Enriador / Oliver Auth';
 	public $version ='1';
-	public $codeVersion ='1.0.0';
+	public $codeVersion ='1.0.1';
 
 	public $countries=array('England', 'France', 'Italy', 'Germany', 'Austria', 'Turkey', 'Russia');
 

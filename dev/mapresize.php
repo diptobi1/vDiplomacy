@@ -24,17 +24,15 @@ defined('IN_CODE') or die('This script can not be run by itself.');
 $uploadtmp =(isset($_FILES['imgfile']['tmp_name']))? $_FILES['imgfile']['tmp_name'] : '' ; // the tmp-filename from PHP
 define('UPTMP',$uploadtmp);
 
-if ($_SERVER['REQUEST_METHOD'] != "POST") {
-	
-	print '<div class="content">';
+if ($_SERVER['REQUEST_METHOD'] != "POST" || $uploadtmp == '') {
 
+	// Admins only
 	$edit=true;
     if (!($User->type['Admin']))
         if (!(array_key_exists($User->username, Config::$devs)))
             $edit = 'false';
 			
-	// Admins only
-	if ($edit=true)  {
+	if ($edit=true) {
 		print '<form enctype="multipart/form-data" action="'.$_SERVER['PHP_SELF'].'" method="POST">
 					<input type="hidden" name="MAX_FILE_SIZE" value="100000" />
 					<input type="hidden" name="tab" value="MapResize" />

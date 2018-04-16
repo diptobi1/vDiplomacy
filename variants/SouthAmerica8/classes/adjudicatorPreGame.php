@@ -28,7 +28,7 @@ class SouthAmerica8Variant_adjudicatorPreGame extends adjudicatorPreGame {
 		'Bolivia'   => array('Antofagasta' =>'Fleet','La Paz'   =>'Army'),
 		'Brazil'    => array('Manaus'      =>'Army' ,'Slv'      =>'Fleet','Rio de Janeiro'=>'Army','Sao Paulo'=>'Fleet'),
 		'Chile'     => array('Valparaiso'  =>'Fleet','Santiago' =>'Army'),
-		'Colombia'  => array('Cartagena'   =>'Fleet','Bogota'   =>'Army ','Cali'=>'Fleet'),
+		'Colombia'  => array('Cartagena'   =>'Fleet','Bogota'   =>'Army' ,'Cali'=>'Fleet'),
 		'Paraguay'  => array('Concepcion'  =>'Army' ,'Asuncion' =>'Army'),
 		'Peru'      => array('Trujillo'    =>'Army' ,'Lima'     =>'Fleet'),
 		'Venezuela' => array('Caracas'     =>'Fleet','Maracaibo'=>'Army'),

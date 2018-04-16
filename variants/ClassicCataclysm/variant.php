@@ -20,6 +20,7 @@
 	1.0:   initial release
 	1.0.3: wrong color for retreats fixed.
 	1.0.4: Coast-units are now displayed as fleets.
+	1.1:   added a rules.html
 	
  */
 
@@ -37,7 +38,7 @@ class ClassicCataclysmVariant extends WDVariant {
 	public $author     ='CSKA';
 	public $adapter    ='Flame';
 	public $version    ='1.0';
-	public $codeVersion='1.0.4';
+	public $codeVersion='1.1';
 	public $homepage   ='http://www.diplomail.ru';
 
 	public $countries=array('England', 'France', 'Italy', 'Germany', 'Austria', 'Turkey', 'Russia');

@@ -10,7 +10,7 @@
 	or (at your option) any later version.
 
 	The Canton variant for webDiplomacy is distributed in the hope that it will
-	be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
+	be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the GNU General Public License for more details.
 
@@ -21,7 +21,9 @@
 
 	Changelog:
 	1.0:   initial version
-	
+	1.0.1: improved unit-placement
+	1.0.2: fixed a problem with thy occupation-bar
+	1.2:   new unit-icons for the smallmap
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -30,23 +32,24 @@ class CantonVariant extends WDVariant {
 	public $id=108;
 	public $mapID=108;
 	public $name='Canton';
-	public $fullName='Canton Diplomacy';
-	public $description='Canton is set in Asia at the beginning of the 20th century.';
-	public $author='Paul Webb';
-	public $adapter ='Enriador / Oliver Auth';
-	public $homepage = 'http://www.dipwiki.com/index.php?title=Canton';
-	public $version ='1';
-	public $codeVersion ='1.0';
+	public $fullName    ='Canton Diplomacy';
+	public $description ='Asia at the beginning of the 20th century.';
+	public $author      ='Paul Webb';
+	public $adapter     ='Enriador / Oliver Auth';
+	public $version     ='1';
+	public $codeVersion ='1.2';
+	public $homepage    ='http://www.dipwiki.com/index.php?title=Canton';
 
 	public $countries=array('Britain', 'China', 'France', 'Holland', 'Japan', 'Russia', 'Turkey');
 
 	public function __construct() {
 		parent::__construct();
 
-		$this->variantClasses['drawMap']            = 'Canton';
-		$this->variantClasses['adjudicatorPreGame'] = 'Canton';
+		$this->variantClasses['adjudicatorPreGame'] = $this->name;
+		$this->variantClasses['drawMap']            = $this->name;
+		$this->variantClasses['OrderInterface']     = $this->name;
 	}
-	
+
 	public function turnAsDate($turn) {
 		if ( $turn==-1 ) return "Pre-game";
 		else return ( $turn % 2 ? "Autumn, " : "Spring, " ).(floor($turn/2) + 1901);

@@ -365,7 +365,7 @@ $territoryRawData=array(
 	array('Santa Fe (STF)', 'Land', 'Yes', 41, 1721, 1348, 1721, 1348),
 	array('New Mexico Plains (NMX)', 'Land', 'No', 41, 1800, 1502, 1800, 1502),
 	array('Albuquerque (ABQ)', 'Land', 'Yes', 41, 1665, 1404, 1665, 1404),
-	array('Roswell (RSW)', 'Land', 'Yes', 0, 1729, 1508, 1729, 1508),
+	array('Roswell (ROS)', 'Land', 'Yes', 0, 1729, 1508, 1729, 1508),
 	array('San Andres Mountains (SAM)', 'Land', 'No', 41, 1675, 1579, 1675, 1579),
 	array('Las Cruces (LCR)', 'Land', 'Yes', 41, 1570, 1532, 1570, 1532),
 	array('Superstition Mountains (SST)', 'Land', 'No', 42, 1423, 1514, 1423, 1514),
@@ -2009,12 +2009,12 @@ $bordersRawData=array(
 	array('Santa Fe (STF)','New Mexico Plains (NMX)','No','Yes'),
 	array('Santa Fe (STF)','Albuquerque (ABQ)','No','Yes'),
 	array('New Mexico Plains (NMX)','Albuquerque (ABQ)','No','Yes'),
-	array('New Mexico Plains (NMX)','Roswell (RSW)','No','Yes'),
+	array('New Mexico Plains (NMX)','Roswell (ROS)','No','Yes'),
 	array('New Mexico Plains (NMX)','San Andres Mountains (SAM)','No','Yes'),
-	array('Albuquerque (ABQ)','Roswell (RSW)','No','Yes'),
+	array('Albuquerque (ABQ)','Roswell (ROS)','No','Yes'),
 	array('Albuquerque (ABQ)','San Andres Mountains (SAM)','No','Yes'),
 	array('Albuquerque (ABQ)','Las Cruces (LCR)','No','Yes'),
-	array('Roswell (RSW)','San Andres Mountains (SAM)','No','Yes'),
+	array('Roswell (ROS)','San Andres Mountains (SAM)','No','Yes'),
 	array('San Andres Mountains (SAM)','Las Cruces (LCR)','No','Yes'),
 	array('Las Cruces (LCR)','Superstition Mountains (SST)','No','Yes'),
 	array('Las Cruces (LCR)','Apache (APA)','No','Yes'),
@@ -3297,6 +3297,7 @@ if (!file_exists('variants/Divided_States/cache/sampleMap.png'))
     copy ('variants/Divided_States/resources/sampleMap.png','variants/Divided_States/cache/sampleMap.png');
 
 ?>
+
 
 
 

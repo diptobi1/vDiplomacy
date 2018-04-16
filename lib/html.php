@@ -431,17 +431,10 @@ class libHTML
 		$variantCSS = '<link rel="stylesheet" href="'.$CSSname.'" type="text/css" />';
 		// End alternate CSS file patch
 
-		if (isset($User))
-		{
-			switch ($User->cssStyle)
-			{
-				case 'webDip':	$cssAdd = '/webDip'; break;
-				case 'vDip':
-				default:		$cssAdd = '/vDip';
-			}
-		} else {
-			$cssAdd = '/vDip';
-		}
+		if (isset($User) && ($User->cssStyle == 'webDip'))
+			$cssColors = '';
+		else
+			$cssColors = 'vDipColors.css';
 			
 		/*
 		 * This line when included in the header caused certain translated hyphenated letters to come out as black diamonds with question marks.
@@ -459,9 +452,11 @@ class libHTML
 		<meta name="keywords" content="'.l_t('diplomacy,diplomacy game,online diplomacy,classic diplomacy,web diplomacy,diplomacy board game,play diplomacy,php diplomacy').'" />
 		<link rel="shortcut icon" href="'.STATICSRV.l_s('favicon.ico').'" />
 		<link rel="icon" href="'.STATICSRV.l_s('favicon.ico').'" />
-		<link rel="stylesheet" id="global-css"     href="'.CSSDIR.$cssAdd.l_s('/global.css').'?ver='.CSSVERSION.'" type="text/css" />
-		<link rel="stylesheet" id="game-panel-css" href="'.CSSDIR.$cssAdd.l_s('/gamepanel.css').'?ver='.CSSVERSION.'" type="text/css" />
-		<link rel="stylesheet" id="home-css"       href="'.CSSDIR.$cssAdd.l_s('/home.css').'?ver='.CSSVERSION.'" type="text/css" />
+		<link rel="stylesheet" id="global-css"      href="'.CSSDIR.l_s('/global.css').     '?ver='.CSSVERSION.'" type="text/css" />
+		<link rel="stylesheet" id="game-panel-css"  href="'.CSSDIR.l_s('/gamepanel.css').  '?ver='.CSSVERSION.'" type="text/css" />
+		<link rel="stylesheet" id="home-css"        href="'.CSSDIR.l_s('/home.css').       '?ver='.CSSVERSION.'" type="text/css" />
+		<link rel="stylesheet" id="vdipColors-css"  href="'.CSSDIR.l_s('/'.$cssColors).    '?ver='.CSSVERSION.'" type="text/css" />
+		<link rel="stylesheet" id="vdipButtons-css" href="'.CSSDIR.l_s('/vDipButtons.css').'?ver='.CSSVERSION.'" type="text/css" />
 		<link rel="apple-touch-icon-precomposed" href="'.STATICSRV.'apple-touch-icon.png" />
 		'.$variantCSS.'
 		<script type="text/javascript" src="useroptions.php"'.'?ver='.JSVERSION.'></script>
@@ -471,7 +466,7 @@ class libHTML
 		<script type="text/javascript" src="'.STATICSRV.l_j('contrib/js/pushup/src/js/pushup.js').'?ver='.JSVERSION.'"></script>
 		<script type="text/javascript">
 		    STATICSRV="'.STATICSRV.'";
-		    var cssDirectory = "'.CSSDIR.$cssAdd.'";
+		    var cssDirectory = "'.CSSDIR.'";
 		    var cssVersion = "'.CSSVERSION.'";
 		</script>
 		<script type="text/javascript" src="'.l_j('javascript/desktopMode.js').'?ver='.JSVERSION.'"></script>
@@ -723,6 +718,7 @@ class libHTML
 		$links['index.php']=array('name'=>'Home', 'inmenu'=>TRUE, 'title'=>"See what's happening");  
 	    if( isset(Config::$customForumURL) ) {
 			$links[Config::$customForumURL]=array('name'=>'Forum', 'inmenu'=>TRUE, 'title'=>"The forum; chat, get help, help others, arrange games, discuss strategies");
+			$links['forum.php']=array('name'=>'Old Forum', 'inmenu'=>false, 'title'=>"The old forum; chat, get help, help others, arrange games, discuss strategies");
         } else {
 			$links['forum.php']=array('name'=>'Forum', 'inmenu'=>TRUE, 'title'=>"The forum; chat, get help, help others, arrange games, discuss strategies");
         }
@@ -744,6 +740,12 @@ class libHTML
 		}
 		$links['help.php']=array('name'=>'Help', 'inmenu'=>TRUE, 'title'=>'Get help and information; guides, intros, FAQs, stats, links');
 
+		$links['dev.php']=array('name'=>'DevTools', 'inmenu'=>FALSE);
+		if (is_object($User))
+			if ($User->type['Admin'] || isset(Config::$devs))
+				if ($User->type['Admin'] || array_key_exists($User->username, Config::$devs))
+					$links['dev.php']=array('name'=>'DevTools', 'inmenu'=>TRUE);
+		
 		// Items not displayed on the menu
 		$links['map.php']=array('name'=>'Map', 'inmenu'=>FALSE);
 		$links['faq.php']=array('name'=>'FAQ', 'inmenu'=>FALSE);

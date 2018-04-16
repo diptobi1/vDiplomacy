@@ -116,6 +116,7 @@ $bordersRawData=array(
 	array('Wales','Chester','Yes','Yes'),
 	array('Wales','Irish Sea','Yes','No'),
 	array('Wales','English Channel','Yes','No'),
+	array('Chester','North Atlantic Ocean','Yes','No'),
 	array('Chester','Irish Sea','Yes','No'),
 	array('Norway','Sweden','Yes','Yes'),
 	array('Norway','Finland','No','Yes'),

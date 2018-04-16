@@ -744,7 +744,9 @@ class Game
 											attempts = 0,
 											minimumBet = ".$this->minimumBet."
 											WHERE id = ".$this->id);
-											
+
+/*							Does not work with the new NMR-code. NMRs are stores per game & turn, so you can't grand more NMRs per turn if there is an extend.
+
 							// Check for missed turns and adjust the counter in the user-data
 							if ( (count($this->Variant->countries) > 2) and ($this->phaseMinutes > 30) )
 							{
@@ -756,21 +758,23 @@ class Game
 											AND EXISTS(SELECT o.id FROM wD_Orders o WHERE o.gameID = m.gameID AND o.countryID = m.countryID)
 											AND NOT m.orderStatus LIKE '%Saved%' AND NOT m.orderStatus LIKE '%Ready%'");
 								
-								/*
-								 * Increment the moves received counter for users who could have submitted moves. This is a counter because it's a large number
-								 * users are unlikely to question, and calculating it from stored data is very involved.
-								*/
+								//
+								// Increment the moves received counter for users who could have submitted moves. This is a counter because it's a large number
+								// users are unlikely to question, and calculating it from stored data is very involved.
+								//
 								$DB->sql_put("UPDATE wD_Users u
 										INNER JOIN wD_Members m ON m.userID = u.id
 										SET u.phaseCount = u.phaseCount + 1
 										WHERE m.gameID = ".$this->id." 
-											AND ( m.status='Playing' OR m.status='Left' )
+											AND m.status='Playing'
 											AND EXISTS(SELECT o.id FROM wD_Orders o WHERE o.gameID = m.gameID AND o.countryID = m.countryID)");
 							}							
-							
+*/							
 							foreach ($this->Members->ByID as $id => $Member)
 							{
 								$this->Members->ByID[$id]->orderStatus->Ready=false;
+								if ($this->Members->ByID[$id]->orderStatus->Completed == true)
+									$this->Members->ByID[$id]->orderStatus->Saved = true;
 								$DB->sql_put("UPDATE wD_Members SET orderStatus = '".$this->Members->ByID[$id]->orderStatus."' WHERE id = ".$Member->id);
 							}
 							$gameMasterText = 'Missing orders for '.$this->Variant->turnAsDate($this->turn).' ('.$this->phase.') from a country with 2 or more SCs. Extending phase.';

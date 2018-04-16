@@ -739,6 +739,10 @@ if ( $UserProfile->type['ForumModerator'] || $UserProfile->type['Admin'] )
 	if ($UserProfile->id !=15658)
 	{
 		print '<li><strong>'.l_t('Mod/Admin team').'</strong></li>';
+		print '<li>'.l_t('The best way to get moderator assistance is to contact a moderator at 
+		<a href="mailto:'.(isset(Config::$modEMail) ? Config::$modEMail : Config::$adminEMail).'">'
+		.(isset(Config::$modEMail) ? Config::$modEMail : Config::$adminEMail).'</a>. Please do not pm 
+		moderators directly as moderators are not required to regularly check their messages').'</li>';
 		print '<li>&nbsp;</li>';
 	}
 }
@@ -854,21 +858,6 @@ if ( $User->type['Moderator'] && $User->id != $UserProfile->id )
 
 	if( !$UserProfile->type['Admin'] && ( $User->type['Admin'] || !$UserProfile->type['Moderator'] ) )
 		$modActions[] = libHTML::admincp('banUser',array('userID'=>$UserProfile->id), l_t('Ban user'));
-
-	if( $User->type['Admin'] && !$UserProfile->type['Moderator'] )
-		$modActions[] = libHTML::admincp('giveModerator',array('userID'=>$UserProfile->id), l_t('Make moderator'),true);
-
-	if( $User->type['Admin'] && ($UserProfile->type['Moderator'] && !$UserProfile->type['Admin']) )
-		$modActions[] = libHTML::admincp('takeModerator',array('userID'=>$UserProfile->id), l_t('Remove moderator'),true);
-	
-	if( $User->type['Admin'] && !$UserProfile->type['ForumModerator'] )
-		$modActions[] = libHTML::admincp('giveForumModerator',array('userID'=>$UserProfile->id), l_t('Make forum moderator'),true);
-	
-	if( $User->type['Admin'] && ($UserProfile->type['ForumModerator'] && !$UserProfile->type['Admin']) )
-		$modActions[] = libHTML::admincp('takeForumModerator',array('userID'=>$UserProfile->id), l_t('Remove forum moderator'),true);
-	
-	$modActions[] = libHTML::admincp('reportMuteToggle',array('userID'=>$UserProfile->id), l_t(($UserProfile->muteReports=='No'?'Mute':'Unmute').' mod reports'),true);
-
 	$modActions[] = '<a href="admincp.php?tab=Multi-accounts&aUserID='.$UserProfile->id.'" class="light">'.
 		l_t('Enter multi-account finder').'</a>';
 

@@ -60,6 +60,8 @@ function changeCSS(toggle) {
         newlinkGamePanel.setAttribute("href", cssDirectory + "/desktopOnly/gamepanel.css?ver=" + cssVersion);
         document.getElementsByTagName("head").item(0).appendChild(newlinkGamePanel);
 
+        document.getElementsByTagName("head").item(0).appendChild(document.getElementById("vdipColors-css"));
+ 
         newlinkGlobal.onload = function(){
            oldlinkGlobal.remove();
         };
@@ -114,5 +116,8 @@ function changeCSS(toggle) {
                 oldlinkGamePanel.remove();
             };
         }
+		
+        document.getElementsByTagName("head").item(0).appendChild(document.getElementById("vdipColors-css"));
+		
     }
 }

@@ -41,7 +41,7 @@ class Renaissance1453Variant extends WDVariant {
 	public $adapter ='Enriador / Oliver Auth';
 	public $homepage = 'http://www.dipwiki.com/index.php?title=Renaissance';
 	public $version ='1';
-	public $codeVersion ='1.0.1';
+	public $codeVersion ='1.0.2';
 
 	public $countries=array('Venice', 'Spain', 'France', 'England', 'Poland-Lithuania', 'Holy Roman Empire', 'Turkey');
 

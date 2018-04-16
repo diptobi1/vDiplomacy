@@ -29,6 +29,7 @@ switch($mode) {
 
 // view or edit data, or different confirm screens
 $edit = (isset($_REQUEST['edit'])) ? $_REQUEST['edit'] : 'newoff'; 
+$edit = "off";
 switch($edit) {
 	case 'off':
 	case 'on':
