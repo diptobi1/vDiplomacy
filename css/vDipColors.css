@@ -8,7 +8,7 @@ body {
 div.pageTitle {
     color:#472C12; /* #009922; */
 }
-input[type="text"], input[type="submit"], input[type="password"], textarea, select {
+input[type="text"], input[type="submit"], input[type="password"], textarea, select, .buttonIA, #orderLineIA {
 	background-color: #f0f0f0; /* #eaffea; */
 	color:#006699;             /* #009902 */
 }
