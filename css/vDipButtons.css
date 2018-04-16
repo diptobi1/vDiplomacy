@@ -1,6 +1,9 @@
 /* Interactive map */
 .buttonIA, #orderLineIA {
-	color:#006699;
+	font-size: 14px;
+	background-color: #eaffea;
+	border: 1px solid #c1c1c1;
+	color:#009902;
 }
 .buttonIA {
 	font-size: 12px;
