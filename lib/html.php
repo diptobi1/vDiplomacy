@@ -432,9 +432,9 @@ class libHTML
 		// End alternate CSS file patch
 
 		if (isset($User) && ($User->cssStyle == 'webDip'))
-			$cssColors = '';
+			$cssColors = 'webDip';
 		else
-			$cssColors = 'vDipColors.css';
+			$cssColors = 'vDip';
 			
 		/*
 		 * This line when included in the header caused certain translated hyphenated letters to come out as black diamonds with question marks.
@@ -452,11 +452,11 @@ class libHTML
 		<meta name="keywords" content="'.l_t('diplomacy,diplomacy game,online diplomacy,classic diplomacy,web diplomacy,diplomacy board game,play diplomacy,php diplomacy').'" />
 		<link rel="shortcut icon" href="'.STATICSRV.l_s('favicon.ico').'" />
 		<link rel="icon" href="'.STATICSRV.l_s('favicon.ico').'" />
-		<link rel="stylesheet" id="global-css"      href="'.CSSDIR.l_s('/global.css').     '?ver='.CSSVERSION.'" type="text/css" />
-		<link rel="stylesheet" id="game-panel-css"  href="'.CSSDIR.l_s('/gamepanel.css').  '?ver='.CSSVERSION.'" type="text/css" />
-		<link rel="stylesheet" id="home-css"        href="'.CSSDIR.l_s('/home.css').       '?ver='.CSSVERSION.'" type="text/css" />
-		<link rel="stylesheet" id="vdipColors-css"  href="'.CSSDIR.l_s('/'.$cssColors).    '?ver='.CSSVERSION.'" type="text/css" />
+		<link rel="stylesheet" id="global-css"      href="'.CSSDIR.l_s('/global.css').'?ver='.CSSVERSION.'" type="text/css" />
+		<link rel="stylesheet" id="game-panel-css"  href="'.CSSDIR.l_s('/gamepanel.css').'?ver='.CSSVERSION.'" type="text/css" />
+		<link rel="stylesheet" id="home-css"        href="'.CSSDIR.l_s('/home.css').'?ver='.CSSVERSION.'" type="text/css" />
 		<link rel="stylesheet" id="vdipButtons-css" href="'.CSSDIR.l_s('/vDipButtons.css').'?ver='.CSSVERSION.'" type="text/css" />
+		<link rel="stylesheet" id="vdipColors-css"  href="'.CSSDIR.l_s('/'.$cssColors.'Colors.css').'?ver='.CSSVERSION.'" type="text/css" />
 		<link rel="apple-touch-icon-precomposed" href="'.STATICSRV.'apple-touch-icon.png" />
 		'.$variantCSS.'
 		<script type="text/javascript" src="useroptions.php"'.'?ver='.JSVERSION.'></script>
