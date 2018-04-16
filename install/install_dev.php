@@ -32,7 +32,7 @@ $sql[]="CREATE TABLE `wD_AdminLog` (
 			`params` text NOT NULL,
 			PRIMARY KEY (`id`),
 			KEY `time` (`time`)
-			) ENGINE=MyISAMDEFAULT CHARSET=utf8;";
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -246,7 +246,7 @@ $sql[]="CREATE TABLE `wD_ForumMessages` (
 			KEY `latestReplySent` (`latestReplySent`),
 			KEY `profileLinks` (`type`,`fromUserID`,`timeSent`),
 			KEY `type` (`type`,`latestReplySent`)
-			) ENGINE=MyISAMDEFAULT CHARSET=utf8;";
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -261,7 +261,7 @@ $sql[]="CREATE TABLE `wD_GameMessages` (
 			PRIMARY KEY (`id`),
 			KEY `toMember` (`gameID`,`toCountryID`),
 			KEY `fromMember` (`gameID`,`fromCountryID`)
-			) ENGINE=MyISAMDEFAULT CHARSET=utf8;";
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -304,7 +304,7 @@ $sql[]="CREATE TABLE `wD_Games` (
 			KEY `phase_7` (`phase`,`phaseMinutes`),
 			KEY `anon` (`anon`),
 			KEY `pressType` (`pressType`)
-			) ENGINE=InnoDBDEFAULT CHARSET=utf8;";
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -328,7 +328,7 @@ $sql[]="CREATE TABLE `wD_Members` (
 			KEY `gid` (`gameID`),
 			KEY `playingCount` (`status`,`userID`),
 			KEY `uid` (`userID`,`status`)
-			) ENGINE=InnoDBDEFAULT CHARSET=utf8;";
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -371,7 +371,7 @@ $sql[]="CREATE TABLE `wD_Moves` (
 			KEY `unitID` (`unitID`),
 			KEY `orderID` (`orderID`),
 			KEY `gameID` (`gameID`)
-			) ENGINE=MyISAMDEFAULT CHARSET=utf8;";
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -420,7 +420,7 @@ $sql[]="CREATE TABLE `wD_Orders` (
 			PRIMARY KEY (`id`),
 			KEY `unitID` (`unitID`),
 			KEY `gameID` (`gameID`,`countryID`)
-			) ENGINE=InnoDBDEFAULT CHARSET=utf8;";
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -462,7 +462,7 @@ $sql[]="CREATE TABLE `wD_TerrStatus` (
 			UNIQUE KEY `gameID` (`gameID`,`terrID`),
 			KEY `retreatingUnitID` (`retreatingUnitID`),
 			KEY `occupyingUnitID` (`occupyingUnitID`)
-			) ENGINE=InnoDBDEFAULT CHARSET=utf8;";
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -491,7 +491,7 @@ $sql[]="CREATE TABLE `wD_Territories` (
 			`coast` enum('No','Parent','Child') NOT NULL,
 			`coastParentID` smallint(5) unsigned NOT NULL,
 			PRIMARY KEY (`mapID`,`id`)
-			) ENGINE=MyISAMDEFAULT CHARSET=utf8;";
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -514,7 +514,7 @@ $sql[]="CREATE TABLE `wD_Units` (
 			`gameID` mediumint(8) unsigned NOT NULL,
 			PRIMARY KEY (`id`),
 			KEY `gameID` (`gameID`)
-			) ENGINE=InnoDBDEFAULT CHARSET=utf8;";
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -545,7 +545,7 @@ $sql[]="CREATE TABLE `wD_Users` (
 			UNIQUE KEY `uname` (`username`),
 			UNIQUE KEY `email` (`email`),
 			KEY `points` (`points`)
-			) ENGINE=InnoDBDEFAULT CHARSET=utf8;";
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="INSERT INTO `wD_Users` VALUES (1,'Guest','guest@nomail.com',0,'','','Yes',1154508107,'English',1154508107,0,'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0','Guest,System','',0.142857,0.142857,0.142857,0.142857,0.142857,0.142857,0.142857,'Yes'),(2,'GameMaster','gamemaster@nomail.com',140,'','','Yes',1154508107,'English',1154508107,0,'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0','System','',0.142857,0.142857,0.142857,0.142857,0.142857,0.142857,0.142857,'No'),(3,'Civil Disorder Germany','civil1@nomail.com',50,'','','Yes',1154508107,'English',1154508107,0,'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0','System','',0.122,0.244,0.012,0.01,0.122,0.244,0.244,'No'),(4,'Civil Disorder Italy','civil2@nomail.com',0,'','','Yes',1154508107,'English',1154508107,0,'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0','System','',0.196,0.196,0.01,0.01,0.196,0.196,0.196,'No');";
 
@@ -631,7 +631,7 @@ $sql[]="CREATE TABLE `wD_ModForumMessages` (
 			KEY `latestReplySent` (`latestReplySent`),
 			KEY `profileLinks` (`type`,`fromUserID`,`timeSent`),
 			KEY `type` (`type`,`latestReplySent`)
-			) ENGINE=MyISAMDEFAULT CHARSET=utf8;";
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 
 // VDip: 4
 $sql[]="ALTER TABLE `wD_Users` ADD `gamesLeft` int(11) NOT NULL default '0';";
@@ -932,7 +932,7 @@ $sql[]="ALTER TABLE `wD_Backup_Members` ADD `ccMatch` tinyint(3) unsigned NOT NU
 $sql[]="ALTER TABLE `wD_Backup_Members` ADD `ipMatch` tinyint(3) unsigned NOT NULL;";
 
 // Webdip 1.36
-$sql[]="ALTER TABLE `wD_Users` ADD COLUMN cdCount` mediumint(8) unsigned NOT NULL DEFAULT '0',
+$sql[]="ALTER TABLE `wD_Users` ADD COLUMN `cdCount` mediumint(8) unsigned NOT NULL DEFAULT '0',
 	ADD COLUMN `nmrCount` mediumint(8) unsigned NOT NULL DEFAULT '0',
 	ADD COLUMN `cdTakenCount` mediumint(8) unsigned NOT NULL DEFAULT '0',
 	ADD COLUMN `phaseCount` int(10) unsigned NOT NULL DEFAULT '0',
@@ -954,7 +954,7 @@ $sql[]="ALTER TABLE `wD_NMRs` ADD KEY `gameID` (`gameID`,`userID`), ADD KEY `use
 $sql[]="ALTER TABLE wD_CivilDisorders ADD COLUMN forcedByMod BOOLEAN DEFAULT 0;";
 
 // VDip: 52
-ALTER TABLE wD_Users ADD vpoints mediumint(8) unsigned NOT NULL DEFAULT '1000';
+$sql[]="ALTER TABLE wD_Users ADD vpoints mediumint(8) unsigned NOT NULL DEFAULT '1000';";
 
 $sql[]="UPDATE wD_Users u 
 	SET u.vpoints = (SELECT r.rating FROM wD_Ratings r
@@ -965,7 +965,7 @@ $sql[]="UPDATE wD_Users u
 	WHERE r.ratingType='vDip' AND r.userID = u.id);";
 
 // VDip: 53
-// VDip 53 does just change the vDip Reliability in the new webdip-reliability format, no need for code here...
+$sql[]="ALTER TABLE wD_Users ADD integrityBalance mediumint(8) unsigned NOT NULL DEFAULT '0';";
 
 // VDip: 54
 $sql[]="ALTER TABLE `wD_Games` DROP COLUMN `minNoCD`;";
@@ -1044,7 +1044,7 @@ $sql[]="INSERT INTO `wD_Users` (`username`, `email`, `points`, `password`, `type
 
 // Execute all SQL-commands:
 ini_set('max_execution_time','120');
-foreach($sql as $command) mysql_query($command);
+foreach($sql as $command) mysqli_query($this->link, $command);
 
 //Login as Admin.
 $_REQUEST['loginuser'] = 'Admin';
