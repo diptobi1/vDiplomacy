@@ -201,7 +201,7 @@ if( $turn==-1 )
 	$sql = "SELECT t.id, t.name, t.type, t.countryID, 'No' as standoff
 			, t.supply
 			FROM wD_Territories t
-			WHERE (t.coast='No' OR t.coast='Parent') AND mapID=".$Variant->mapID;
+			WHERE (t.coast='No' OR t.coast='Parent') AND mapID=".$Variant->mapID." ORDER BY t.id";
 }
 else
 {
@@ -212,7 +212,7 @@ else
 			LEFT JOIN wD_TerrStatusArchive ts
 				ON ( ts.gameID = ".$Game->id." AND ts.turn = ".$turn." AND ts.terrID = t.id )
 			/* TerrStatus is non-coastal */
-			WHERE (t.coast='No' OR t.coast='Parent') AND t.mapID=".$Variant->mapID;
+			WHERE (t.coast='No' OR t.coast='Parent') AND t.mapID=".$Variant->mapID." ORDER BY t.id";
 }
 
 
