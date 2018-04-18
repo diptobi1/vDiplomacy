@@ -1,6 +1,8 @@
 /config.php
 /config_*.php
 /cache
+/logfiles
+/datc/maps/*.map*
 /css_lab
 /variants/*/cache/*
 !.htaccess
