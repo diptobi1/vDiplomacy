@@ -132,40 +132,50 @@ class Transform_drawMap extends CustomCountryIcons_drawMap
 class MultiLayerMap_drawMap extends Transform_drawMap
 {
 	
-	// A place to store the 2nd part of the map
-	protected $map2 = array();
+	// Store the 511 territories in seperated images so they do not fill the color palettes
+	protected $terrMap1 = array();
+	protected $terrMap2 = array();
 
-	// Load the 2nd part of the map.
+	// Load the territory images
 	protected function loadImages()
 	{
 		ini_set('memory_limit',"350M");
 		ini_set('max_execution_time', 300);
-		$this->map2 = $this->loadImage('variants/Divided_States/resources/usphp2.png');
 		parent::loadImages();
+		$this->terrMap1 = $this->loadImage('variants/Divided_States/resources/usphp1.png');
+		$this->terrMap2 = $this->loadImage('variants/Divided_States/resources/usphp2.png');
+		// use a blank image as base image for units and order arrows etc
+		$this->map['image'] = imagecreate($this->map['width'], $this->map['height']);
+		$this->setTransparancy($this->map);
 	}
 	
-	// The territories that get colored on the 2nd map have colorID=1 and are set to transparent
+	// The territories that get colored on the corresponding extra images
 	public function colorTerritory($terrID, $countryID)
 	{
 		list($x, $y) = $this->territoryPositions[$terrID];
 
-		if (imagecolorat($this->map['image'], $x, $y) != 0)
-			return parent::colorTerritory($terrID, $countryID);
-
-		$mapsave=$this->map['image'];
-		$this->map['image']=$this->map2['image'];
-		parent::colorTerritory($terrID, $countryID);
-		$this->map2['image']=$this->map['image'];
-		$this->map['image']=$mapsave;
+		if (imagecolorat($this->terrMap1['image'], $x, $y) != 0)
+			$this->colorTerritoryOnImg ($terrID, $countryID, $this->terrMap1['image']);
+		else
+			$this->colorTerritoryOnImg ($terrID, $countryID, $this->terrMap2['image']);
 	}
 	
-	// Combine the 2 maps.
+	protected function colorTerritoryOnImg($terrID, $countryID, &$img){
+		$mapsave=$this->map['image'];
+		$this->map['image']=$img;
+		parent::colorTerritory($terrID, $countryID);
+		$img=$this->map['image'];
+		$this->map['image']=$mapsave;
+	}
+
+	// Combine the all maps.
 	public function mergeMaps()
 	{
 		$w = $this->map['width'];
 		$h = $this->map['height'];
 		$im = imagecreate($this->map['width'], $this->map['height']);
-		imagecopyresampled($im, $this->map2['image'], 0, 0, 0, 0, $w, $h, $w, $h);
+		imagecopyresampled($im, $this->terrMap2['image'], 0, 0, 0, 0, $w, $h, $w, $h);
+		imagecopyresampled($im, $this->terrMap1['image'], 0, 0, 0, 0, $w, $h, $w, $h);
 		imagecopyresampled($im, $this->map['image'], 0, 0, 0, 0, $w, $h, $w, $h);
 		imagetruecolortopalette($im, true, 256);
 		$this->map['image']=$im;
@@ -218,57 +228,7 @@ class ZoomMap_drawMap extends MultiLayerMap_drawMap
 	
 }
 
-class ResetPaletteVariant_drawMap extends ZoomMap_drawMap
-{
-	public $countColor=0;
-	public $setColors=false;
-
-	protected function loadColors()
-	{
-		if ($this->setColors==true)
-			$this->colors = array(
-				'border'=>array(0,0,0),
-				'standoff'=>array(200,20,20)
-			);
-		parent::loadColors();
-	}
-	
-	protected function loadOrderArrows()
-	{
-		if ($this->setColors==true)
-			parent::loadOrderArrows();
-	}
-	
-	public function colorTerritory($terrID, $countryID)
-	{
-
-		$this->countColor++;
-
-		// After 220 territories reset the palette, so there is enough color for the units left.
-		if (($this->countColor == 620) or ($this->countColor == 508))
-		{
-			$w = $this->map['width'];
-			$h = $this->map['height'];
-			$im = imagecreate($this->map['width'], $this->map['height']);
-			imagecopyresampled($im, $this->map2['image'], 0, 0, 0, 0, $w, $h, $w, $h);
-			imagecopyresampled($im, $this->map['image'], 0, 0, 0, 0, $w, $h, $w, $h);
-			imagetruecolortopalette($im, true, 256);
-			$this->map['image']=$im;
-		}
-		
-		if ($this->countColor == 220)
-		{
-			$this->setColors=true;
-			$this->loadColors();
-			$this->loadOrderArrows();
-		}
-		
-		parent::colorTerritory($terrID, $countryID);
-	}
-	
-}
-
-class NeutralScBox_drawMap extends ResetPaletteVariant_drawMap
+class NeutralScBox_drawMap extends ZoomMap_drawMap
 {
 	/**
 	* An array containing the XY-positions of the "neutral-SC-box" and 
