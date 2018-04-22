@@ -323,33 +323,16 @@ class OrderInterface
 	
 		global $User, $Game;
 		
-		// For the DatC tests load the "old" javascript code. The new one does catch many wrong commands in the 
-		// Javasript and does not allow for these orders to be set.
-		if (defined('DATC'))
-		{
-			libHTML::$footerIncludes[] = l_j('datc/board/model.js');
-			libHTML::$footerIncludes[] = l_j('datc/board/load.js');
-			libHTML::$footerIncludes[] = l_j('datc/orders/order.js');
-			libHTML::$footerIncludes[] = l_j('datc/orders/phase'.$this->phase.'.js');
-			libHTML::$footerIncludes[] = l_s('../'.libVariant::$Variant->territoriesJSONFile());
-			foreach(array('loadTerritories','loadBoardTurnData','loadModel','loadBoard','loadOrdersModel','loadOrdersForm','loadOrdersPhase') as $jf)
-				libHTML::$footerScript[] = l_jf($jf).'();';
-			return;
-		}
-		
-		libHTML::$footerIncludes[] = l_j('board/model_vDipV2.js');
+		libHTML::$footerIncludes[] = l_j('board/model.js');
 		libHTML::$footerIncludes[] = l_j('board/load.js');
-		libHTML::$footerIncludes[] = l_j('orders/order_vDipV2.js');
-		if ($this->phase == 'Diplomacy')
-			libHTML::$footerIncludes[] = l_j('orders/phaseDiplomacy_vDipV2.js');
-		else
-			libHTML::$footerIncludes[] = l_j('orders/phase'.$this->phase.'.js');
+		libHTML::$footerIncludes[] = l_j('orders/order.js');
+		libHTML::$footerIncludes[] = l_j('orders/phase'.$this->phase.'.js');
 		libHTML::$footerIncludes[] = l_s('../'.libVariant::$Variant->territoriesJSONFile());
 
 		foreach(array('loadTerritories','loadBoardTurnData','loadModel','loadBoard','loadOrdersModel','loadOrdersForm','loadOrdersPhase') as $jf)
 			libHTML::$footerScript[] = l_jf($jf).'();';
 			
-		if($User->pointNClick=='Yes') {
+		if($User->pointNClick=='Yes' && !(defined('DATC'))) {
 			require_once(l_r('interactiveMap/php/interactiveMap.php'));
 			$IAmap = getIAmapObject();
 			$IAmap->jsLoadInteractiveMap();
