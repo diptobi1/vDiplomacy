@@ -373,22 +373,20 @@ if (isset(Config::$hiddenVariants) && in_array($Game->Variant->id,Config::$hidde
 print '<div class="content-bare content-board-header">';
 print '<div class="boardHeader">'.$Game->contentHeader().'</div>';
 print '</div>';
-print '<div class="content content-follow-on variant'.$Game->Variant->name.'">';
 
 // Now print the forum, map, orders, and summary
 if ( isset($forum) )
 {
+	print '<div class="content content-follow-on variant'.$Game->Variant->name.'">';
 	print $forum.'<div class="hr"></div>';
+	print '</div>';	
 }
 
-/*
- * Easy way to make the map independent from the page-layout. May be activated later.
- *
-print '</div>';
-print '<span>'.$map.'</span>';
+// Now print the map
+print $map;
+
+// Now print the orders, and summary
 print '<div style="padding: 0px !important;" class="content content-follow-on variant'.$Game->Variant->name.'"><div class="hr"></div>';
-*/
-print $map.'<div class="hr"></div>';
 
 if (isset($Orders))
 {
