@@ -24,6 +24,7 @@
 	1.0.1: improved unit-placement
 	1.0.2: fixed a problem with thy occupation-bar
 	1.2:   new unit-icons for the smallmap
+	1.2.1: small colorfix for the smallmap
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -37,7 +38,7 @@ class CantonVariant extends WDVariant {
 	public $author      ='Paul Webb';
 	public $adapter     ='Enriador / Oliver Auth';
 	public $version     ='1';
-	public $codeVersion ='1.2';
+	public $codeVersion ='1.2.1';
 	public $homepage    ='http://www.dipwiki.com/index.php?title=Canton';
 
 	public $countries=array('Britain', 'China', 'France', 'Holland', 'Japan', 'Russia', 'Turkey');
