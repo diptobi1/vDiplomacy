@@ -24,6 +24,7 @@
 
 	Changelog:
 	1.0:   initial version
+	1.2:   problem with the custom icons in the rulespress-mode fixed.
 
 */
 
@@ -40,7 +41,7 @@ class Europe1600Variant extends WDVariant {
 	public $author     = 'Tommy Larsson';
 	public $version    = '2.8';
 	public $homepage   ='http://www.variantbank.org/results/rules/1/1600.htm';
-	public $codeVersion= '1.1';
+	public $codeVersion= '1.2';
 
 	public $countries=array('Denmark','England','France','HabsburgEmpire','OttomanEmpire','Poland','Russia','Spain','Sweden');
 

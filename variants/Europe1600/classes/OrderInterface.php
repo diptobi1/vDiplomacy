@@ -26,9 +26,12 @@ class Europe1600Variant_OrderInterface extends OrderInterface
 	protected function jsLoadBoard() {
 		parent::jsLoadBoard();
 
-		libHTML::$footerIncludes[] = '../variants/Europe1600/resources/iconscorrect.js';
-		foreach(libHTML::$footerScript as $index=>$script)
-			libHTML::$footerScript[$index]=str_replace('loadOrdersModel();','loadOrdersModel();IconsCorrect();', $script);
+		if( $this->phase!='Builds' )
+		{
+			libHTML::$footerIncludes[] = '../variants/Europe1600/resources/iconscorrect.js';
+			foreach(libHTML::$footerScript as $index=>$script)
+				libHTML::$footerScript[$index]=str_replace('loadOrdersModel();','loadOrdersModel();IconsCorrect();', $script);
+		}
 	}
 
 }

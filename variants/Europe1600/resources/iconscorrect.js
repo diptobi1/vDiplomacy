@@ -9,7 +9,7 @@ function IconsCorrect() {
 				$('orderID'+this.id).addClassName(newIcon.toLowerCase());
 				this.currentUnitIcon=newIcon;
 		
-				this.unitIconArea.update('<img src="variants/DarkAges/resources/'+newIcon.toLowerCase()+'.png" alt="'+newIcon+'" />');
+				this.unitIconArea.update('<img src="variants/Europe1600/resources/'+newIcon.toLowerCase()+'.png" alt="'+newIcon+'" />');
 			};
 		});			
 }
