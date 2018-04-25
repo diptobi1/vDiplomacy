@@ -173,10 +173,14 @@ else
 			<form style="display: inline" action="stats.php" method="GET">
 				<input type="hidden" name="variantID" value="'.$Variant->id.'" />
 				<input type="submit" value="View statistics" /></form>			
-			<form style="display: inline" action="edit.php" method="GET">
+			<form style="display: inline" action="dev.php" method="GET">
+				<input type="hidden" name="variantID" value="'.$Variant->id.'" />
+				<input type="hidden" name="tab" value="Map" />
 				<input type="hidden" name="variantID" value="'.$Variant->id.'" />
 				<input type="submit" value="Map info" /></form>			
-			<form style="display: inline" action="files.php" method="GET">
+			<form style="display: inline" action="dev.php" method="GET">
+				<input type="hidden" name="variantID" value="'.$Variant->id.'" />
+				<input type="hidden" name="tab" value="Files" />
 				<input type="hidden" name="variantID" value="'.$Variant->id.'" />
 				<input type="submit" value="View/Download code" /></form>
 		</td>

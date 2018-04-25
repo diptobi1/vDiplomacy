@@ -741,10 +741,6 @@ class libHTML
 		$links['help.php']=array('name'=>'Help', 'inmenu'=>TRUE, 'title'=>'Get help and information; guides, intros, FAQs, stats, links');
 
 		$links['dev.php']=array('name'=>'DevTools', 'inmenu'=>FALSE);
-		if (is_object($User))
-			if ($User->type['Admin'] || isset(Config::$devs))
-				if ($User->type['Admin'] || array_key_exists($User->username, Config::$devs))
-					$links['dev.php']=array('name'=>'DevTools', 'inmenu'=>TRUE);
 		
 		// Items not displayed on the menu
 		$links['map.php']=array('name'=>'Map', 'inmenu'=>FALSE);
@@ -796,6 +792,13 @@ class libHTML
 			}
 		}
 // END HACK
+
+		// Make the devTools top-menue visible to developers
+		if (is_object($User))
+			if ($User->id == 5 || isset(Config::$devs))
+				if ($User->type['Admin'] || array_key_exists($User->username, Config::$devs))
+					$links['dev.php']=array('name'=>'DevTools', 'inmenu'=>TRUE);
+
 		return $links;
 	}
 
