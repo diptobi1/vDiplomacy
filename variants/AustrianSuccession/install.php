@@ -380,6 +380,7 @@ $bordersRawData=array(
 	array('Lithuania','Minsk','No','Yes'),
 	array('Lithuania','Livonia','Yes','Yes'),
 	array('Lithuania','St. Petersburg','No','Yes'),
+	array('Pinsk','Podolina','No','Yes'),
 	array('Pinsk','Minsk','No','Yes'),
 	array('Podolina','Minsk','No','Yes'),
 	array('Podolina','Kiev','No','Yes'),
