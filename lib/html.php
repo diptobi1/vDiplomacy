@@ -474,7 +474,7 @@ class libHTML
 		
 		<script type ="text/javascript" src="contrib/cookieWarning/warnCookies.js"></script>
 		<link href="contrib/cookieWarning/cookies.css" title="Cookies\' warning" rel="stylesheet" type="text/css" />
-
+		<div id="bg_image"></div>
 	</head>';
 	}
 	
