@@ -45,7 +45,8 @@ $tabs['Map']      =l_t("Edit your map");
 $tabs['Units']    =l_t("Manage your starting units");
 $tabs['Files']    =l_t("Magage your files");
 $tabs['Preview']  =l_t("Preview of the variant-page");
-$tabs['MapResize']=l_t("Resize your maps.");
+$tabs['MapResize']=l_t("Resize your maps");
+$tabs['Converter']=l_t("Convert Judgefiles");
 
 $tab = 'Base';
 $tabNames = array_keys($tabs);
@@ -113,6 +114,9 @@ switch($tab)
 		break;
 	case 'MapResize':
 		require_once(l_r('dev/mapresize.php'));
+		break;
+	case 'Converter':
+		require_once(l_r('dev/converter.php'));
 		break;
 	default:
 		require_once(l_r('dev/base.php'));
