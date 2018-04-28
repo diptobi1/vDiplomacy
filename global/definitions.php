@@ -24,8 +24,8 @@
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
-define("VERSION", 142);
-define("VDIPVERSION", 61);
+define("VERSION", 143);
+define("VDIPVERSION", 63);
 define("CSSVERSION", 12);
 define("JSVERSION", 15);
 
