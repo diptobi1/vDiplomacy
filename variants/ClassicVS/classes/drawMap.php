@@ -27,6 +27,9 @@ class CustomCountries_drawMap extends drawMap
 	// All territories got recolored. Don't change the territory-colors again and draw no countryFlags
 	public $preGameCheck = false;
 	
+	// Draw the unit on the pregame map?
+	public $show_unit = array(0);
+	
 	// New function to adjust the country-colors to the different countries now in play...
 	public function recolor($countryID)
 	{
@@ -43,7 +46,7 @@ class CustomCountries_drawMap extends drawMap
 	
 	public function colorTerritory($terrID, $countryID)
 	{
-		/* The only possible way we need to color this "fake" territory witch a country-color is because it's called 
+		/* The only possible way we need to color this "fake" territory with a country-color is because it's called 
 		*  with the data from the pre-game-map (there is no way this territory makes it to the terrstatus-table)
 		*
 		*  If this happens we need to recolor every territory with the right colors according to the involved countries
@@ -59,7 +62,9 @@ class CustomCountries_drawMap extends drawMap
 						AND type != 'Sea'
 						AND mapID=".$Variant->mapID;
 			$tabl = $DB->sql_tabl($sql);
-		
+
+			$this->show_unit[] = 1;
+			
 			// Color countries that do not get played as 'neutral'
 			while(list($terrID, $countryID) = $DB->tabl_row($tabl))
 			{
@@ -71,8 +76,10 @@ class CustomCountries_drawMap extends drawMap
 				if ((in_array('Turkey' ,$Variant->countries) == false) && $countryID == 6) $countryID = 0;
 				if ((in_array('Russia' ,$Variant->countries) == false) && $countryID == 7) $countryID = 0;
 				parent::colorTerritory($terrID, $countryID);
+				if ($countryID != 0)
+					$this->show_unit[] = $terrID;
 			}			
-			$this->preGameCheck = true;				
+			$this->preGameCheck = true;	
 		}
 		// If this is not the pregame-map change the colors according to the countries in play.
 		elseif (($this->preGameCheck == false) && ($this->territoryNames[$terrID] != 'PreGameCheck'))
@@ -87,6 +94,14 @@ class CustomCountries_drawMap extends drawMap
 		if ($this->preGameCheck == false)
 			parent::countryFlag($terrID, $this->recolor($countryID));
 	}
+	
+	// If we are drawing the pregame map only draw units for the selected countries.
+	public function addUnit($terrName, $unitType)
+	{
+		if (($this->preGameCheck == false) || (array_search($terrName, $this->show_unit) == true))
+			parent::addUnit($terrName, $unitType);
+	}
+	
 }
 
 class ClassicVSVariant_drawMap extends CustomCountries_drawMap
