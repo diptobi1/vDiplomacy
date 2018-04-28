@@ -23,11 +23,11 @@ defined('IN_CODE') or die('This script can not be run by itself.');
 class ManifestDestinyVariant_adjudicatorPreGame extends adjudicatorPreGame {
 
 	protected $countryUnits = array(
+		'Britain' => array('Toronto' => 'Army','Montreal' => 'Army','Ontario' => 'Army'),
+		'Mexico' => array('Guadalajara' => 'Army','Veracruz' => 'Army','Durango' => 'Army'),
 		'Texas' => array('Austin' => 'Army','Houston' => 'Fleet','Dallas' => 'Army'),
 		'Spain' => array('Havana' => 'Fleet','Santo Domingo' => 'Fleet','Mid-Pacific Ocean' => 'Fleet'),
 		'United States' => array('New York' => 'Army','Ohio' => 'Army','Virginia' => 'Army','Carolina' => 'Army'),
-		'Britain' => array('Toronto' => 'Army','Montreal' => 'Army','Quebec' => 'Army'),
-		'Mexico' => array('Guadalajara' => 'Army','Mexico City' => 'Army','Veracruz' => 'Army'),
 	);
 
 }
