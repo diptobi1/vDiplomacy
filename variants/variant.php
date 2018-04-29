@@ -250,7 +250,7 @@ abstract class WDVariant {
 
 		list($this->supplyCenterCount) = $DB->sql_row("SELECT COUNT(id) FROM wD_Territories WHERE mapID=".$this->mapID." AND supply='Yes'");
 
-		$this->supplyCenterTarget = round((18.0/34.0)*$this->supplyCenterCount);
+		$this->supplyCenterTarget = floor($this->supplyCenterCount / 2) + 1;
 
 		if( isset($this->codeVersion) && $this->codeVersion != null && $this->codeVersion > 0 )
 			$this->cacheVersion = $this->codeVersion;
