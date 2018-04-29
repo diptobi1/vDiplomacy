@@ -347,7 +347,7 @@ else
 					unitType, /* Unit */
 					success, dislodged /* Move */
 				FROM wD_MovesArchive
-				WHERE gameID = ".$Game->id." AND turn = ".$turn." ORDER BY type DESC";
+				WHERE gameID = ".$Game->id." AND NOT type = 'Wait' AND turn = ".$turn." ORDER BY type DESC";
 }
 
 /* Start with unit placement moves, and go back. This lets us know that the place we're
