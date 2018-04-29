@@ -22,6 +22,7 @@
 	Changelog:
 	1.0:   Initial version
 	1.0.1: Starting units adjusted
+	1.1:   IA-map added
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -35,7 +36,7 @@ class ManifestDestinyVariant extends WDVariant {
 	public $author      ='Morg (minor changes by Enriador)';
 	public $adapter     ='Enriador & Oliver Auth';
 	public $version     ='1.0';
-	public $codeVersion ='1.0.1';
+	public $codeVersion ='1.1';
 	public $homepage    ='https://playdiplomacy.com/forum/viewtopic.php?f=617&t=40302';
 
 	public $countries=array('Britain','United States','Texas','Mexico','Spain');
