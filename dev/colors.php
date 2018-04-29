@@ -143,12 +143,15 @@ if ($variantID != 0)
 				<input type="hidden" name="drawMap['.$id.']" value="'.$colorCode['drawMap'][($id)].'">'.
 				(($id > 0) ? '<input type="hidden" name="occupationBar['.$id.']" value="'.$colorCode['occupationBar'][($id)].'">' : '').'
 				<td>'.InputForm('font['.$id.']', $colorCode['font'][($id)]).'</td>
-				<td style="width: 100%; font-weight:normal;"><b>'.$name.':</b> This is how the country-text looks in the chat.</td>
+				<td style="width: 100%; font-weight:normal;">This is how the country-text looks in the chat.</td>
 			 </tr>
 			';
-	print '</table>
-		<input type="submit" class="form-submit" name="submitColors" value="Submit color changes" /></form>
-		<div class="hr"></div>';
+	print '</table>';
+	
+	if ($edit == true)
+		print '<input type="submit" class="form-submit" name="submitColors" value="Submit color changes" />';
+	
+	print '</form><div class="hr"></div>';
 	
 	print '<form style="display: inline" method="get" name="countries">
 				<input type="hidden" name="tab" value="Colors">
@@ -177,8 +180,11 @@ if ($variantID != 0)
 			 </table>
 			<div class="hr"></div>';
 	}
-	print '<input type="submit" class="form-submit" name="submitColors" value="Submit color changes" /></form>';
 	
+	if ($edit == true)
+		print '<input type="submit" class="form-submit" name="submitColors" value="Submit color changes" />';
+	
+	print '</form>';
 }
 print '</div>';
 libHTML::footer();
