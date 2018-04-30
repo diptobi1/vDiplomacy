@@ -32,7 +32,7 @@ class CustomIcons_drawmap extends drawmap
 	protected function loadImages()
 	{
 		global $Variant;
-		
+
 		$this->army_c[0]  = $this->loadImage('contrib/'.($this->smallmap ? 'small' : '' ).'army.png');
 		$this->fleet_c[0] = $this->loadImage('contrib/'.($this->smallmap ? 'small' : '' ).'fleet.png');
 		for ($i=1; $i<=count($Variant->countries); $i++) {
@@ -63,7 +63,7 @@ class CustomIcons_drawmap extends drawmap
 		// Spain has a starting unit in MidPacificOcean.
 		if ($terrName == 84 && $unitType=='Fleet' && (!(isset($this->unit_c[$terrName]))))
 			$this->unit_c[$terrName] = 5;
-		
+
 		$this->army  = $this->army_c[$this->unit_c[$terrName]];
 		$this->fleet = $this->fleet_c[$this->unit_c[$terrName]];
 		parent::addUnit($terrName, $unitType);
@@ -76,7 +76,7 @@ class ManifestDestinyVariant_drawMap extends CustomIcons_drawmap
 
 	protected $countryColors = array(
 		0 => array(226, 198, 158), // Neutral
-		1 => array(255,   0,   0), // Britain
+		1 => array(255,  38,  38), // Britain
 		2 => array(  0,  38, 255), // United States
 		3 => array(  0, 255, 255), // Texas
 		4 => array(  0, 255,  33), // Mexico
