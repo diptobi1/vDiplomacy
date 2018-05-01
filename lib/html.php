@@ -740,8 +740,6 @@ class libHTML
 		}
 		$links['help.php']=array('name'=>'Help', 'inmenu'=>TRUE, 'title'=>'Get help and information; guides, intros, FAQs, stats, links');
 
-		$links['dev.php']=array('name'=>'DevTools', 'inmenu'=>FALSE);
-		
 		// Items not displayed on the menu
 		$links['map.php']=array('name'=>'Map', 'inmenu'=>FALSE);
 		$links['faq.php']=array('name'=>'FAQ', 'inmenu'=>FALSE);
@@ -758,6 +756,8 @@ class libHTML
 		$links['developers.php']=array('name'=>'Developer info', 'inmenu'=>FALSE);
 		$links['datc.php']=array('name'=>'DATC', 'inmenu'=>FALSE);
 		$links['variants.php']=array('name'=>'Variants', 'inmenu'=>FALSE);
+		$links['press.php']=array('name'=>'Press', 'inmenu'=>FALSE);
+		$links['dev.php']=array('name'=>'DevTools', 'inmenu'=>FALSE);
 
 		if ( is_object($User) )
 		{

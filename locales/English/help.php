@@ -56,6 +56,9 @@ print libHTML::pageTitle('webDiplomacy Help and Links','Links to pages with more
 <li><a href="points.php">webDiplomacy points</a></li>
 <li class="formlistdesc">What points are for, how to win them, and how to get into the hall of fame.</li>
 
+<li><a href="press.php">Press type information</a></li>
+<li class="formlistdesc">Learn more about the several different communication systems available.</li>
+
 <li><a href="variants.php">Variant information</a></li>
 <li class="formlistdesc">A list of the variants available on this server, credits, and information on variant-specific rules.</li>
 

@@ -307,7 +307,7 @@ else
 	</li>
 	<li class="formlistdesc">
 		Disable some types of messaging; allow only global in-game messages, or allow no in-game messages.
-
+		(<a href="press.php" class="light">read more</a>)
 		<br/><br/> "Per rulebook" means no discussion during builds and retreats as per the original Diplomacy rulebook. In this mode, saved retreats and builds are automatically readied for the next turn.
 		<br /><br /><strong>Default:</strong> Allow all
 	</li>
