@@ -30,7 +30,7 @@ class BuildAnywhere_OrderInterface extends OrderInterface {
 
 		if( $this->phase=='Builds' )
 		{
-			libHTML::$footerIncludes[] = '../variants/'.$Variant->name.'/resources/buildanywhere.js';
+			libHTML::$footerIncludes[] = '../variants/'.$Variant->name.'/resources/supplycenterscorrect.js';
 			foreach(libHTML::$footerScript as $index=>$script)
 				libHTML::$footerScript[$index]=str_replace('loadBoard();','loadBoard();SupplyCentersCorrect();', $script);
 		}
@@ -38,7 +38,7 @@ class BuildAnywhere_OrderInterface extends OrderInterface {
 }
 
 // Custom Unit-Icons in javascript-code
-class CustomIcons_OrderInterface extends OrderInterface
+class CustomIcons_OrderInterface extends BuildAnywhere_OrderInterface
 {
 	protected function jsLoadBoard() {
 		

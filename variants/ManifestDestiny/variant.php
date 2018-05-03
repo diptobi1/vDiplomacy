@@ -25,6 +25,7 @@
 	1.1:   IA-map added
 	1.1.1: new smallmapNames
 	1.1.2: new icons for Britain
+	1.2:   build anywhere did not work
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -38,7 +39,7 @@ class ManifestDestinyVariant extends WDVariant {
 	public $author      ='Morg (minor changes by Enriador)';
 	public $adapter     ='Enriador & Oliver Auth';
 	public $version     ='1.0';
-	public $codeVersion ='1.1.2';
+	public $codeVersion ='1.2';
 	public $homepage    ='https://playdiplomacy.com/forum/viewtopic.php?f=617&t=40302';
 
 	public $countries=array('Britain','United States','Texas','Mexico','Spain');
@@ -50,7 +51,7 @@ class ManifestDestinyVariant extends WDVariant {
 		$this->variantClasses['adjudicatorPreGame'] = $this->name;
 		$this->variantClasses['OrderInterface']     = $this->name;
 
-		//buildanywhere
+		//Build anywhere
 		$this->variantClasses['OrderInterface']     = $this->name;
 		$this->variantClasses['userOrderBuilds']    = $this->name;
 	}
