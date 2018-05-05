@@ -33,6 +33,17 @@ if (isset(Config::$devs) && $variantID != 0)
 	 if (in_array(Config::$variants[$variantID], Config::$devs[$User->username]))
 		$edit = true;
 
+// Show the dev-errorlog if requested.	
+if ( isset($_REQUEST['viewErrorLog']) && $edit == true)
+{
+	$log=(int)$_REQUEST['viewErrorLog'];
+	if( !($data=file_get_contents(Config::errorlogDirectory().'/dev/'.$log.'.txt')) )
+		trigger_error(l_t("Couldn't open file %s.txt",$log));
+	header('Content-type:text/plain');
+	print $data;
+	die();
+}
+
 libHTML::starthtml();
 
 print '<div class="content">';
@@ -47,6 +58,7 @@ $tabs['Files']    =l_t("Magage your files");
 $tabs['Preview']  =l_t("Preview of the variant-page");
 $tabs['MapResize']=l_t("Resize your maps");
 $tabs['Converter']=l_t("Convert Judgefiles");
+$tabs['Errors']   =l_t("Show the errorlog for dev-tools.");
 
 $tab = 'Base';
 $tabNames = array_keys($tabs);
@@ -108,6 +120,9 @@ switch($tab)
 		break;
 	case 'Files':
 		require_once(l_r('dev/files.php'));
+		break;
+	case 'Errors':
+		require_once(l_r('dev/errorlog.php'));
 		break;
 	case 'Preview':
 		require_once(l_r('dev/preview.php'));
