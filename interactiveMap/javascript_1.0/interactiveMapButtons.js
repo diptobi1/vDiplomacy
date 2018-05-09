@@ -599,8 +599,12 @@ interactiveMap.interface.options.largeMap = function() {
 
 interactiveMap.interface.options.updateScrollbars = function(){
     //only adjust width (add srollbars), if really needed because of size of map
-	var newWidth = ((interactiveMap.interface.mobileVersion)?$("mapstore").getWidth():new Number(interactiveMap.visibleMap.oldMap.width)) + 10;	
+	var newWidth = ((interactiveMap.interface.mobileVersion)?$("mapstore").getWidth():new Number(interactiveMap.visibleMap.oldMap.width));	
 	
+	/*
+	 * In case the scrollbars are activated and the available width of the map 
+	 * field (newWidth) is smaller than the map, add srollbars to the map.
+	 */
 	if(interactiveMap.options.scrollbars && newWidth < interactiveMap.hiddenMap.canvasElement.width){		
 		interactiveMap.visibleMap.element.setStyle({
 			width: newWidth + 'px',
@@ -608,17 +612,19 @@ interactiveMap.interface.options.updateScrollbars = function(){
 			overflow: 'auto',
 			left: '0px'
 		});
+	/*
+	 * Else if scrollbars are deactivated but the element still has such (because not
+	 * updated yet), remove the scrollbars and print the map with full width (which
+	 * might extend the normal size of the webpage).
+	 */
     }else if(interactiveMap.visibleMap.element.style.overflow !== 'visible'){
         interactiveMap.visibleMap.element.scrollTop = 0;
         interactiveMap.visibleMap.element.scrollLeft = 0;
-        var left = ((interactiveMap.visibleMap.element.up().getWidth()-interactiveMap.hiddenMap.canvasElement.width)/2-(interactiveMap.visibleMap.element.up().getWidth()-interactiveMap.visibleMap.oldMap.width)/2);
-        if(-left > interactiveMap.visibleMap.element.cumulativeOffset().toArray()[0])
-            left = -interactiveMap.visibleMap.element.cumulativeOffset().toArray()[0];
         interactiveMap.visibleMap.element.setStyle({
             width: interactiveMap.hiddenMap.canvasElement.width + 'px',
             height: interactiveMap.hiddenMap.canvasElement.height + 'px',
             overflow: 'visible',
-            left: left+'px'
+            left: '0px'
         });
     }
 };

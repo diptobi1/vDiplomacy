@@ -218,15 +218,34 @@ class IAmap extends drawMap {
     }
     
     protected function deleteMapData(){
-        if(file_exists('variants/' . $this->Variant->name . '/cache/IA_mapData.map'))
-            unlink('variants/' . $this->Variant->name . '/cache/IA_mapData.map');
+		foreach (glob('variants/' . $this->Variant->name . '/cache/IA_mapData*.map') as $jsfilename)
+			unlink($jsfilename);
     }
 
+	/*
+	 * Generate a path to the cashed map data. If the variant has a code version
+	 * this verion number will be used in the naming scheme so an outdated cashed
+	 * file can be identified.
+	 */
+	public function generateMapDataPath(){
+		$fileName = 'variants/' . $this->Variant->name . '/cache/IA_mapData';
+		
+		if( isset($this->Variant->codeVersion)
+			&& $this->Variant->codeVersion !=null && $this->Variant->codeVersion != 0 )
+			{
+				$fileName .= '_'.$this->Variant->codeVersion;
+			}
+		$fileName .='.map';
+		
+		return $fileName;
+	}
+	
     public function createMapData($uncache = false) {
-        if($uncache)
-            $this->deleteMapData();
-        
-        if (!file_exists('variants/' . $this->Variant->name . '/cache/IA_mapData.map')) {
+		$fileName = $this->generateMapDataPath();
+		
+        if ($uncache || !file_exists($fileName)) {
+			$this->deleteMapData(); // delete any map data files that are not needed any longer (a new one will be just created)
+			
             ini_set("memory_limit", "1024M");
             set_time_limit(30);
 
@@ -263,12 +282,12 @@ class IAmap extends drawMap {
             }
             //var_dump($terrColorPos);
 
-            file_put_contents('variants/' . $this->Variant->name . '/cache/IA_mapData.map', json_encode($terrColorPos));
+            file_put_contents($fileName, json_encode($terrColorPos));
         }
     }
 
     public function serveMapData() {
-        echo file_get_contents('variants/' . $this->Variant->name . '/cache/IA_mapData.map');
+        echo file_get_contents($this->generateMapDataPath());
     }
     
     /*
