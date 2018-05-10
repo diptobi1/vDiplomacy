@@ -58,7 +58,7 @@ $tabs['Files']    =l_t("Magage your files");
 $tabs['Preview']  =l_t("Preview of the variant-page");
 $tabs['MapResize']=l_t("Resize your maps");
 $tabs['Converter']=l_t("Convert Judgefiles");
-$tabs['Errors']   =l_t("Show the errorlog for dev-tools.");
+$tabs['Admin']    =l_t("Show the admin tools for development");
 
 $tab = 'Base';
 $tabNames = array_keys($tabs);
@@ -121,8 +121,8 @@ switch($tab)
 	case 'Files':
 		require_once(l_r('dev/files.php'));
 		break;
-	case 'Errors':
-		require_once(l_r('dev/errorlog.php'));
+	case 'Admin':
+		require_once(l_r('dev/admin.php'));
 		break;
 	case 'Preview':
 		require_once(l_r('dev/preview.php'));
