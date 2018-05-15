@@ -120,6 +120,9 @@ foreach($territoryRawData as $territoryRawRow)
 unset($territoryRawData);
 
 $bordersRawData=array(
+	array('Iceland','Norwegian Sea','Yes','No'),
+	array('Iceland','Arctic Ocean','Yes','No'),
+	array('Iceland','North Atlantic Ocean','Yes','No'),
 	array('Edinburgh','Liverpool','Yes','Yes'),
 	array('Edinburgh','Ireland','Yes','Yes'),
 	array('Edinburgh','Yorkshire','Yes','Yes'),
@@ -138,9 +141,6 @@ $bordersRawData=array(
 	array('London','Yorkshire','Yes','Yes'),
 	array('London','English Channel','Yes','No'),
 	array('London','North Sea','Yes','No'),
-	array('Iceland','Norwegian Sea','Yes','No'),
-	array('Iceland','Arctic Ocean','Yes','No'),
-	array('Iceland','North Atlantic Ocean','Yes','No'),
 	array('Christiania','Sweden','Yes','Yes'),
 	array('Christiania','Finnmark','Yes','Yes'),
 	array('Christiania','Norwegian Sea','Yes','No'),
@@ -191,6 +191,7 @@ $bordersRawData=array(
 	array('Konigsberg','Baltic Sea','Yes','No'),
 	array('Yorkshire','North Sea','Yes','No'),
 	array('Poland','Breslau','No','Yes'),
+	array('Poland','Bohemia','No','Yes'),
 	array('Poland','Galicia','No','Yes'),
 	array('Breslau','Berlin','No','Yes'),
 	array('Breslau','Saxony','No','Yes'),
