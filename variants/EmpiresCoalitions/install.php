@@ -215,7 +215,7 @@ $bordersRawData=array(
 	array('Copenhagen','Skagerrak','Yes','No'),
 	array('Copenhagen','Baltic Sea','Yes','No'),
 	array('Hanover','Brandenburg','No','Yes'),
-	array('Hanover','Westphalia','No','Yes'),
+	array('Hanover','Westphalia','Yes','Yes'),
 	array('Hanover','North Sea','Yes','No'),
 	array('Brandenburg','Saxony','No','Yes'),
 	array('Brandenburg','Westphalia','No','Yes'),
