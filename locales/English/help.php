@@ -38,6 +38,9 @@ print libHTML::pageTitle('webDiplomacy Help and Links','Links to pages with more
 <li><a href="faq.php">FAQ</a></li>
 <li class="formlistdesc">The webDiplomacy FAQ (Frequently asked questions) and information on donating.</li>
 
+<li><a href="profile.php">Find a user</a></li>
+<li class="formlistdesc">Search for a user account registered on this server if you know their user ID number, username, or e-mail address.</li>
+
 <li><a href="features.php">VDiplomacy features</a></li>
 <li class="formlistdesc">Features you should be aware of (not available at webdiplomacy.net).</li>
 
