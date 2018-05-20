@@ -646,6 +646,7 @@ function display_interface() {
     }
 
     // Display Map:
+	print '</div>';
     if (($variantID != 0) && $edit != 'data') {
         $zoomstr = '';
         if ($mapmode == 'zoom' && ($terrID > 0)) {
