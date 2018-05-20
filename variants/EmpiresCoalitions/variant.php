@@ -21,6 +21,7 @@
 
 	Changelog:
 	1.0: initial version
+	1.1: recolored some territories on the maps
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -34,7 +35,7 @@ class EmpiresCoalitionsVariant extends WDVariant {
 	public $author      ='VaeVictis (unit icons by Firehawk)';
 	public $adapter     ='Enriador & Oliver Auth';
 	public $version     ='1';
-	public $codeVersion ='1.0.2';
+	public $codeVersion ='1.1';
 	public $homepage    ='https://www.playdiplomacy.com/forum/viewtopic.php?f=253&t=41242';
 
 	public $countries=array('Austria','Britain','Denmark','France','Ottoman Empire','Prussia','Russia','Sicily','Spain');
