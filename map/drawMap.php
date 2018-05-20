@@ -29,14 +29,14 @@ defined('IN_CODE') or die('This script can not be run by itself.');
  */
 abstract class drawMap
 {
-	private function addBorder(array $image) {
+	public function addBorder(array $image) {
 		$black=$this->color(array(0,0,0),$image['image']);
-		self::imagelinethick($image['image'],0,0,$image['width'],0,$black,2);
-		self::imagelinethick($image['image'],$image['width'],0,$image['width'],$image['height'],$black,2);
-		self::imagelinethick($image['image'],$image['width'],$image['height'],0,$image['height'],$black,2);
-		self::imagelinethick($image['image'],0,$image['height'],0,0,$black,2);
+		self::imagelinethick($image['image'],0,0,$image['width'],0,$black,1);
+		self::imagelinethick($image['image'],$image['width']-1,0,$image['width']-1,$image['height'],$black,1);
+		self::imagelinethick($image['image'],$image['width'],$image['height']-1,0,$image['height']-1,$black,1);
+		self::imagelinethick($image['image'],0,$image['height'],0,0,$black,1);
 	}
-
+	
 	public function saveThumbnail($location) {
 		$thumbnail = array('width'=>300,'height'=>300);
 		$thumbnailRatio = ($thumbnail['width']/$thumbnail['height']);
@@ -898,11 +898,11 @@ abstract class drawMap
 	public function write($filename)
 	{
 		imagepng($this->map['image'], $filename);
-    	}
+    }
 
-    	/**
-     	* Write the finished image to the browser. Used to prevent preview from being cached.
-     	*/
+	/**
+	* Write the finished image to the browser. Used to prevent preview from being cached.
+	*/
 	public function writeToBrowser() 
 	{
 		header('Content-Type: image/png');
@@ -1237,6 +1237,7 @@ abstract class drawMap
 		{
 			$this->mapNames = $this->loadImage($this->mapNames);
 			$this->setTransparancy($this->mapNames);
+			$this->addBorder($this->mapNames);
 			$this->putImage($this->mapNames, 0, 0);
 			imagedestroy($this->mapNames['image']);
 		}
@@ -1282,6 +1283,14 @@ abstract class drawMap
 			$this->drawText($text, $x, $y, false, false, true);
 		}
 	}
+
+	/**
+	 * Add a black border around the picture. I really don't like maps without borders... :-)
+	 */
+ //	public function addBorder()
+//	{
+//		self::imagelinethick($this->map['image'], 0, 0, 20, 20, array(0,0,0), 1);
+//	}
 	
 	public function colorEnhance($type)
 	{
