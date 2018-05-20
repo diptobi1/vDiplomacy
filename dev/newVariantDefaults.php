@@ -49,29 +49,16 @@ class '.$newName.'Variant_drawMap extends drawMap {
 	protected function resources() {
 		
 		global $Variant;
-		
-		if( $this->smallmap )
-		{
-			return array(
-				\'map\'     =>\'variants/\'.$Variant->name.\'/resources/smallmap.png\',
-				\'army\'    =>\'contrib/smallarmy.png\',
-				\'fleet\'   =>\'contrib/smallfleet.png\',
-				\'names\'   =>\'variants/\'.$Variant->name.\'/resources/smallmapNames.png\',
-				\'standoff\'=>\'images/icons/cross.png\'
-			);
-		}
-		else
-		{
-			return array(
-				\'map\'     =>\'variants/\'.$Variant->name.\'/resources/map.png\',
-				\'army\'    =>\'contrib/army.png\',
-				\'fleet\'   =>\'contrib/fleet.png\',
-				\'names\'   =>\'variants/\'.$Variant->name.\'/resources/mapNames.png\',
-				\'standoff\'=>\'images/icons/cross.png\'
-			);
-		}
+		$prefix = ( ($this->smallmap) ? \'small\' : \'\');
+	
+		return array(
+			\'map\'     =>\'variants/\'.$Variant->name.\'/resources/\'.$prefix.\'map.png\',
+			\'names\'   =>\'variants/\'.$Variant->name.\'/resources/\'.$prefix.\'mapNames.png\',
+			\'army\'    =>\'contrib/\'.$prefix.\'army.png\',
+			\'fleet\'   =>\'contrib/\'.$prefix.\'fleet.png\',
+			\'standoff\'=>\'images/icons/cross.png\'
+		);
 	}
-
 }
 ?>';
 
