@@ -398,16 +398,23 @@ class Config
 	 */
 	public static $top_menue=array(
 		'admin'=> array(
-			'edit.php'     => array('name'=>'Edit map', 'inmenu'=>TRUE,  'title'=>"Edit your maps"),
-			'help.php'     => array('name'=>'Help',     'inmenu'=>FALSE, 'title'=>"Help")
+			'help.php'     => array('name'=>'Help',        'inmenu'=>FALSE,'title'=>"Help"),
+			'startgame.php'=> array('name'=>'Fill',        'inmenu'=>TRUE, 'title'=>"Fill"),
 		),
 		'user' => array(
-			'variants.php' => array('name'=>'Variants', 'inmenu'=>TRUE,  'title'=>"Variants")
+			'promo.php'      => array('name'=>'Promo',     'inmenu'=>FALSE,'title'=>"Promo"),
+			'variants.php'   => array('name'=>'Variants',  'inmenu'=>TRUE, 'title'=>"Variants"),
 		),
 		'all'  => array(
-			'impresum.php' => array('name'=>'Impresum', 'inmenu'=>FALSE, 'title'=>"Impresum"),
-			'download.php' => array('name'=>'Download', 'inmenu'=>FALSE, 'title'=>"Download"),
-			'stats.php'    => array('name'=>'Stats',    'inmenu'=>TRUE,  'title'=>"Statistics")
+			'hof.php'	 	 => array('name'=>'HoF',	   'inmenu'=>FALSE,'title'=>"Hall of Fame"),
+			'modforum.php'   => array('name'=>'Mods',      'inmenu'=>FALSE,'title'=>"Mods"),
+			'impresum.php'   => array('name'=>'Impresum',  'inmenu'=>FALSE,'title'=>"Impresum"),
+			'files.php'      => array('name'=>'Files',     'inmenu'=>FALSE,'title'=>"Files"),
+			'howto.php'      => array('name'=>'HowTo',     'inmenu'=>FALSE,'title'=>"HowTo"),
+			'press.php'      => array('name'=>'Press',     'inmenu'=>FALSE,'title'=>"Press"),
+			'stats.php'      => array('name'=>'Stats',     'inmenu'=>FALSE,'title'=>"Statistics"),
+			'features.php'   => array('name'=>'Features',  'inmenu'=>FALSE,'title'=>"Features"),
+			'reliability.php'=>array('name'=>'Reliability','inmenu'=>FALSE,'title'=>"Reliability"),
 		)
 	);
 	
