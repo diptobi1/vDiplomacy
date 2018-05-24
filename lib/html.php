@@ -758,6 +758,7 @@ class libHTML
 		$links['variants.php']=array('name'=>'Variants', 'inmenu'=>FALSE);
 		$links['press.php']=array('name'=>'Press', 'inmenu'=>FALSE);
 		$links['dev.php']=array('name'=>'DevTools', 'inmenu'=>FALSE);
+		$links['gdpr.php']=array('name'=>'GDPR/Datenschutz', 'inmenu'=>FALSE);
 
 		if ( is_object($User) )
 		{
@@ -1020,7 +1021,9 @@ class libHTML
 			based on webDiplomacy version <strong>%s</strong>-vDip.<strong>%s</strong>',number_format(VERSION/100,2),VDIPVERSION.'<br />
 			<a href="http://github.com/Sleepcap/vDiplomacy" class="light">GitHub Project</a> | 
 			<a href="http://github.com/Sleepcap/vDiplomacy/issues" class="light">Bug Reports</a> | 
-			<a href="modforum.php" class="light">Contact Moderator</a>');
+			<a href="modforum.php" class="light">Contact Moderator</a>
+			<br><br>
+			<a href="http:impresum.php">Impresum</a> - <a href="gdpr.php">GDPR/Datenschutz</a><br />');
 	}
 
 	/*

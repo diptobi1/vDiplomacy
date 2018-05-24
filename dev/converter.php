@@ -22,7 +22,7 @@ defined('IN_CODE') or die('This script can not be run by itself.');
 
 print '<b>Variant: '.$selectVariantForm.'</b>';
 
-$edit = false;
+//$edit = false;
 if ($edit != true)
 {
 	print "<b> - Only sysadmins and devs can use the Converter tool.</b></div>";
@@ -30,276 +30,402 @@ if ($edit != true)
 	exit;
 }
 
-if (count($_FILES) > 0) {
+
+if (isset($_REQUEST['SubmitRP'])) {
 
 	$coasts = array("n"=>"North", "s"=>"South", "e"=>"East", "w"=>"West");
 
-	$countryfile = file_get_contents($_FILES['countryfile']['tmp_name']);
-	$mapfile     = file_get_contents($_FILES['mapfile']['tmp_name']);
-	$gamfile     = file_get_contents($_FILES['gamfile']['tmp_name']);
-	$rgnfile     = file_get_contents($_FILES['rgnfile']['tmp_name']);
-	$bmpfile     = file_get_contents($_FILES['bmpfile']['tmp_name']);
-	$smallfact   = $_REQUEST['smallmapfactor'];
-	$largefact   = $_REQUEST['mapfactor'];
-	
-	$powers=array();
+	$cntfile = ($_FILES['cntfile']['name'] != "" ? file_get_contents($_FILES['cntfile']['tmp_name']) : '');
+	$mapfile = ($_FILES['mapfile']['name'] != "" ? file_get_contents($_FILES['mapfile']['tmp_name']) : '');
+	$gamfile = ($_FILES['gamfile']['name'] != "" ? file_get_contents($_FILES['gamfile']['tmp_name']) : '');
+	$rgnfile = ($_FILES['rgnfile']['name'] != "" ? file_get_contents($_FILES['rgnfile']['tmp_name']) : '');
+	$bmpfile = ($_FILES['bmpfile']['name'] != "" ? file_get_contents($_FILES['bmpfile']['tmp_name']) : '');
+	$smallfact = (isset($_REQUEST['smallmapfactor']) ? $_REQUEST['smallmapfactor'] : '1');
+	$largefact = (isset($_REQUEST['mapfactor'])      ? $_REQUEST['mapfactor']      : '1');
 
+	print '<div class="hr"></div>';
+	
 	// Get powers
-	$countryfile = preg_replace("/#.+/", "", $countryfile); // Remove comments;
-	$lines = explode("\n", $countryfile);
-	foreach ($lines as $key => $value)
-	foreach ($lines as $key => $value)
+	if ($cntfile != '')
 	{
-		$line = explode(" ", $value);
-		if (count($line) > 3)
-			$powers[$line[2]]=$line[0];
-	}
+		$powers=array();
+		$cntfile = preg_replace("/#.+/", "", $cntfile); // Remove comments;
+		$lines = explode("\n", $cntfile);
+		foreach ($lines as $cntline)
+		{
+			$line = explode(" ", $cntline);
+			if (count($line) > 3)
+				$powers[$line[2]]=$line[0];
+		}
 
-	foreach ($powers as $id => $name)
-		print $name.": ".$id."<br>";
-	echo "<br><hr><br>";
-	print 'public $countries=array(';
-	foreach ($powers as $id => $name)
-		print "'".$name."',";
-	echo ")<br>";
-		
+		print '<b>cnt-file:</b><br>Found <b>'.count($powers).'</b> countries:<br>
+				public $countries=array(\''.implode("', '",$powers).'\');';
+				
+		print '<div class="hr"></div>';
+	}
+	
 	// Get territory and border information:
-	
-	// Get the map file and put it in easy-to-use arrays
-	$mapfile = preg_replace("/#.+/", "", $mapfile); // Remove comments;
-	$lines = explode("\n", $mapfile);
-	$phases = array("territories", "connections","not used","not used");
-	$connections = array(); $phase = 0;
-	foreach ($lines as $key => $value) {
-		if (preg_match("/-1/", $value)) {
-			$phase++;
-			continue;
+	if ($mapfile != '')
+	{
+		print '<b>map-file:</b><br>';
+		if (!(isset($powers)))
+		{
+			print '<b>No cnt-file supplied. Using the 1-letter country shortcut as owner!<br>Make sure to adjust the variant.php or the install.php.</b><br>';
+			$powers = array();
 		}
-		switch ($phases[$phase]) {
-			case "territories": 
-				$line = explode(",", $value);
-				$country = addslashes($line[0]);
-				if ($country == "") continue;
-				$line[1] = trim($line[1]);
-				$type = "";
-				$supply = "No";
-				$codes = trim(substr($line[1], 0, strpos($line[1], " ")));
-				$abbrs = explode(" ", trim(substr($line[1], strpos($line[1], " "))));
-				$abbr = $abbrs[0];
-				$startingcode = "";
-				for ($i = 0; $i < strlen($codes); $i++) {
-					if ($codes[$i] == "w") $type = "Sea";
-					else if ($codes[$i] == "l") $type = "Land/Coast";
-					else if ($codes[$i] == "x") {
-						$type = "Land/Coast";
-						$supply = "Yes";
-					}
-					else {
-						$startingcode = "$codes[$i]"; // It's a starting SC for a country
-						$supply = "Yes";
-						$type = "Land/Coast";
-					}
-				}
-				if (trim($startingcode) == "") $startingcode = "Neutral";
-				else $startingcode = $powers[$startingcode];
-				$territories[strtoupper($abbr)] = array("country"=>$country, "abbr"=>$abbr, "type"=>$type, "supply"=>$supply, "hometerr"=>$startingcode, "coast"=>"No");
-				break;
-			case "connections":
-				$line = explode(": ", $value);
-				if ($line[0] == "") break;
-				$from = $line[0];
-				$to = trim($line[1]);
-				$dash = strpos($from, "-");
-				$fromTerr = substr($from, 0, $dash);
-				$fromType = substr($from, ($dash+1), 2);
-				$toTerrs = explode(" ", str_replace("  ", " ", $to));
-				if ($fromType[1]=="c") $type = "fleet";
-				else $type = "army";
-				foreach ($toTerrs as $terr) {
-					$terr = trim($terr);
-					$opt = $coast1 = $coast2 = "";
-					if (stristr($terr, "/")) {
-						$slash = strpos($terr, "/");
-						$terr = substr($terr, 0, $slash);
-						$opt = substr($terr, ($slash+1), 2);
-					}
-					$fleetsPass = $armysPass = "No";
-					if ($type == "fleet") {
-						$fleetsPass = "Yes";
-					} else {
-						$armysPass = "Yes";
-					}
-					if ($fromType != "xc" && $fromType != 'mv') {
-						$coast1 = $coasts[$fromType[0]];
-					}
-					if ($opt != "" && $opt[1] == "c") {
-						$coast2 = $coasts[$opt[0]];
-					}
-					$con = array("fromTerr"=>$fromTerr, "toTerr"=>$terr, "coast1"=>$coast1, "coast2"=>$coast2);
-					if ($index = array_search($con, $connections)) { // We already have an entry created by the other type, we just need to add our fleet/army to it.
-						if ($type == "fleet") {
-							$data[$index]['fleetsPass'] = "Yes";
-						} else {
-							$data[$index]['armysPass'] = "Yes";
+
+		$phases = array("territories", "connections","not used","not used");
+		$connections = array(); $phase = 0;
+		
+		// Get the map file and put it in easy-to-use arrays
+		$mapfile = preg_replace("/#.+/", "", $mapfile); // Remove comments;
+		$lines = explode("\n", $mapfile);
+		
+		foreach ($lines as $mapline)
+		{
+			/*
+			 * There are 4 phases in the map-file
+			 *  1: territory information name, type and regular 3-letter abbreviations, 
+			 *  2: connections
+			 *  3: not used
+			 *  4: not used
+			 */
+			if (preg_match("/-1/", $mapline)) {
+				$phase++;
+				continue;
+			}
+			
+			switch ($phases[$phase])
+			{
+				/*
+				 * Read the territory information
+				 * $terrInfo[0] = name
+				 * $terrInfo[1] = type + abbreviations (separated by " ")
+				 *    types: 
+				 *      w (water)     : type = Sea
+				 *      l (land)      : type = Land/Coast
+				 *      x (neutral SC): type = Land/Coast + supply = 'Yes'
+				 *      capital initial (home SC): type = Land/Coast + supply = 'Yes' + owner = initial (need the cnt-file, else set to neutral)
+				 */
+				case "territories": 
+					$terrInfo = explode(",", $mapline);
+
+					// terrInfo[0] = Name
+					$terrName = addslashes($terrInfo[0]);
+					if ($terrName == "") continue;
+					
+					// $terrInfo[1] / typeCodes = territoryType and (home-)SC information.
+					$terrInfo[1] = trim($terrInfo[1]);
+					$typeCodes = trim(substr($terrInfo[1], 0, strpos($terrInfo[1], " ")));
+					for ($i = 0; $i < strlen($typeCodes); $i++)
+					{
+						switch ($typeCodes[$i])
+						{
+							case "w":
+								$type   = "Sea";
+								$supply = "No";
+								$owner  = "Neutral";
+								break;
+							case "l": 
+								$type   = "Land/Coast";
+								$supply = "No";
+								$owner  = "Neutral";
+								break;
+							case "x": 
+								$type   = "Land/Coast";
+								$supply = "Yes";
+								$owner  = "Neutral";
+								break;
+							default:
+								if (!(array_key_exists($typeCodes[$i],$powers))) $powers[$typeCodes[$i]] = $typeCodes[$i];
+								$owner = $powers[$typeCodes[$i]];
+								$supply = "Yes";
+								$type = "Land/Coast";
 						}
-					} else {
-						$connections[] = $con;
-						$data[] = array("fleetsPass"=>$fleetsPass, "armysPass"=>$armysPass);
 					}
-				}
-			default: break;
-		}
-	}
+					$territories[$terrName] = array("name"=>$terrName, "type"=>$type, "supply"=>$supply, "owner"=>$owner);
+					
+					// Now the abbreviation of each territory.
+					$terrAbbrs = explode(" ", trim(substr($terrInfo[1], strpos($terrInfo[1], " "))));
+					foreach ($terrAbbrs as $terrAbbr)
+						$abbr2name[strtoupper($terrAbbr)] = $terrName;
+				
+					break;
+					
+				/*
+				 * Read the connection information:
+				 * <abbreviation>-<type of adjacency>: <adjacencies>
+				 *  types:
+				 *    mv = only armies
+				 *    xc = only fleets
+				 *    nc, sc, ec, wc = coast information for armies
+				 *    mx = armies with -1 support (not used in webDip)
+				 */
+				case "connections":
+					$moveInfo = explode(": ", $mapline);
+					if ($moveInfo[0] == "") break;
+					
+					$from     = $moveInfo[0];
+					$to       = trim($moveInfo[1]);
+					$fromTerr = substr($from, 0, strpos($from, "-"));
+					$fromType = substr($from, (strpos($from, "-")+1), 2);
+					$toTerrs  = explode(" ", str_replace("  ", " ", $to));
 
-	// First update our landlocked countries, but make sure to take into account if we've already determined that a fleet can move there (from borders)
-	foreach ($territories as $terr => $territory) {
-		$foundSea = false;
-		$alreadyFleet = false;
-		if ($territory['type'] != "Land/Coast") continue;
-		foreach ($connections as $index => $border) {
-			if (strtoupper($territory['abbr']) == strtoupper($border['fromTerr'])) {
-				if ($data[$index]['fleetsPass'] == "Yes") $alreadyFleet = true;
-				if (!empty($territories[strtoupper($border['toTerr'])]['type']))
-					if ($territories[strtoupper($border['toTerr'])]['type'] == "Sea") $foundSea = true;
-			} 
-		}
-		if (!$foundSea && !$alreadyFleet) {
-			$territories[$terr]['type'] = "Land";
-		}
-	}
-
-	// Now that we have all the seas and landlocked countries, we can set the rest of the Land/Coast to Coast
-	foreach ($territories as $terr => $territory) {
-		if ($territory['type'] == "Land/Coast") $territories[$terr]['type'] = "Coast";
-	}
-
-	$cs = array();
-	foreach ($connections as $key => $value) {
-		if ($value['coast1'] != "") {
-			$cabb = strtoupper($value['fromTerr']) . " (".$value['coast1']." Coast)";
-			$c = $territories[strtoupper($value['fromTerr'])]['country'] . " (".$value['coast1']." Coast)";
-			if (!in_array($c, $cs)) {
-				$territories[strtoupper($value['fromTerr'])]['coast'] = "Parent";
-				$territories[$cabb] = $territories[strtoupper($value['fromTerr'])];
-				$territories[$cabb]['country'] = $c;
-				$territories[$cabb]['supply'] = "No";
-				$territories[$cabb]['coast'] = $value['coast1'];
-				$cs[] = $c;
+					// Get the fullname of the territory
+					if (isset($abbr2name[strtoupper($fromTerr)]))
+						$fromTerr = $abbr2name[strtoupper($fromTerr)];
+					else
+						print '<b>Error: missing territory name for abbreviation: '.$fromTerr.'</b><br>';
+					
+					// The from-territory is a separate coast:
+					if ($fromType != "xc" && $fromType != 'mv')
+					{
+						$owner = $territories[$fromTerr]['owner'];
+						$fromTerr = $fromTerr.' ('.$coasts[$fromType[0]].' Coast)';
+						$territories[$fromTerr] = array("name"=>$fromTerr, "type"=>"Coast", "supply"=>"No", "owner"=>$owner);
+					}
+					
+					// Let check who can pass:
+					$fleetsPass = ($fromType[1]=="c" ? 'Yes' : 'No');
+					$armysPass  = ($fromType[1]=="c" ? 'No' : 'Yes');
+					
+					foreach ($toTerrs as $toTerr)
+					{
+						$toTerr = trim($toTerr);
+						
+						// If there is a slash it targets a specific coast of that territory
+						if (stristr($toTerr, "/"))
+						{
+							$slash  = strpos($toTerr, "/");
+							$toType = substr($toTerr, ($slash+1), 2);
+							$toTerr = substr($toTerr, 0, $slash);
+							
+							// Get the fullname of the territory
+							if (isset($abbr2name[strtoupper($toTerr)]))
+								$toTerr = $abbr2name[strtoupper($toTerr)];
+							else
+								print '<b>Error: missing territory name for abbreviation: '.$toTerr.'</b><br>';
+							
+							$owner = $territories[$toTerr]['owner'];
+							$toTerr = $toTerr.' ('.$coasts[$toType[0]].' Coast)';
+							$territories[$toTerr] = array("name"=>$toTerr, "type"=>"Coast", "supply"=>"No", "owner"=>$owner);						
+						}
+						else
+						{
+							// Get the fullname of the territory
+							if (isset($abbr2name[strtoupper($toTerr)]))
+								$toTerr = $abbr2name[strtoupper($toTerr)];
+							else
+								print '<b>Error: missing territory name for abbreviation: '.$toTerr.'</b><br>';
+						}
+						
+						// If we have already have an entry created by the other type, we just need to add our fleet/army to it.
+						if (isset($borderLinks[$fromTerr.$toTerr]))
+						{
+							if ($fromType[1]=="c")
+								$borderLinks[$fromTerr.$toTerr]['fleetsPass'] = "Yes";
+							else
+								$borderLinks[$fromTerr.$toTerr]['armysPass'] = "Yes";
+						}
+						else
+						{
+							$borderLinks[$fromTerr.$toTerr] = array('fromTerr'=>$fromTerr, 'toTerr'=> $toTerr, 'fleetsPass'=>$fleetsPass, 'armysPass'=>$armysPass);
+						}
+					}
+				default: break;
 			}
 		}
-		if ($value['coast2'] != "") {
-			$cabb = strtoupper($value['toTerr']) . " (".$value['coast2']." Coast)";
-			$c = $territories[strtoupper($value['toTerr'])]['country'] . " (".$value['coast2']." Coast)";
-			if (!in_array($c, $cs)) {
-				$territories[strtoupper($value['toTerr'])]['coast'] = "Parent";
-				$territories[$cabb] = $territories[strtoupper($value['toTerr'])];
-				$territories[$cabb]['country'] = $c;
-				$territories[$cabb]['supply'] = "No";
-				$territories[$cabb]['coast'] = $value['coast2'];
-				$cs[] = $c;
+	
+		// First update our landlocked countries, but make sure to take into account if we've already determined that a fleet can move there (from borders)
+		foreach ($territories as $terrName => $territory)
+		{
+			$foundSea = $alreadyFleet = false;
+			if ($territory['type'] != "Land/Coast") continue;
+			
+			foreach ($borderLinks as $linkInfo) {
+				if (($terrName == $linkInfo['fromTerr']) || ($terrName == $linkInfo['toTerr']))
+				{
+					if ($linkInfo['fleetsPass'] == "Yes")
+						$alreadyFleet = true;
+					if ($territories[$linkInfo['toTerr']]['type'] == "Sea")
+						$foundSea = true;
+				} 
+			}
+			if (!$foundSea && !$alreadyFleet)
+				$territories[$terrName]['type'] = "Land";
+		}
+		
+		// Now that we have all the seas and landlocked countries, we can set the rest of the Land/Coast to Coast
+		foreach ($territories as $terrName => $territory)
+			if ($territory['type'] == "Land/Coast") $territories[$terrName]['type'] = "Coast";
+/*		
+		// Quick printout of each territory:
+		foreach ($territories as $terrName => $territoryData)
+			print $territoryData['name'].": type=".$territoryData['type']." / supply=".$territoryData['supply']." / owner=".$territoryData['owner']."<br>";
+			
+		// Quick printout of each link:
+		foreach ($borderLinks as $index => $linkInfo)
+			print $linkInfo['fromTerr']."->".$linkInfo['toTerr'].": fleet=".$linkInfo['fleetsPass']." / army=".$linkInfo['armysPass']."<br>";
+*/
+		print 'Got <b>'.count($territories).'</b> territories with <b>'.count($borderLinks).'</b> links.';
+		print '<div class="hr"></div>';
+	}
+	
+	// Get position-data.
+	if ($rgnfile != '')
+	{
+		$rgnfile   = preg_replace("/Variant.+/", "", $rgnfile); // Sometimes 1st line is a refference to a path on someone elses harddrive;
+		$lines     = explode("\n", $rgnfile);
+
+//		$img = imagecreatefromstring($bmpfile);
+//		if ($img === false)
+//			print "Unknown Imageformat. Please convert to JPG.";
+
+		// get the picture dimensions from the scanlines:
+		ini_set('memory_limit',"32M");
+		$maxX = $maxY = $scanLines = 0;
+		foreach ($lines as $rgnLine)
+		{
+			$rgnLine=trim($rgnLine);
+			
+			if ($scanLines > 0)
+			{
+				list($x, $y, $size) = explode(" ",$rgnLine);
+				if ($x + $size > $maxX)
+					$maxX=$x + $size;
+				if ($y + $scanLines > $maxY)
+					$maxY=$y + $scanLines;
+				$scanLines--;
+			}
+
+			if (preg_match('/^[1-9][0-9]*$/',$rgnLine))
+				$scanLines=$rgnLine;
+			
+		}
+
+		print $maxX." - ".$maxY."<br>";
+		$img = imagecreate($maxX, $maxY);
+
+		foreach ($lines as $rgnLine)
+		{
+			$rgnLine=trim($rgnLine);
+			
+			if ($scanLines > 0)
+			{
+				list($x, $y, $size) = explode(" ",$rgnLine);
+				imageline ($img, $x, $y, $x + $size, $y, $col);
+				$scanLines--;
+			}
+
+			$colors=array();
+			if (preg_match('/^[1-9][0-9]*$/',$rgnLine))
+			{
+				$scanLines=$rgnLine;
+				do {
+					$r=rand(0,255); $g=rand(0,255); $b=rand(0,255);
+				} while (in_array($r.$g.$b, $colors));
+				$colors[]=$r.$g.$b;
+				$col=imagecolorallocate($img,$r,$g,$b);
 			}
 		}
-	}
+		
+/*		
+		$keys = array_keys($territories);
+		$terrID=0;
+		$scanlines=0;
+		$mode="UnitXY";
+		$colors=array();
+		$terrName=$keys[$terrID];
+		
+		foreach ($lines as $rgnLine)
+		{
+			if ($rgnLine == "") continue;
 
-	$rgnfile   = preg_replace("/Variant.+/", "", $rgnfile); // Sometimes 1st line is a refference to a path on someone elses harddrive;
-	$rgnfile   = preg_replace("/#.+/", "", $rgnfile); // Remove comments;
-	$lines     = explode("\n", $rgnfile);
-	$smallfact = $_REQUEST['smallmapfactor'];
-	$largefact = $_REQUEST['mapfactor'];
-
-	$img = imagecreatefromstring($bmpfile);
-	if ($img === false) print "Unknown Imageformat. Please convert to JPG.";
-	
-	$keys = array_keys($territories);
-	$terrID=0;
-	$scanlines=0;
-	$mode="UnitXY";
-	$colors=array();
-	
-	$terrName=$keys[$terrID];
-	foreach ($lines as $key => $value) {
-		if ($value == "") continue;
-
-		switch ($mode) {
-
-			case "UnitXY":
-				list($x,$y) = explode(",",$value);
-//				print "Terr: ".$terrName."<br>";
-//				print "X:".$x." - y:".$y."<br>";
-				$territories[$terrName]['sx']=$smallfact * $x;
-				$territories[$terrName]['sy']=$smallfact * $y;
-				$territories[$terrName]['x'] =$largefact * $x;
-				$territories[$terrName]['y'] =$largefact * $y;
-				if (strpos($terrName," Coast)") > 0)
+			switch ($mode)
+			{
+				case "UnitXY":
+					list($x,$y) = explode(",",$rgnLine);
+	//				print "Terr: ".$terrName."<br>";
+	//				print "X:".$x." - y:".$y."<br>";
+					$territories[$terrName]['sx']=$smallfact * $x;
+					$territories[$terrName]['sy']=$smallfact * $y;
+					$territories[$terrName]['x'] =$largefact * $x;
+					$territories[$terrName]['y'] =$largefact * $y;
+					if (strpos($terrName," Coast)") > 0)
+						$mode="Scanlines";
+					else
+						$mode="TextXY";
+					break;
+				case "TextXY":
+					list($x,$y) = explode(",",$rgnLine);
+	//				print "TxtX:".$x." - Txty:".$y."<br>";
 					$mode="Scanlines";
-				else
-					$mode="TextXY";
-				break;
-			case "TextXY":
-				list($x,$y) = explode(",",$value);
-//				print "TxtX:".$x." - Txty:".$y."<br>";
-				$mode="Scanlines";
-				break;
-			case "Scanlines":
-				if ($img === false) break;
-				if ($scanlines==0)
-				{
-					$scanlines = $value;
-					if ($territories[$terrName]["type"]=='Sea')
+					break;
+				case "Scanlines":
+					if ($img === false) break;
+					if ($scanlines==0)
 					{
-						$col=imagecolorallocate($img,197,223,234);
+						$scanlines = $rgnLine;
+						if ($territories[$terrName]["type"]=='Sea')
+						{
+							$col=imagecolorallocate($img,197,223,234);
+						}
+						else
+						{
+							do {
+								$r=rand(0,255); $g=rand(0,255); $b=rand(0,255);
+							} while (in_array($r.$g.$b, $colors));
+							$colors[]=$r.$g.$b;
+							$col=imagecolorallocate($img,$r,$g,$b);
+						}					
 					}
 					else
 					{
-						do {
-							$r=rand(0,255); $g=rand(0,255); $b=rand(0,255);
-						} while (in_array($r.$g.$b, $colors));
-						$colors[]=$r.$g.$b;
-						$col=imagecolorallocate($img,$r,$g,$b);
-					}					
-				}
-				else
-				{
-					$scanlines= $scanlines -1;
-					list($x,$y,$length) = explode(" ",$value);
-//					print "Scanline (".$scanlines."):".$x." ".$y." ".$length."<br>";				
-					imageline ($img, $x, $y, $x + $length, $y, $col);
-				}
-				if ($scanlines==0)
-				{
-					$mode="UnitXY";
-					if (array_key_exists($keys[$terrID]." (East Coast)",$territories)
-						&& !isset($territories[$keys[$terrID]." (East Coast)"]['sx']))
-					{
-						$terrName=$keys[$terrID]." (East Coast)";
+						$scanlines= $scanlines -1;
+						list($x,$y,$length) = explode(" ",$rgnLine);
+	//					print "Scanline (".$scanlines."):".$x." ".$y." ".$length."<br>";				
+						imageline ($img, $x, $y, $x + $length, $y, $col);
 					}
-					elseif (array_key_exists($keys[$terrID]." (North Coast)",$territories)
-						&& !isset($territories[$keys[$terrID]." (North Coast)"]['sx']))
+					if ($scanlines==0)
 					{
-						$terrName=$keys[$terrID]." (North Coast)";
+						$mode="UnitXY";
+						if (array_key_exists($keys[$terrID]." (East Coast)",$territories)
+							&& !isset($territories[$keys[$terrID]." (East Coast)"]['sx']))
+						{
+							$terrName=$keys[$terrID]." (East Coast)";
+						}
+						elseif (array_key_exists($keys[$terrID]." (North Coast)",$territories)
+							&& !isset($territories[$keys[$terrID]." (North Coast)"]['sx']))
+						{
+							$terrName=$keys[$terrID]." (North Coast)";
+						}
+						elseif (array_key_exists($keys[$terrID]." (South Coast)",$territories)
+							&& !isset($territories[$keys[$terrID]." (South Coast)"]['sx']))
+						{
+							$terrName=$keys[$terrID]." (South Coast)";
+						}
+						elseif (array_key_exists($keys[$terrID]." (West Coast)",$territories)
+							&& !isset($territories[$keys[$terrID]." (West Coast)"]['sx']))
+						{
+							$terrName=$keys[$terrID]." (West Coast)";
+						}
+						else
+						{
+							$terrID = $terrID + 1;
+							$terrName=$keys[$terrID];
+						}
 					}
-					elseif (array_key_exists($keys[$terrID]." (South Coast)",$territories)
-						&& !isset($territories[$keys[$terrID]." (South Coast)"]['sx']))
-					{
-						$terrName=$keys[$terrID]." (South Coast)";
-					}
-					elseif (array_key_exists($keys[$terrID]." (West Coast)",$territories)
-						&& !isset($territories[$keys[$terrID]." (West Coast)"]['sx']))
-					{
-						$terrName=$keys[$terrID]." (West Coast)";
-					}
-					else
-					{
-						$terrID = $terrID + 1;
-						$terrName=$keys[$terrID];
-					}
-				}
-			default:
-				break;
+				default:
+					break;
+			}
 		}
-	}
-	imagepng($img,'rp2wd_map.png');
+*/	
+		imagepng($img,'rp2wd_map.png');
+		print '<img src="rp2wd_map.png">';
+		
+	}	
 
+	/*
 	$gamfile = preg_replace("/#.+/", "", $gamfile); // Remove comments;
 	$lines = explode("\n", $gamfile);
 	$searchstart=9;
@@ -385,16 +511,17 @@ if (count($_FILES) > 0) {
 	}
 
 	print '<img src="rp2wd_map.png">';
-	
+*/	
 } else {
 	print
 		'<div class="hr"></div>
 		<b>Realpolitic converter:<br></b>
 		<form method="POST" action="'.$_SERVER['PHP_SELF'].'" enctype="multipart/form-data">
 		<input type="hidden" name="MAX_FILE_SIZE" value="1000000">
+		<input type="hidden" name="tab" value="Converter">
 		<style type="text/css"> td { padding:2px; white-space: nowrap;} </style>
 		<table>
-			<tr><td>Country file <b>(.cnt)</b>:</td>              <td><input type="file" name="countryfile"></td> <td style=" width: 100%;"></td></tr>
+			<tr><td>Country file <b>(.cnt)</b>:</td>              <td><input type="file" name="cntfile"></td> <td style=" width: 100%;"></td></tr>
 			<tr><td>Territories / border file <b>(.map)</b>:</td> <td><input type="file" name="mapfile">    </td> <td style=" width: 100%;"></td></tr>
 			<tr><td>Position file <b>(.rgn)</b>:            </td> <td><input type="file" name="rgnfile">    </td> 
 				<td>smallmap-factor:</td> <td><input size="5" name="smallmapfactor" value="" /></td>
@@ -403,7 +530,7 @@ if (count($_FILES) > 0) {
 			<tr><td>Black&white map <b>(.png)</b>:          </td> <td><input type="file" name="bmpfile">    </td> 
 				<td colspan="4">(convert bmp to png bevore processing)</td>                                                   <td style=" width: 100%;"></td></tr>
 		</table>
-		<input type="submit" value="Submit Realpolitic files">
+		<input type="submit" name="SubmitRP" value="Submit Realpolitic files">
 		</form>
 		<div class="hr"></div>';
 }
