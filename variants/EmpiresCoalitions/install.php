@@ -230,7 +230,7 @@ $bordersRawData=array(
 	array('Rhineland','Lorraine','No','Yes'),
 	array('Westphalia','Lorraine','No','Yes'),
 	array('Westphalia','Belgium','No','Yes'),
-	array('Westphalia','Batavia','No','Yes'),
+	array('Westphalia','Batavia','Yes','Yes'),
 	array('Westphalia','North Sea','Yes','No'),
 	array('Bavaria','Tyrol','No','Yes'),
 	array('Bavaria','Vienna','No','Yes'),
