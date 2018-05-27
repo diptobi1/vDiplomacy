@@ -21,7 +21,21 @@
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
-class MoveFlags_drawMap extends drawMap
+class NoBorder_drawMap extends drawMap
+{
+	/**
+	 * Add the territory names, either with GD FreeType or with the small-map overlay
+	 */
+ 	public function addTerritoryNames()
+	{
+		$this->mapNames = $this->loadImage($this->mapNames);
+		$this->setTransparancy($this->mapNames);
+		$this->putImage($this->mapNames, 0, 0);
+		imagedestroy($this->mapNames['image']);
+	}
+}		
+
+class MoveFlags_drawMap extends NoBorder_drawMap
 {
 	public function countryFlag($terrID, $countryID)
 	{

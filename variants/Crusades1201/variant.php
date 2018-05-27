@@ -21,6 +21,7 @@
 
 	Changelog:
 	1.0: initial version
+	1.1: No border and transparent background
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -34,7 +35,7 @@ class Crusades1201Variant extends WDVariant {
 	public $author      ='Enriador (original design by Tommy Larsson & John Pitre)';
 	public $adapter     ='Enriador & Oliver Auth';
 	public $version     ='1.0';
-	public $codeVersion ='1.0';
+	public $codeVersion ='1.1';
 	public $homepage    ='http://www.variantbank.org/results/rules/c/crusades.htm';
 
 	public $countries=array('Castille','Almohad Caliphate','England','France','Holy Roman Empire','Denmark','Papacy','Hungary','Rus','Byzantine Empire','Ayyubid Sultanate');
