@@ -212,6 +212,7 @@ $bordersRawData=array(
 	array('Schleswig (West Coast)','Copenhagen','Yes','No'),
 	array('Schleswig (West Coast)','Hanover','Yes','No'),
 	array('Schleswig (West Coast)','North Sea','Yes','No'),
+	array('Schleswig (West Coast)','Skagerrak','Yes','No'),
 	array('Copenhagen','Skagerrak','Yes','No'),
 	array('Copenhagen','Baltic Sea','Yes','No'),
 	array('Hanover','Brandenburg','No','Yes'),
