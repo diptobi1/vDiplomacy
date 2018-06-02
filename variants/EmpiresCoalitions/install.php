@@ -39,7 +39,7 @@ $territoryRawData=array(
 	array('Brandenburg', 'Land', 'No', 6, 610, 576, 335, 331),
 	array('Saxony', 'Land', 'Yes', 0, 587, 619, 342, 353),
 	array('Rhineland', 'Land', 'No', 0, 536, 657, 304, 381),
-	array('Westphalia', 'Land', 'Yes', 0, 514, 590, 296, 340),
+	array('Westphalia', 'Coast', 'Yes', 0, 514, 590, 296, 340),
 	array('Bavaria', 'Land', 'Yes', 0, 586, 679, 335, 391),
 	array('Tyrol', 'Land', 'No', 1, 556, 738, 322, 424),
 	array('Venice', 'Coast', 'Yes', 1, 587, 778, 341, 444),
