@@ -20,6 +20,7 @@
 
 	Changelog:
 	1.0: first install
+	1.1: interactive map added
 
 */
 
@@ -35,7 +36,7 @@ class MaharajahVariant extends WDVariant {
 	public $adapter    ='Ken Gordon (aka kaner406) & Oliver Auth';
 	public $homepage   ='http://diplomiscellany.tripod.com/id4.html';
 	public $version    ='2';
-	public $codeVersion='1.0';	
+	public $codeVersion='1.1';	
 	
 	public $countries=array('Bahmana', 'Delhi', 'Gondwana', 'Mughalistan', 'Persia', 'Rajputana', 'Vijayanagar');	
 

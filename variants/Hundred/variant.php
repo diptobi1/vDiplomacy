@@ -30,6 +30,7 @@
 	1.6:   minor fixes
 	1.6.5: fixed a bug with the build anywhere code + small adjustments for the new variants.php code
 	1.7:   added a rules.html
+	1.8:   interactive mapp added
 		
 */
 
@@ -43,7 +44,8 @@ class HundredVariant extends WDVariant {
 	public $description= 'A Diplomacy Variant for Three Players, Based on the Hundred Years War ';
 	public $author     = 'Andy Schwarz';
 	public $adapter    = 'Oliver Auth';
-	public $version    = '1.7';
+	public $version    = '1';
+	public $codeVersion= '1.8';
 	public $homepage   = 'http://www.variantbank.org/results/rules/h/hundred.htm';
 
 	public $countries=array('Burgundy','England','France');

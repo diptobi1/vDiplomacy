@@ -37,6 +37,7 @@
 	1.2  : use now codeversion
 	1.3  : only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
 	1.3.1: Spelling error fixed on the smallmap
+	1.4  : interactive map added
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -50,7 +51,7 @@ class Sengoku5Variant extends WDVariant {
 	public $author     ='Benjamin Hester';
 	public $adapter    ='Oliver Auth';
 	public $version    ='5.0';
-	public $codeVersion='1.3.1';
+	public $codeVersion='1.4';
 	public $homepage   ='http://www.variantbank.org/results/rules/s/sengoku.htm';
 
 	public $countries=array('Shimazu','Mori','Chosokabe','Asakura','Oda','Uesugi','Takeda','Hojo');
