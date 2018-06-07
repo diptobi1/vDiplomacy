@@ -51,7 +51,7 @@ class InstallCache {
 
 		$territories = array();
 		$tabl=$DB->sql_tabl(
-			"SELECT id, name, type, supply, countryID, coast, coastParentID, smallMapX, smallMapY
+			"SELECT id, name, type, supply, countryID, coast, coastParentID, smallMapX, smallMapY, buildEligibilityFlags
 			FROM wD_Territories
 			WHERE mapID=".$mapID."
 			ORDER BY id ASC"
@@ -348,10 +348,15 @@ class InstallTerritory {
 		InstallTerritory::$Territories=array();
 		$TerritoriesByID = array();
 		
-		$tabl = $DB->sql_tabl("SELECT id, name, type, supply, countryID, mapX, mapY, smallMapX, smallMapY FROM wD_Territories WHERE mapID = ".$mapID);
+		$tabl = $DB->sql_tabl("SELECT id, name, type, supply, countryID, "
+                        . "mapX, mapY, smallMapX, smallMapY, buildEligibilityFlags "
+                        . "FROM wD_Territories WHERE mapID = ".$mapID);
 		while($row = $DB->tabl_hash($tabl))
 		{
-			$terr = new InstallTerritory($row['name'], $row['type'], $row['supply'], $row['countryID'], $row['mapX'], $row['mapY'], $row['smallMapX'], $row['smallMapY']);
+			$terr = new InstallTerritory($row['name'], $row['type'], 
+                                $row['supply'], $row['countryID'], $row['mapX'], 
+                                $row['mapY'], $row['smallMapX'], $row['smallMapY'], 
+                                $row['buildEligibilityFlags']);
 			$terr->id = $row['id'];
 			$terr->mapID = $mapID;
 			
@@ -400,7 +405,7 @@ class InstallTerritory {
 	/**
 	 * Basic territory data, more or less as given
 	 */
-	public $mapID, $name, $type, $supply, $countryID, $mapX, $mapY, $smallMapX, $smallMapY, $coastParentID;
+	public $mapID, $name, $type, $supply, $countryID, $mapX, $mapY, $smallMapX, $smallMapY, $coastParentID, $buildEligibilityFlags;
 
 	/**
 	 * The coastParent object ($this if not a child-coast). Used for coastParentID after ID allocation.
@@ -426,7 +431,7 @@ class InstallTerritory {
 	 * coast territories will always come after their parent coasts, and it is assumed they will have a name
 	 * of the form "[coastParentName] ([Something unimportant] Coast)".
 	 */
-	public function __construct($name, $type, $supply, $countryID, $mapX, $mapY, $smallMapX, $smallMapY) {
+	public function __construct($name, $type, $supply, $countryID, $mapX, $mapY, $smallMapX, $smallMapY, $buildEligibilityFlags = 0) {
 
 		if( $supply!='Yes' && $supply!='No' )
 			throw new Exception("Invalid value for supply '".$supply."', should be Yes/No.");
@@ -442,6 +447,7 @@ class InstallTerritory {
 		$this->mapY=$mapY;
 		$this->smallMapX=$smallMapX;
 		$this->smallMapY=$smallMapY;
+                $this->buildEligibilityFlags=$buildEligibilityFlags;
 
 		$this->coast='No';
 		$this->coastParent=$this;
@@ -491,7 +497,9 @@ class InstallTerritory {
 	 * Things to write to the territories table, used by sqlTerritoryRow
 	 * @var array[]=$colName
 	 */
-	private static $territoryRowInclude=array('mapID', 'id', 'name', 'type', 'supply', 'mapX', 'mapY', 'smallMapX', 'smallMapY', 'countryID', 'coast', 'coastParentID');
+	private static $territoryRowInclude=array('mapID', 'id', 'name', 'type', 'supply', 
+            'mapX', 'mapY', 'smallMapX', 'smallMapY', 'countryID', 'coast', 
+            'coastParentID', 'buildEligibilityFlags');
 	/**
 	 * Returns a wD_Territories VALUE row, to be combined and inserted in bulk.
 	 * @return string

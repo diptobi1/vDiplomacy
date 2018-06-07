@@ -57,7 +57,8 @@ $sections=array(
 	6=>array('6.F.','TEST CASES, CONVOYS'),
 	7=>array('6.G.','TEST CASES, CONVOYING TO ADJACENT PLACES'),
 	8=>array('webDip intro',l_t('webDiplomacy introduction image generating tests')),
-	9=>array('webDip tests',l_t('webDiplomacy specific test cases'))
+	9=>array('webDip tests',l_t('webDiplomacy specific test cases')),
+        19=>array('1900 tests','Test Cases for implmenting 1900')
 );
 print '<ul>';
 foreach( $sections as $sectionID=>$section )
