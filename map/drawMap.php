@@ -195,6 +195,13 @@ abstract class drawMap
 	 * @var array
 	 */
 	protected $mapNames=array();
+        /**
+	 * An array containing the intermediate layer overlay image resource,
+	 * and its width and height.
+	 * $image['image'],['width'],['height']
+	 * @var array
+	 */
+	protected $intermediateLayer=array();
 	/**
 	 * An array containing the standoff icon image resource, and its width and height.
 	 * $image['image'],['width'],['height']
@@ -1229,6 +1236,17 @@ abstract class drawMap
 		$this->drawText($text, 0, 0, $this->font['largeSize'], true);
 	}
 
+        public function addIntermediateLayer() 
+        {
+            if (count($this->intermediateLayer))
+            {
+                $this->intermediateLayer = $this->loadImage($this->intermediateLayer);
+                $this->setTransparancy($this->intermediateLayer);
+                $this->putImage($this->intermediateLayer, 0, 0);
+                imagedestroy($this->intermediateLayer['image']);
+            }
+        }
+        
 	/**
 	 * Add the territory names, either with GD FreeType or with the small-map overlay
 	 */

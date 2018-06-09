@@ -176,7 +176,7 @@ function loadOrdersPhase() {
 					'Hold': 'hold', 'Move': 'move', 'Support hold': 'support hold', 'Support move': 'support move'
 				};
 				
-				if( this.Unit.type == 'Fleet' && this.Unit.Territory.type == 'Sea' )
+				if( this.Unit.type == 'Fleet' && (this.Unit.Territory.type == 'Sea' || this.Unit.Territory.type == 'Strait') )
 					this.typeChoices['Convoy']='convoy';
 				
 				return this.typeChoices;
@@ -187,7 +187,7 @@ function loadOrdersPhase() {
 					case 'Move': 
 						this.toTerrChoices = this.Unit.getMoveChoices();
 						
-						if( this.Unit.type=='Army' && this.Unit.Territory.type=='Coast' )
+						if( this.Unit.type=='Army' && (this.Unit.Territory.type=='Coast' || this.Unit.Territory.type=='Strait') )
 						{
 							var ttac = new Hash();
 							var armylocalchoices = this.Unit.getMovableTerritories().pluck('id');

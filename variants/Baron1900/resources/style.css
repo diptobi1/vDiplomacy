@@ -1,0 +1,18 @@
+@CHARSET "ISO-8859-1";
+
+.variant1900 .country0 { color: #D2B48C ! important; } /* Global            */
+.variant1900 .country1 { color: #EDBC29 ! important; } /* Austria-Hungary   */
+.variant1900 .country2 { color: #00247D ! important; } /* Britain           */
+.variant1900 .country3 { color: #0380B8 ! important; } /* France            */
+.variant1900 .country4 { color: #202020 ! important; } /* Germany           */
+.variant1900 .country5 { color: #00a650 ! important; } /* Italy             */
+.variant1900 .country6 { color: #507150 ! important; } /* Russia            */
+.variant1900 .country7 { color: #E30A17 ! important; } /* Turkey            */
+
+.variant1900 .occupationBar1 { background-color: #EDBC29; } /* Austria-Hungary   */
+.variant1900 .occupationBar2 { background-color: #00247D; } /* Britain           */
+.variant1900 .occupationBar3 { background-color: #0380B8; } /* France            */
+.variant1900 .occupationBar4 { background-color: #202020; } /* Germany           */
+.variant1900 .occupationBar5 { background-color: #00a650; } /* Italy             */
+.variant1900 .occupationBar6 { background-color: #507150; } /* Russia            */
+.variant1900 .occupationBar7 { background-color: #E30A17; } /* Turkey            */
