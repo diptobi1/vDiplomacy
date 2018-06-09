@@ -28,33 +28,33 @@ class Baron1900Variant extends WDVariant {
 	public $codeVersion= '0.1';
 	public $homepage   = 'http://uk.diplom.org/pouch//Online/variants/1900-061119.pdf';
 	
-	public $countries=array('Austria-Hungary','Britain','France','Germany',
-            'Italy','Russia','Turkey');
+	public $countries=array('Austria-Hungary','Britain','France','Germany','Italy','Russia','Turkey');
 
-        public static $MidAtlanticOceanID=  40;
+	public static $MidAtlanticOceanID=  40;
 	public static $egyptID=             20;
 	public static $hejazID=             29;
 	//Mediterranean Sea Territories, that are needed for a convoy from MAO 
-        //to egypt via the Mediterranean
-        public static $mediterraneanTerritories=
-            array(
-                25, //Gibraltar
-                71, //West Med
-                67, //Tyrrhenian
-                32, //Ionian
-                19  //East Med
-                ); 
+	//to egypt via the Mediterranean
 	
-        public function __construct() {
+	public static $mediterraneanTerritories=array(
+		25, //Gibraltar
+		71, //West Med
+		67, //Tyrrhenian
+		32, //Ionian
+		19  //East Med
+		); 
+	
+	public function __construct()
+	{
 		parent::__construct();
 		$this->variantClasses['drawMap']            = 'Baron1900';
 		$this->variantClasses['adjudicatorPreGame'] = 'Baron1900';
 		$this->variantClasses['OrderInterface']     = 'Baron1900';
-                $this->variantClasses['userOrderBuilds']    = 'Baron1900';
-                $this->variantClasses['processOrderBuilds'] = 'Baron1900';
-                $this->variantClasses['processMembers']     = 'Baron1900';
+		$this->variantClasses['userOrderBuilds']    = 'Baron1900';
+		$this->variantClasses['processOrderBuilds'] = 'Baron1900';
+		$this->variantClasses['processMembers']     = 'Baron1900';
                 
-                /* Suez_Canal_Rule
+		/* Suez_Canal_Rule
 		 * (1) A fleet may move back and forth between Egypt and Hejaz. 
                  *      (no changes needed)
 		 * (2) Movement between Egypt or Hejaz and the Mid-Atlantic 
