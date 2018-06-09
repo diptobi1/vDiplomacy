@@ -63,7 +63,7 @@ class Baron1900Variant_drawMap extends drawMap {
 				'fleet6'  =>l_s('variants/Baron1900/resources/units/Fleet6_32.png'),
                                 'army7'   =>l_s('variants/Baron1900/resources/units/Army7_32.png'),
 				'fleet7'  =>l_s('variants/Baron1900/resources/units/Fleet7_32.png'),
-				'names'   =>l_s('variants/Baron1900/resources/smallMapNames.png'),
+				'names'   =>l_s('variants/Baron1900/resources/smallmapNames.png'),
 				'water'   =>l_s('variants/Baron1900/resources/smallMapWater.png'),
                                 'standoff'=>l_s('images/icons/cross.png')
 			);
