@@ -245,6 +245,8 @@ while(list($terrID, $terrName, $terrType, $countryID, $standoff, $supply) = $DB-
 	}
 }
 
+$drawMap->addIntermediateLayer();
+
 // vDip: Pre-game or variant-page-preview: Add the initial units:
 if( $turn==-1 )
 {
@@ -269,7 +271,6 @@ if( $turn==-1 )
 		foreach ($units as $terrName => $unitType)
 			$drawMap->addUnit($terrIDByName[$terrName], $unitType);
 }
-$drawMap->addIntermediateLayer();
         
 if( isset($_REQUEST['variantID']) )
 {
