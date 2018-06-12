@@ -269,7 +269,8 @@ if( $turn==-1 )
 		foreach ($units as $terrName => $unitType)
 			$drawMap->addUnit($terrIDByName[$terrName], $unitType);
 }
-
+$drawMap->addIntermediateLayer();
+        
 if( isset($_REQUEST['variantID']) )
 {
 	$drawMap->addTerritoryNames();
