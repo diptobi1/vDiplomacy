@@ -16,7 +16,7 @@ class Baron1900Variant_adjudicatorPreGame extends ClassicVariant_adjudicatorPreG
 					'Kiel {Kie}'=>'Fleet', 'Berlin {Ber}'=>'Army', 'Munich {Mun}'=>'Army', 'Cologne {Col}'=>'Army'
 				),
 		'Italy' => array(
-					'Milan {Mil}'=>'Army', 'Rome {Rom}'=>'Fleet', 'Naples {Nap}'=>'Fleet'
+					'Milan {Mil}'=>'Army', 'Rome {Rom}'=>'Army', 'Naples {Nap}'=>'Fleet'
 				),
 		
 		'Russia' => array(
