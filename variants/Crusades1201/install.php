@@ -287,6 +287,7 @@ $bordersRawData=array(
 	array('Andalusia','Portugal','Yes','Yes'),
 	array('Andalusia','Leon','No','Yes'),
 	array('Andalusia','Toledo','No','Yes'),
+	array('Andalusia','Valencia','No','Yes'),
 	array('Andalusia','Mid-Atlantic Ocean','Yes','No'),
 	array('Portugal','Leon','Yes','Yes'),
 	array('Portugal','Mid-Atlantic Ocean','Yes','No'),
