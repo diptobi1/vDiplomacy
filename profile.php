@@ -594,6 +594,7 @@ if( $total || (isset($playing) && $playing) )
 		print '<li>'.l_t($name.': <strong>%s</strong>',$status).'</li>';
 	}
 
+	/* We use a different layout on vDip:
 	if ( $User->type['Moderator'] || $User->id == $UserProfile->id )
 	{
 		print '<li>'.l_t('No moves received / received:').' <strong>'.$UserProfile->nmrCount.'/'.$UserProfile->phaseCount.'</strong></li>';
@@ -611,7 +612,7 @@ if( $total || (isset($playing) && $playing) )
 		print '<li>'.l_t('Left and taken over: <strong>%s</strong>',$rankingDetails['takenOver']).
 			'(<a href="profile.php?detail=civilDisorders&userID='.$UserProfile->id.'">'.l_t('View details').'</a>)</li>';
 	*/
-
+			
 	print '</ul></li>';
 }
 print '<li>&nbsp;</li>';

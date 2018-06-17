@@ -125,13 +125,11 @@ class Chatbox
 				$fromName = (($User->type['ForumModerator'] || $User->type['Admin']) ? $User->username.' (Moderator)' : 'Mod-Team');
 				libGameMessage::send(0, 0, '<strong>'.$fromName.': </strong>'.$newmessage);
 			}
-			}
 			elseif(isset($directorUserID) && $directorUserID == $User->id)
 			{
 				libGameMessage::send(0, 'Game Director', '('.$User->username.'): '.$newmessage);
 			}
 		}
-		
 		if( isset($_REQUEST['MarkAsUnread']) )
 		{
 			$DB->sql_put("UPDATE wD_Members SET newMessagesFrom = IF( (newMessagesFrom+0) = 0,'".$msgCountryID."', CONCAT_WS(',',newMessagesFrom,'".$msgCountryID."') )
