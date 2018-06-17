@@ -324,7 +324,7 @@ class libHome
 				$bufPregame .= '<div class="hr"></div>'.$Game->summary();
 			else
 				$buf .= '<div class="hr"></div>' . $Game->summary();
-		}
+		} 
 		
 		if ($bufPause != '')   $buf .= $bufPause;
 		if ($bufPregame != '') $buf .= $bufPregame;
@@ -351,9 +351,17 @@ class libHome
 		// Select by id, prints replies and new threads
 		global $DB, $Misc, $User;
 
-		$thread_tabl = $DB->sql_tabl("SELECT id FROM wD_ForumMessages WHERE type = 'ThreadStart'  
-			ORDER BY latestReplySent DESC LIMIT 10");
-
+		$tabl = $DB->sql_tabl("
+			SELECT m.id as postID, t.id as threadID, m.type, m.timeSent, IF(t.replies IS NULL,m.replies,t.replies) as replies,
+				IF(t.subject IS NULL,m.subject,t.subject) as subject,
+				u.id as userID, u.username, u.points, IF(s.userID IS NULL,0,0) as online, u.type as userType,
+				SUBSTRING(m.message,1,100) as message, m.latestReplySent, t.fromUserID as threadStarterUserID
+			FROM wD_ForumMessages m
+			INNER JOIN wD_Users u ON ( m.fromUserID = u.id )
+			LEFT JOIN wD_Sessions s ON ( m.fromUserID = s.userID )
+			LEFT JOIN wD_ForumMessages t ON ( m.toID = t.id AND t.type = 'ThreadStart' AND m.type = 'ThreadReply' )
+			ORDER BY m.timeSent DESC
+			LIMIT 50");
 		$oldThreads=0;
 		$threadCount=0;
 
@@ -523,7 +531,7 @@ class libHome
 				INNER JOIN phpbb_forums f ON f.forum_id = t.forum_id
 				INNER JOIN phpbb_users u1 ON u1.user_id = t.topic_poster
 				INNER JOIN phpbb_users u2 ON u2.user_id = t.topic_last_poster_id
-				WHERE t.topic_visibility = 1
+				WHERE t.topic_visibility = 1 and f.forum_name <> 'Politics' and t.topic_title not like '%HIDDEN%'
 				ORDER BY t.topic_last_post_time DESC
 				LIMIT 20");
 		
@@ -551,7 +559,7 @@ class libHome
 					$buf .= '<div style="clear:both"></div>';
 					$buf .= '<div class="homeForumPostTime" style="float:right"><em>'.libTime::text($t['topic_time']).'</em></div>';
 					$buf .= '<span style=\'font-size:90%\'>';
-					$buf .= 'Thread:</span> <a href="profile.php?userID='.$t['topic_poster_webdip'].'" class="light">'.$t['topic_first_poster_name'].'</a> '.libHTML::loggedOn($t['topic_poster_webdip']);
+					$buf .= 'Thread:</span> <a href="profile.php?userID='.$t['topic_poster_webdip'].'" class="light">'.$t['topic_first_poster_name'].'</a> ';
 					$buf .= '<div style="clear:both"></div></div>';
 					$buf .= '<div class="homeForumPost homeForumPostAlt'.$alt.'">';
 					
@@ -561,7 +569,7 @@ class libHome
 						$buf .= '<div class="" style="margin-bottom:5px;margin-left:3px; margin-right:3px;">';
 						$buf .= '<div class="homeForumPostTime" style="float:right;font-weight:bold"><em>'.libTime::text($t['topic_last_post_time']).'</em></div>';
 						$buf .= '<span style=\'color:#009902;font-size:90%\'>';
-						$buf .= 'Latest:</span> <a href="profile.php?userID='.$t['topic_last_poster_webdip'].'" class="light">'.$t['topic_last_poster_name'].'</a> '.libHTML::loggedOn($t['topic_last_poster_webdip'])
+						$buf .= 'Latest:</span> <a href="profile.php?userID='.$t['topic_last_poster_webdip'].'" class="light">'.$t['topic_last_poster_name'].'</a> '
 						.'</div>';
 					}
 					

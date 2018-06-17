@@ -470,7 +470,7 @@ while( $message = $DB->tabl_hash($tabl) )
 	print '<div class="leftRule message-head threadalternate'.$switch.'">'.
 		(($message['points'] == '??') ? '<a href="features.php#2_7">' : '<a href="profile.php?userID='.$message['fromUserID'].'">').
 			$message['fromusername'].
-			' '.libHTML::loggedOn($message['fromUserID']).
+			' '.
 				' ('.$message['points'].' '.libHTML::vpoints().User::typeIcon($message['userType']).')</a>'.
 			'<br />
 			<strong><em>'.libTime::text($message['timeSent']).'</em></strong>'.$muteLink.'<br />
@@ -597,7 +597,7 @@ while( $message = $DB->tabl_hash($tabl) )
 			print '<div class="message-head replyalternate'.$replyswitch.' leftRule">';
 
 			print '<strong><a href="profile.php?userID='.$reply['fromUserID'].'">'.$reply['fromusername'].' '.
-			libHTML::loggedOn($reply['fromUserID']).
+			
 					' ('.$reply['points'].' '.libHTML::vpoints().User::typeIcon($reply['userType']).')</a>'.
 				'</strong><br />';
 

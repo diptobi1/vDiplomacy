@@ -55,14 +55,22 @@ class panelMemberHome extends panelMember
 	 */
 	function memberColumn()
 	{
-		global $User;
+		global $User, $DB;
+		list($directorUserID) = $DB->sql_row("SELECT directorUserID FROM wD_Games WHERE id = ".$this->Game->id);
 
 		$buf =array();
 		$buf[] = '<span class="country'.$this->countryID.' '.($User->id==$this->userID?'memberYourCountry':'').
 			' memberStatus'.$this->status.'">'.substr($this->country,0,3).(
-				($this->online &&!$this->isNameHidden()) ? ' '.libHTML::loggedOn($this->userID) : '').'</span>';
+				 '').'</span>';
 
-		$buf[] = $this->memberFinalized();
+		if ($this->Game->anon == 'No' || (isset($directorUserID) && $directorUserID == $User->id))
+		{
+			$buf[] = $this->memberFinalized();
+		}
+		else
+		{
+			$buf[] = $this->memberFinalizedAnon();
+		}
 		$buf[] = $this->memberSentMessages();
 
 		return $buf;

@@ -36,7 +36,7 @@ if ( isset($_REQUEST['userID']) && intval($_REQUEST['userID'])>0 )
 }
 elseif( isset($_REQUEST['searchUser']) )
 {
-	libAuth::resourceLimiter('user search',5);
+	libAuth::resourceLimiter('user search',1);
 
 	if( !is_array($_REQUEST['searchUser']) )
 		throw new Exception(l_t("Invalid search data submitted."));
@@ -594,8 +594,10 @@ if( $total || (isset($playing) && $playing) )
 		print '<li>'.l_t($name.': <strong>%s</strong>',$status).'</li>';
 	}
 
-	/* We use a different layout on vDip:
-	print '<li>'.l_t('No moves received / received:').' <strong>'.$UserProfile->nmrCount.'/'.$UserProfile->phaseCount.'</strong></li>';
+	if ( $User->type['Moderator'] || $User->id == $UserProfile->id )
+	{
+		print '<li>'.l_t('No moves received / received:').' <strong>'.$UserProfile->nmrCount.'/'.$UserProfile->phaseCount.'</strong></li>';
+	}
 	print '<li>'.l_t('Reliability rating:').' <strong>'.($UserProfile->reliabilityRating).'%</strong>';
 	if( $User->type['Moderator'] || $User->id == $UserProfile->id )
 	{
@@ -746,8 +748,8 @@ if ( $UserProfile->type['ForumModerator'] || $UserProfile->type['Admin'] )
 	}
 }
 
-if ( $UserProfile->online )
-	print '<li><strong>'.l_t('Currently logged in.').'</strong> ('.libHTML::loggedOn($UserProfile->id).')</li>';
+if ( $UserProfile->online || time() - (24*60*60) < $UserProfile->timeLastSessionEnded)
+	print '<li><strong>'.l_t('Visited in last 24 hours').'</strong></li>';
 else
 	print '<li><strong>'.l_t('Last visited:').'</strong> '.libTime::text($UserProfile->timeLastSessionEnded).'</li>';
 

@@ -718,9 +718,6 @@ class User {
 
 			$buffer.='>'.$this->username;
 
-			if ( !$welcome and $this->online )
-				$buffer.= libHTML::loggedOn($this->id);
-
 			$buffer.=' ('.$this->vpoints.libHTML::vpoints().$this->typeIcon($this->type).')</a>';
 		}
 		else

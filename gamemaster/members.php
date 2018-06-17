@@ -240,7 +240,6 @@ class processMembers extends Members
 	 */
 	function checkForWinner()
 	{
-		
 		global $DB;
 		
 		/*
@@ -282,11 +281,10 @@ class processMembers extends Members
 		}
 		else
 		{
-			// If there is a diplpmacy-phase check for a retreating-phase and just wait another round for the retreating to finish.
+			// If there is a diplpmacy-phase check for a retreating-phase and wait another round for the retreats to finish.
 			if ($this->Game->phase == 'Diplomacy')
 			{
-				list($retreating) = $DB->sql_row("SELECT COUNT(retreatingUnitID)
-													FROM wD_TerrStatus WHERE gameID=".$this->Game->id);
+				list($retreating) = $DB->sql_row("SELECT COUNT(retreatingUnitID) FROM wD_TerrStatus WHERE gameID=".$this->Game->id);
 				if($retreating)
 					return false;
 			}

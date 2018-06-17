@@ -32,7 +32,7 @@ class adminActionsTD extends adminActionsForms
 	public static $actions = array(
 			'drawGame' => array(
 				'name' => 'Draw game',
-				'description' => 'Splits points among all the surviving players in a game equally, and ends the game.',
+				'description' => 'Splits points among all the surviving players in a game according to its scoring system, and ends the game.',
 				'params' => array(),
 			),
 			'cancelGame' => array(
@@ -51,18 +51,19 @@ class adminActionsTD extends adminActionsForms
 				'params' => array('extend'=>'Days to extend'),
 			),
 			'makePublic' => array(
-				'name' => 'Make public a private game',
-				'description' => 'Removes a private game\'s password.',
+				'name' => 'Make a private game public',
+				'description' => 'Removes a private game\'s password. This allows anyone to join.',
 				'params' => array(),
 			),
 			'makePrivate' => array(
 				'name' => 'Make a public game private',
-				'description' => 'Add a password to a private game.',
+				'description' => 'Add a password to a private game. Only people with this password can join.',
 				'params' => array('password'=>'Password'),
 			),
 			'cdUser' => array(
 				'name' => 'Force a user into CD',
-				'description' => 'Force a user into CD in this game.',
+				'description' => 'Force a user into CD in this game.<br />
+					Forced CDs do not count against the player\'s RR.',
 				'params' => array('userID'=>'User ID'),
 			),
 			'setProcessTimeToPhase' => array(
@@ -92,7 +93,7 @@ class adminActionsTD extends adminActionsForms
 				'name' => 'Alter game messaging',
 				'description' => 'Change a game\'s messaging settings, e.g. to convert from gunboat to public-only or all messages allowed.',
 				'params' => array(
-					'newSetting'=>'Enter a number for the desired setting: 1=Regular, 2=PublicPressOnly, 3=NoPress'
+					'newSetting'=>'Enter a number for the desired setting: 1=Regular, 2=PublicPressOnly, 3=NoPress, 4=RuleBookPress'
 					),
 			)
 		);
@@ -129,7 +130,8 @@ class adminActionsTD extends adminActionsForms
 			case 1: $newSettingName='Regular'; break;
 			case 2: $newSettingName='PublicPressOnly'; break;
 			case 3: $newSettingName='NoPress'; break;
-			default: throw new Exception(l_t("Invalid messaging setting; enter 1, 2, or 3."));
+			case 4: $newSettingName='RuleBookPress'; break;
+			default: throw new Exception(l_t("Invalid messaging setting; enter 1, 2, 3, or 4."));
 		}
 
 		$DB->sql_put("UPDATE wD_Games SET pressType = '".$newSettingName."' WHERE id = ".$gameID);
