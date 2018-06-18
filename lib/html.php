@@ -548,9 +548,7 @@ class libHTML
 		{
 			$gameNotifyBlock = libHTML::gameNotifyBlock();
 			if ( $gameNotifyBlock )
-				print '<div class="content-notice"><div class="gamelistings-tabs">'.
-					$gameNotifyBlock.
-					'</div></div>';
+				print $gameNotifyBlock;
 		}
 		
 		// Displayes a ModMessage and prevent any other site-content to be load.
@@ -619,6 +617,7 @@ class libHTML
 
 		$tabl = $DB->sql_tabl(
 			"SELECT g.id, g.variantID, g.name, g.phase, m.orderStatus, m.countryID, (m.newMessagesFrom+0) as newMessagesFrom, g.processStatus
+			, g.processTime
 			FROM wD_Members m
 			INNER JOIN wD_Games g ON ( m.gameID = g.id )
 			WHERE m.userID = ".$User->id."
@@ -634,6 +633,7 @@ class libHTML
 		}
 
 		$gameNotifyBlock = '';
+		$gameAlertBlock  = '';
 
 		if ( $User->notifications->PrivateMessage and ! isset($_REQUEST['notices']))
 		{
@@ -700,23 +700,54 @@ class libHTML
 			if ( isset($_REQUEST['gameID']) and $_REQUEST['gameID'] == $gameID )
 				continue;
 
-			$gameNotifyBlock .= '<span class="variant'.Config::$variants[$notifyGame['variantID']].'">'.
-				'<a gameID="'.$gameID.'" class="country'.$notifyGame['countryID'].'" href="board.php?gameID='.$gameID.'">'.
-				$notifyGame['name'];
+			if (!$notifyGame['orderStatus']->Saved && !$notifyGame['orderStatus']->None 
+				&& $notifyGame['phase'] != 'Pre-game' && $notifyGame['phase'] != 'Finished'
+				&& $notifyGame['processStatus'] != 'Paused' 
+				)
+			{
+				$gameAlertBlock .= '<span class="variant'.Config::$variants[$notifyGame['variantID']].'">'.
+					'<a gameID="'.$gameID.'" class="country'.$notifyGame['countryID'].'" href="board.php?gameID='.$gameID.'">'.
+					$notifyGame['name']. ' ' . $notifyGame['orderStatus']->icon();
 
-			if ( $notifyGame['processStatus'] == 'Paused' )
-				$gameNotifyBlock .= '-<img src="'.l_s('images/icons/pause.png').'" alt="'.l_t('Paused').'" title="'.l_t('Game paused').'" />';
+				if ($notifyGame['processTime'] - time() < 2*60*60)
+					$gameAlertBlock .= '(<2 hours<img src="'.l_s('images/icons/alert.png').'"/>)';
+				elseif ($notifyGame['processTime'] - time() < 6*60*60)
+					$gameAlertBlock .= '(<6 hours<img src="'.l_s('images/icons/alert_minor.png').'"/>)';
+				elseif ($notifyGame['processTime'] - time() < 12*60*60)
+					$gameAlertBlock .= '(<12 hours)';
+															
+				if ( $notifyGame['newMessagesFrom'] )
+					$gameAlertBlock .= '<img src="'.l_s('images/icons/mail.png').'" alt="'.l_t('New messages').'" title="'.l_t('New messages!').'" />';
 
-			$gameNotifyBlock .= ' ';
+				$gameAlertBlock .= '</a></span> ';
+			}
+			else
+			{
+				$gameNotifyBlock .= '<span class="variant'.Config::$variants[$notifyGame['variantID']].'">'.
+					'<a gameID="'.$gameID.'" class="country'.$notifyGame['countryID'].'" href="board.php?gameID='.$gameID.'">'.
+					$notifyGame['name'];
 
-			if ( $notifyGame['phase'] != 'Pre-game' && $notifyGame['phase'] != 'Finished' )
-				$gameNotifyBlock .= $notifyGame['orderStatus']->icon();
-			if ( $notifyGame['newMessagesFrom'] )
-				$gameNotifyBlock .= '<img src="'.l_s('images/icons/mail.png').'" alt="'.l_t('New messages').'" title="'.l_t('New messages!').'" />';
+				if ( $notifyGame['processStatus'] == 'Paused' )
+					$gameNotifyBlock .= '-<img src="'.l_s('images/icons/pause.png').'" alt="'.l_t('Paused').'" title="'.l_t('Game paused').'" />';
 
-			$gameNotifyBlock .= '</a></span> ';
+				$gameNotifyBlock .= ' ';
+
+				if ( $notifyGame['phase'] != 'Pre-game' && $notifyGame['phase'] != 'Finished' )
+					$gameNotifyBlock .= $notifyGame['orderStatus']->icon();
+				if ( $notifyGame['newMessagesFrom'] )
+					$gameNotifyBlock .= '<img src="'.l_s('images/icons/mail.png').'" alt="'.l_t('New messages').'" title="'.l_t('New messages!').'" />';
+
+				$gameNotifyBlock .= '</a></span> ';
+			}
 		}
-		return $gameNotifyBlock;
+		
+		if ($gameAlertBlock != '')
+			$gameAlertBlock = '<div class="content-notice" style="border-style: solid; border-color: red;"><div class="gamelistings-tabs">'.$gameAlertBlock.'</div></div>';
+
+		if ($gameNotifyBlock != '')
+			$gameNotifyBlock = '<div class="content-notice"><div class="gamelistings-tabs">'.$gameNotifyBlock.'</div></div>';
+		
+		return $gameAlertBlock . $gameNotifyBlock;
 	}
 
 	/**
