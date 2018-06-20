@@ -59,14 +59,17 @@ class panelMember extends Member
 			{
 				$checkMissingOrders = $value;
 			}
-				
-			if ($checkMissingOrders >= 1)
+			
+			if ($this->Game->anon == 'Yes')
 			{
-				$buf .= '<div class="panelAnonOnlyFlag"><b>At least 1 country still needs to enter orders!</b></div>';
-			}
-			else
-			{
-				$buf .= '<div class="panelAnonOnlyFlag"><b>All countries have entered orders.</b></div>';
+				if ($checkMissingOrders >= 1)
+				{
+					$buf .= '<div class="panelAnonOnlyFlag"><b>At least 1 country still needs to enter orders!</b></div>';
+				}
+				else
+				{
+					$buf .= '<div class="panelAnonOnlyFlag"><b>All countries have entered orders.</b></div>';
+				}
 			}
 		}
 		
@@ -562,7 +565,7 @@ class panelMember extends Member
 	function memberBar()
 	{
 		global $User;
-		if ($this->Game->anon == 'No' || !$this->isNameHidden) 
+		if ($this->Game->anon == 'No' || (isset($this->isNameHidden) && !$this->isNameHidden) )
 		{
 			$buf = '<td class="memberLeftSide">
 			<span class="memberCountryName">'.$this->memberSentMessages().' '.$this->memberFinalized().$this->memberCountryName().'</span>';
