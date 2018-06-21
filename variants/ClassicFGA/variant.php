@@ -33,9 +33,9 @@ class ClassicFGAVariant extends WDVariant {
 	public $fullName   ='Classic - France vs Germany vs Austria';
 	public $description='The standard Diplomacy map of Europe, but only France, Germany and Austria.';
 	public $adapter    ='Orathaic';
-	public $version    ='1.0';
+	public $version    ='1.0.1';
 
-	public $countries=array('France','Austria','German');
+	public $countries=array('France','Austria','Germany');
 
 	public function __construct() {
 		parent::__construct();
