@@ -634,6 +634,7 @@ class libHTML
 
 		$gameNotifyBlock = '';
 		$gameAlertBlock  = '';
+		$needRedAlert=false;
 
 		if ( $User->notifications->PrivateMessage and ! isset($_REQUEST['notices']))
 		{
@@ -699,12 +700,16 @@ class libHTML
 			// Don't print the game if we're looking at it.
 			if ( isset($_REQUEST['gameID']) and $_REQUEST['gameID'] == $gameID )
 				continue;
-
+			
 			if (!$notifyGame['orderStatus']->Saved && !$notifyGame['orderStatus']->None 
 				&& $notifyGame['phase'] != 'Pre-game' && $notifyGame['phase'] != 'Finished'
 				&& $notifyGame['processStatus'] != 'Paused' 
 				)
 			{
+				
+				if ($notifyGame['processTime'] - time() < 24*60*60)
+					$needRedAlert=true;
+				
 				$gameAlertBlock .= '<span class="variant'.Config::$variants[$notifyGame['variantID']].'">'.
 					'<a gameID="'.$gameID.'" class="country'.$notifyGame['countryID'].'" href="board.php?gameID='.$gameID.'">'.
 					$notifyGame['name']. ' ' . $notifyGame['orderStatus']->icon();
@@ -742,7 +747,7 @@ class libHTML
 		}
 		
 		if ($gameAlertBlock != '')
-			$gameAlertBlock = '<div class="content-notice" style="border-style: solid; border-color: red;"><div class="gamelistings-tabs">'.$gameAlertBlock.'</div></div>';
+			$gameAlertBlock = '<div class="content-notice"'.($needRedAlert ? ' style="border-style: solid; border-color: red;"':'').'><div class="gamelistings-tabs">'.$gameAlertBlock.'</div></div>';
 
 		if ($gameNotifyBlock != '')
 			$gameNotifyBlock = '<div class="content-notice"><div class="gamelistings-tabs">'.$gameNotifyBlock.'</div></div>';
