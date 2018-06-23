@@ -710,7 +710,7 @@ class libHTML
 				if ($notifyGame['processTime'] - time() < 24*60*60)
 					$needRedAlert=true;
 				
-				$gameAlertBlock .= '<span class="variant'.Config::$variants[$notifyGame['variantID']].'">'.
+				$gameAlertBlock .= '<span class="variant'.Config::$variants[$notifyGame['variantID']].'" style="border-style: solid; border-color: red;">'.
 					'<a gameID="'.$gameID.'" class="country'.$notifyGame['countryID'].'" href="board.php?gameID='.$gameID.'">'.
 					$notifyGame['name']. ' ' . $notifyGame['orderStatus']->icon();
 
@@ -747,7 +747,7 @@ class libHTML
 		}
 		
 		if ($gameAlertBlock != '')
-			$gameAlertBlock = '<div class="content-notice"'.($needRedAlert ? ' style="border-style: solid; border-color: red;"':'').'><div class="gamelistings-tabs">'.$gameAlertBlock.'</div></div>';
+			$gameAlertBlock = '<div class="content-notice"><div class="gamelistings-tabs">'.$gameAlertBlock.'</div></div>';
 
 		if ($gameNotifyBlock != '')
 			$gameNotifyBlock = '<div class="content-notice"><div class="gamelistings-tabs">'.$gameNotifyBlock.'</div></div>';
