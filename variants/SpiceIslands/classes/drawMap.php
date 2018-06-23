@@ -62,7 +62,7 @@ class SpiceIslandsVariant_drawMap extends MoveFlags_drawMap {
 		4 => array( 48, 151,  46), // Malacca
 		5 => array(254,  56,  47), // Ayutthaya
 		6 => array(172, 101, 171), // Ternate
-		7 => array(251, 255,  58)  // Dai Viet
+		7 => array(232, 234, 110)  // Dai Viet
 	);
 
 	protected function resources() {
