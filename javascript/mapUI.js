@@ -164,3 +164,13 @@ function recolorMap()
 
 recolorMap();
 Event.observe($('mapImage'),'load',recolorMap);
+
+// Try to relad the map 5 times bevore showing an error.
+$('mapImage').addEventListener("error", loadImgFail);
+function loadImgFail()
+{
+	if (($('mapImage').src.match(/X/g)||[]).length < 5) 
+		$('mapImage').src = $('mapImage').src + 'X';
+	else
+		$('mapImage').src = 'images/icons/alert.png';
+}

@@ -686,11 +686,11 @@ function display_interface() {
                 print '<input type="hidden" name="zoom_y" value="' . $y . '">';
             }
             print '<input style=cursor:crosshair type="image" name=';
-            print 'map src="dev/map_draw.php?terrID=' . $terrID . '&variantID=' . $variantID . '&mode=' . $mode . '&mapsize=' . $mapsize . $zoomstr . '&nocache=' . (rand(1, 9999)) . '&draw" >';
+            print 'map onError="if ((this.src.match(/X/g)||[]).length < 5) this.src=this.src + \'X\'; else this.src = \'images/icons/alert.png\';" src="dev/map_draw.php?terrID=' . $terrID . '&variantID=' . $variantID . '&mode=' . $mode . '&mapsize=' . $mapsize . $zoomstr . '&nocache=' . (rand(1, 9999)) . '" >';
             print '</form>';
         } else {
-            print '<img src="dev/map_draw.php?terrID=' . $terrID . '&variantID=' . $variantID . '&mode=' . $mode . '&mapsize=' . $mapsize . $zoomstr . '&nocache=' . (rand(1, 9999)) . '&draw" >';
-        }
+             print '<img onError="if ((this.src.match(/X/g)||[]).length < 5) this.src=this.src + \'X\'; else this.src = \'images/icons/alert.png\';" src="dev/map_draw.php?terrID=' . $terrID . '&variantID=' . $variantID . '&mode=' . $mode . '&mapsize=' . $mapsize . $zoomstr . '&nocache=' . (rand(1, 9999)) . '" >';
+       }
 		print '<div align="center"> If you can\'t see the map <b><a href="dev/map_draw.php?terrID=' . $terrID . '&variantID=' . $variantID . '&mode=' . $mode . '&mapsize=' . $mapsize . $zoomstr . '&nocache=' . (rand(1, 9999)) . '&draw'.'">click here</a></b> to view the error message.</div>';
     }
 
