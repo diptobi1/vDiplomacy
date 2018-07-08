@@ -83,6 +83,10 @@ if(!(isset($_REQUEST['variantID'])))
 		
 		if (isset(Config::$hiddenVariants) && in_array($Variant->id,Config::$hiddenVariants) && $User->type['Guest'])
 			continue;
+		
+		// Don't show blocked variants (usually in development):
+		if (isset(Config::$blockedVariants) && in_array($Variant->id,Config::$blockedVariants))
+			continue;
 			
 		list($players)=$DB->sql_row(
 			'SELECT COUNT(*) FROM wD_Members m
@@ -138,12 +142,12 @@ else
 		if (file_exists(libVariant::cacheDir($Variant->name).'/sampleMapLarge.png'))
 			print libVariant::cacheDir($Variant->name).'/sampleMapLarge.png';
 		else
-			print 'map.php?variantID=' . $Variant->id. '&largemap';	
+			print 'map.php?variantID=' . $Variant->id. '&/devlog&largemap';	
 	print '" target="_blank"> <img src="';
 	if (file_exists(libVariant::cacheDir($Variant->name).'/sampleMap.png'))
 		print libVariant::cacheDir($Variant->name).'/sampleMap.png';
 	else
-		print 'map.php?variantID=' . $Variant->id;
+		print 'map.php?variantID=' . $Variant->id."&/devlog";
 	print '" alt="Open large map" title="The map for the '. $Variant->name .' Variant" /></a></span> </div><br />';
 
 	print '<div class="content content-follow-on">';
