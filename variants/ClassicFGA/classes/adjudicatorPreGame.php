@@ -26,8 +26,7 @@ class ClassicFGAVariant_adjudicatorPreGame extends adjudicatorPreGame {
 	protected $countryUnits = array(
 		'France'  => array('Brest'  =>'Fleet', 'Paris' =>'Army', 'Marseilles'=>'Army'),
 		'Austria' => array('Trieste'=>'Fleet', 'Vienna'=>'Army', 'Budapest'  =>'Army'),
-		'German' => array('Kiel'=>'Fleet', 'Berlin'=>'Army', 'Munich'  =>'Army'),
-
+		'Germany' => array('Kiel'=>'Fleet', 'Berlin'=>'Army', 'Munich'  =>'Army'),
 	);
 
 }

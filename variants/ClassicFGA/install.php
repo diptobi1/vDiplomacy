@@ -2,9 +2,9 @@
 /*
 	Copyright (C) 2010 Oliver Auth, Orathaic
 
-	This file is part of the France Vs Germany Vs Austria variant for webDiplomacy
+	This file is part of the France Vs Germanyy Vs Austria variant for webDiplomacy
 
-	The France Vs Germany Vs Austria variant for webDiplomacy is free software: you can redistribute
+	The France Vs Germanyy Vs Austria variant for webDiplomacy is free software: you can redistribute
 	it and/or modify it under the terms of the GNU Affero General Public License
 	as published by the Free Software Foundation, either version 3 of the License,
 	or (at your option) any later version.
@@ -68,12 +68,12 @@ $territoryRawData=array(
 	array('Sweden'                      ,'Coast','Yes',587 ,285,307,103,'Neutral'),
 	array('Norway'                      ,'Coast','Yes',518 ,270,265,113,'Neutral'),
 	array('Denmark'                     ,'Coast','Yes',501 ,435,264,150,'Neutral'),
-	array('Kiel'                        ,'Coast','Yes',477 ,504,253,193,'German'),
-	array('Berlin'                      ,'Coast','Yes',559 ,493,287,189,'German'),
-	array('Prussia'                     ,'Coast','No' ,618 ,482,319,202,'German'),
-	array('Silesia'                     ,'Land' ,'No' ,589 ,535,315,222,'German'),
-	array('Munich'                      ,'Land' ,'Yes',489 ,596,252,229,'German'),
-	array('Ruhr'                        ,'Land' ,'No' ,450 ,550,227,221,'German'),
+	array('Kiel'                        ,'Coast','Yes',477 ,504,253,193,'Germany'),
+	array('Berlin'                      ,'Coast','Yes',559 ,493,287,189,'Germany'),
+	array('Prussia'                     ,'Coast','No' ,618 ,482,319,202,'Germany'),
+	array('Silesia'                     ,'Land' ,'No' ,589 ,535,315,222,'Germany'),
+	array('Munich'                      ,'Land' ,'Yes',489 ,596,252,229,'Germany'),
+	array('Ruhr'                        ,'Land' ,'No' ,450 ,550,227,221,'Germany'),
 	array('Holland'                     ,'Coast','Yes',433 ,510,234,185,'Neutral'),
 	array('Belgium'                     ,'Coast','Yes',410 ,550,215,205,'Neutral'),
 	array('Picardy'                     ,'Coast','No' ,363 ,559,182,213,'France' ),

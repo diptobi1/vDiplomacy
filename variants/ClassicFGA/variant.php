@@ -21,6 +21,8 @@
 	
 	Changelog:
 	1.0:   initial version
+	1.0.1: Name change German => Germany
+	1.0.2: forgot to change the name in adjucatorPregame. It's fixed now.
 	
 */
 
@@ -33,7 +35,8 @@ class ClassicFGAVariant extends WDVariant {
 	public $fullName   ='Classic - France vs Germany vs Austria';
 	public $description='The standard Diplomacy map of Europe, but only France, Germany and Austria.';
 	public $adapter    ='Orathaic';
-	public $version    ='1.0.1';
+	public $version    ='1';
+	public $codeVersion='1.0.2';
 
 	public $countries=array('France','Austria','Germany');
 
