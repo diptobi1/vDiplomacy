@@ -105,21 +105,28 @@ class libSwitch
 		$sql='SELECT id, fromID, toID FROM wD_CountrySwitch	WHERE status = "Active" AND gameID='.$Game->id;
 		$tabl = $DB->sql_tabl($sql);
 		while(list($id,$fromID,$toID) = $DB->tabl_row($tabl))
-		{		
-			$Switch = $Game->Members->ByUserID[$toID];
+		{
+			if (isset($Game->Members->ByUserID[$toID]))
+			{
+				$Switch = $Game->Members->ByUserID[$toID];
 
-			unset($Game->Members->ByUserID[$Switch->userID]);
-			unset($Game->Members->ByCountryID[$Switch->countryID]);
-			unset($Game->Members->ByStatus[$Switch->status][$Switch->id]);
+				unset($Game->Members->ByUserID[$Switch->userID]);
+				unset($Game->Members->ByCountryID[$Switch->countryID]);
+				unset($Game->Members->ByStatus[$Switch->status][$Switch->id]);
 
-			$DB->sql_put("UPDATE wD_Members SET userID = ".$fromID." WHERE id =".$Switch->id);
-			$DB->sql_put('UPDATE wD_CountrySwitch SET status="Returned" WHERE id='.$id);
-			$Switch->userID = $fromID;
+				$DB->sql_put("UPDATE wD_Members SET userID = ".$fromID." WHERE id =".$Switch->id);
+				$DB->sql_put('UPDATE wD_CountrySwitch SET status="Returned" WHERE id='.$id);
+				$Switch->userID = $fromID;
 
-			$Game->Members->ByUserID[$Switch->userID] = $Switch;
-			$Game->Members->ByUserID[$toID] = $Switch;
-			$Game->Members->ByCountryID[$Switch->countryID] = $Switch;
-			$Game->Members->ByStatus[$Switch->status][$Switch->id] = $Switch;
+				$Game->Members->ByUserID[$Switch->userID] = $Switch;
+				$Game->Members->ByUserID[$toID] = $Switch;
+				$Game->Members->ByCountryID[$Switch->countryID] = $Switch;
+				$Game->Members->ByStatus[$Switch->status][$Switch->id] = $Switch;
+			}
+			else
+			{
+				$DB->sql_put('UPDATE wD_CountrySwitch SET status="Returned" WHERE id='.$id);
+			}
 		}
 	}
 
