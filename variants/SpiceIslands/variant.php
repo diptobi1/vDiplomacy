@@ -34,7 +34,7 @@ class SpiceIslandsVariant extends WDVariant {
 	public $author      ='David E. Cohen';
 	public $adapter     ='Enriador & Oliver Auth';
 	public $version     ='2.0';
-	public $codeVersion ='1.0.1';
+	public $codeVersion ='1.0.2';
 	public $homepage    ='http://diplomiscellany.tripod.com/id24.html';
 
 	public $countries=array('Brunei','Majapahit','Tondo','Malacca','Ayutthaya','Ternate','Dai Viet');
