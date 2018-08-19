@@ -34,12 +34,24 @@ class Baron1900Variant_processMembers extends processMembers {
             // If more than one is left over see if any of them have supplyCenterTarget or more supply centers
             foreach($this->ByStatus['Playing'] as $Member)
             {
-                if ( $this->Game->Variant->supplyCenterTarget <= $Member->supplyCenterNo )
-                {
-                    return $this->check_for_Winner_that_works_with_same_SC_count();
-                }
+				if ( $this->Game->targetSCs > 0 )
+				{
+					if ( $this->Game->targetSCs <= $Member->supplyCenterNo )
+					{
+						return $this->check_for_Winner_that_works_with_same_SC_count();
+					}
+				}
+				elseif ( $this->Game->Variant->supplyCenterTarget <= $Member->supplyCenterNo )
+				{
+					return $this->check_for_Winner_that_works_with_same_SC_count();
+				}
+				// The players which have lost go into 'Survived' mode when the other player is set to Won
             }
         }
+		
+		// Do an additional check if we reached maxTurns:
+		if (($this->Game->turn == ($this->Game->maxTurns - 1)) && ($this->Game->maxTurns > 0))
+			return $this->check_for_Winner_that_works_with_same_SC_count();
 
         return false;
     }
