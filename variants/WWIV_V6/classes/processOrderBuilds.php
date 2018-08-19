@@ -58,6 +58,6 @@ class WWIV_V6Variant_processOrderBuilds extends WWIVVariant_processOrderBuilds
 		'Thailand' => array ('Rangoon (ran)'=>'Fleet', 'Korat Plateau (krt)'=>'Army', 'Bangkok (bnk)'=>'Army'),
 		'Turkey' => array ('Istanbul (ist)'=>'Army', 'Izmir (izm)'=>'Army', 'Ankara (ank)'=>'Army'),
 		'United-Kingdom' => array ('Ireland (ire)'=>'Fleet', 'London (lon)'=>'Fleet', 'Edinburgh (edi)'=>'Fleet'),
-		'United-States' => array ('Carolinas (car)'=>'Army', 'Washington (was)'=>'Fleet', 'New York City (nyc)'=>'Fleet')
+		'United-States' => array ('Carolinas (car)'=>'Army', 'Washington DC (wdc)'=>'Fleet', 'New York City (nyc)'=>'Fleet')
 	);
 }
