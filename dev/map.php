@@ -152,7 +152,11 @@ function write_changes() {
     if ($sc != '')
         $DB->sql_put('UPDATE wD_Territories SET supply="' . $sc . '" WHERE mapID=' . $mapID . ' AND id=' . $terrID);
     if (($name != '') && ($terrID != '0'))
-        $DB->sql_put('UPDATE wD_Territories SET name="' . $name . '" WHERE mapID=' . $mapID . ' AND id=' . $terrID);
+	{
+        list($duplicate) = $DB->sql_row('SELECT COUNT(*) FROM wD_Territories WHERE mapID=' . $mapID . ' AND name="'.$name.'"');
+		if ($duplicate == 0)
+			$DB->sql_put('UPDATE wD_Territories SET name="' . $name . '" WHERE mapID=' . $mapID . ' AND id=' . $terrID);
+    }
     if ($countryID >= 0 && $terrID != '0')
         $DB->sql_put('UPDATE wD_Territories SET countryID="' . $countryID . '" WHERE mapID=' . $mapID . ' AND id=' . $terrID);
     if (($name != '') && ($terrID == '0'))
