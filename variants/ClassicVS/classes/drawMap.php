@@ -55,10 +55,9 @@ class CustomCountries_drawMap extends drawMap
 		if (($this->territoryNames[$terrID] == 'PreGameCheck') && ($countryID != 0))
 		{
 			global $Variant, $DB;
-			$sql = "SELECT id, countryID
+			$sql = "SELECT id, countryID, coast
 					FROM wD_Territories
-					WHERE (coast='No' OR coast='Parent')
-						AND name != 'PreGameCheck'
+					WHERE name != 'PreGameCheck'
 						AND type != 'Sea'
 						AND mapID=".$Variant->mapID;
 			$tabl = $DB->sql_tabl($sql);
@@ -66,7 +65,7 @@ class CustomCountries_drawMap extends drawMap
 			$this->show_unit[] = 1;
 			
 			// Color countries that do not get played as 'neutral'
-			while(list($terrID, $countryID) = $DB->tabl_row($tabl))
+			while(list($terrID, $countryID, $coast) = $DB->tabl_row($tabl))
 			{
 				if ((in_array('England',$Variant->countries) == false) && $countryID == 1) $countryID = 0;
 				if ((in_array('France' ,$Variant->countries) == false) && $countryID == 2) $countryID = 0;
@@ -75,7 +74,8 @@ class CustomCountries_drawMap extends drawMap
 				if ((in_array('Austria',$Variant->countries) == false) && $countryID == 5) $countryID = 0;
 				if ((in_array('Turkey' ,$Variant->countries) == false) && $countryID == 6) $countryID = 0;
 				if ((in_array('Russia' ,$Variant->countries) == false) && $countryID == 7) $countryID = 0;
-				parent::colorTerritory($terrID, $countryID);
+				if ($coast == 'No' OR $coast == ' Parent')
+					parent::colorTerritory($terrID, $countryID);
 				if ($countryID != 0)
 					$this->show_unit[] = $terrID;
 			}			
