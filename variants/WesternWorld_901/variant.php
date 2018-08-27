@@ -20,8 +20,9 @@
 	---
 
 	Changelog:
-	1.0.0: initial release
-	1.1.0: missing OrderArchiv (needed for neutral player)
+	1.0: initial release
+	1.1: missing OrderArchiv (needed for neutral player)
+	1.2: Build anywhere now working properly (fixed)
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -35,7 +36,7 @@ class WesternWorld_901Variant extends WDVariant {
 	public $author     ='David E. Cohen';
 	public $adapter    ='Yuriy Hryniv aka Flame';
 	public $version    ='4.0';
-	public $codeVersion='1.1.1';
+	public $codeVersion='1.2';
 	public $homepage  ='http://diplomiscellany.tripod.com/id16.html';
 
 	public $countries=array('Arabia','Byzantinum','Denmark','Egypt','France','Germany','Khazaria','Rus','Spain');
@@ -48,6 +49,7 @@ class WesternWorld_901Variant extends WDVariant {
 		//buildanywhere
 		$this->variantClasses['OrderInterface']     = 'WesternWorld_901';
 		$this->variantClasses['userOrderBuilds']    = 'WesternWorld_901';
+		$this->variantClasses['processOrderBuilds'] = 'WesternWorld_901';
 
 		// Zoom-Map
 		$this->variantClasses['panelGameBoard']     = 'WesternWorld_901';
