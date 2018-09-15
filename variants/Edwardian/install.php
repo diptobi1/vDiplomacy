@@ -136,7 +136,7 @@ unset($territoryRawData);
 $bordersRawData=array(
 	array('Iceland','Norwegian Sea','Yes','No'),
 	array('Iceland','North Atlantic','Yes','No'),
-	array('Glasgow','Belfast','No','Yes'),
+	array('Glasgow','Belfast','Yes','Yes'),
 	array('Glasgow','Liverpool','Yes','Yes'),
 	array('Glasgow','Yorkshire','Yes','Yes'),
 	array('Glasgow','Norwegian Sea','Yes','No'),

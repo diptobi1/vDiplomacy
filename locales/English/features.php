@@ -151,18 +151,5 @@ function FAQShow(section, question) {
 	$$('#faq_answer_'+section+'_'+question+' .faq_answer').map(function (e) {e.show();});
 	$$('#faq_answer_'+section+'_'+question+' .faq_question').map(function (e) {e.setStyle({fontWeight:'bold'});});
 }
-
-function FAQInit() {
-	ancor = self.document.location.hash.substring(1).match(/\d+/g);
-	section  = ancor[0];
-	question = ancor[1];
-	if ( question != undefined)
-	{
-		$$('#faq_answer_'+section+'_'+question+' .faq_answer').map(function (e) {e.show();});
-		$$('#faq_answer_'+section+'_'+question+' .faq_question').map(function (e) {e.setStyle({fontWeight:'bold'});});
-	}
-}
-
 </script>
-<?php libHTML::$footerScript[] = 'FAQInit();'; ?>
-
+<?php libHTML::$footerScript[] = 'FAQHide();'; ?>

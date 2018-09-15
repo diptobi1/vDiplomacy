@@ -24,9 +24,25 @@ if(!$User->type['User'])
 	libHTML::error(l_t("You can't use the developer panel, you're using a guest account."));
 
 // The Variant-ID for the map
-$variantID = isset($_REQUEST['variantID']) ? $_REQUEST['variantID'] : '0'; 
-if (!(isset(Config::$variants[$variantID]))) $variantID = 0;
-if (isset(Config::$hiddenVariants) && in_array($variantID,Config::$hiddenVariants) && $User->type['Guest']) $variantID = 0;
+$variantID = ( isset($_REQUEST['variantID']) && (isset(Config::$variants[intval($_REQUEST['variantID'])])) ) ? intval($_REQUEST['variantID']) : '0'; 
+
+// Admins can edit maps, and users with developer-access can edit their own variants.
+$edit = ( ($User->id == 5) ? true : false);
+if (isset(Config::$devs) && $variantID != 0)
+	if (array_key_exists($User->username, Config::$devs)) 
+	 if (in_array(Config::$variants[$variantID], Config::$devs[$User->username]))
+		$edit = true;
+
+// Show the dev-errorlog if requested.	
+if ( isset($_REQUEST['viewErrorLog']) && $edit == true)
+{
+	$log=(int)$_REQUEST['viewErrorLog'];
+	if( !($data=file_get_contents(Config::errorlogDirectory().'/dev/'.$log.'.txt')) )
+		trigger_error(l_t("Couldn't open file %s.txt",$log));
+	header('Content-type:text/plain');
+	print $data;
+	die();
+}
 
 libHTML::starthtml();
 
@@ -40,21 +56,24 @@ $tabs['Map']      =l_t("Edit your map");
 $tabs['Units']    =l_t("Manage your starting units");
 $tabs['Files']    =l_t("Magage your files");
 $tabs['Preview']  =l_t("Preview of the variant-page");
-$tabs['MapResize']=l_t("Resize your maps.");
+$tabs['MapResize']=l_t("Resize your maps");
+$tabs['Converter']=l_t("Convert Judgefiles");
+$tabs['Admin']    =l_t("Show the admin tools for development");
 
 $tab = 'Base';
 $tabNames = array_keys($tabs);
 
-if( isset($_REQUEST['tab']) && in_array($_REQUEST['tab'], $tabNames) )
-	$tab = $_REQUEST['tab'];
+if( isset($_REQUEST['tab']) && in_array($_REQUEST['tab'], $tabNames) ) $tab = $_REQUEST['tab'];
 
-print '<div class="gamelistings-tabs">';
-
-foreach($tabs as $tabChoice=>$tabTitle)
-	print '<a title="'.$tabTitle.'" href="dev.php?variantID='.$variantID.'&tab='.$tabChoice.
-	 ( ( $tab == $tabChoice ) ?  '" class="current"' : '').'">'.l_t($tabChoice).'</a>';
-
-print '</div><br>';
+// Print the different edit-tools only if we are in edit-mode.
+if ($edit == true)
+{
+	print '<div class="gamelistings-tabs">';
+	foreach($tabs as $tabChoice=>$tabTitle)
+		print '<a title="'.$tabTitle.'" href="dev.php?variantID='.$variantID.'&tab='.$tabChoice.
+		 ( ( $tab == $tabChoice ) ?  '" class="current"' : '').'">'.l_t($tabChoice).'</a>';
+	print '</div><br>';
+}
 
 // Define some form-elemets needed by all dev-tools.
 $allVariants = Config::$variants;
@@ -79,16 +98,6 @@ foreach ($allVariants as $id=>$name )
 	$selectVariantForm .= '<option value="'.$id.'"'.($id == $variantID ? ' selected':'').'>'.$name.'</option>';
 $selectVariantForm .= '</select></form>';
 
-if ($User->id == 5)
-	$edit = true;
-else
-	$edit = false;
-
-if (isset(Config::$devs) && $variantID != 0)
-	if (array_key_exists($User->username, Config::$devs)) 
-	 if (in_array(Config::$variants[$variantID], Config::$devs[$User->username]))
-		$edit = true;
-
 if ($variantID != 0 && $tab != 'Base')
 {
     $Variant = libVariant::loadFromVariantID($variantID);
@@ -112,14 +121,20 @@ switch($tab)
 	case 'Files':
 		require_once(l_r('dev/files.php'));
 		break;
+	case 'Admin':
+		require_once(l_r('dev/admin.php'));
+		break;
 	case 'Preview':
 		require_once(l_r('dev/preview.php'));
 		break;
 	case 'MapResize':
 		require_once(l_r('dev/mapresize.php'));
 		break;
+	case 'Converter':
+		require_once(l_r('dev/converter.php'));
+		break;
 	default:
-		require_once(l_r('dev/config.php'));
+		require_once(l_r('dev/base.php'));
 }
 
 print '</div>';

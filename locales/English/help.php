@@ -38,6 +38,9 @@ print libHTML::pageTitle('webDiplomacy Help and Links','Links to pages with more
 <li><a href="faq.php">FAQ</a></li>
 <li class="formlistdesc">The webDiplomacy FAQ (Frequently asked questions) and information on donating.</li>
 
+<li><a href="profile.php">Find a user</a></li>
+<li class="formlistdesc">Search for a user account registered on this server if you know their user ID number, username, or e-mail address.</li>
+
 <li><a href="features.php">VDiplomacy features</a></li>
 <li class="formlistdesc">Features you should be aware of (not available at webdiplomacy.net).</li>
 
@@ -55,6 +58,9 @@ print libHTML::pageTitle('webDiplomacy Help and Links','Links to pages with more
 
 <li><a href="points.php">webDiplomacy points</a></li>
 <li class="formlistdesc">What points are for, how to win them, and how to get into the hall of fame.</li>
+
+<li><a href="press.php">Press type information</a></li>
+<li class="formlistdesc">Learn more about the several different communication systems available.</li>
 
 <li><a href="variants.php">Variant information</a></li>
 <li class="formlistdesc">A list of the variants available on this server, credits, and information on variant-specific rules.</li>

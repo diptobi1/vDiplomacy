@@ -310,9 +310,9 @@ class processGame extends Game
 	{
 		global $DB;
 
-		if ( $name == 'DATC-Adjudicator-Test' and ! defined('DATC') )
+		if ( ($name == 'DATC-Adjudicator-Test' or $name == 'DATC-Adjudicator-1900-Test') and ! defined('DATC') )
 		{
-			throw new Exception(l_t("The game name 'DATC-Adjudicator-Test' is reserved for the automated DATC tester."));
+			throw new Exception(l_t("The game name '$name' is reserved for the automated DATC tester."));
 		}
 
 		// Find a unique game name

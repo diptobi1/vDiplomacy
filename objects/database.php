@@ -76,19 +76,23 @@ class Database {
 	 */
 	public function __construct()
     {
-      $this->link = mysqli_connect(Config::$database_socket,
-				Config::$database_username, Config::$database_password);
+      if (count($connection_params = explode(':',Config::$database_socket)) == 1) 
+	$this->link = mysqli_connect(Config::$database_socket,
+			Config::$database_username, Config::$database_password);
+      else 
+      	$this->link = mysqli_connect($connection_params[0], 
+      			Config::$database_username, Config::$database_password, 
+      			null, $connection_params[1]);
 
 		if( ! $this->link )
 			trigger_error(l_t("Couldn't connect to the MySQL server, if this problem persists please inform the admin."));
-
 		if( ! mysqli_select_db($this->link,Config::$database_name) )
 		{
 			if (file_exists ('install/'.Config::$easyDevInstall))
 				require('install/'.Config::$easyDevInstall);
 			else
 				trigger_error(l_t("Connected to the MySQL server, but couldn't access the specified database. ".
-						"If this problem persists please inform the admin."));
+				"If this problem persists please inform the admin."));
 		}
 		
 			/*

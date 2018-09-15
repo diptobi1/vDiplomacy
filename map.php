@@ -201,7 +201,7 @@ if( $turn==-1 )
 	$sql = "SELECT t.id, t.name, t.type, t.countryID, 'No' as standoff
 			, t.supply
 			FROM wD_Territories t
-			WHERE (t.coast='No' OR t.coast='Parent') AND mapID=".$Variant->mapID;
+			WHERE (t.coast='No' OR t.coast='Parent') AND mapID=".$Variant->mapID." ORDER BY t.id";
 }
 else
 {
@@ -212,7 +212,7 @@ else
 			LEFT JOIN wD_TerrStatusArchive ts
 				ON ( ts.gameID = ".$Game->id." AND ts.turn = ".$turn." AND ts.terrID = t.id )
 			/* TerrStatus is non-coastal */
-			WHERE (t.coast='No' OR t.coast='Parent') AND t.mapID=".$Variant->mapID;
+			WHERE (t.coast='No' OR t.coast='Parent') AND t.mapID=".$Variant->mapID." ORDER BY t.id";
 }
 
 
@@ -245,6 +245,8 @@ while(list($terrID, $terrName, $terrType, $countryID, $standoff, $supply) = $DB-
 	}
 }
 
+$drawMap->addIntermediateLayer();
+
 // vDip: Pre-game or variant-page-preview: Add the initial units:
 if( $turn==-1 )
 {
@@ -269,7 +271,7 @@ if( $turn==-1 )
 		foreach ($units as $terrName => $unitType)
 			$drawMap->addUnit($terrIDByName[$terrName], $unitType);
 }
-
+        
 if( isset($_REQUEST['variantID']) )
 {
 	$drawMap->addTerritoryNames();
@@ -347,7 +349,7 @@ else
 					unitType, /* Unit */
 					success, dislodged /* Move */
 				FROM wD_MovesArchive
-				WHERE gameID = ".$Game->id." AND turn = ".$turn." ORDER BY type DESC";
+				WHERE gameID = ".$Game->id." AND NOT type = 'Wait' AND turn = ".$turn." ORDER BY type DESC";
 }
 
 /* Start with unit placement moves, and go back. This lets us know that the place we're

@@ -458,7 +458,6 @@ $bordersRawData=array(
 	array('Morocco','Western Mediterranean Sea','Yes','No'),
 	array('Algeria','Tripoli','No','Yes'),
 	array('Algeria','Western Mediterranean Sea','Yes','No'),
-	array('Tripoli','Maltese Sea','Yes','No'),
 	array('Tripoli','Ionian Sea','Yes','No'),
 	array('Mainz','Westphalia','No','Yes'),
 	array('Mainz','Lusatia','No','Yes'),

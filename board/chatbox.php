@@ -469,7 +469,7 @@ class Chatbox
 				$message['message'] = '<span class="messageFromMe">'.$message['message'].'</span>';
 
 			// Display the country name in front of the text (for colorblind people)
-			if ( $User->options->value['colourblind'] != 'No' || $User->showCountryNames == 'Yes')
+			if ( ( $User->options->value['colourblind'] != 'No' || $User->showCountryNames == 'Yes') && ($Game->phase != 'Pre-game') )
 			{
 				if(isset($Member) && $Member->countryID == $message['fromCountryID'])
 					$messagestxt .=  '<strong>You:</strong> ';

@@ -34,8 +34,8 @@ if ($variantID != 0)
 	print '</div>
 		<div style="text-align:center">
 			<span id="Image_'. $Variant->name . '">
-				<a href="map.php?variantID=' . $Variant->id. '&largemap" target="_blank">
-				<img src="map.php?variantID=' . $Variant->id.'"
+				<a href="map.php?variantID=' . $Variant->id. '&largemap&/devmode" target="_blank">
+				<img src="map.php?variantID=' . $Variant->id.'&/devmode"
 				alt="Open large map" title="The map for the '. $Variant->name .' Variant" /></a>
 			</span>
 		</div>

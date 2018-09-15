@@ -76,13 +76,20 @@ if (isset($_REQUEST['forceUserIDs']))
 if( !isset($_REQUEST['page']) && isset($_REQUEST['viewthread']) && $viewthread )
 {
 	unset($orderIndex);
-	list($orderIndex) = $DB->sql_row("SELECT b.latestReplySent FROM wD_ModForumMessages b WHERE b.id = ".$viewthread);
+	list($orderIndex, $threadStatus) = $DB->sql_row("SELECT b.latestReplySent, status FROM wD_ModForumMessages b WHERE b.id = ".$viewthread);
 	if(!isset($orderIndex) || !$orderIndex)
 		libHTML::notice('Thread not found', "The thread you requested wasn't found.");
 
+	switch ($threadStatus) {
+		case 'Resolved': $tab = 'Resolved'; break;
+		case 'Bugs'    : $tab = 'Bugs'; break;
+		case 'Sticky'  : $tab = 'Sticky'; break;
+		default        : $tab = 'Open'; break;	
+	}
+	
 	list($position) = $DB->sql_row(
-			"SELECT COUNT(*)-1 FROM wD_ModForumMessages a WHERE a.latestReplySent >= ".$orderIndex." AND a.type='ThreadStart' ". ($User->type['Moderator'] ? $tabs[$tab][1] : '')
-		);
+		"SELECT COUNT(*)-1 FROM wD_ModForumMessages a WHERE a.latestReplySent >= ".$orderIndex." AND a.type='ThreadStart' ". ($User->type['Moderator'] ? $tabs[$tab][1] : '')
+	);
 
 	$forumPager->currentPage = $forumPager->pageCount - floor($position/PagerForum::$defaultPostsPerPage);
 }
@@ -91,8 +98,7 @@ if (isset($_REQUEST['toggleStatus']) && $_REQUEST['toggleStatus'] != $tab && $Us
 {
 	list($status)=$DB->sql_row("SELECT status FROM wD_ModForumMessages WHERE id = ".$viewthread);
 	$newstatus = $_REQUEST['toggleStatus'];
-	$DB->sql_put("UPDATE wD_ModForumMessages SET status='".$newstatus."' WHERE id = ".$viewthread);
-		
+	$DB->sql_put("UPDATE wD_ModForumMessages SET status='".$newstatus."' WHERE id = ".$viewthread);		
 	$tab = $newstatus;
 }
 
@@ -374,16 +380,24 @@ if( $User->type['Moderator'] )
 }
 // end of more tabs for admins
 	
-if ($ForumThreads == 0 && !$User->type['Moderator'])
+if (!$User->type['Moderator'])
 {
-	list($threads)= $DB->sql_row("SELECT COUNT(type) FROM wD_ModForumMessages WHERE type='ThreadStart'");
-	list($posts)= $DB->sql_row("SELECT COUNT(type) FROM wD_ModForumMessages WHERE 1");
+	print '<div class="content-notice">';
 
-	print '<div class="content-notice"><p class="notice">
-			This is where you post issues you may have with certain users, games and bugs.<br>
-			Every thread you post here is confidential and can only be viewed by yourself and the moderators.<br>
-			All mods receive an alert when you make a post in this forum. </p><br>
-			<p class="notice">To date there have been '.$threads.' threads and a total of '.$posts.' posts made here.</p>
+	if ($ForumThreads == 0)
+	{
+		list($threads)= $DB->sql_row("SELECT COUNT(type) FROM wD_ModForumMessages WHERE type='ThreadStart'");
+		list($posts)= $DB->sql_row("SELECT COUNT(type) FROM wD_ModForumMessages WHERE 1");
+
+		print '<p class="notice">
+				This is where you post issues you may have with certain users, games and bugs.<br>
+				Every thread you post here is confidential and can only be viewed by yourself and the moderators.<br>
+				All mods receive an alert when you make a post in this forum. </p><br>
+				<p class="notice">To date there have been '.$threads.' threads and a total of '.$posts.' posts made here.</p><br>';
+	}
+
+	print '<p class="notice">
+			Please make sure to include a gameID in the form of gameID=XXX for an example of your problem.
 			</p></div>';
 }
 	
@@ -761,6 +775,7 @@ while( $message = $DB->tabl_hash($tabl) )
 							print '
 								<div class="message-body replyalternate'.$replyswitch.'" style="background-color:#ffffff;">
 									<div class="message-contents" fromUserID="'.$forceReplyMessage['fromUserID'].'">
+										UserID: '.$forceReplyMessage['fromUserID'].'<br>
 										Read: IP='.($forceReplyMessage['readIP']   != 0 ? long2ip($forceReplyMessage['readIP']) : '').', time='.($forceReplyMessage['readTime'] != 0 ? libTime::text($forceReplyMessage['readTime']) : '').'<br>
 										Reply: IP='.($forceReplyMessage['replyIP'] != 0 ? long2ip($forceReplyMessage['replyIP']): '').', time='.libTime::text($forceReplyMessage['timeSent']).'<br><br>
 										'.$forceReplyMessage['message'].'
@@ -865,7 +880,7 @@ while( $message = $DB->tabl_hash($tabl) )
 
 			print '<br>';
 			
-			if ($message['modname'] == '' || $message['modname'] == $User->username || $message['fromUserID'] == $User->id)
+			if ($message['modname'] == '' || $message['modname'] == $User->username || $message['fromUserID'] == $User->id || ($User->id == 5 && $tab=='Bugs'))
 			{
 				print '<input type="submit" ';
 				if (strpos($message['userType'],'Moderator')===false && $User->type['Moderator'])

@@ -32,7 +32,7 @@ $sql[]="CREATE TABLE `wD_AdminLog` (
 			`params` text NOT NULL,
 			PRIMARY KEY (`id`),
 			KEY `time` (`time`)
-			) ENGINE=MyISAMDEFAULT CHARSET=utf8;";
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -246,7 +246,7 @@ $sql[]="CREATE TABLE `wD_ForumMessages` (
 			KEY `latestReplySent` (`latestReplySent`),
 			KEY `profileLinks` (`type`,`fromUserID`,`timeSent`),
 			KEY `type` (`type`,`latestReplySent`)
-			) ENGINE=MyISAMDEFAULT CHARSET=utf8;";
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -261,7 +261,7 @@ $sql[]="CREATE TABLE `wD_GameMessages` (
 			PRIMARY KEY (`id`),
 			KEY `toMember` (`gameID`,`toCountryID`),
 			KEY `fromMember` (`gameID`,`fromCountryID`)
-			) ENGINE=MyISAMDEFAULT CHARSET=utf8;";
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -304,7 +304,7 @@ $sql[]="CREATE TABLE `wD_Games` (
 			KEY `phase_7` (`phase`,`phaseMinutes`),
 			KEY `anon` (`anon`),
 			KEY `pressType` (`pressType`)
-			) ENGINE=InnoDBDEFAULT CHARSET=utf8;";
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -328,7 +328,7 @@ $sql[]="CREATE TABLE `wD_Members` (
 			KEY `gid` (`gameID`),
 			KEY `playingCount` (`status`,`userID`),
 			KEY `uid` (`userID`,`status`)
-			) ENGINE=InnoDBDEFAULT CHARSET=utf8;";
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -371,7 +371,7 @@ $sql[]="CREATE TABLE `wD_Moves` (
 			KEY `unitID` (`unitID`),
 			KEY `orderID` (`orderID`),
 			KEY `gameID` (`gameID`)
-			) ENGINE=MyISAMDEFAULT CHARSET=utf8;";
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -420,7 +420,7 @@ $sql[]="CREATE TABLE `wD_Orders` (
 			PRIMARY KEY (`id`),
 			KEY `unitID` (`unitID`),
 			KEY `gameID` (`gameID`,`countryID`)
-			) ENGINE=InnoDBDEFAULT CHARSET=utf8;";
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -462,7 +462,7 @@ $sql[]="CREATE TABLE `wD_TerrStatus` (
 			UNIQUE KEY `gameID` (`gameID`,`terrID`),
 			KEY `retreatingUnitID` (`retreatingUnitID`),
 			KEY `occupyingUnitID` (`occupyingUnitID`)
-			) ENGINE=InnoDBDEFAULT CHARSET=utf8;";
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -491,7 +491,7 @@ $sql[]="CREATE TABLE `wD_Territories` (
 			`coast` enum('No','Parent','Child') NOT NULL,
 			`coastParentID` smallint(5) unsigned NOT NULL,
 			PRIMARY KEY (`mapID`,`id`)
-			) ENGINE=MyISAMDEFAULT CHARSET=utf8;";
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -514,7 +514,7 @@ $sql[]="CREATE TABLE `wD_Units` (
 			`gameID` mediumint(8) unsigned NOT NULL,
 			PRIMARY KEY (`id`),
 			KEY `gameID` (`gameID`)
-			) ENGINE=InnoDBDEFAULT CHARSET=utf8;";
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="/*!40101 SET @saved_cs_client = @@character_set_client */;";
 $sql[]="/*!40101 SET character_set_client = utf8 */;";
@@ -545,7 +545,7 @@ $sql[]="CREATE TABLE `wD_Users` (
 			UNIQUE KEY `uname` (`username`),
 			UNIQUE KEY `email` (`email`),
 			KEY `points` (`points`)
-			) ENGINE=InnoDBDEFAULT CHARSET=utf8;";
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 $sql[]="/*!40101 SET character_set_client = @saved_cs_client */;";
 $sql[]="INSERT INTO `wD_Users` VALUES (1,'Guest','guest@nomail.com',0,'','','Yes',1154508107,'English',1154508107,0,'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0','Guest,System','',0.142857,0.142857,0.142857,0.142857,0.142857,0.142857,0.142857,'Yes'),(2,'GameMaster','gamemaster@nomail.com',140,'','','Yes',1154508107,'English',1154508107,0,'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0','System','',0.142857,0.142857,0.142857,0.142857,0.142857,0.142857,0.142857,'No'),(3,'Civil Disorder Germany','civil1@nomail.com',50,'','','Yes',1154508107,'English',1154508107,0,'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0','System','',0.122,0.244,0.012,0.01,0.122,0.244,0.244,'No'),(4,'Civil Disorder Italy','civil2@nomail.com',0,'','','Yes',1154508107,'English',1154508107,0,'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0','System','',0.196,0.196,0.01,0.01,0.196,0.196,0.196,'No');";
 
@@ -631,7 +631,7 @@ $sql[]="CREATE TABLE `wD_ModForumMessages` (
 			KEY `latestReplySent` (`latestReplySent`),
 			KEY `profileLinks` (`type`,`fromUserID`,`timeSent`),
 			KEY `type` (`type`,`latestReplySent`)
-			) ENGINE=MyISAMDEFAULT CHARSET=utf8;";
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 
 // VDip: 4
 $sql[]="ALTER TABLE `wD_Users` ADD `gamesLeft` int(11) NOT NULL default '0';";
@@ -932,7 +932,7 @@ $sql[]="ALTER TABLE `wD_Backup_Members` ADD `ccMatch` tinyint(3) unsigned NOT NU
 $sql[]="ALTER TABLE `wD_Backup_Members` ADD `ipMatch` tinyint(3) unsigned NOT NULL;";
 
 // Webdip 1.36
-$sql[]="ALTER TABLE `wD_Users` ADD COLUMN cdCount` mediumint(8) unsigned NOT NULL DEFAULT '0',
+$sql[]="ALTER TABLE `wD_Users` ADD COLUMN `cdCount` mediumint(8) unsigned NOT NULL DEFAULT '0',
 	ADD COLUMN `nmrCount` mediumint(8) unsigned NOT NULL DEFAULT '0',
 	ADD COLUMN `cdTakenCount` mediumint(8) unsigned NOT NULL DEFAULT '0',
 	ADD COLUMN `phaseCount` int(10) unsigned NOT NULL DEFAULT '0',
@@ -954,7 +954,7 @@ $sql[]="ALTER TABLE `wD_NMRs` ADD KEY `gameID` (`gameID`,`userID`), ADD KEY `use
 $sql[]="ALTER TABLE wD_CivilDisorders ADD COLUMN forcedByMod BOOLEAN DEFAULT 0;";
 
 // VDip: 52
-ALTER TABLE wD_Users ADD vpoints mediumint(8) unsigned NOT NULL DEFAULT '1000';
+$sql[]="ALTER TABLE wD_Users ADD vpoints mediumint(8) unsigned NOT NULL DEFAULT '1000';";
 
 $sql[]="UPDATE wD_Users u 
 	SET u.vpoints = (SELECT r.rating FROM wD_Ratings r
@@ -965,7 +965,7 @@ $sql[]="UPDATE wD_Users u
 	WHERE r.ratingType='vDip' AND r.userID = u.id);";
 
 // VDip: 53
-// VDip 53 does just change the vDip Reliability in the new webdip-reliability format, no need for code here...
+$sql[]="ALTER TABLE wD_Users ADD integrityBalance mediumint(8) unsigned NOT NULL DEFAULT '0';";
 
 // VDip: 54
 $sql[]="ALTER TABLE `wD_Games` DROP COLUMN `minNoCD`;";
@@ -1033,9 +1033,199 @@ $sql[]="ALTER TABLE `wD_Users` ADD `rssID` varchar(30) NOT NULL DEFAULT '';";
 // VDip 62
 $sql[]="ALTER TABLE wD_Users ADD `buttonWidth` enum('auto','small','large') NOT NULL DEFAULT 'auto';";
 
+// Webdip 1.43
+// Nothing to add here. Just the versionNumber changed.
+
+// VDip 63
+$sql[]="ALTER TABLE wD_CountrySwitch ADD `hasWatched` enum('Yes','No') NOT NULL DEFAULT 'No';";
+
+// rules-expansions (for 1900 variant)
+$sql[]="ALTER TABLE `wD_DATC` CHANGE COLUMN `variantID` `variantID` SMALLINT(6) UNSIGNED NOT NULL ;
+ALTER TABLE `wD_Backup_Games` CHANGE COLUMN `variantID` `variantID` SMALLINT(6) UNSIGNED NOT NULL ;
+ALTER TABLE `wD_Borders` CHANGE COLUMN `mapID` `mapID` SMALLINT(6) UNSIGNED NOT NULL ;
+ALTER TABLE `wD_CoastalBorders` CHANGE COLUMN `mapID` `mapID` SMALLINT(6) UNSIGNED NOT NULL ;
+ALTER TABLE `wD_Games` CHANGE COLUMN `variantID` `variantID` SMALLINT(6) UNSIGNED NOT NULL ;
+ALTER TABLE `wD_Territories` CHANGE COLUMN `mapID` `mapID` SMALLINT(6) UNSIGNED NOT NULL ;
+ALTER TABLE `wD_UnitDestroyIndex` CHANGE COLUMN `mapID` `mapID` SMALLINT(6) UNSIGNED NOT NULL ;
+ALTER TABLE `wD_VariantData` CHANGE COLUMN `variantID` `variantID` SMALLINT(6) UNSIGNED NOT NULL ;";
+
+$sql[]="ALTER TABLE `wD_Territories` ADD COLUMN `buildEligibilityFlags` INT(7) UNSIGNED ZEROFILL NOT NULL DEFAULT 0 AFTER `coastParentID`;";
+$sql[]="ALTER TABLE `wD_Territories` CHANGE COLUMN `type` `type` ENUM('Sea', 'Land', 'Coast', 'Strait') NOT NULL ;";
+$sql[]="
+Insert into `wD_DATC` (`testID`, `variantID`,`testName`,`testDesc`,`status`)
+Values
+(1900,1900,'9.A.1900','TEST CASE, CONVOY TO SELF ILLEGAL','NotPassed'),
+(1901,1900,'9.B.1900','TEST CASE, CONVOYING TO OWN AREA WITH A LOOP','Invalid'),
+(1902,1900,'9.C.1900','TEST CASE, CONVOY DISRUPTED BY ARMY','NotPassed'),
+(1903,1900,'9.D.1900','TEST CASE, CONVOY DISRUPTED BY CONVOYING ARMY','NotPassed'),
+(1904,1900,'9.E.1900','TEST CASE, TWO DISRUPTED CONVOYS PARADOX','Invalid'),
+(1905,1900,'9.F.1900','TEST CASE, DISRUPTED CONVOY SUPPORT PARADOX WITH NO RESOLUTION','NotPassed'),
+(1906,1900,'9.G.1900','TEST CASE, DISRUPTED CONVOY SUPPORT PARADOX WITH TWO RESOLUTIONS','NotPassed'),
+(1907,1900,'X.A0.1900','TEST CASE, SUPPORT CAN NOT BE CUT BY SIMPLE HALF-STRENGTH BOUNCE','NotPassed'),
+(1908,1900,'X.A1.1900','TEST CASE, SUPPORT CAN NOT BE CUT BY SUPPORTED HALF-STRENGTH BOUNCE','NotPassed'),
+(1909,1900,'X.B.1900','TEST CASE, SUPPORT CAN BE CUT BY DISLODGING MOVE OVER HALF-STRENGTH BORDER','NotPassed'),
+(1910,1900,'X.C.1900','TEST CASE, MOVE OVER HALF-STRENGTH BORDER CAN NOT BOUNCE WITH NORMAL MOVE','NotPassed'),
+(1911,1900,'X.D0.1900','TEST CASE, TWO MOVES OVER HALF-STRENGTH BORDER CAN BOUNCE','NotPassed'),
+(1912,1900,'X.D1.1900','TEST CASE, TWO MOVES OVER HALF-STRENGTH BORDER AND SUPPORTED MOVE SUCCEEDS','NotPassed'),
+(1913,1900,'X.D2.1900','TEST CASE, TWO SUPPORTED MOVES OVER HALF-STRENGTH BORDER CAN BOUNCE','NotPassed'),
+(1914,1900,'X.E0.1900','SUPPORT TO MOVE CAN NOT BE GIVEN OVER HALF-STRENGTH BORDER','NotPassed'),
+(1915,1900,'X.E1.1900','SUPPORT TO HOLD CAN NOT BE GIVEN OVER HALF-STRENGTH BORDER','NotPassed'),
+(1916,1900,'X.F.1900','TEST CASE, SUPPORT PARADOX','Invalid'),
+(1917,1900,'X.G.1900','TEST CASE, ALMOST PARADOX','Invalid'),
+(1918,1900,'X.H.1900','TEST CASE, CIRCULAR MOVEMENT WITH HALF-STRENGTH BORDER','NotPassed'),
+(1919,1900,'X.I.1900','TEST CASE, CIRCULAR MOVEMENT WITH BOUNCE','NotPassed'),
+(1920,1900,'X.J0.1900','TEST CASE, CIRCULAR MOVEMENT CAN NOT BE DISRUPTED BY HALF-STRENGTH BORDER','NotPassed'),
+(1921,1900,'X.J1.1900','TEST CASE, CIRCULAR MOVEMENT CAN BE DISRUPTED BY HALF-STRENGTH WITH SUPPORT','NotPassed'),
+(1922,1900,'X.J2.1900','TEST CASE, CIRCULAR MOVEMENT WITH SUPPORT TRUMPS HALF-STRENGTH WITH SUPPORT','NotPassed'),
+(1923,1900,'X.K.1900','TEST CASE, HALF-STRENGTH IS NOT VALID RETREAT PATH','Invalid'),
+(1924,1900,'X.L.1900','TEST CASE, HALF-STRENGTH BORDER IS PROPERTY OF BORDER NOT OF SECTOR','NotPassed'),
+(1925,1900,'X.M.1900','TEST CASE, USING CONVOY INSTEAD OF HALF-STRENGTH BORDER','Invalid'),
+(1926,1900,'X.N.1900','TEST CASE, USING CONVOY INSTEAD OF HALF-STRENGTH BORDER CUTS SUPPORT','Invalid'),
+(1927,1900,'X.O.1900','TEST CASE, SUPPORT ON ATTACK ON OWN FLEET OVER HALF-STRENGTH BORDER DOES NOT CUT SUPPORT','NotPassed'),
+(1928,1900,'X.P.1900','TEST CASE, NO CONVOYS ACROSS TWO HALF-STRENGTH SEGMENTS','NotPassed'),
+(1929,1900,'X.Q.1900','TEST CASE, CONVOY IS HALF-STRENGTH WHEN LAST SEGMENT IS HALF-STRENGTH','NotPassed'),
+(1930,1900,'X.R.1900','TEST CASE, CONVOY IS FULL-STRENGTH WHEN ONE NON-LAST SEGMENT IS HALF-STRENGTH','NotPassed'),
+(1931,1900,'X.S0.1900','TEST CASE, PREFER FULL-STRENGTH CONVOY TO HALF-STRENGTH CONVOY','NotPassed'),
+(1932,1900,'X.S1.1900','TEST CASE, USE HALF-STRENGTH CONVOY WHEN FULL-STRENGTH CONVOY DISRUPTED','NotPassed'),
+(1933,1900,'X.S2.1900','TEST CASE, UNOPPOSED HALF-STRENGTH CONVOY WHEN FULL-STRENGTH CONVOY DISRUPTED','NotPassed')
+;
+
+Insert into `wD_DATCOrders` (`testID`,`countryID`,`unitType`,`terrID`,`moveType`,`toTerrID`,`fromTerrID`,`viaConvoy`,`criteria`,`legal`)
+Values
+(1900,2,'Fleet',25,'Convoy',25,41,'No','Hold','No'),
+(1900,6,'Fleet',40,'Hold',NULL,NULL,'No','Hold','Yes'),
+(1900,6,'Army',41,'Move',25,NULL,'Yes','Hold','Yes'),
+(1902,4,'Army',3,'Move',50,NULL,'Yes','Hold','Yes'),
+(1902,4,'Fleet',71,'Convoy',50,3,'No','Hold','Yes'),
+(1902,4,'Fleet',25,'Convoy',50,3,'No','Dislodged','Yes'),
+(1902,4,'Fleet',40,'Convoy',50,3,'No','Hold','Yes'),
+(1902,6,'Army',58,'Move',25,NULL,'No','Success','Yes'),
+(1902,6,'Army',41,'Support move',25,58,'No','Hold','Yes'),
+(1903,4,'Army',58,'Move',41,NULL,'Yes','Hold','Yes'),
+(1903,4,'Fleet',25,'Convoy',41,58,'No','Dislodged','Yes'),
+(1903,6,'Army',3,'Move',25,NULL,'Yes','Success','Yes'),
+(1903,6,'Fleet',71,'Convoy',25,3,'No','Hold','Yes'),
+(1903,6,'Fleet',40,'Support move',25,3,'No','Hold','Yes'),
+(1905,4,'Army',41,'Move',58,NULL,'Yes','Hold','Yes'),
+(1905,4,'Fleet',25,'Convoy',58,41,'No','Hold','Yes'),
+(1905,4,'Army',50,'Support move',58,41,'No','Hold','Yes'),
+(1905,6,'Army',3,'Move',25,NULL,'Yes','Hold','Yes'),
+(1905,6,'Fleet',71,'Convoy',25,3,'No','Dislodged','Yes'),
+(1905,6,'Fleet',40,'Support move',25,3,'No','Hold','Yes'),
+(1905,2,'Fleet',59,'Support move',71,28,'No','Hold','Yes'),
+(1905,2,'Fleet',28,'Move',71,NULL,'No','Success','Yes'),
+(1906,4,'Army',41,'Move',58,NULL,'Yes','Hold','Yes'),
+(1906,4,'Fleet',25,'Convoy',58,41,'No','Hold','Yes'),
+(1906,4,'Army',50,'Support move',58,41,'No','Hold','Yes'),
+(1906,4,'Fleet',28,'Move',71,NULL,'No','Hold','Yes'),
+(1906,4,'Fleet',67,'Support move',71,28,'No','Hold','Yes'),
+(1906,6,'Army',3,'Move',25,NULL,'Yes','Hold','Yes'),
+(1906,6,'Fleet',71,'Convoy',25,3,'No','Hold','Yes'),
+(1906,6,'Fleet',59,'Support hold',71,NULL,'No','Hold','Yes'),
+(1906,6,'Fleet',40,'Support move',25,3,'No','Hold','Yes'),
+(1907,5,'Fleet',40,'Move',20,NULL,'No','Hold','Yes'),
+(1907,5,'Fleet',19,'Hold',NULL,NULL,'No','Dislodged','Yes'),
+(1907,7,'Fleet',20,'Support move',19,32,'No','Hold','Yes'),
+(1907,7,'Fleet',32,'Move',19,NULL,'No','Success','Yes'),
+(1908,5,'Fleet',40,'Move',20,NULL,'No','Hold','Yes'),
+(1908,5,'Army',29,'Support move',20,40,'No','Hold','Yes'),
+(1908,2,'Army',20,'Support move',47,6,'No','Hold','Yes'),
+(1908,2,'Fleet',19,'Support hold',20,NULL,'No','Hold','Yes'),
+(1908,2,'Army',6,'Move',47,NULL,'No','Success','Yes'),
+(1908,7,'Army',47,'Hold',NULL,NULL,'No','Dislodged','Yes'),
+(1909,5,'Fleet',40,'Move',20,NULL,'No','Success','Yes'),
+(1909,5,'Army',29,'Support move',20,40,'No','Hold','Yes'),
+(1909,2,'Army',20,'Support move',47,6,'No','Dislodged','Yes'),
+(1909,2,'Army',6,'Move',47,NULL,'No','Hold','Yes'),
+(1909,7,'Army',47,'Hold',NULL,NULL,'No','Hold','Yes'),
+(1910,5,'Fleet',40,'Move',20,NULL,'No','Hold','Yes'),
+(1910,7,'Army',47,'Move',20,NULL,'No','Success','Yes'),
+(1911,2,'Fleet',20,'Move',40,NULL,'No','Hold','Yes'),
+(1911,2,'Fleet',29,'Move',40,NULL,'No','Hold','Yes'),
+(1912,2,'Fleet',20,'Move',40,NULL,'No','Success','Yes'),
+(1912,2,'Fleet',29,'Move',40,NULL,'No','Hold','Yes'),
+(1912,2,'Fleet',41,'Support move',40,20,'No','Hold','Yes'),
+(1913,2,'Fleet',20,'Move',40,NULL,'No','Hold','Yes'),
+(1913,2,'Fleet',50,'Support move',40,29,'No','Hold','Yes'),
+(1913,2,'Fleet',29,'Move',40,NULL,'No','Hold','Yes'),
+(1913,2,'Fleet',41,'Support move',40,20,'No','Hold','Yes'),
+(1914,2,'Fleet',40,'Support move',20,29,'No','Hold','No'),
+(1914,2,'Army',29,'Move',20,NULL,'No','Hold','Yes'),
+(1914,7,'Army',20,'Hold',NULL,NULL,'No','Hold','Yes'),
+(1915,2,'Army',29,'Move',20,NULL,'No','Success','Yes'),
+(1915,2,'Army',47,'Support move',20,29,'No','Hold','Yes'),
+(1915,7,'Army',20,'Hold',NULL,NULL,'No','Dislodged','Yes'),
+(1915,7,'Fleet',40,'Support hold',20,NULL,'No','Hold','No'),
+(1918,2,'Army',29,'Move',20,NULL,'No','Success','Yes'),
+(1918,2,'Fleet',20,'Move',40,NULL,'No','Success','Yes'),
+(1918,3,'Fleet',40,'Move',29,NULL,'No','Success','Yes'),
+(1919,2,'Army',29,'Move',20,NULL,'No','Hold','Yes'),
+(1919,2,'Fleet',20,'Move',40,NULL,'No','Hold','Yes'),
+(1919,3,'Fleet',40,'Move',29,NULL,'No','Hold','Yes'),
+(1919,7,'Army',47,'Move',20,NULL,'No','Hold','Yes'),
+(1920,2,'Fleet',20,'Move',40,NULL,'No','Hold','Yes'),
+(1920,3,'Fleet',50,'Move',40,NULL,'No','Success','Yes'),
+(1920,3,'Fleet',40,'Move',61,NULL,'No','Success','Yes'),
+(1920,3,'Fleet',61,'Move',50,NULL,'No','Success','Yes'),
+(1921,2,'Fleet',20,'Move',40,NULL,'No','Success','Yes'),
+(1921,2,'Fleet',25,'Support move',40,20,'No','Hold','Yes'),
+(1921,3,'Fleet',50,'Move',40,NULL,'No','Hold','Yes'),
+(1921,3,'Fleet',40,'Move',61,NULL,'No','Dislodged','Yes'),
+(1921,3,'Fleet',61,'Move',50,NULL,'No','Hold','Yes'),
+(1922,2,'Fleet',20,'Move',40,NULL,'No','Hold','Yes'),
+(1922,2,'Fleet',25,'Support move',40,20,'No','Hold','Yes'),
+(1922,3,'Fleet',50,'Move',40,NULL,'No','Success','Yes'),
+(1922,3,'Fleet',40,'Move',61,NULL,'No','Success','Yes'),
+(1922,3,'Fleet',61,'Move',50,NULL,'No','Success','Yes'),
+(1922,3,'Fleet',75,'Support move',40,50,'No','Hold','Yes'),
+(1924,2,'Army',17,'Move',20,NULL,'No','Hold','Yes'),
+(1924,7,'Army',29,'Move',20,NULL,'No','Hold','Yes'),
+(1927,2,'Fleet',20,'Move',40,NULL,'No','Hold','Yes'),
+(1927,2,'Fleet',25,'Hold',NULL,NULL,'No','Hold','Yes'),
+(1927,3,'Fleet',41,'Support move',40,20,'No','Hold','Yes'),
+(1927,3,'Fleet',40,'Support hold',25,NULL,'No','Hold','Yes'),
+(1927,5,'Fleet',71,'Move',25,NULL,'No','Hold','Yes'),
+(1927,5,'Fleet',59,'Support move',25,71,'No','Hold','Yes'),
+(1928,2,'Fleet',40,'Convoy',29,20,'No','Hold','Yes'),
+(1928,2,'Army',20,'Move',29,NULL,'Yes','Hold','Yes'),
+(1928,7,'Army',6,'Move',29,NULL,'No','Success','Yes'),
+(1929,2,'Fleet',40,'Convoy',20,33,'No','Hold','Yes'),
+(1929,2,'Army',33,'Move',20,NULL,'Yes','Hold','Yes'),
+(1929,7,'Army',47,'Move',20,NULL,'No','Success','Yes'),
+(1930,2,'Fleet',40,'Convoy',50,20,'No','Hold','Yes'),
+(1930,2,'Army',20,'Move',50,NULL,'Yes','Hold','Yes'),
+(1930,3,'Army',58,'Move',50,NULL,'No','Hold','Yes'),
+(1931,2,'Army',64,'Move',20,NULL,'Yes','Hold','Yes'),
+(1931,7,'Army',47,'Move',20,NULL,'No','Hold','Yes'),
+(1931,5,'Fleet',19,'Convoy',20,64,'No','Hold','Yes'),
+(1931,5,'Fleet',32,'Convoy',20,64,'No','Hold','Yes'),
+(1931,5,'Fleet',67,'Convoy',20,64,'No','Hold','Yes'),
+(1931,5,'Fleet',71,'Convoy',20,64,'No','Hold','Yes'),
+(1931,5,'Fleet',25,'Convoy',20,64,'No','Hold','Yes'),
+(1931,5,'Fleet',40,'Convoy',20,64,'No','Hold','Yes'),
+(1932,2,'Army',58,'Move',20,NULL,'Yes','Hold','Yes'),
+(1932,7,'Army',47,'Move',20,NULL,'No','Success','Yes'),
+(1932,5,'Fleet',19,'Convoy',20,58,'No','Hold','Yes'),
+(1932,5,'Fleet',32,'Convoy',20,58,'No','Dislodged','Yes'),
+(1932,5,'Fleet',67,'Convoy',20,58,'No','Hold','Yes'),
+(1932,5,'Fleet',71,'Convoy',20,58,'No','Hold','Yes'),
+(1932,5,'Fleet',40,'Convoy',20,58,'No','Hold','Yes'),
+(1932,5,'Fleet',25,'Convoy',20,58,'No','Hold','Yes'),
+(1932,1,'Fleet',2,'Move',32,NULL,'No','Success','Yes'),
+(1932,1,'Fleet',1,'Support move',32,2,'No','Hold','Yes'),
+(1933,2,'Army',58,'Move',20,NULL,'Yes','Success','Yes'),
+(1933,5,'Fleet',19,'Convoy',20,58,'No','Hold','Yes'),
+(1933,5,'Fleet',32,'Convoy',20,58,'No','Dislodged','Yes'),
+(1933,5,'Fleet',67,'Convoy',20,58,'No','Hold','Yes'),
+(1933,5,'Fleet',71,'Convoy',20,58,'No','Hold','Yes'),
+(1933,5,'Fleet',40,'Convoy',20,58,'No','Hold','Yes'),
+(1933,5,'Fleet',25,'Convoy',20,58,'No','Hold','Yes'),
+(1933,1,'Fleet',2,'Move',32,NULL,'No','Success','Yes'),
+(1933,1,'Fleet',1,'Support move',32,2,'No','Hold','Yes');";
+
 // Set the correct version-information in the database	
-$sql[]="UPDATE `wD_Misc`     SET `value` = '142' WHERE `name` = 'Version';";
-$sql[]="UPDATE `wD_vDipMisc` SET `value` = '62'  WHERE `name` = 'Version';";
+$sql[]="UPDATE `wD_Misc`     SET `value` = '143' WHERE `name` = 'Version';";
+$sql[]="UPDATE `wD_vDipMisc` SET `value` = '63'  WHERE `name` = 'Version';";
 
 // Create a default Admin-Account
 require_once ('lib/auth.php');
@@ -1044,7 +1234,7 @@ $sql[]="INSERT INTO `wD_Users` (`username`, `email`, `points`, `password`, `type
 
 // Execute all SQL-commands:
 ini_set('max_execution_time','120');
-foreach($sql as $command) mysql_query($command);
+foreach($sql as $command) mysqli_query($this->link, $command);
 
 //Login as Admin.
 $_REQUEST['loginuser'] = 'Admin';

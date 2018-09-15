@@ -26,7 +26,7 @@
 	1.6.1: small adjustments
 	1.6.2: small bugfix (occupationbar had the wrong color)
 	1.6.3: small adjustments
-
+	1.7: interactive map added
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -39,7 +39,8 @@ class SouthAmerica5Variant extends WDVariant {
 	public $description='A variant with a map of South America for 5 players.';
 	public $author     ='Joe Janbu';
 	public $adapter    ='Oliver Auth';
-	public $version    ='1.6.3';
+	public $version    ='5.1';
+	public $codeVersion='1.6.3';
 	public $homepage   ='http://www.variantbank.org/results/rules/s/southamerica51.htm';
 
 	public $countries=array('Argentina','Brazil','Chile','Colombia','Peru');

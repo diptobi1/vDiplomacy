@@ -48,9 +48,11 @@ class libSwitch
 	static public function ClaimBackSwitch($switchID)
 	{
 		global $User, $DB;
-		list($gameID,$status,$toID, $fromID)=$DB->sql_row('SELECT gameID, status, toID, fromID FROM wD_CountrySwitch WHERE id='.$switchID);
+		list($gameID,$status,$toID, $fromID, $hasWatched)=$DB->sql_row('SELECT gameID, status, toID, fromID, hasWatched FROM wD_CountrySwitch WHERE id='.$switchID);
 		if ($status == 'Active' && $fromID == $User->id)
 		{
+			if ($hasWatched == 'Yes')
+		        $DB->sql_put('INSERT INTO wD_WatchedGames (gameID, userID) VALUES ('.$gameID. ','.$toID.')');
 			$DB->sql_put('UPDATE wD_CountrySwitch SET status="ClaimedBack" WHERE id='.$switchID);
 			$DB->sql_put('UPDATE wD_Members SET userID='.$fromID.' WHERE gameID='.$gameID.' AND userID='.$toID);			
 			$DB->sql_put("UPDATE wD_Users SET notifications = CONCAT_WS(',',notifications, 'CountrySwitch') WHERE id = ".$toID);
@@ -60,9 +62,11 @@ class libSwitch
 	static public function ReturnSwitch($switchID)
 	{
 		global $User, $DB;
-		list($gameID,$status,$toID, $fromID)=$DB->sql_row('SELECT gameID, status, toID, fromID FROM wD_CountrySwitch WHERE id='.$switchID);
+		list($gameID,$status,$toID, $fromID, $hasWatched)=$DB->sql_row('SELECT gameID, status, toID, fromID, hasWatched FROM wD_CountrySwitch WHERE id='.$switchID);
 		if ($status == 'Active' && $toID == $User->id)
 		{
+			if ($hasWatched == 'Yes')
+		        $DB->sql_put('INSERT INTO wD_WatchedGames (gameID, userID) VALUES ('.$gameID. ','.$toID.')');
 			$DB->sql_put('UPDATE wD_CountrySwitch SET status="Returned" WHERE id='.$switchID);
 			$DB->sql_put('UPDATE wD_Members SET userID='.$fromID.' WHERE gameID='.$gameID.' AND userID='.$toID);			
 			$DB->sql_put("UPDATE wD_Users SET notifications = CONCAT_WS(',',notifications, 'CountrySwitch') WHERE id = ".$fromID);
@@ -78,6 +82,12 @@ class libSwitch
 			list($ok)=$DB->sql_row('SELECT COUNT(*) FROM wD_Members WHERE gameID='.$gameID.' AND userID='.$User->id);
 			if ($ok < 1)
 			{
+				$watched = $DB->sql_row('SELECT * from wD_WatchedGames WHERE gameID='.$gameID.' AND userID=' . $toID);
+				if ($watched != false)
+				{
+					$DB->sql_put('UPDATE wD_CountrySwitch SET hasWatched="Yes" WHERE id='.$switchID);
+					$DB->sql_put('DELETE from wD_WatchedGames WHERE gameID='.$gameID.' AND userID='.$toID);
+				}
 				$DB->sql_put('UPDATE wD_CountrySwitch SET status="Active" WHERE id='.$switchID);
 				$DB->sql_put('UPDATE wD_Members SET userID='.$toID.' WHERE gameID='.$gameID.' AND userID='.$fromID);			
 				$DB->sql_put("UPDATE wD_Users SET notifications = CONCAT_WS(',',notifications, 'CountrySwitch') WHERE id = ".$fromID);
@@ -157,8 +167,8 @@ class libSwitch
 					$error = "The User you selected can't join. A player in this game has him muted or he muted a player in this game.";
 				else
 				{
-					$DB->sql_put('INSERT INTO wD_CountrySwitch (fromID, toID, gameID, status) VALUES ('.
-						$fromID.','.$toID.','.$gameID.', "Send")');
+					$DB->sql_put('INSERT INTO wD_CountrySwitch (fromID, toID, gameID, status, hasWatched) VALUES ('.
+						$fromID.','.$toID.','.$gameID.', "Send", "No")');
 					$DB->sql_put("UPDATE wD_Users SET notifications = CONCAT_WS(',',notifications, 'CountrySwitch') WHERE id = ".$toID);
 				}
 			}

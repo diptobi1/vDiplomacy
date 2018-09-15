@@ -21,6 +21,7 @@
 	
 	Changelog:
 	1.0:   initial release
+	1.1:   interactive map added
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -35,7 +36,7 @@ class GreatLakesVariant extends WDVariant {
 	public $adapter    ='Scordatura';
 	public $homepage   ='http://www.variantbank.org/results/rules/i/indiansogl.htm';
 	public $version    ='1';
-	public $codeVersion='1.0';	
+	public $codeVersion='1.1';	
 	
 	public $countries=array('Algonquin', 'Erie', 'Huron', 'Iroquois', 'Kaskasia', 'Mississauga', 'Ojibwe', 'Otawatomi', 'Ottawa');	
 

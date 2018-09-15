@@ -35,7 +35,7 @@ class Divided_StatesVariant extends WDVariant {
 	public $author     = 'Technostar';
 	public $adapter    = 'Technostar, Oliver Auth';
 	public $version    = '1';
-	public $codeVersion= '1.1.1';
+	public $codeVersion= '1.2';
 	
 	public $countries=array('Maine','New-Hampshire','Vermont','Massachusetts','Rhode-Island','Connecticut','New-York','New-Jersey','Pennsylvania','Delaware','Maryland','Virginia','North-Carolina','South-Carolina','Georgia','Florida','Alabama','Mississippi','Tennessee','Kentucky','West-Virginia','Ohio','Michigan','Indiana','Illinois','Wisconsin','Minnesota','Iowa','Missouri','Arkansas','Louisiana','Texas','Oklahoma','Kansas','Nebraska','South-Dakota','North-Dakota','Montana','Wyoming','Colorado','New-Mexico','Arizona','Utah','Nevada','Idaho','Washington','Oregon','California','Alaska','Hawaii');
 

@@ -1,21 +1,21 @@
 <?php
 /*
-    Copyright (C) 2004-2010 Kestas J. Kuliukas
+    Copyright (C) 2004-2010 Kestas J. Kuliukas / Oliver Auth
 
-	This file is part of webDiplomacy.
+	This file is part of vDiplomacy.
 
-    webDiplomacy is free software: you can redistribute it and/or modify
+    vDiplomacy is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    webDiplomacy is distributed in the hope that it will be useful,
+    vDiplomacy is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU Affero General Public License
-    along with webDiplomacy.  If not, see <http://www.gnu.org/licenses/>.
+    along with vDiplomacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -63,6 +63,12 @@ class Config
 	 * @var string
 	 */
 	public static $database_name='webdiplomacy';
+
+	/**
+	 * EasyDevInstall
+	 * If set to an install.php it will create the database and a adminaccount automatically
+	 */
+	public static $easyDevInstall = 'install_dev.php';
 
 	/**
 	 * This is used to salt hashes for passwords, if it gets out it's not the end of the world.
@@ -149,7 +155,7 @@ class Config
 //		23=>'ClassicGvI',
 //		24=>'SouthAmerica8',
 //		25=>'ClassicGvR',
-//		26=>'ClassicFGvsRT',
+//		26=>'ClassicFGRT',
 //		27=>'Sengoku5',
 //		28=>'Classic1897',
 //		29=>'Rinascimento',
@@ -194,10 +200,54 @@ class Config
 //		68=>'Habelya',
 //		69=>'AmericanConflict',
 //		70=>'Zeus5',
+//		71=>'Colonial1885',
 //		72=>'Europe1939',
 //		73=>'NorthSeaWars',
 //		74=>'Maharajah',
+//		75=>'CelticBritain',
+//		76=>'Enlightenment',
 //		77=>'GreatLakes',
+//		78=>'AgeOfPericles',
+//		79=>'AnarchyInTheUK',
+//		80=>'Mars',
+//		81=>'Imperial2',
+//		82=>'DarkAges',
+//		83=>'Africa',
+//		84=>'ClassicCataclysm',
+//		85=>'TenSixtySix_V2',
+//		86=>'ClassicLayered',
+//		87=>'WWII',
+//		88=>'AberrationV',
+//		89=>'HeptarchyIV',
+//		90=>'ClassicAnkaraCrescent',
+//		91=>'ColdWar',
+//		92=>'YoungstownWWII',
+//		93=>'Chromatic',
+//		94=>'TenSixtySix_V3',
+//		95=>'WWIVsealanes',
+//		96=>'GobbleEarth',
+//		97=>'Europe1600',
+//		98=>'FirstCrusade',
+//		99=>'AtlanticColonies',
+//		100=>'Sengoku6',
+//		101=>'Napoleonic',
+//		102=>'WWIV_V6',
+//		103=>'Balkans1860',
+//		104=>'Iberian',
+//		105=>'Divided_States',
+//		106=>'Classic1913',
+//		107=>'Renaissance1453',
+//		108=>'Canton',
+//		109=>'Machiavelli',
+//		110=>'Edwardian',
+//		111=>'VersaillesRedux',
+//		112=>'ManifestDestiny',
+//		113=>'EmpiresCoalitions',
+//		114=>'Crusades1201',
+//		115=>'MachiavelliTTR',
+//		116=>'SpiceIslands',
+//		117=>'AustrianSuccession',
+//		127=>'WesternWorld_901',
 	);
 
 	/**
@@ -348,16 +398,23 @@ class Config
 	 */
 	public static $top_menue=array(
 		'admin'=> array(
-			'edit.php'     => array('name'=>'Edit map', 'inmenu'=>TRUE,  'title'=>"Edit your maps"),
-			'help.php'     => array('name'=>'Help',     'inmenu'=>FALSE, 'title'=>"Help")
+			'help.php'     => array('name'=>'Help',        'inmenu'=>FALSE,'title'=>"Help"),
+			'startgame.php'=> array('name'=>'Fill',        'inmenu'=>TRUE, 'title'=>"Fill"),
 		),
 		'user' => array(
-			'variants.php' => array('name'=>'Variants', 'inmenu'=>TRUE,  'title'=>"Variants")
+			'promo.php'      => array('name'=>'Promo',     'inmenu'=>FALSE,'title'=>"Promo"),
+			'variants.php'   => array('name'=>'Variants',  'inmenu'=>TRUE, 'title'=>"Variants"),
 		),
 		'all'  => array(
-			'impresum.php' => array('name'=>'Impresum', 'inmenu'=>FALSE, 'title'=>"Impresum"),
-			'download.php' => array('name'=>'Download', 'inmenu'=>FALSE, 'title'=>"Download"),
-			'stats.php'    => array('name'=>'Stats',    'inmenu'=>TRUE,  'title'=>"Statistics")
+			'hof.php'	 	 => array('name'=>'HoF',	   'inmenu'=>FALSE,'title'=>"Hall of Fame"),
+			'modforum.php'   => array('name'=>'Mods',      'inmenu'=>FALSE,'title'=>"Mods"),
+			'impresum.php'   => array('name'=>'Impresum',  'inmenu'=>FALSE,'title'=>"Impresum"),
+			'files.php'      => array('name'=>'Files',     'inmenu'=>FALSE,'title'=>"Files"),
+			'howto.php'      => array('name'=>'HowTo',     'inmenu'=>FALSE,'title'=>"HowTo"),
+			'press.php'      => array('name'=>'Press',     'inmenu'=>FALSE,'title'=>"Press"),
+			'stats.php'      => array('name'=>'Stats',     'inmenu'=>FALSE,'title'=>"Statistics"),
+			'features.php'   => array('name'=>'Features',  'inmenu'=>FALSE,'title'=>"Features"),
+			'reliability.php'=>array('name'=>'Reliability','inmenu'=>FALSE,'title'=>"Reliability"),
 		)
 	);
 	
@@ -396,11 +453,18 @@ class Config
 	// 	2=>'1', 3=>'5', 4=>'10', 5=>'20', 6=>'30'
 	// );
 	
-	/**
-	 * EasyDevInstall
-	 * If set to an install.php it will create the database and a adminaccount automatically
+	/*
+	 * Impresum: 
+	 * A default impresum needed for german websites or sites hosted in germany-
+	 * Enter your contact information here.
 	 */
-	// public static $easyDevInstall = 'install_dev.php';
+	public static $impresum=array(
+		'name'    => 'Your Name',
+		'street'  => 'Your Street',
+		'city'    => 'Your city',
+		'country' => 'Your country',
+		'email'   => 'Your email'
+	);
 
 	// ---
 	// --- From here on down the default settings will probably be fine.

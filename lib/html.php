@@ -432,9 +432,9 @@ class libHTML
 		// End alternate CSS file patch
 
 		if (isset($User) && ($User->cssStyle == 'webDip'))
-			$cssColors = '';
+			$cssColors = 'webDip';
 		else
-			$cssColors = 'vDipColors.css';
+			$cssColors = 'vDip';
 			
 		/*
 		 * This line when included in the header caused certain translated hyphenated letters to come out as black diamonds with question marks.
@@ -452,11 +452,11 @@ class libHTML
 		<meta name="keywords" content="'.l_t('diplomacy,diplomacy game,online diplomacy,classic diplomacy,web diplomacy,diplomacy board game,play diplomacy,php diplomacy').'" />
 		<link rel="shortcut icon" href="'.STATICSRV.l_s('favicon.ico').'" />
 		<link rel="icon" href="'.STATICSRV.l_s('favicon.ico').'" />
-		<link rel="stylesheet" id="global-css"      href="'.CSSDIR.l_s('/global.css').     '?ver='.CSSVERSION.'" type="text/css" />
-		<link rel="stylesheet" id="game-panel-css"  href="'.CSSDIR.l_s('/gamepanel.css').  '?ver='.CSSVERSION.'" type="text/css" />
-		<link rel="stylesheet" id="home-css"        href="'.CSSDIR.l_s('/home.css').       '?ver='.CSSVERSION.'" type="text/css" />
-		<link rel="stylesheet" id="vdipColors-css"  href="'.CSSDIR.l_s('/'.$cssColors).    '?ver='.CSSVERSION.'" type="text/css" />
+		<link rel="stylesheet" id="global-css"      href="'.CSSDIR.l_s('/global.css').'?ver='.CSSVERSION.'" type="text/css" />
+		<link rel="stylesheet" id="game-panel-css"  href="'.CSSDIR.l_s('/gamepanel.css').'?ver='.CSSVERSION.'" type="text/css" />
+		<link rel="stylesheet" id="home-css"        href="'.CSSDIR.l_s('/home.css').'?ver='.CSSVERSION.'" type="text/css" />
 		<link rel="stylesheet" id="vdipButtons-css" href="'.CSSDIR.l_s('/vDipButtons.css').'?ver='.CSSVERSION.'" type="text/css" />
+		<link rel="stylesheet" id="vdipColors-css"  href="'.CSSDIR.l_s('/'.$cssColors.'Colors.css').'?ver='.CSSVERSION.'" type="text/css" />
 		<link rel="apple-touch-icon-precomposed" href="'.STATICSRV.'apple-touch-icon.png" />
 		'.$variantCSS.'
 		<script type="text/javascript" src="useroptions.php"'.'?ver='.JSVERSION.'></script>
@@ -474,7 +474,7 @@ class libHTML
 		
 		<script type ="text/javascript" src="contrib/cookieWarning/warnCookies.js"></script>
 		<link href="contrib/cookieWarning/cookies.css" title="Cookies\' warning" rel="stylesheet" type="text/css" />
-
+		<div id="bg_image"></div>
 	</head>';
 	}
 	
@@ -740,12 +740,6 @@ class libHTML
 		}
 		$links['help.php']=array('name'=>'Help', 'inmenu'=>TRUE, 'title'=>'Get help and information; guides, intros, FAQs, stats, links');
 
-		$links['dev.php']=array('name'=>'DevTools', 'inmenu'=>FALSE);
-		if (is_object($User))
-			if ($User->type['Admin'] || isset(Config::$devs))
-				if ($User->type['Admin'] || array_key_exists($User->username, Config::$devs))
-					$links['dev.php']=array('name'=>'DevTools', 'inmenu'=>TRUE);
-		
 		// Items not displayed on the menu
 		$links['map.php']=array('name'=>'Map', 'inmenu'=>FALSE);
 		$links['faq.php']=array('name'=>'FAQ', 'inmenu'=>FALSE);
@@ -762,6 +756,9 @@ class libHTML
 		$links['developers.php']=array('name'=>'Developer info', 'inmenu'=>FALSE);
 		$links['datc.php']=array('name'=>'DATC', 'inmenu'=>FALSE);
 		$links['variants.php']=array('name'=>'Variants', 'inmenu'=>FALSE);
+		$links['press.php']=array('name'=>'Press', 'inmenu'=>FALSE);
+		$links['dev.php']=array('name'=>'DevTools', 'inmenu'=>FALSE);
+		$links['gdpr.php']=array('name'=>'GDPR/Datenschutz', 'inmenu'=>FALSE);
 
 		if ( is_object($User) )
 		{
@@ -796,6 +793,13 @@ class libHTML
 			}
 		}
 // END HACK
+
+		// Make the devTools top-menue visible to developers
+		if (is_object($User))
+			if ($User->id == 5 || isset(Config::$devs))
+				if ($User->type['Admin'] || array_key_exists($User->username, Config::$devs))
+					$links['dev.php']=array('name'=>'DevTools', 'inmenu'=>TRUE);
+
 		return $links;
 	}
 
@@ -1017,7 +1021,9 @@ class libHTML
 			based on webDiplomacy version <strong>%s</strong>-vDip.<strong>%s</strong>',number_format(VERSION/100,2),VDIPVERSION.'<br />
 			<a href="http://github.com/Sleepcap/vDiplomacy" class="light">GitHub Project</a> | 
 			<a href="http://github.com/Sleepcap/vDiplomacy/issues" class="light">Bug Reports</a> | 
-			<a href="modforum.php" class="light">Contact Moderator</a>');
+			<a href="modforum.php" class="light">Contact Moderator</a>
+			<br><br>
+			<a href="http:impresum.php">Impresum</a> - <a href="gdpr.php">GDPR/Datenschutz</a><br />');
 	}
 
 	/*

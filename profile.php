@@ -739,10 +739,9 @@ if ( $UserProfile->type['ForumModerator'] || $UserProfile->type['Admin'] )
 	if ($UserProfile->id !=15658)
 	{
 		print '<li><strong>'.l_t('Mod/Admin team').'</strong></li>';
-		print '<li>'.l_t('The best way to get moderator assistance is to contact a moderator at 
-		<a href="mailto:'.(isset(Config::$modEMail) ? Config::$modEMail : Config::$adminEMail).'">'
-		.(isset(Config::$modEMail) ? Config::$modEMail : Config::$adminEMail).'</a>. Please do not pm 
-		moderators directly as moderators are not required to regularly check their messages').'</li>';
+		print '<li>'.l_t('The best way to get moderator assistance is to contact a the mod-team at 
+		the <a href="modforum.php">ModForum</a>. Please do not PM moderators directly as moderators 
+		are not required to regularly check their messages').'</li>';
 		print '<li>&nbsp;</li>';
 	}
 }

@@ -24,7 +24,7 @@
 	Changelog:
 	1.0  : initial version
 	1.0.1: Target-SCs set to 19
-
+	1.1:   Missing SC on the largemap added
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -37,7 +37,7 @@ class Balkans1860Variant extends WDVariant {
 	public $description='The variant is set in the Balkans region, (almost) historically accurate to the year 1860.';
 	public $author='Benjamin Hester ';
 	public $adapter='Oliver Auth';
-	public $codeVersion='1.0.1';
+	public $codeVersion='1.1';
 	public $homepage='http://dipwiki.com/index.php?title=Balkans1860';
 	
 	public $countries=array('Austria-Hungary', 'Bulgaria', 'Greece', 'Italy', 'Ottomans', 'Romania', 'Serbia');

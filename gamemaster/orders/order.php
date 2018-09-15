@@ -117,7 +117,7 @@ class processOrder
 				FROM wD_Orders o
 				/* Moves needed to get success/dislodged results data */
 				INNER JOIN wD_Moves m ON ( m.orderID = o.id AND m.gameID=".$GLOBALS['GAMEID']." )
-				WHERE o.gameID = ".$Game->id." AND NOT o.type = 'Wait' AND success = 'Yes'");
+				WHERE o.gameID = ".$Game->id." AND success = 'Yes'");
 		}
 	}
 
