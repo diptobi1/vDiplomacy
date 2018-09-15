@@ -44,7 +44,6 @@ class CustomIcons_OrderInterface extends BuildAnywhere_OrderInterface
 		parent::jsLoadBoard();
 
 		global $Variant;
-		parent::jsLoadBoard();
 		if( $this->phase!='Builds' ) {
 			libHTML::$footerIncludes[] = '../variants/'.$Variant->name.'/resources/iconscorrect.js';
 			foreach(libHTML::$footerScript as $index=>$script)
