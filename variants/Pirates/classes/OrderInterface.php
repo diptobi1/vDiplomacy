@@ -95,7 +95,7 @@ class Transform_OrderInterface extends BuildAnywhere_OrderInterface
 		{
 			libHTML::$footerIncludes[] = '../variants/'.$Variant->name.'/resources/transform.js';
 			foreach(libHTML::$footerScript as $index=>$script)
-				libHTML::$footerScript[$index]=str_replace('loadOrdersPhase();','loadOrdersPhase();loadTransform(Array("7","102","69","80","52"));', $script);
+				libHTML::$footerScript[$index]=str_replace('loadOrdersPhase();','loadOrdersPhase();loadTransform(Array("7","101","68","79","52"));', $script);
 		}
 	}
 }
