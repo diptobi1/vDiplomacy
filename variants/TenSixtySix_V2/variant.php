@@ -21,6 +21,7 @@
 
 	Changelog:
 	2.0: initial release
+	2.1.1: Fixed supportMove option from foggy multi-coast territory
 
 */
 
@@ -32,7 +33,7 @@ class TenSixtySix_V2Variant extends TenSixtySixVariant {
 	public $name       = 'TenSixtySix_V2';
 	public $fullName   = '1066 (V2.0)';
 	public $version    = '2.0';
-	public $codeversion= '2.1';
+	public $codeversion= '2.1.1';
 
 	public function __construct() {
 		parent::__construct();
