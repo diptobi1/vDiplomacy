@@ -26,7 +26,12 @@ class IAmap extends drawMap {
     protected $territoryPositions;
     protected $usedColors;
 
-    public function drawMap() {
+	/**
+	 * @param bool $colorCheck - If set true the map color check of the autocolor
+	 * script is executed even if the autoscript is not used. Usefull for debugging
+	 * provided maps.
+	 */
+    public function drawMap($colorCheck = false) {
         //check if there is a cached version. Delete it (it's only needed for development)
         if(file_exists('variants/' . $this->Variant->name . '/cache/temp_' . $this->mapName))
             unlink('variants/' . $this->Variant->name . '/cache/temp_' . $this->mapName);
@@ -37,15 +42,8 @@ class IAmap extends drawMap {
 		 */
 		$needsDrawing = !file_exists('variants/' . $this->Variant->name . '/interactiveMap/' . $this->mapName);
 		
-		/*
-		 * If no map data exists yet, so the map is not in use, an extra map check
-		 * will be called to ensure, that the provided interactive map is not faulty.
-		 * 
-		 * The check will be called anyway if the autoscript is used
-		 */
-		$needsColorCheck = !file_exists($this->generateMapDataPath());
 		
-        if ($needsDrawing || $needsColorCheck) {
+        if ($needsDrawing || $colorCheck) {
             ini_set("memory_limit", "1024M");
 
             $this->territoryPositions = $this->getTerritoryPositions();
@@ -54,7 +52,7 @@ class IAmap extends drawMap {
 				$this->map = $this->loadMap();
 				$this->usedColors = $this->getColors();
 				$this->colorTerritories();
-			}elseif ($needsColorCheck) {
+			}elseif ($colorCheck) {
 				$this->map = imagecreatefrompng('variants/' . $this->Variant->name . '/interactiveMap/' . $this->mapName);
 			}
 
