@@ -24,8 +24,6 @@ interactiveMap.visibleMap.selectLayer = new Object();
 
 interactiveMap.greyOut = new Object();
 
-interactiveMap.greyOut.cache = new Hash();
-
 /*
  * creates the canvas elements and loads the image of the map
  * replaces the image element
@@ -1062,25 +1060,18 @@ interactiveMap.greyOut.draw = function(terrChoices) {
             terrChoices = MyUnits.pluck("terrID");
         }
         if (typeof terrChoices != 'undefined') {
-            var cachedImgData = interactiveMap.greyOut.cache.get(terrChoices);
-            if (Object.isUndefined(cachedImgData)) {
-                interactiveMap.visibleMap.greyOutLayer.context.fillStyle = "rgba(0,0,0," + interactiveMap.options.greyOutIntensity + ")";
-                interactiveMap.visibleMap.greyOutLayer.context.fillRect(0, 0, width, height);
+			interactiveMap.visibleMap.greyOutLayer.context.fillStyle = "rgba(0,0,0," + interactiveMap.options.greyOutIntensity + ")";
+			interactiveMap.visibleMap.greyOutLayer.context.fillRect(0, 0, width, height);
 
-                var imgData = interactiveMap.visibleMap.greyOutLayer.context.getImageData(0, 0, width, height);
+			var imgData = interactiveMap.visibleMap.greyOutLayer.context.getImageData(0, 0, width, height);
 
-                for (var i = 0; i < terrChoices.length; i++) {
-                    var terrID = Territories.get(terrChoices[i]).coastParentID;
-                    for (var j = 0; j < interactiveMap.TerritoryPositions[terrID].length; j++) {
-                        imgData = floodfillTransp(interactiveMap.TerritoryPositions[terrID][j][0], interactiveMap.TerritoryPositions[terrID][j][1], imgData);
-                    }
-                }
-                interactiveMap.visibleMap.greyOutLayer.context.putImageData(imgData, 0, 0);
-                
-                interactiveMap.greyOut.cache.set(terrChoices,imgData);
-            } else {
-                interactiveMap.visibleMap.greyOutLayer.context.putImageData(cachedImgData, 0, 0);
-            }
+			for (var i = 0; i < terrChoices.length; i++) {
+				var terrID = Territories.get(terrChoices[i]).coastParentID;
+				for (var j = 0; j < interactiveMap.TerritoryPositions[terrID].length; j++) {
+					imgData = floodfillTransp(interactiveMap.TerritoryPositions[terrID][j][0], interactiveMap.TerritoryPositions[terrID][j][1], imgData);
+				}
+			}
+			interactiveMap.visibleMap.greyOutLayer.context.putImageData(imgData, 0, 0);
         }
     }
 };
