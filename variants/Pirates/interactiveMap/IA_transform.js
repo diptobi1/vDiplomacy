@@ -145,6 +145,14 @@ function loadIAtransform(ids) {
 					}
 
 				this.orderType = value;
+				// before entering order: store previous order in case process of entering
+				// order is aborted
+				this.previousOrder = {
+					'type': this.Order.type,
+					'toTerrID': this.Order.toTerrID,
+					'fromTerrID': this.Order.fromTerrID,
+					'viaConvoy': this.Order.viaConvoy
+				};
 
 				if (value === "Transform") { //get special transform code for order value
 					value = "Transform_" + (parseInt(this.Order.Unit.Territory.coastParentID) + 1000);

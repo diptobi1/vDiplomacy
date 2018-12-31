@@ -18,7 +18,7 @@ imgArmy.observe('load',function(){
     
     imgArmy = canvas;
 });
-imgArmy.src = 'contrib/smallarmy.png';
+imgArmy.src = 'variants/KnownWorld_901/resources/army.png';
 
 var imgFleet = new Image();
 imgFleet.observe('load',function(){
@@ -29,7 +29,7 @@ imgFleet.observe('load',function(){
     
     imgFleet = canvas;
 });
-imgFleet.src = 'contrib/smallfleet.png';
+imgFleet.src = 'variants/KnownWorld_901/resources/fleet.png';
 
 function setTransparent(ctx){
     var imgData = ctx.getImageData(0,0,ctx.canvas.width,ctx.canvas.height);
@@ -52,13 +52,13 @@ function loadIAtransform() {
     }
 
     function addOrderMenuTransformButton() {
-		var origCreate = interactiveMap.interface.orderMenu.create;
+        var origCreate = interactiveMap.interface.orderMenu.create;
 		
         interactiveMap.interface.orderMenu.create = function() {
 			if (typeof interactiveMap.interface.orderMenu.element == "undefined") { 
 				origCreate();
 			
-				interactiveMap.parameters.imgTransform = 'variants/Karibik/interactiveMap/IA_transform.png';
+				interactiveMap.parameters.imgTransform = 'variants/KnownWorld_901/interactiveMap/IA_transform.png';
 				interactiveMap.interface.orderMenu.createButtonSet('Transform','transform');
 			}
         };
@@ -115,7 +115,7 @@ function loadIAtransform() {
 						break;
 				}
 			}
-
+			
 			this.positionMenu(coor);
 			this.toggle(true);
         };
@@ -141,7 +141,15 @@ function loadIAtransform() {
                         return;
                     }
 
-                this.orderType = value;
+				this.orderType = value;
+				// before entering order: store previous order in case process of entering
+				// order is aborted
+				this.previousOrder = {
+					'type': this.Order.type,
+					'toTerrID': this.Order.toTerrID,
+					'fromTerrID': this.Order.fromTerrID,
+					'viaConvoy': this.Order.viaConvoy
+				};
 
                 if (value === "Transform") { //get special transform code for order value
                     value = "Transform_"+(parseInt(this.Order.Unit.Territory.coastParentID) + 1000);
