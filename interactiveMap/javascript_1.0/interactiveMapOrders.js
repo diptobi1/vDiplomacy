@@ -374,7 +374,7 @@ interactiveMap.loadOrders = function() {
             }
 
             if (!o.Unit.getMovableTerritories().pluck('id').include(terrID)) {
-                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " can not move to " + Territories.get(terrID).name + " (not adjacent / wrong unit type)");
+                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " cannot move to " + Territories.get(terrID).name + " (not adjacent / wrong unit type)");
                 return;
             }
             this.enterOrder('toTerrID', terrID);
@@ -384,7 +384,7 @@ interactiveMap.loadOrders = function() {
 
         IA.setSupportHold = function(terrID) {
             if (!o.Unit.getMovableTerritories().pluck('coastParentID').include(terrID)) {
-                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " can not support unit in " + Territories.get(terrID).name + " (not adjacent / wrong unit type)");
+                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " cannot support unit in " + Territories.get(terrID).name + " (not adjacent / wrong unit type)");
                 return;
             }
             if (!this.isUnitIn(terrID)) {
@@ -404,11 +404,11 @@ interactiveMap.loadOrders = function() {
 
         IA.setSupportMove = function(terrID, coordinates) {
             if (!o.Unit.getSupportMoveToChoices().include(terrID)) {
-                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " can not support unit to " + Territories.get(terrID).name + " (not adjacent / wrong unit type)");
+                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " cannot support unit to " + Territories.get(terrID).name + " (not adjacent / wrong unit type)");
                 return;
             }
             if (o.Unit.getSupportMoveFromChoices(Territories.get(terrID)).length == 0) {
-                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " can not support unit to " + Territories.get(terrID).name + " (not reachable for other units)");
+                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " cannot support unit to " + Territories.get(terrID).name + " (not reachable for other units)");
                 return;
             }
 
@@ -523,7 +523,7 @@ interactiveMap.loadOrders = function() {
             }
 
             if (!o.toTerrChoices.keys().include(terrID)) {
-                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " can not move to " + Territories.get(terrID).name + " (not adjacent / wrong unit type / occupied / standoff)");
+                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " cannot move to " + Territories.get(terrID).name + " (not adjacent / wrong unit type / occupied / standoff)");
                 return;
             }
             this.enterOrder('toTerrID', terrID);
