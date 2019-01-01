@@ -425,7 +425,7 @@ interactiveMap.loadOrders = function() {
                 return;
             }
             if (!o.Unit.getSupportMoveFromChoices(o.ToTerritory).include(terrID)) {
-                alert(o.ToTerritory.name + " cannot be reached by " + ((Territories.get(terrID).Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " from " + Territories.get(terrID).name) + " (not adjacent / wrong unit type)";
+                alert(o.ToTerritory.name + " cannot be reached by " + ((Territories.get(terrID).Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " from " + Territories.get(terrID).name + " (not adjacent / wrong unit type)");
                 return;
             }
 
