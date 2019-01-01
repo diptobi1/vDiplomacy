@@ -72,6 +72,8 @@ interactiveMap.options = {
 
 //initializes interactiveMap
 function loadIA(variantName, verify) {
+	
+	if(MyOrders.length == 0) return; // do not do anything if there are no orders in this phase
 
     interactiveMap.loadOrders();
     interactiveMap.fog.variantName = variantName;
