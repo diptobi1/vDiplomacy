@@ -25,6 +25,7 @@
 	1.0.1: style.css fix
 	1.0.2: rules.html added
 	1.0.3: border-issue fixed
+	1.0.6: Fixed a typo in Date strings
 		
 */
 
@@ -37,7 +38,7 @@ class FubarVariant extends WDVariant {
 	public $fullName='Fubar';
 	public $description='Fucked up beyond all recognition.';
 	public $author='sqrg';
-	public $version='1.0.5';
+	public $version='1.0.6';
 
 	public $countries=array('Fatflap','Howdoileavethisgame','timmy1999','Sh1tn00b','oMgYoUrAsLuT','multi_152');
 
@@ -65,13 +66,13 @@ class FubarVariant extends WDVariant {
 
 	public function turnAsDate($turn) {
 		if ( $turn==-1 ) return "Pre-game";
-		else return ( 100 - ( $turn % 2 ? "Autumn, " : "Spring, " ).(floor($turn/2)));
+		else return ( /*100 -*/ ( $turn % 2 ? "Autumn, " : "Spring, " ).(floor($turn/2)));
 	}
 
 	public function turnAsDateJS() {
 		return 'function(turn) {
 			if( turn==-1 ) return "Pre-game";
-			else return ( 100 - (turn%2 ? "Autumn, " : "Spring, " )+(Math.floor(turn/2)));
+			else return ( /*100 -*/ (turn%2 ? "Autumn, " : "Spring, " )+(Math.floor(turn/2)));
 		};';
 	}
 }
