@@ -148,18 +148,9 @@ interactiveMap.loadOrders = function() {
 
         IA.setAndShow = function(n, v) {
             if (this.Order[n] != v) {
-                try {
-                    this.Order.inputValue(n, v);
-                } catch (err) {
-                    /*
-                     * Fix for support move problems probably caused by model.js line 196-219 (disabled extra check).
-                     * Could lead to crashes when postUpdate() is called in inputValue() as this.ToTerritory.ConvoyGroup is wrongly expected.
-                     * If postUpdate() crashes, OrdersHTML.updateFormButtons() has to be called directly.
-                     */
-                    if (err.message == 'this.ToTerritory.ConvoyGroup is undefined')
-                        OrdersHTML.updateFormButtons();
-                }
-                if(this.Order.orderSegs != null)this.Order.reHTML(n);
+				this.Order.inputValue(n, v);
+                
+				if(this.Order.orderSegs != null)this.Order.reHTML(n);
             } else {
 				/*
 				 * If an already existing value is entered as last requirement,
