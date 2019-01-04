@@ -46,9 +46,23 @@ interactiveMap.resetOrder = function() {
     interactiveMap.interface.orderMenu.element.hide();
 };
 
+/* 
+ * An aborted order is automatically set to previous order and all variables will be reset.
+ */
 interactiveMap.abortOrder = function() {
+	if(interactiveMap.currentOrder != null && interactiveMap.currentOrder.interactiveMap.previousOrder != null){
+		interactiveMap.currentOrder.interactiveMap.setAndShow('type', interactiveMap.currentOrder.interactiveMap.previousOrder.type);
+		
+		interactiveMap.currentOrder.requirements.each(function(req){
+			if(req == "type") return;
+			
+			interactiveMap.currentOrder.interactiveMap.setAndShow(req, interactiveMap.currentOrder.interactiveMap.previousOrder[req]);
+		});
+	} 
+	
+	
+	this.insertMessage(" ... (aborted)",false);
     this.resetOrder();
-    this.insertMessage(" ... (aborted)",false);
 }
 
 /*
@@ -125,6 +139,7 @@ interactiveMap.loadOrders = function() {
 
         IA.resetOrder = function() {
             this.orderType = null;
+			this.previousOrder = null;
             this.coordinates = null;
             this.convoyChain = new Array();
             this.terrChoices = new Array();
@@ -146,7 +161,15 @@ interactiveMap.loadOrders = function() {
                 }
                 if(this.Order.orderSegs != null)this.Order.reHTML(n);
             } else {
-                this.Order.isComplete = (this.Order.requirements[this.Order.requirements.length - 1] == n);
+				/*
+				 * If an already existing value is entered as last requirement,
+				 * check if the order is complete (so the last value is actually
+				 * valid (!= "")), so the IA order can be savely completed.
+				 */
+                if (this.Order.requirements[this.Order.requirements.length - 1] == n)
+					this.Order.checkComplete();
+				else
+					this.Order.isComplete = false;
             }
             if (((this.orderType == "Support move to") && (n == "toTerrID")) || ((this.orderType == "Support hold") || (this.orderType == "Retreat")) && (n == "type")) {
                 this.Order.isComplete = false; //fix for autofill (perhaps not wanted by user as supported unit changes orders as well)
@@ -154,6 +177,7 @@ interactiveMap.loadOrders = function() {
         };
 
         IA.orderType = null;
+		IA.previousOrder = null;
         IA.setOrder = function(value) {
             if (this.orderType != null) {
                 interactiveMap.errorMessages.uncompletedOrder();
@@ -172,6 +196,14 @@ interactiveMap.loadOrders = function() {
                 }
 
             this.orderType = value;
+			// before entering order: store previous order in case process of entering
+			// order is aborted
+			this.previousOrder = {
+				'type': this.Order.type,
+				'toTerrID': this.Order.toTerrID,
+				'fromTerrID': this.Order.fromTerrID,
+				'viaConvoy': this.Order.viaConvoy
+			};
 
             if ((value == "Build Army") || (value == "Build Fleet")) {
                 var terrID = interactiveMap.selectedTerritoryID;
@@ -342,7 +374,7 @@ interactiveMap.loadOrders = function() {
             }
 
             if (!o.Unit.getMovableTerritories().pluck('id').include(terrID)) {
-                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " can not move to " + Territories.get(terrID).name + " (not adjacent / wrong unit type)");
+                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " cannot move to " + Territories.get(terrID).name + " (not adjacent / wrong unit type)");
                 return;
             }
             this.enterOrder('toTerrID', terrID);
@@ -352,7 +384,7 @@ interactiveMap.loadOrders = function() {
 
         IA.setSupportHold = function(terrID) {
             if (!o.Unit.getMovableTerritories().pluck('coastParentID').include(terrID)) {
-                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " can not support unit in " + Territories.get(terrID).name + " (not adjacent / wrong unit type)");
+                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " cannot support unit in " + Territories.get(terrID).name + " (not adjacent / wrong unit type)");
                 return;
             }
             if (!this.isUnitIn(terrID)) {
@@ -372,11 +404,11 @@ interactiveMap.loadOrders = function() {
 
         IA.setSupportMove = function(terrID, coordinates) {
             if (!o.Unit.getSupportMoveToChoices().include(terrID)) {
-                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " can not support unit to " + Territories.get(terrID).name + " (not adjacent / wrong unit type)");
+                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " cannot support unit to " + Territories.get(terrID).name + " (not adjacent / wrong unit type)");
                 return;
             }
             if (o.Unit.getSupportMoveFromChoices(Territories.get(terrID)).length == 0) {
-                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " can not support unit to " + Territories.get(terrID).name + " (not reachable for other units)");
+                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " cannot support unit to " + Territories.get(terrID).name + " (not reachable for other units)");
                 return;
             }
 
@@ -393,7 +425,7 @@ interactiveMap.loadOrders = function() {
                 return;
             }
             if (!o.Unit.getSupportMoveFromChoices(o.ToTerritory).include(terrID)) {
-                alert(o.ToTerritory.name + " cannot be reached by " + ((Territories.get(terrID).Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " from " + Territories.get(terrID).name) + " (not adjacent / wrong unit type)";
+                alert(o.ToTerritory.name + " cannot be reached by " + ((Territories.get(terrID).Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " from " + Territories.get(terrID).name + " (not adjacent / wrong unit type)");
                 return;
             }
 
@@ -491,7 +523,7 @@ interactiveMap.loadOrders = function() {
             }
 
             if (!o.toTerrChoices.keys().include(terrID)) {
-                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " can not move to " + Territories.get(terrID).name + " (not adjacent / wrong unit type / occupied / standoff)");
+                alert(((o.Unit.type == "Army") ? interactiveMap.parameters.armyName : interactiveMap.parameters.fleetName) + " in " + o.Unit.Territory.name + " cannot move to " + Territories.get(terrID).name + " (not adjacent / wrong unit type / occupied / standoff)");
                 return;
             }
             this.enterOrder('toTerrID', terrID);

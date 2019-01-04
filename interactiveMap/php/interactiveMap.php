@@ -26,33 +26,49 @@ class IAmap extends drawMap {
     protected $territoryPositions;
     protected $usedColors;
 
-    public function drawMap() {
+	/**
+	 * @param bool $colorCheck - If set true the map color check of the autocolor
+	 * script is executed even if the autoscript is not used. Usefull for debugging
+	 * provided maps.
+	 */
+    public function drawMap($colorCheck = false) {
         //check if there is a cached version. Delete it (it's only needed for development)
         if(file_exists('variants/' . $this->Variant->name . '/cache/temp_' . $this->mapName))
             unlink('variants/' . $this->Variant->name . '/cache/temp_' . $this->mapName);
         
-        if (!file_exists('variants/' . $this->Variant->name . '/interactiveMap/' . $this->mapName)) {
+		/*
+		 * If the map is not drawn yet, an autocolor script will be called and 
+		 * attempts to draw map.
+		 */
+		$needsDrawing = !file_exists('variants/' . $this->Variant->name . '/interactiveMap/' . $this->mapName);
+		
+		
+        if ($needsDrawing || $colorCheck) {
             ini_set("memory_limit", "1024M");
 
-            $this->map = $this->loadMap();
-
             $this->territoryPositions = $this->getTerritoryPositions();
-            $this->usedColors = $this->getColors();
 
-
-            $this->colorTerritories();
-
+			if($needsDrawing){
+				$this->map = $this->loadMap();
+				$this->usedColors = $this->getColors();
+				$this->colorTerritories();
+			}elseif ($colorCheck) {
+				$this->map = imagecreatefrompng('variants/' . $this->Variant->name . '/interactiveMap/' . $this->mapName);
+			}
 
             $cC = $this->coloredCorrectly();
             if ($cC != null)
                 die($cC);
 
-            $this->saveMap();
+            if($needsDrawing)
+				$this->saveMap();
+			        
+			imagedestroy($this->map);	
             
             $this->deleteMapData(); //after the map has been updated, the MapData is propably inaccurate
         }
     }
-
+	
     protected $sourceMapName = 'smallmap.png';
 
     protected function loadMap($mapName = '') {
@@ -185,7 +201,10 @@ class IAmap extends drawMap {
             foreach($errors as $index=>$error){
                 $errorString .= "<p> ".$index.":<br>";
                 foreach($error as $terrID){
-                    $errorString .= $terrNames[$terrID] . "(" . $terrID ."), ";
+					if($terrID!=0)
+						$errorString .= $terrNames[$terrID] . "(" . $terrID ."), ";
+					else
+						$errorString .= "black color (reserved for border), ";
                 }
                 $errorString .= "</p>";
             }
@@ -202,8 +221,6 @@ class IAmap extends drawMap {
         else
             //there is now interactiveMap directory yet -> created a temp version in the cache directory
             imagepng($this->map, 'variants/' . $this->Variant->name . '/cache/temp_' . $this->mapName );
-        
-        imagedestroy($this->map);
     }
 
     public function serveMap() {

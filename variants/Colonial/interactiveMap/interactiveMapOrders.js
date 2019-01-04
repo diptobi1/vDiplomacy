@@ -10,6 +10,7 @@ interactiveMap.loadOrders = function() {
 
         IA.resetOrder = function() {
             this.orderType = null;
+			this.previousOrder = null;
             this.coordinates = null;
             this.convoyChain = new Array();
             this.terrChoices = new Array();
@@ -31,7 +32,15 @@ interactiveMap.loadOrders = function() {
                 }
                 if(this.Order.orderSegs != null)this.Order.reHTML(n);
             } else {
-                this.Order.isComplete = (this.Order.requirements[this.Order.requirements.length - 1] == n);
+				/*
+				 * If an already existing value is entered as last requirement,
+				 * check if the order is complete (so the last value is actually
+				 * valid (!= "")), so the IA order can be savely completed.
+				 */
+                if (this.Order.requirements[this.Order.requirements.length - 1] == n)
+					this.Order.checkComplete();
+				else
+					this.Order.isComplete = false;
             }
             if (((this.orderType == "Support move to") && (n == "toTerrID")) || ((this.orderType == "Support hold") || (this.orderType == "Retreat")) && (n == "type")) {
                 this.Order.isComplete = false; //fix for autofill (perhaps not wanted by user as supported unit changes orders as well)
@@ -39,6 +48,7 @@ interactiveMap.loadOrders = function() {
         };
 
         IA.orderType = null;
+		IA.previousOrder = null;
         IA.setOrder = function(value) {
             if (this.orderType != null) {
                 interactiveMap.errorMessages.uncompletedOrder();
@@ -69,6 +79,14 @@ interactiveMap.loadOrders = function() {
             }
 
             this.orderType = value;
+			// before entering order: store previous order in case process of entering
+			// order is aborted
+			this.previousOrder = {
+				'type': this.Order.type,
+				'toTerrID': this.Order.toTerrID,
+				'fromTerrID': this.Order.fromTerrID,
+				'viaConvoy': this.Order.viaConvoy
+			};
 
             if ((value == "Build Army") || (value == "Build Fleet")) {
                 var terrID = interactiveMap.selectedTerritoryID;

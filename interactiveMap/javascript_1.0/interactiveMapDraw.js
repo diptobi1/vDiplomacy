@@ -20,10 +20,9 @@
 interactiveMap.visibleMap = new Object();
 interactiveMap.visibleMap.mainLayer = new Object();
 interactiveMap.visibleMap.greyOutLayer = new Object();
+interactiveMap.visibleMap.selectLayer = new Object();
 
 interactiveMap.greyOut = new Object();
-
-interactiveMap.greyOut.cache = new Hash();
 
 /*
  * creates the canvas elements and loads the image of the map
@@ -32,22 +31,46 @@ interactiveMap.greyOut.cache = new Hash();
 interactiveMap.visibleMap.load = function() {
     if (interactiveMap.activated) {
         if (interactiveMap.visibleMap.mainLayer.canvasElement == null) {
-            interactiveMap.visibleMap.mainLayer.canvasElement = new Element("canvas", {'id': 'mapCanvas', 'width': interactiveMap.hiddenMap.canvasElement.width, 'height': interactiveMap.hiddenMap.canvasElement.height, /*'onClick': 'selectTerritory(event)',*/ 'style': 'left:0px;top:0px;position:absolute'}).insert("<p>Your Browser does not support Canvas! You can not use InteractiveMap! Please Reload the page!</p>");
-            interactiveMap.visibleMap.element = new Element("div", {'id': 'mapCanDiv', 'style': 'margin:0 auto;position:relative'}).appendChild(interactiveMap.visibleMap.mainLayer.canvasElement).parentNode;
+			// create div container for interactive map
+			interactiveMap.visibleMap.element = new Element("div", {'id': 'mapCanDiv', 'style': 'margin:0 auto;position:relative'});
             interactiveMap.visibleMap.oldMap.replace(interactiveMap.visibleMap.element);
             interactiveMap.interface.options.updateScrollbars(); //adds or removes scrollbars to visibleMap.element
-            interactiveMap.visibleMap.greyOutLayer.canvasElement = interactiveMap.visibleMap.mainLayer.canvasElement.clone(false);
-            interactiveMap.visibleMap.greyOutLayer.canvasElement.observe('click', interactiveMap.onClick);
-            //mapCanOffset = interactiveMap.visibleMap.mainLayer.canvasElement.cumulativeOffset().toArray();
+				
+			/* create canvas/div elements for 
+			 * - mainLayer -> actual map (rel. z-Index 0)
+			 * - greyOutLayer -> canvas for territory grey out (rel. z-Index 1)
+			 * - selectLayer -> element for selecting territories (rel. z-Index 3)
+			 * 
+			 * z-Index 2 is left open so a 'deactived' order-Menu can take this place
+			 * so only click events from selectLayer are fired if desired.
+			 */
+            var mapProps = {
+				'width': interactiveMap.hiddenMap.canvasElement.width,
+				'height': interactiveMap.hiddenMap.canvasElement.height, 
+				'style': 'left:0px;top:0px;position:absolute;width:'+interactiveMap.hiddenMap.canvasElement.width+'px;height:'+interactiveMap.hiddenMap.canvasElement.height+'px;'
+			};
+			
+			// main layer
+			interactiveMap.visibleMap.mainLayer.canvasElement = new Element("canvas", {'id': 'mapCanvas'}).writeAttribute(mapProps).insert("<p>Your Browser does not support Canvas! You can not use InteractiveMap! Please Reload the page!</p>");
+            interactiveMap.visibleMap.element.appendChild(interactiveMap.visibleMap.mainLayer.canvasElement);
+			
+			// grey out layer
+			interactiveMap.visibleMap.greyOutLayer.canvasElement = new Element("canvas", {'id': 'mapCanvasGreyOut'}).writeAttribute(mapProps);
             interactiveMap.visibleMap.greyOutLayer.canvasElement.setStyle({
-                position: 'absolute',
-                left: "0px", //mapCanOffset[0]+"px",
-                top: "0px", //mapCanOffset[1]+"px"
                 zIndex: interactiveMap.visibleMap.mainLayer.canvasElement.style.zIndex + 1.0
             });
-            //interactiveMap.visibleMap.element.appendChild(new Element("div",{})).appendChild(interactiveMap.visibleMap.greyOutLayer.canvasElement);
-            interactiveMap.visibleMap.element.appendChild(interactiveMap.visibleMap.greyOutLayer.canvasElement);
+			interactiveMap.visibleMap.element.appendChild(interactiveMap.visibleMap.greyOutLayer.canvasElement);
+			
+			// select layer
+			interactiveMap.visibleMap.selectLayer.element = new Element("div", {'id': 'selectLayer'}).writeAttribute(mapProps);
+			interactiveMap.visibleMap.selectLayer.element.setStyle({
+                zIndex: interactiveMap.visibleMap.mainLayer.canvasElement.style.zIndex + 3.0
+            });
+			interactiveMap.visibleMap.selectLayer.element.observe('click', interactiveMap.onClick);
+			interactiveMap.visibleMap.element.appendChild(interactiveMap.visibleMap.selectLayer.element);
 
+
+			// initialize canvas content
             if (interactiveMap.visibleMap.mainLayer.canvasElement.getContext) {
                 interactiveMap.visibleMap.mainLayer.context = interactiveMap.visibleMap.mainLayer.canvasElement.getContext('2d');
                 interactiveMap.visibleMap.greyOutLayer.context = interactiveMap.visibleMap.greyOutLayer.canvasElement.getContext('2d');
@@ -1037,25 +1060,18 @@ interactiveMap.greyOut.draw = function(terrChoices) {
             terrChoices = MyUnits.pluck("terrID");
         }
         if (typeof terrChoices != 'undefined') {
-            var cachedImgData = interactiveMap.greyOut.cache.get(terrChoices);
-            if (Object.isUndefined(cachedImgData)) {
-                interactiveMap.visibleMap.greyOutLayer.context.fillStyle = "rgba(0,0,0," + interactiveMap.options.greyOutIntensity + ")";
-                interactiveMap.visibleMap.greyOutLayer.context.fillRect(0, 0, width, height);
+			interactiveMap.visibleMap.greyOutLayer.context.fillStyle = "rgba(0,0,0," + interactiveMap.options.greyOutIntensity + ")";
+			interactiveMap.visibleMap.greyOutLayer.context.fillRect(0, 0, width, height);
 
-                var imgData = interactiveMap.visibleMap.greyOutLayer.context.getImageData(0, 0, width, height);
+			var imgData = interactiveMap.visibleMap.greyOutLayer.context.getImageData(0, 0, width, height);
 
-                for (var i = 0; i < terrChoices.length; i++) {
-                    var terrID = Territories.get(terrChoices[i]).coastParentID;
-                    for (var j = 0; j < interactiveMap.TerritoryPositions[terrID].length; j++) {
-                        imgData = floodfillTransp(interactiveMap.TerritoryPositions[terrID][j][0], interactiveMap.TerritoryPositions[terrID][j][1], imgData);
-                    }
-                }
-                interactiveMap.visibleMap.greyOutLayer.context.putImageData(imgData, 0, 0);
-                
-                interactiveMap.greyOut.cache.set(terrChoices,imgData);
-            } else {
-                interactiveMap.visibleMap.greyOutLayer.context.putImageData(cachedImgData, 0, 0);
-            }
+			for (var i = 0; i < terrChoices.length; i++) {
+				var terrID = Territories.get(terrChoices[i]).coastParentID;
+				for (var j = 0; j < interactiveMap.TerritoryPositions[terrID].length; j++) {
+					imgData = floodfillTransp(interactiveMap.TerritoryPositions[terrID][j][0], interactiveMap.TerritoryPositions[terrID][j][1], imgData);
+				}
+			}
+			interactiveMap.visibleMap.greyOutLayer.context.putImageData(imgData, 0, 0);
         }
     }
 };

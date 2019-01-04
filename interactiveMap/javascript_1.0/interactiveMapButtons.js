@@ -86,7 +86,7 @@ interactiveMap.interface.create = function() {
 
     interactiveMap.interface.orderLine.setStyle({'height': '15px', 'overflow': 'auto'});
     
-    $('mapstore').appendChild(new Element('p',{'id':'IAnotice','style':'font-weight: bold;text-align: center;'})).update('The shown orders are a PREVIEW of your currently entered orders!<br>'+((!interactiveMap.autosave)?'They are not saved immediately!':'They were saved immediately!')).hide();
+    $('mapstore').appendChild(new Element('p',{'id':'IAnotice','style':'font-weight: bold;text-align: center;'})).update('The shown orders are a PREVIEW of your currently entered orders!<br>'+((!interactiveMap.autosave)?'They are not saved immediately!':'They were saved immediately!')+"<br><br> Hint: Reset button of order menu covers target territories? <br>Try clicking the unit of the current order again to disable and hide the button.").hide();
 };
 
 /*
@@ -169,8 +169,7 @@ interactiveMap.interface.orderMenu.load = function() {
 			interactiveMap.options.buttonWidth = interactiveMap.parameters.smallButtonSize;
 	}
 	
-	// does nothing if menu is already created
-	this.create();
+	this.create();	// does nothing if menu is already created
 }
 
 /*
@@ -178,15 +177,14 @@ interactiveMap.interface.orderMenu.load = function() {
  */
 interactiveMap.interface.orderMenu.create = function() {
 	if (typeof interactiveMap.interface.orderMenu.element == "undefined") {
-        interactiveMap.interface.orderMenu.element = new Element('div', {'id': 'orderMenu'});
+        interactiveMap.interface.orderMenu.element = new Element('div', {'id': 'orderMenu'});	
         interactiveMap.interface.orderMenu.element.setStyle({
             position: 'absolute',
-            zIndex: interactiveMap.visibleMap.greyOutLayer.canvasElement.style.zIndex + 1,
             width: '10px'
             //width: '200px'
                     //backgroundColor: 'white'
         });
-        
+			
         switch (context.phase) {
             case "Diplomacy":
 				interactiveMap.interface.orderMenu.createButtonSet('Hold','hold');
@@ -315,16 +313,6 @@ interactiveMap.interface.orderMenu.createButtonSet = function(ordertype, name){
  * adds the needed options and make the orderMenu visible
  */
 interactiveMap.interface.orderMenu.show = function(coor, drawResetButton) {
-    function getPosition(coor) {
-        var width = interactiveMap.interface.orderMenu.element.getWidth();
-        if (coor.x < width/2)
-            return 0;
-        else if (coor.x > (interactiveMap.visibleMap.mainLayer.canvasElement.width - width/2))
-            return (interactiveMap.visibleMap.mainLayer.canvasElement.width - width);
-        else
-            return (coor.x - width/2);
-    }
-	
 	/*
 	 * If current coordinates for display of the order menu are given, use these.
 	 * If no coordinates are given, use the last coordinates given.
@@ -398,13 +386,58 @@ interactiveMap.interface.orderMenu.show = function(coor, drawResetButton) {
 		}
 		
 	} 
+	
+	this.positionMenu(coor);
+	this.toggle(true);
+};
+
+/*
+ * Positions the orderMenu at the given coordinates on the canvas element. If the
+ * coordinates are near the edge or outside the map they are adjusted to fit.
+ */
+interactiveMap.interface.orderMenu.positionMenu = function(coor){
+	function getPosition(coor) {
+        var width = interactiveMap.interface.orderMenu.element.getWidth();
+        if (coor.x < width/2)
+            return 0;
+        else if (coor.x > (interactiveMap.visibleMap.mainLayer.canvasElement.width - width/2))
+            return (interactiveMap.visibleMap.mainLayer.canvasElement.width - width);
+        else
+            return (coor.x - width/2);
+    }
+	
     
     var height = interactiveMap.interface.orderMenu.element.getHeight();
     interactiveMap.interface.orderMenu.element.setStyle({
-        top: (((coor.y + height)>interactiveMap.visibleMap.mainLayer.canvasElement.height)?interactiveMap.visibleMap.mainLayer.canvasElement.height-height:coor.y) + 'px',
+        top: (((coor.y + height)>interactiveMap.visibleMap.mainLayer.canvasElement.height)?interactiveMap.visibleMap.mainLayer.canvasElement.height-height:coor.y+5) + 'px',
         left: getPosition(coor) + 'px'
     });
 };
+	
+/*
+ * Activates or deactivates the order menu. 
+ * 
+ * A deactived menu is shown with transparency and is not clickable. Instead the
+ * user can click on territories behind the menu. Main use should be to enable 
+ * territory selection for territories hidden behind the menu.
+ *  
+ * @param {bool} toggleOn : true if the interface should be activated
+ */
+interactiveMap.interface.orderMenu.toggleState = undefined;
+interactiveMap.interface.orderMenu.toggle = function(toggleOn){
+	if(Object.isUndefined(toggleOn)) toggleOn = !this.toggleState; // switch state if no arg is given
+	else if(this.toggleState == toggleOn) return; // do nothing if state not changed
+		
+	this.toggleState = toggleOn;
+	
+	if(toggleOn) {
+		interactiveMap.interface.orderMenu.element.setOpacity(1);
+		interactiveMap.interface.orderMenu.element.setStyle({zIndex: interactiveMap.visibleMap.mainLayer.canvasElement.style.zIndex + 4});
+	} else {
+		interactiveMap.interface.orderMenu.element.setOpacity(0.5);
+		interactiveMap.interface.orderMenu.element.setStyle({zIndex: interactiveMap.visibleMap.mainLayer.canvasElement.style.zIndex + 2});
+	}
+}
 
 interactiveMap.interface.orderMenu.showElement = function(element){
     if(element.style.display == "none"){

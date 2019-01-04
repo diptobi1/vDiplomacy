@@ -4,7 +4,7 @@ require_once('interactiveMap.php');
 
 $IAmap = getIAmapObject();
 
-$IAmap->drawMap();
+$IAmap->drawMap(isset($_REQUEST['colorCheck']));
 
 $IAmap->serveMap();
 ?>

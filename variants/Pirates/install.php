@@ -65,7 +65,7 @@ $territoryRawData=array(
 	array('Mosquito Coast', 'Coast', 'No', 1, 390, 611, 250, 365),
 	array('Nassau', 'Coast', 'Yes', 0, 623, 201, 384, 130),
 	array('New Andalucia', 'Coast', 'No', 1, 1038, 731, 644, 455),
-	array('New Grenada', 'Coast', 'No', 0, 674, 758, 421, 473),
+	//array('New Grenada', 'Coast', 'No', 0, 674, 758, 421, 473),
 	array('Nombre de Dior', 'Coast', 'Yes', 0, 548, 767, 346, 472),
 	array('North Caribbean Sea', 'Coast', 'No', 0, 849, 476, 530, 297),
 	array('North Riff', 'Coast', 'No', 13, 843, 349, 539, 227),

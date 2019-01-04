@@ -72,6 +72,8 @@ interactiveMap.options = {
 
 //initializes interactiveMap
 function loadIA(variantName, verify) {
+	
+	if(MyOrders.length == 0) return; // do not do anything if there are no orders in this phase
 
     interactiveMap.loadOrders();
     interactiveMap.fog.variantName = variantName;
@@ -88,26 +90,23 @@ function loadIA(variantName, verify) {
 }
 
 /*
+ * A helper functions, that calculates the map coordinates a user clicked from
+ * a given mouse event.
+ */
+interactiveMap.getMapCoordinatesFromMouseEvent = function(event){
+	var imgOffset = interactiveMap.visibleMap.mainLayer.canvasElement.cumulativeOffset().toArray();
+    var x = event.pointerX() - imgOffset[0] + interactiveMap.visibleMap.element.scrollLeft;
+    var y = event.pointerY() - imgOffset[1] + interactiveMap.visibleMap.element.scrollTop;
+
+    return{x: x, y: y};
+};
+
+/*
  * Handles the actions after the player clicked on the map to enter orders.
  * 
  * @param {type} event
  */
 interactiveMap.onClick = function(event) {
-    /*
-     * Calculates the coordinates on the map, including the offset of the map-image.
-     * 
-     * @param {type} event
-     * @returns {getCoor.Anonym$0}
-     */
-    function getCoor(event) {
-
-        var imgOffset = interactiveMap.visibleMap.mainLayer.canvasElement.cumulativeOffset().toArray();
-        var x = event.pointerX() - imgOffset[0] + interactiveMap.visibleMap.element.scrollLeft;
-        var y = event.pointerY() - imgOffset[1] + interactiveMap.visibleMap.element.scrollTop;
-
-        return{x: x, y: y};
-    }
-
     /*
      * Returns the territory for specific coordinates.
      * 
@@ -188,7 +187,7 @@ interactiveMap.onClick = function(event) {
      * onClick-function (main part)
      */
     if (interactiveMap.ready && interactiveMap.activated && !OrdersHTML.finalized) {
-        var coor = getCoor(event);
+        var coor = interactiveMap.getMapCoordinatesFromMouseEvent(event);
         interactiveMap.selectedTerritoryID = getTerritory(coor.x, coor.y);
         if (interactiveMap.selectedTerritoryID != null) {
             if ((interactiveMap.currentOrder == null) || (interactiveMap.currentOrder.interactiveMap.orderType == null)) {
@@ -217,7 +216,11 @@ interactiveMap.onClick = function(event) {
                     interactiveMap.insertMessage(Territories.get(interactiveMap.selectedTerritoryID).name);
                 }
             } else {
-                interactiveMap.currentOrder.interactiveMap.setOrderPart(interactiveMap.selectedTerritoryID, coor);
+				// toggle order menu if unit selected unit is clicked
+				if( interactiveMap.selectedTerritoryID == interactiveMap.currentOrder.Unit.Territory.coastParentID)
+					interactiveMap.interface.orderMenu.toggle();
+				else
+					interactiveMap.currentOrder.interactiveMap.setOrderPart(interactiveMap.selectedTerritoryID, coor);
             }
         }
     }
