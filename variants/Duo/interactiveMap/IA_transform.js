@@ -64,16 +64,6 @@ function loadIAtransform() {
         };
 
         interactiveMap.interface.orderMenu.show = function(coor, drawResetButton) {
-            function getPosition(coor) {
-				var width = interactiveMap.interface.orderMenu.element.getWidth();
-				if (coor.x < width/2)
-					return 0;
-				else if (coor.x > (interactiveMap.visibleMap.mainLayer.canvasElement.width - width/2))
-					return (interactiveMap.visibleMap.mainLayer.canvasElement.width - width);
-				else
-					return (coor.x - width/2);
-			}
-
 			/*
 			 * If current coordinates for display of the order menu are given, use these.
 			 * If no coordinates are given, use the last coordinates given.
@@ -126,11 +116,8 @@ function loadIAtransform() {
 				}
 			}
 
-            var height = interactiveMap.interface.orderMenu.element.getHeight();
-            interactiveMap.interface.orderMenu.element.setStyle({
-                top: (((coor.y + 25 + height) > interactiveMap.visibleMap.mainLayer.canvasElement.height) ? interactiveMap.visibleMap.mainLayer.canvasElement.height - height : coor.y + 25) + 'px',
-                left: getPosition(coor) + 'px'
-            });
+			this.positionMenu(coor);
+			this.toggle(true);
         };
     }
 
@@ -155,6 +142,14 @@ function loadIAtransform() {
                     }
 
                 this.orderType = value;
+				// before entering order: store previous order in case process of entering
+				// order is aborted
+				this.previousOrder = {
+					'type': this.Order.type,
+					'toTerrID': this.Order.toTerrID,
+					'fromTerrID': this.Order.fromTerrID,
+					'viaConvoy': this.Order.viaConvoy
+				};
 
                 if (value === "Transform") { //get special transform code for order value
                     value = "Transform_"+(parseInt(this.Order.Unit.Territory.coastParentID) + 1000);

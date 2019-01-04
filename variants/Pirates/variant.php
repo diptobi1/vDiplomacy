@@ -27,6 +27,7 @@
 	1.1:   clippers only retreat to an adjacent territory. 
 	1.2:   only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
 	1.3:   bugfixes for the hurricane
+	1.4:   Removed not used New Grenada territory 
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -40,7 +41,7 @@ class PiratesVariant extends WDVariant {
 	public $author     ='Gavin Atkinson';
 	public $adapter    ='Gavin Atkinson, Oliver Auth';
 	public $version    ='II';
-	public $codeVersion='1.3';	
+	public $codeVersion='1.4';	
 	
 	public $countries=array('Spain','England','France','Holland','Dunkirkers','Henry Morgan','Francois l Olonnais','Isaac Rochussen','The Infamous El Guapo','Daniel "The Exterminator" Montbars','Roche "The Rock" Braziliano','Bartolomeu "The Portuguese" de la Cueva','Daniel "The Terror" Johnson');	
 
