@@ -39,6 +39,7 @@
 	2.1.1: Maybe the error was more the paradox-reduction... Now strenght -1
 	2.1.2: An attack across a river with "0" fails even against empty territories. 
 	       In this case set the strenght min/max to 0.5. This fails against everything else, but not against empty territories
+	2.1.3: Borderissue fixed.
 
 */
 
@@ -52,7 +53,8 @@ class ImperiumVariant extends WDVariant {
 	public $description='The German Tribes invade the Roman Empire';
 	public $author     ='Martin Asal';
 	public $adapter    ='Oliver Auth / Carey Jensen';
-	public $version    ='2.1.2';
+	public $version    ='1.0';
+	public $codeVersion='2.1.3';
 	public $homepage   ='http://www.me-asal.de/imperium/index_eng.htm';
 
 	public $countries=array('Alamanni', 'Franci', 'Gothi', 'Hunni', 'Saxones', 'Vandali');
