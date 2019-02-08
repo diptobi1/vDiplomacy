@@ -36,13 +36,44 @@ if( isset($_REQUEST['uncache'])||isset($_REQUEST['profile']) )
 else
 	define('DELETECACHE',0);
 
+// Check if we should hide the move arrows. (Preview do not need the old move-arrows too...)
+if( isset($_REQUEST['hideMoves']) || isset($_REQUEST['preview']))
+	define('HIDEMOVES',1);
+else
+	define('HIDEMOVES',0);
+
+// Check if we need to color enhance the map
+if( isset($_REQUEST['colorCorrect']))
+{
+	switch($_REQUEST['colorCorrect']) {
+		case 'Protanope':   define('COLORCORRECT','Protanope');   break;
+		case 'Deuteranope': define('COLORCORRECT','Deuteranope'); break;
+		case 'Tritanope':   define('COLORCORRECT','Tritanope');   break;
+		default: define('COLORCORRECT',0);
+	}
+}
+else
+	define('COLORCORRECT',0);
+
+// Check if we are on preview-mode
+if( isset($_REQUEST['preview']))
+	define('PREVIEW',1);
+else
+	define('PREVIEW',0);
+
+// Check if we need to show CountryNames
+if( isset($_REQUEST['countryNames']))
+	define('COUNTRYNAMES',1);
+else
+	define('COUNTRYNAMES',0);
+
 chdir ('../../../');
 
 // Cache isn't an option; set things up to draw the map
 require_once('header.php');
 
 if( DELETECACHE && !$User->type['Admin'] )
-	die('Disable-cacheing flags set, but you are not an admin.');
+	die(l_t('Disable-cacheing flags set, but you are not an admin.'));
 
 /*
  * Map drawing:
@@ -60,6 +91,10 @@ ini_set('max_execution_time','20');
 
 if( !isset($_REQUEST['variantID']) )
 {
+	/*
+	 * Get the two required parameters; game ID and turn
+	 */
+	require_once('locales/layer.php'); // Load the localization layer; by itself it will do no localization
 	require_once('objects/game.php');
 	require_once('lib/html.php');
 	require_once('lib/cache.php');
@@ -70,24 +105,6 @@ if( !isset($_REQUEST['variantID']) )
 	
 	// The game is locked for update so the map isn't drawn twice at the same time
 	$Game=$Variant->Game($_REQUEST['gameID'],UPDATE);
-
-/*	if ($User->type['Admin'])
-	{
-		$mcountry=0;
-		list($ccodes)=$DB->sql_row("SELECT text FROM wD_Notices WHERE toUserID=3 AND timeSent=0 AND fromID=".$Game->id);
-		$verify=substr($ccodes,0,6);
-	}
-	elseif ($Game->Members->isJoined())
-	{
-		$mcountry=$Game->Members->ByUserID[$User->id]->countryID;
-		list($ccodes)=$DB->sql_row("SELECT text FROM wD_Notices WHERE toUserID=3 AND timeSent=0 AND fromID=".$Game->id);
-		$verify=substr($ccodes,$mcountry*6,6);
-	}
-	else
-	{
-		$verify="fog";
-	}
-*/
 
 	$verify=$_REQUEST['verify'];
 	if (strlen($verify) == 6) {
@@ -108,22 +125,38 @@ if( !isset($_REQUEST['variantID']) )
 		fwrite($handle, "Cheater don't do this...");
 		fclose($handle);
 	}
-		
-	// We might be able to fetch the map from the cache
-	$filename = Game::mapFilename((int)$_REQUEST['gameID'], (int)$_REQUEST['turn']) ;
-	$filename = str_replace(".map","-".$verify.".map",$filename);
-	if( file_exists($filename) )
-	{
-		header("Last-Modified: Mon, 26 Jul 1997 05:00:00 GMT");
-		header("Cache-Control: no-store, no-cache, must-revalidate");
-		header("Cache-Control: post-check=0, pre-check=0", false);
-
-		if( Game::mapType()=='json' )
-			libHTML::serveImage($filename, 'text/plain');
-		else
-			libHTML::serveImage($filename);
-	}
 	
+	
+	if( !IGNORECACHE && !PREVIEW )
+	{
+		// We might be able to fetch the map from the cache
+		$filename = Game::mapFilename((int)$_REQUEST['gameID'], (int)$_REQUEST['turn']) ;
+		$filename = str_replace(".map","-".$verify.".map",$filename);
+
+		// Map without arrows 
+		if (HIDEMOVES)
+			$filename = str_replace(".map","-hideMoves.map",$filename);
+
+		// ColorEnhance for colorblind:
+		if (COLORCORRECT)
+			$filename = str_replace(".map","-".COLORCORRECT.".map",$filename);
+
+		// Add countrynames for colorblind:
+		if (COUNTRYNAMES)
+			$filename = str_replace(".map","-names.map",$filename);
+
+		if( file_exists($filename) )
+		{
+			header("Last-Modified: Mon, 26 Jul 1997 05:00:00 GMT");
+			header("Cache-Control: no-store, no-cache, must-revalidate");
+			header("Cache-Control: post-check=0, pre-check=0", false);
+
+			if( Game::mapType()=='json' )
+				libHTML::serveImage($filename, 'text/plain');
+			else
+				libHTML::serveImage($filename);
+		}
+	}
 	/*
 	 * Determine which turn we are viewing. This is made a little trickier because
 	 * in the Diplomacy phase the *previous* turn is drawn. $_REQUEST['turn'] is
@@ -132,10 +165,8 @@ if( !isset($_REQUEST['variantID']) )
 	 */
 
 	// Determine the turn number:
-	if ( $Game->phase == 'Diplomacy' )
-		$latestTurn = $Game->turn-1;
-	else
-		$latestTurn = $Game->turn;
+	if ( $Game->phase == 'Diplomacy' ) $latestTurn = $Game->turn-1;
+	else $latestTurn = $Game->turn;
 
 	$turn = $latestTurn;
 
@@ -161,21 +192,21 @@ $noFog = array();
 if ($verify != "fog") {
 
 	if( $turn == -1 )	{
-		$sql="SELECT id,NULL from wD_Territories WHERE countryID=".$mcountry." AND mapID=".$Variant->mapID;								
+		$sql="SELECT toTerrID,fromTerrID from wD_Borders WHERE mapID=".$Variant->mapID." AND fromTerrID IN
+					(SELECT t.id FROM wD_Territories t WHERE t.supply='Yes' AND t.countryID=".$mcountry." AND t.mapID=".$Variant->mapID.")
+				UNION (SELECT id,NULL from wD_Territories WHERE countryID=".$mcountry." AND mapID=".$Variant->mapID.")";								
 	} elseif ( $turn == $latestTurn ) {
-		$sql="SELECT toTerrID, fromTerrID from wD_Borders b
-				LEFT JOIN wD_Units u ON (u.terrID = b.fromTerrID AND u.gameID=".$Game->id.")
-				WHERE b.mapID=".$Variant->mapID." 
-					AND u.countryID=".$mcountry."
-					AND (IF(u.type='Army',b.armysPass='Yes',b.fleetsPass='Yes'))
-			UNION (SELECT terrID,NULL from wD_TerrStatus WHERE countryID=".$mcountry." AND gameID=".$Game->id.")";
+		$sql="SELECT toTerrID, fromTerrID from wD_Borders WHERE mapID=".$Variant->mapID." AND fromTerrID IN
+					(SELECT t.coastParentID FROM wD_Territories t 
+						LEFT JOIN wD_TerrStatus ts ON (t.id=ts.terrID AND ts.gameID=".$Game->id." )
+					WHERE t.mapID=".$Variant->mapID." AND ((t.supply='Yes' AND ts.countryID=".$mcountry.") OR EXISTS (SELECT * from wD_Units u WHERE u.terrID=t.id AND u.countryID=".$mcountry." AND u.gameID=".$Game->id.")))
+				UNION (SELECT terrID,NULL from wD_TerrStatus WHERE countryID=".$mcountry." AND gameID=".$Game->id.")";
 	} else {
-		$sql="SELECT b.toTerrID, b.fromTerrID from wD_Borders b
-				LEFT JOIN wD_MovesArchive ma ON (ma.terrID = b.fromTerrID AND ma.gameID=".$Game->id." AND ma.turn=".($turn).")
-				WHERE b.mapID=".$Variant->mapID." 
-					AND ma.countryID=".$mcountry."
-					AND (IF(ma.unitType='Army',b.armysPass='Yes',b.fleetsPass='Yes'))
-			UNION (SELECT terrID,NULL from wD_TerrStatusArchive WHERE turn=".($turn)." AND countryID=".$mcountry." AND gameID=".$Game->id.")";
+		$sql="SELECT toTerrID,fromTerrID from wD_Borders WHERE mapID=".$Variant->mapID." AND fromTerrID IN
+					(SELECT t.coastParentID FROM wD_Territories t 
+						LEFT JOIN wD_TerrStatusArchive ts ON (ts.turn=".($turn)." AND t.id=ts.terrID AND ts.gameID=".$Game->id." AND t.mapID=".$Variant->mapID.")
+					WHERE t.mapID=".$Variant->mapID." AND ((t.supply='Yes' AND ts.countryID=".$mcountry.") OR EXISTS (SELECT * from wD_MovesArchive u WHERE u.turn=".($turn+1)." AND u.terrID=t.id AND u.countryID=".$mcountry." AND u.gameID=".$Game->id.")))
+				UNION (SELECT terrID,NULL from wD_TerrStatusArchive WHERE turn=".($turn)." AND countryID=".$mcountry." AND gameID=".$Game->id.")";
 	}
 
 	$tabl = $DB->sql_tabl($sql);
@@ -195,7 +226,7 @@ if ($verify != "fog") {
 // Load the drawMap object for the given map type
 if ( $mapType == 'xml' )
 {
-	require_once('map/drawMapXML.php');
+	require_once(l_r('map/drawMapXML.php'));
 	$drawMap = $Variant->drawMapXML();
 }
 elseif ( $mapType == 'json' )
@@ -208,7 +239,7 @@ elseif ( $mapType == 'json' )
 }
 else
 {
-	require_once('map/drawMap.php');
+	require_once(l_r('map/drawMap.php'));
 	$drawMap = $Variant->drawMap($mapType=='small',false);
 }
 
@@ -220,6 +251,7 @@ if( $turn==-1 )
 {
 	// Pre-game; just draw country default terrstatus
 	$sql = "SELECT t.id, t.name, t.type, t.countryID, 'No' as standoff
+			, t.supply
 			FROM wD_Territories t
 			WHERE (t.coast='No' OR t.coast='Parent') AND mapID=".$Variant->mapID;
 }
@@ -227,6 +259,7 @@ else
 {
 	$sql = "SELECT t.id, t.name, t.type, ts.countryID, ts.standoff
 			/* Territories are selected first, not TerrStatus, so that unoccupied territories can be drawn neutral */
+			, t.supply
 			FROM wD_Territories t
 			LEFT JOIN wD_TerrStatusArchive ts
 				ON ( ts.gameID = ".$Game->id." AND ts.turn = ".$turn." AND ts.terrID = t.id )
@@ -236,7 +269,7 @@ else
 
 $tabl = $DB->sql_tabl($sql);
 $owners = array();
-while(list($terrID, $terrName, $terrType, $countryID, $standoff) = $DB->tabl_row($tabl))
+while(list($terrID, $terrName, $terrType, $countryID, $standoff, $supply) = $DB->tabl_row($tabl))
 {
 	if (in_array($terrID,$noFog)) { 
 		if ( $terrType == 'Sea' )
@@ -250,12 +283,15 @@ while(list($terrID, $terrName, $terrType, $countryID, $standoff) = $DB->tabl_row
 			if ( ! $countryID ) $countryID = 0;
 			$owners[$terrID] = $countryID;
 			$drawMap->colorTerritory($terrID, $countryID);
+		
+			if (COUNTRYNAMES && $supply == 'Yes')
+				$drawMap->addCountryName($terrID, $countryID);
 		}
 
 		if ( isset($Game) && $Game->phase == 'Retreats' or $mapType!='small' )
 		{
 			// Only draw standoffs if we're in the retreats phase, or we're viewing that large map
-			if ( $standoff == 'Yes' ) $drawMap->drawStandoff($terrID);
+			if ( !HIDEMOVES && $standoff == 'Yes' ) $drawMap->drawStandoff($terrID);
 		}
 	} else {
 		$drawMap->colorTerritory($terrID, 5);
@@ -340,7 +376,7 @@ else
 					unitType, /* Unit */
 					success, dislodged /* Move */
 				FROM wD_MovesArchive
-				WHERE gameID = ".$Game->id." AND turn = ".$turn." ORDER BY type DESC";
+				WHERE gameID = ".$Game->id." AND NOT type = 'Wait' AND turn = ".$turn." ORDER BY type DESC";
 }
 
 /* Start with unit placement moves, and go back. This lets us know that the place we're
@@ -381,11 +417,11 @@ while(list($moveType, $terrID,
 			if ( $success ) $drawToTerrID = $toTerrID;
 			else $drawToTerrID = $terrID;
 
-			$drawMap->drawMove($terrID, $toTerrID, $success);
+			if (!HIDEMOVES) $drawMap->drawMove($terrID, $toTerrID, $success);
 		}
 		elseif ( $moveType == 'Retreat' )
 		{
-			$drawMap->drawRetreat($terrID, $toTerrID, $success);
+			if (!HIDEMOVES) $drawMap->drawRetreat($terrID, $toTerrID, $success);
 
 			if ( $success ) $drawToTerrID = $toTerrID;
 			else continue;
@@ -406,20 +442,20 @@ while(list($moveType, $terrID,
 
 		if ( $moveType == 'Support hold' )
 		{
-			$drawMap->drawSupportHold($terrID,
+			if (!HIDEMOVES) $drawMap->drawSupportHold($terrID,
 				isset($deCoastMap['SupportHoldToTerrID'][$toTerrID]) ? $deCoastMap['SupportHoldToTerrID'][$toTerrID] : $toTerrID,
 				$success);
 		}
 		elseif ( $moveType == 'Support move' )
 		{
-			$drawMap->drawSupportMove($terrID,
+			if (!HIDEMOVES) $drawMap->drawSupportMove($terrID,
 				isset($deCoastMap['SupportMoveFromTerrID'][$fromTerrID]) ? $deCoastMap['SupportMoveFromTerrID'][$fromTerrID] : $fromTerrID,
 				isset($deCoastMap['SupportMoveToTerrID'][$fromTerrID.'-'.$toTerrID]) ? $deCoastMap['SupportMoveToTerrID'][$fromTerrID.'-'.$toTerrID] : $toTerrID,
 				$success);
 		}
 		elseif ( $moveType == 'Convoy' )
 		{
-			$drawMap->drawConvoy($terrID, $fromTerrID, $toTerrID, $success);
+			if (!HIDEMOVES) $drawMap->drawConvoy($terrID, $fromTerrID, $toTerrID, $success);
 		}
 
 		/*
@@ -431,6 +467,9 @@ while(list($moveType, $terrID,
 			and ( isset($drawToTerrID) and ! isset($fullTerrID[$drawToTerrID]) ) 
 			and in_array($Variant->deCoast($drawToTerrID),$noFog) )
 		{
+			// Do not display destroyed units in previews or when no moves are shown 
+			if ((PREVIEW || HIDEMOVES) && in_array($Game->Variant->deCoast($drawToTerrID),$destroyedTerrs)) continue;
+
 			/*
 			 * We're drawing a unit onto the board
 			 */
@@ -441,23 +480,94 @@ while(list($moveType, $terrID,
 			}
 			
 			$drawMap->addUnit($drawToTerrID, $unitType);
+
+			if (COUNTRYNAMES)
+				$drawMap->addCountryName($drawToTerrID, $owners[$Game->Variant->deCoast($drawToTerrID)], $countryID, ($unitType=='Fleet'?'F':'A'));			
 		}
 	}
 }
 
 foreach( $destroyedTerrs as $terrID )
 	if (in_array($Variant->decoast($terrID),$noFog))
-		$drawMap->drawDestroyedUnit(isset($deCoastMap['DestroyToTerrID'][$terrID]) ? $deCoastMap['DestroyToTerrID'][$terrID] : $terrID );
+		if (!HIDEMOVES)$drawMap->drawDestroyedUnit(isset($deCoastMap['DestroyToTerrID'][$terrID]) ? $deCoastMap['DestroyToTerrID'][$terrID] : $terrID );
 
 foreach( $dislodgedTerrs as $terrID )
 	if (in_array($Variant->decoast($terrID),$noFog))
-		$drawMap->drawDislodgedUnit($terrID);
-		
+		if (!HIDEMOVES)$drawMap->drawDislodgedUnit($terrID);
 foreach( $builtTerrs as $terrID=>$unitType ) 
 	if (in_array($Variant->decoast($terrID),$noFog))
-		$drawMap->drawCreatedUnit($terrID, $unitType);
+		if (!HIDEMOVES)
+			$drawMap->drawCreatedUnit($terrID, $unitType);
+		else 
+			$drawMap->addUnit($terrID, $unitType);
 
 // support hold to, support move from, support move to, build/destroy fleet
+
+// Map is drawn, now add a preview of the server-side orders...
+if (PREVIEW && $Game->Members->isJoined())
+{
+	$sql = "SELECT u.type, u.terrID, o.type, o.toTerrID, o.fromTerrID, o.viaConvoy	
+				FROM wD_Orders o
+			LEFT JOIN wD_Units u ON (u.id = o.unitID)
+				WHERE o.gameID = ".$Game->id." AND o.countryID = ".$Game->Members->ByUserID[$User->id]->countryID."
+				ORDER BY FIELD(o.type, 'Move')";
+
+	$tabl = $DB->sql_tabl($sql);
+
+	while(list($unitType, $terrID, $orderType, $toTerrID, $fromTerrID, $viaConvoy) = $DB->tabl_row($tabl))
+	{
+		if ($orderType == 'Move' && (int)$terrID != 0 && (int)$toTerrID != 0)
+		{
+			$drawMap->drawMove($terrID, $toTerrID, true);
+		}
+		elseif ( $orderType == 'Support hold' && (int)$terrID != 0 && (int)$toTerrID != 0)
+		{
+			$drawMap->drawSupportHold($terrID,
+				isset($deCoastMap['SupportHoldToTerrID'][$toTerrID]) ? $deCoastMap['SupportHoldToTerrID'][$toTerrID] : $toTerrID,
+				true);
+		}
+		elseif ( $orderType == 'Support move' && (int)$terrID != 0 && (int)$toTerrID != 0 && (int)$fromTerrID != 0 )
+		{
+			$drawMap->drawMoveGrey(isset($deCoastMap['SupportMoveFromTerrID'][$fromTerrID]) ? $deCoastMap['SupportMoveFromTerrID'][$fromTerrID] : $fromTerrID,
+							isset($deCoastMap['SupportMoveToTerrID'][$fromTerrID.'-'.$toTerrID]) ? $deCoastMap['SupportMoveToTerrID'][$fromTerrID.'-'.$toTerrID] : $toTerrID,
+							true);			
+			$drawMap->drawSupportMove($terrID,
+				isset($deCoastMap['SupportMoveFromTerrID'][$fromTerrID]) ? $deCoastMap['SupportMoveFromTerrID'][$fromTerrID] : $fromTerrID,
+				isset($deCoastMap['SupportMoveToTerrID'][$fromTerrID.'-'.$toTerrID]) ? $deCoastMap['SupportMoveToTerrID'][$fromTerrID.'-'.$toTerrID] : $toTerrID,
+				true);
+		}
+		elseif ( $orderType == 'Convoy' && (int)$terrID != 0 && (int)$toTerrID != 0 && (int)$fromTerrID != 0  )
+		{
+			$drawMap->drawMoveGrey(isset($deCoastMap['SupportMoveFromTerrID'][$fromTerrID]) ? $deCoastMap['SupportMoveFromTerrID'][$fromTerrID] : $fromTerrID,
+							isset($deCoastMap['SupportMoveToTerrID'][$fromTerrID.'-'.$toTerrID]) ? $deCoastMap['SupportMoveToTerrID'][$fromTerrID.'-'.$toTerrID] : $toTerrID,
+							true);					
+			$drawMap->drawConvoy($terrID, $fromTerrID, $toTerrID, true);
+		}
+		if ($orderType == 'Build Army' && (int)$toTerrID != 0)
+		{
+			$drawMap->drawCreatedUnit($toTerrID,'Army');
+		}
+		if ($orderType == 'Build Fleet' && (int)$toTerrID != 0)
+		{
+			$drawMap->drawCreatedUnit($toTerrID,'Fleet');
+		}
+		if ($orderType == 'Retreat' && (int)$terrID != 0 && (int)$toTerrID != 0)
+		{
+			$drawMap->countryFlag($terrID, $Game->Members->ByUserID[$User->id]->countryID);
+			$drawMap->addUnit($terrID, $unitType);			
+			$drawMap->drawRetreat($terrID, $toTerrID, true);
+		}
+		if ($orderType == 'Destroy' && (int)$toTerrID != 0)
+		{
+			$drawMap->drawDestroyedUnit(isset($deCoastMap['DestroyToTerrID'][$toTerrID]) ? $deCoastMap['DestroyToTerrID'][$toTerrID] : $toTerrID );
+		}
+		
+		$drawMap->caption('Preview');
+		$drawMap->drawRedBox();
+		
+	}
+	
+}
 
 /*
  * Territories colored, orders entered, units drawn on.
@@ -485,13 +595,34 @@ elseif( $Game->phase == 'Finished' and $turn == $latestTurn )
 
 $filename = Game::mapFilename($Game->id, $turn);
 $filename = str_replace(".map","-".$verify.".map",$filename);
+if (HIDEMOVES)
+	$filename = str_replace(".map","-hideMoves.map",$filename);
 
 if( defined('DATC') && $mapType!='small')
 	$drawMap->saveThumbnail($filename.'-thumb');
 
-$drawMap->write($filename);
-unset($drawMap); // $drawMap is memory intensive and should be freed as soon as no longer needed
+	
+// colorCorrect Patch
+if (COLORCORRECT)
+{
+	$filename = str_replace(".map","-".COLORCORRECT.".map",$filename);
+	$drawMap->colorEnhance(COLORCORRECT);
+}
+// End colorCorrect Patch
 
-libHTML::serveImage($filename);
+// Add countrynames for colorblind:
+if (COUNTRYNAMES)
+	$filename = str_replace(".map","-names.map",$filename);
+
+if (PREVIEW)
+{
+	$drawMap->writeToBrowser();
+}
+else 
+{
+	$drawMap->write($filename);
+	libHTML::serveImage($filename);
+}
+unset($drawMap); // $drawMap is memory intensive and should be freed as soon as no longer needed
 
 ?>

@@ -36,6 +36,7 @@
 	1.0.2:	 start with build-phase code removed
 	1.1:	 Added FoW
 	1.2:	 FoW fix
+	1.3.1:	 Fixed orderstatus no longer being hidden after anon update & updated fogmap.php
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -49,7 +50,7 @@ class PunicWarsVariant extends WDVariant {
 	public $author     ='M.A.S.V & Yuriy Hryniv aka Flame';
 	public $adapter    ='Yuriy Hryniv aka Flame & tobi1';
 	public $version    ='1.3';
-	public $codeVersion='1.3';
+	public $codeVersion='1.3.1';
 	public $homepage   ='http://www.diplomail.ru';
 
 	public $countries=array('Puni','Helleni','Etrusci','Romani');
