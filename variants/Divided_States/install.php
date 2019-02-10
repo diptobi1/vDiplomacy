@@ -2951,10 +2951,10 @@ $bordersRawData=array(
 	array('Key West (KYW)','Straits of Florida (SFL)','Yes','No'),
 	array('Key West (KYW)','Straits of Florida - North (SFL n)','Yes','No'),
 	array('Key West (KYW)','Straits of Florida - East (SFL e)','Yes','No'),
-	array('Straits of Florida (SFL)','Straits of Florida (SFL)','Yes','No'),
 	array('Straits of Florida (SFL)','Straits of Florida - North (SFL n)','Yes','No'),
 	array('Straits of Florida (SFL)','Straits of Florida - East (SFL e)','Yes','No'),
 	array('Straits of Florida (SFL)','Straits of Florida - South (SFL s)','Yes','No'),
+	array('Straits of Florida (SFL)','Straits of Florida - West (SFL w)','Yes','No'),
 	array('Straits of Florida (SFL)','Tallahassee Bay (TLB)','Yes','No'),
 	array('Straits of Florida (SFL)','Tallahassee Bay - East (TLB e)','Yes','No'),
 	array('Straits of Florida (SFL)','Tallahassee Bay - South (TLB s)','Yes','No'),
@@ -3297,6 +3297,7 @@ if (!file_exists('variants/Divided_States/cache/sampleMap.png'))
     copy ('variants/Divided_States/resources/sampleMap.png','variants/Divided_States/cache/sampleMap.png');
 
 ?>
+
 
 
 
