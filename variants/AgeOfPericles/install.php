@@ -1,5 +1,5 @@
 <?php
-// This is file installs the map data for the Perikles variant
+// This is file installs the map data for the AgeOfPericles variant
 defined('IN_CODE') or die('This script can not be run by itself.');
 require_once("variants/install.php");
 
@@ -237,6 +237,7 @@ $bordersRawData=array(
 	array('Euboeius Sinus','Marathon','Yes','No'),
 	array('Euboeius Sinus','Mare Mediterranea','Yes','No'),
 	array('Euboeius Sinus','Phthiotis','Yes','No'),
+	array('Euboeius Sinus','Thermas Sinus','Yes','No'),
 	array('Halieis','Iria','No','Yes'),
 	array('Halieis','Iria (North Coast)','Yes','No'),
 	array('Halieis','Iria (South Coast)','Yes','No'),
