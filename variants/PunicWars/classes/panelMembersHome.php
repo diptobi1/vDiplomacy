@@ -36,13 +36,20 @@ class PunicWarsVariant_panelMembersHome extends panelMembersHome
 
 		$fixed_width=100/count($this->ByStatus['Playing']);
 		
-		ksort ($this->ByStatus['Playing']);
 		foreach($this->ByStatus['Playing'] as $member)
 				$buf .= '<td class="occupationBar'.$member->countryID.' '.libHTML::first().'" style="width:'.$fixed_width.'%"></td>';
 
 		$this->occupationBarCache = '<table class="occupationBarTable"><tr>'.$buf.'</tr></table>';
 
 		return $this->occupationBarCache;
+	}
+	
+	// Completely remove any ordering by SC if in running game
+	function indexMembers() {
+		if(!in_array($this->Game->phase, array('Pre-game','Finished')))
+			sort($this->ByOrder);
+		
+		parent::indexMembers();
 	}
 }
 

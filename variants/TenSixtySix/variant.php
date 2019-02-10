@@ -36,6 +36,8 @@
 	1.2  : only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
 	1.2.1: Fixed supportMove option from foggy multi-coast territory
 	1.2.2: Fixed orderstatus no longer being hidden after anon update & updated fogmap.php
+	1.2.3: Include OrderStatus fix on home page as well
+	1.2.4: Savely removed any information about SC order in running games
 
 */
 
@@ -50,7 +52,7 @@ class TenSixtySixVariant extends WDVariant {
 	public $author     = 'Gavin Atkinson (The Ambassador) and Emmanuele Ravaioli (Tadar Es Darden)';
 	public $adapter    = 'Gavin Atkinson / Emmanuele Ravaioli / Oliver Auth';
 	public $version    = '1';
-	public $codeversion= '1.2.2';
+	public $codeversion= '1.2.4';
 
 	public $countries=array('English', 'Normans', 'Norwegians');
 

@@ -37,6 +37,8 @@
 	1.1:	 Added FoW
 	1.2:	 FoW fix
 	1.3.1:	 Fixed orderstatus no longer being hidden after anon update & updated fogmap.php
+	1.3.2:	 Include OrderStatus fix on home page as well
+	1.3.3:	 Savely removed any information about SC order in running games
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -50,7 +52,7 @@ class PunicWarsVariant extends WDVariant {
 	public $author     ='M.A.S.V & Yuriy Hryniv aka Flame';
 	public $adapter    ='Yuriy Hryniv aka Flame & tobi1';
 	public $version    ='1.3';
-	public $codeVersion='1.3.1';
+	public $codeVersion='1.3.3';
 	public $homepage   ='http://www.diplomail.ru';
 
 	public $countries=array('Puni','Helleni','Etrusci','Romani');

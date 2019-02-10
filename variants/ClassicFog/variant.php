@@ -36,6 +36,8 @@
 	1.0.15: shuffle the occupationbar on the homescreen to hide the strongest nation.
 	1.0.16: Fixed supportMove option from foggy multi-coast territory
 	1.0.17: Fixed orderstatus no longer being hidden after anon update & updated fogmap.php
+	1.0.18: Include OrderStatus fix on home page as well
+	1.0.19: Savely removed any information about SC order in running games
 
 */
 
@@ -49,7 +51,7 @@ class ClassicFogVariant extends WDVariant {
 	public $description= 'This is the classic map, but players can only see a limited part of the map';
 	public $adapter    = 'Oliver Auth';
 	public $version    = '1.0';
-	public $codeVersion= '1.0.17';
+	public $codeVersion= '1.0.19';
 
 	public $countries=array('England', 'France', 'Italy', 'Germany', 'Austria', 'Turkey', 'Russia');
 	

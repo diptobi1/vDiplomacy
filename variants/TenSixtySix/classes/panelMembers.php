@@ -22,7 +22,7 @@ defined('IN_CODE') or die('This script can not be run by itself.');
 
 class Fog_panelMembers extends panelMembers
 {
-	// If the game is going on make an even occupation bar for all players to hide the strenght of the players
+		// If the game is going on make an even occupation bar for all players to hide the strenght of the players
 	function occupationBar()
 	{
 		if ( isset($this->occupationBarCache)) return $this->occupationBarCache;
@@ -41,22 +41,14 @@ class Fog_panelMembers extends panelMembers
 
 		return $this->occupationBarCache;
 	}
-
-	// Sort the memberlist by alphabet instead of point-value
-	function membersList()
-	{
-		if( $this->Game->phase != 'Pre-game')
-		{
-			$membersList=array();
-			foreach($this->ByStatus['Playing'] as $Member)
-				$membersList[$Member->country] = $Member;
-			ksort ($membersList);
-			$this->ByStatus['Playing'] = $membersList;
-		}			
-		return parent::membersList();
-	}
 	
-
+	// Completely remove any ordering by SC if in running game
+	function indexMembers() {
+		if(!in_array($this->Game->phase, array('Pre-game','Finished')))
+			sort($this->ByOrder);
+		
+		parent::indexMembers();
+	}
 }
 
 class TenSixtySixVariant_panelMembers extends Fog_panelMembers {}
