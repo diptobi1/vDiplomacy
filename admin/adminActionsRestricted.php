@@ -346,7 +346,7 @@ class adminActionsRestricted extends adminActionsRestrictedVDip
 		require_once('gamemaster/game.php');
 
 		$DB->sql_put("BEGIN");
-		list($gameID) = $DB->sql_row("SELECT id FROM wD_Games WHERE name='DATC-Adjudicator-Test' or name='DATC-Adjudicator-1900-Test'");
+		list($gameID) = $DB->sql_row("SELECT id FROM wD_Games WHERE name='DATC-Adjudicator-Test' or name LIKE 'DATC-Adjudicator-%-Test'");
 		processGame::eraseGame($gameID);
 		$DB->sql_put("COMMIT");
 

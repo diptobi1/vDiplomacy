@@ -13,6 +13,7 @@
  * Creative Commons License:	https://creativecommons.org/licenses/by-sa/4.0/
  * GNU Free Documentation License:	https://en.wikipedia.org/wiki/GNU_Free_Documentation_License
  
+	1.0.3:	DATC customized
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -26,7 +27,7 @@ class Baron1900Variant extends WDVariant {
 	public $author     = 'Baron M. Powell';
 	public $adapter    = 'W. Alex Ronke';
 	public $version    = '2006';
-	public $codeVersion= '1.0.1';
+	public $codeVersion= '1.0.3';
 	public $homepage   = 'http://uk.diplom.org/pouch//Online/variants/1900-061119.pdf';
 	
 	public $countries=array('Austria-Hungary','Britain','France','Germany','Italy','Russia','Turkey');

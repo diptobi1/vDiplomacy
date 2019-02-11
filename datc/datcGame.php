@@ -52,27 +52,28 @@ class datcGame extends processGame
 		 */
 		$this->testID = $testID;
                 
-                if ($testID < 1900)
+                if ($testID < 1000)
                 {
                     $gameName = "DATC-Adjudicator-Test";
                     $this->variantID = 1;
                 }
-                else //if ($testID >= 1900)
-                {
-                    $gameName = "DATC-Adjudicator-1900-Test";
-                    $this->variantID = 1900;
-                }
+				else
+				{
+					$this->variantID = floor($testID/1000);
+					
+					$gameName = "DATC-Adjudicator-".Config::$variants[$this->variantID]."-Test";
+				}
                 
 		list($id) = $DB->sql_row("SELECT id FROM wD_Games WHERE name='".$gameName."'");
 		if ( $id )
 		{
-			$DB->sql_put("UPDATE wD_Games SET phase = 'Diplomacy', turn = ".$testID.", gameOver = 'No' WHERE id = ".$id);
+			$DB->sql_put("UPDATE wD_Games SET phase = 'Diplomacy', turn = ".($testID%1000).", gameOver = 'No' WHERE id = ".$id);
 		}
 		else
 		{
 			$Game = processGame::create($this->variantID, $gameName, '', 5,'Winner-takes-all', 30,30,'No','Regular', 'Normal', 'draw-votes-hidden', 0, 0, 0, 0, 0, 0, 0, 0, 'No', '', '', 'No');
 			$id = $Game->id;
-			$DB->sql_put("UPDATE wD_Games SET phase = 'Diplomacy', turn = ".$testID." WHERE id = ".$id);
+			$DB->sql_put("UPDATE wD_Games SET phase = 'Diplomacy', turn = ".($testID%1000)." WHERE id = ".$id);
 		}
                 
 
