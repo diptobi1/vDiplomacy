@@ -38,6 +38,7 @@
 	1.2.2: Fixed orderstatus no longer being hidden after anon update & updated fogmap.php
 	1.2.3: Include OrderStatus fix on home page as well
 	1.2.4: Savely removed any information about SC order in running games
+	1.2.5: Added working order archive
 
 */
 
@@ -52,7 +53,7 @@ class TenSixtySixVariant extends WDVariant {
 	public $author     = 'Gavin Atkinson (The Ambassador) and Emmanuele Ravaioli (Tadar Es Darden)';
 	public $adapter    = 'Gavin Atkinson / Emmanuele Ravaioli / Oliver Auth';
 	public $version    = '1';
-	public $codeversion= '1.2.4';
+	public $codeversion= '1.2.5';
 
 	public $countries=array('English', 'Normans', 'Norwegians');
 

@@ -39,6 +39,7 @@
 	1.0.18: Include OrderStatus fix on home page as well
 	1.0.19: Savely removed any information about SC order in running games
 	1.0.20: Added map history (code already used in RatWars and TenSixtySix)
+	1.0.21: Added working order archive
 
 */
 
@@ -52,7 +53,7 @@ class ClassicFogVariant extends WDVariant {
 	public $description= 'This is the classic map, but players can only see a limited part of the map';
 	public $adapter    = 'Oliver Auth';
 	public $version    = '1.0';
-	public $codeVersion= '1.0.20';
+	public $codeVersion= '1.0.21';
 
 	public $countries=array('England', 'France', 'Italy', 'Germany', 'Austria', 'Turkey', 'Russia');
 	
