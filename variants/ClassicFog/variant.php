@@ -38,6 +38,7 @@
 	1.0.17: Fixed orderstatus no longer being hidden after anon update & updated fogmap.php
 	1.0.18: Include OrderStatus fix on home page as well
 	1.0.19: Savely removed any information about SC order in running games
+	1.0.20: Added map history (code already used in RatWars and TenSixtySix)
 
 */
 
@@ -51,7 +52,7 @@ class ClassicFogVariant extends WDVariant {
 	public $description= 'This is the classic map, but players can only see a limited part of the map';
 	public $adapter    = 'Oliver Auth';
 	public $version    = '1.0';
-	public $codeVersion= '1.0.19';
+	public $codeVersion= '1.0.20';
 
 	public $countries=array('England', 'France', 'Italy', 'Germany', 'Austria', 'Turkey', 'Russia');
 	
@@ -70,7 +71,8 @@ class ClassicFogVariant extends WDVariant {
 		$this->variantClasses['panelMembers']         = 'ClassicFog';
 		$this->variantClasses['panelMembersHome']     = 'ClassicFog';
 		$this->variantClasses['userOrderDiplomacy']   = 'ClassicFog';
-	 }
+		$this->variantClasses['Maps']				  = 'ClassicFog';
+	}
 
 	public function turnAsDate($turn) {
 		if ( $turn==-1 ) return "Pre-game";
