@@ -60,7 +60,7 @@ class ColonialVariant_processOrderDiplomacy extends processOrderDiplomacy
                                                 o.type = 'Move'
                                                 AND o.viaConvoy = 'Yes'
                                                 AND o.countryID = '6'
-                                                AND (SELECT unit.terrID FROM wD_Units unit WHERE o.unitID = unit.id) IN (".implode(',',ColonialVariant::$transSibTerritories).") 
+                                                AND (SELECT unit.terrID FROM wD_Units unit WHERE o.unitID = unit.id AND unit.type = 'Army') IN (".implode(',',ColonialVariant::$transSibTerritories).") 
                                                 AND o.toTerrID IN (".implode(',',ColonialVariant::$transSibTerritories).")
                                                 AND o.gameID = ".$GLOBALS['GAMEID']);
                 

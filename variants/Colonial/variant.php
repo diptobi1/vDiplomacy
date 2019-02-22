@@ -46,6 +46,9 @@
 	2.1.2: Errorfix standoffs now working again.
 	2.1.5: Errorfix Suez canal now do not give Support-Hold...
 	2.1.5: Coast-Childs have no SC
+
+	2.2: Rules revision: Adjusted rules for TSR to be more intuitive in corner cases
+		+ several stuff overworked (fixed TSR with test cases, overworked map output, overworked rules)
 	
 */
 
@@ -59,8 +62,8 @@ class ColonialVariant extends WDVariant {
 	public $description='Diplomacy with the colonial countries sparring over the lands and riches of the Far East.';
 	public $author='Peter Hawes';
 	public $adapter='Oliver Auth, Tobias Florin (Trans-Siberian Railroad, Suez Canal)';
-	public $version='2';
-	public $codeVersion='2.1.6';
+	public $version='2.2';
+	public $codeVersion='2.2';
 	public $homepage='http://www.dipwiki.com/index.php?title=Colonial';
 
 	public $countries=array('Britain','China','France','Holland','Japan','Russia','Turkey');
