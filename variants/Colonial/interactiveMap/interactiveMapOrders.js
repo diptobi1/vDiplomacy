@@ -66,7 +66,7 @@ interactiveMap.loadOrders = function() {
                     return;
                 }
                 
-            if (value == "TSR" && MyOrders.any(function(myO){return myO.viaConvoy == 'TSR' && myO != o && myO.isComplete;})){
+            if (value == "TSR" && MyOrders.any(function(myO){return myO.isTransSibOrder() && myO != o && myO.isComplete;})){
                 alert("Only one unit per turn can use the TSR!");
                 interactiveMap.abortOrder();
                 return;
@@ -280,7 +280,7 @@ interactiveMap.loadOrders = function() {
             }
             this.enterOrder('toTerrID', terrID);
             if (!o.isComplete)
-                this.enterOrder('viaConvoy', 'TSR');
+                this.enterOrder('viaConvoy', 'Yes');
         }
 
         IA.setMove = function(terrID, coordinates) {

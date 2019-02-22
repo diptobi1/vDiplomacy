@@ -55,18 +55,99 @@ interactiveMap.draw = function() {
         }
     }
     
+	function getTSRroute(from, to) {
+		// get indices of TSR territory array as indicator of the direction the TSR moves
+		var fromIdx = transSibTerritories.indexOf(from);
+		var toIdx = transSibTerritories.indexOf(to);
+		
+		var eastwards = (toIdx > fromIdx);
+		
+		var route = new Array(from);
+		
+		var currentIdx = fromIdx;
+		
+		while(currentIdx != toIdx){
+			if(eastwards)
+				currentIdx++;
+			else
+				currentIdx--;
+			
+			route.push(transSibTerritories[currentIdx]);
+		}
+		
+		return route;
+	}
+	
+	function getTSRdrawingCoordinates(coordinates){
+		var y0 = 7;
+		
+		return {x: coordinates.x, y:y0};
+	}
+	
+	function drawTSRarrow(from, to, initial, final){
+		var fromTSR = getTSRdrawingCoordinates(from);
+		var toTSR = getTSRdrawingCoordinates(to);
+		
+		drawOrderArrow(from, fromTSR, (initial)?'MoveTSRwithoutArrow':'MoveTSRwithoutArrowSmall');
+		drawOrderArrow(fromTSR, toTSR, 'MoveTSR');
+		drawOrderArrow(toTSR, to, (final)?'MoveTSRwithoutArrow':'MoveTSRwithoutArrowSmall');
+	}
+	
     function drawTSR(fromTerrID, toTerrID, skipExt) {
         var terrTable = Territories.toObject();
         var complete = true;
 
         if ((typeof extension == 'function') && !skipExt) {
-            complete = extension(drawMove, 'tsr', fromTerrID, toTerrID);
+            complete = extension(drawTSR, 'tsr', fromTerrID, toTerrID);
         }
 
         if (complete) {
-            var start = {x: terrTable[fromTerrID].smallMapX, y: terrTable[fromTerrID].smallMapY};
-            var end = {x: terrTable[toTerrID].smallMapX, y: terrTable[toTerrID].smallMapY};
-            drawOrderArrow(start, end, 'TSR');
+			var route = getTSRroute(fromTerrID, toTerrID);
+		
+			var routeA = route.pop();
+			var routeB;
+			while(route.length > 0){
+				routeB = routeA;
+				routeA = route.pop();
+			
+				drawTSRarrow(
+					{x: terrTable[routeA].smallMapX, y: terrTable[routeA].smallMapY},
+					{x: terrTable[routeB].smallMapX, y: terrTable[routeB].smallMapY},
+					(routeA == fromTerrID),
+					(routeB == toTerrID));
+			
+			}
+        }
+    }
+	
+	function drawSupportTSR(terrID, TSRorder, skipExt) {
+        var terrTable = Territories.toObject();
+        var complete = true;
+
+        if ((typeof extension == 'function') && !skipExt) {
+            complete = extension(drawSupportTSR, 'supportTSR', terrID, TSRorder);
+        }
+		
+		if (complete) {
+			// just draw support for last segment where it has value
+			var route = getTSRroute(TSRorder.Unit.terrID, TSRorder.toTerrID);
+			var last = route.pop();
+			var slast = route.pop();
+			
+			var from = getTSRdrawingCoordinates({x: terrTable[slast].smallMapX, y:terrTable[slast].smallMapY});
+			var to = getTSRdrawingCoordinates({x: terrTable[last].smallMapX, y:terrTable[last].smallMapY});
+			
+            var fromX = from.x;
+            var fromY = from.y;
+            var toX = to.x;
+            var toY = to.y;
+
+            toX -= (toX - fromX) / 3;
+            toY -= (toY - fromY) / 3;
+
+            var start = {x: terrTable[terrID].smallMapX, y: terrTable[terrID].smallMapY};
+            var end = {x: toX, y: toY};
+            drawOrderArrow(start, end, 'Support move');
         }
     }
     
@@ -276,11 +357,25 @@ interactiveMap.draw = function() {
             'headLength': new Array(12, 30),
             'border': new Array(0, 0)
         },
-        'TSR': {'color': new Array(255, 156, 0), //0, 153, 2),//
+        'MoveTSR': {'color': new Array(255, 156, 0), //0, 153, 2),//
             'thickness': new Array(2, 4),
             'headAngle': Math.PI / 7,
-            'headStart': 0.1,
+            'headStart': 0.4,
             'headLength': new Array(12, 30),
+            'border': new Array(0, 0)
+        },
+		'MoveTSRwithoutArrow': {'color': new Array(255, 156, 0), //0, 153, 2),//
+            'thickness': new Array(2, 4),
+            'headAngle': Math.PI / 7,
+            'headStart': 0.4,
+            'headLength': new Array(0, 0),
+            'border': new Array(0, 0)
+        },
+		'MoveTSRwithoutArrowSmall': {'color': new Array(255, 156, 0), //0, 153, 2),//
+            'thickness': new Array(1, 2),
+            'headAngle': Math.PI / 7,
+            'headStart': 0.4,
+            'headLength': new Array(0, 0),
             'border': new Array(0, 0)
         },
         'SuezPermission': {'color': new Array(4,113,160),
@@ -920,7 +1015,7 @@ interactiveMap.draw = function() {
         if (orders[i].isComplete) {
             switch (orders[i].type) {       //type "Hold" not handled because nothing to draw
                 case "Move":
-                    if(orders[i].viaConvoy == "TSR")
+                    if(orders[i].isTransSibOrder())
                         drawTSR(orders[i].Unit.terrID, orders[i].toTerrID, false);
                     else if((orders[i].Unit.terrID == '99' && orders[i].toTerrID == '101') || (orders[i].Unit.terrID == '101' && orders[i].toTerrID == '99'))  
                         drawMoveSuez(orders[i].Unit.terrID, orders[i].toTerrID, false);
@@ -942,8 +1037,13 @@ interactiveMap.draw = function() {
                 case "Support move":
                     if((orders[i].fromTerrID == '99' && orders[i].toTerrID == '101') || (orders[i].fromTerrID == '101' && orders[i].toTerrID == '99'))
                         drawSupportMove(orders[i].Unit.terrID, '126', orders[i].toTerrID, false);
-                    else
-                        drawSupportMove(orders[i].Unit.terrID, orders[i].fromTerrID, orders[i].toTerrID, false);
+                    else {
+						var transSibOrder = MyOrders.find(function(o){return o.isTransSibOrder();});
+						if(!Object.isUndefined(transSibOrder) && orders[i].fromTerrID == transSibOrder.Unit.terrID && orders[i].toTerrID == transSibOrder.toTerrID)
+							drawSupportTSR(orders[i].Unit.terrID, transSibOrder, false);
+						else	
+							drawSupportMove(orders[i].Unit.terrID, orders[i].fromTerrID, orders[i].toTerrID, false);
+					}
                     break;
                 case "Convoy":
                     drawConvoy(orders[i].Unit.terrID, orders[i].fromTerrID, orders[i].toTerrID, false);
