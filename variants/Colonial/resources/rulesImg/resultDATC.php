@@ -16,8 +16,6 @@ while ( list($id, $name, $status, $description) = $DB->tabl_row($tabl) )
 
 	if( $status=='Invalid' )
 		$image = '(Invalid test)';
-	elseif( $status=='NotPassed' )
-		$image = 'Test not passed!';
 	else
 		$image = '
 			<a href="#" onclick="$(\'testimage'.$id.'\').src=\'variants/Colonial/resources/rulesImg/'.$id.'-large.map\'; return false;">'.
@@ -25,7 +23,7 @@ while ( list($id, $name, $status, $description) = $DB->tabl_row($tabl) )
 			'</a>
 			';
 
-	$details = '<b>'.$name.'</b> - '.$status.'<br />'.$description;
+	$details = '<b>'.$name.'</b><br />'.$description;
 
 	print '
 <tr id="'.$name.'" class="threadalternate'.$alternate.'">
