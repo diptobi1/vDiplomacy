@@ -247,6 +247,12 @@ class Config
 //		115=>'MachiavelliTTR',
 //		116=>'SpiceIslands',
 //		117=>'AustrianSuccession',
+//		118=>'Caucasia',
+//		119=>'ClassicCroatia',
+//		120=>'ClassicEgypt',
+//		121=>'ClassicFlorence',
+//		122=>'ClassicBritain',
+//		123=>'ClassicBrazilian',
 //		127=>'WesternWorld_901',
 	);
 
