@@ -147,7 +147,7 @@ class Baron1900Variant_drawMap extends drawMap {
 		$this->army = $this->loadImage($resources['army0']);
                 $this->fleet = $this->loadImage($resources['fleet0']);
                 
-                for($i=1;$i<=7;$i++)
+                for($i=0;$i<=7;$i++)
                 {
                     $armyWithNum = "army$i";
                     $fleetWithNum = "fleet$i";

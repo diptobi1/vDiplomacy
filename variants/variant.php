@@ -235,6 +235,10 @@ abstract class WDVariant {
 
 		// This will wipe the variant if it is already present and install it
 		require_once(l_r('variants/'.$this->name.'/install.php'));
+		
+		// This will install variant specific adjudicator test cases if provided
+		if(file_exists(l_r('variants/'.$this->name.'/datc.php')))
+			require_once(l_r('variants/'.$this->name.'/datc.php'));
 
 		// This only gets called when there's no serialized variant cache available for this
 		// variant, so prepare the data to be serialized & saved now.

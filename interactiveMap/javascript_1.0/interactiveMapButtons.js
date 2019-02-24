@@ -352,7 +352,7 @@ interactiveMap.interface.orderMenu.show = function(coor, drawResetButton) {
 					} else {
 						var SupplyCenter = SupplyCenters.detect(function(sc){return sc.id == interactiveMap.selectedTerritoryID});
 						if ((!Object.isUndefined(SupplyCenter)) && (!interactiveMap.isUnitIn(interactiveMap.selectedTerritoryID))) {
-							if (SupplyCenter.type != "Coast")
+							if (!["Coast","Strait"].includes(SupplyCenter.type))
 								interactiveMap.interface.orderMenu.hideElement($("imgBuildFleet"));
 							else
 								interactiveMap.interface.orderMenu.showElement($("imgBuildFleet"));
@@ -363,11 +363,11 @@ interactiveMap.interface.orderMenu.show = function(coor, drawResetButton) {
 				break;
 			case 'Diplomacy':
 				if (interactiveMap.currentOrder != null) {//||(unit(interactiveMap.selectedTerritoryID)&&(Territories.get(interactiveMap.selectedTerritoryID).type=="Coast")&&(Territories.get(interactiveMap.selectedTerritoryID).Unit.type=="Army")))
-					if ((interactiveMap.currentOrder.Unit.type == "Fleet") || (Territories.get(interactiveMap.selectedTerritoryID).type != "Coast"))
+					if ((interactiveMap.currentOrder.Unit.type == "Fleet") || !["Coast","Strait"].includes(Territories.get(interactiveMap.selectedTerritoryID).type))
 						interactiveMap.interface.orderMenu.hideElement($("imgConvoy"));
 					interactiveMap.interface.orderMenu.element.show();
 				} else {
-					if ((Territories.get(interactiveMap.selectedTerritoryID).type == "Coast") && !Object.isUndefined(Territories.get(interactiveMap.selectedTerritoryID).Unit) && (Territories.get(interactiveMap.selectedTerritoryID).Unit.type == "Army")) {
+					if (["Coast","Strait"].includes(Territories.get(interactiveMap.selectedTerritoryID).type) && !Object.isUndefined(Territories.get(interactiveMap.selectedTerritoryID).Unit) && (Territories.get(interactiveMap.selectedTerritoryID).Unit.type == "Army")) {
 						interactiveMap.interface.orderMenu.hideElement($("imgMove"));
 						interactiveMap.interface.orderMenu.hideElement($("imgHold"));
 						interactiveMap.interface.orderMenu.hideElement($("imgSupportmove"));

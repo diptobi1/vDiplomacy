@@ -180,12 +180,12 @@ interactiveMap.loadOrders = function() {
 		IA.previousOrder = null;
         IA.setOrder = function(value) {
             if (this.orderType != null) {
-                interactiveMap.errorMessages.uncompletedOrder();
-                return;
+				interactiveMap.errorMessages.uncompletedOrder();
+				return;
             }
 
             if (value == "Convoy")
-                if (this.Order.Unit.Territory.type != "Coast") {
+                if (!["Coast","Strait"].includes(this.Order.Unit.Territory.type)) {
                     interactiveMap.errorMessages.noCoast(this.Order.Unit.terrID);
                     interactiveMap.abortOrder();
                     return;
@@ -215,7 +215,7 @@ interactiveMap.loadOrders = function() {
                     return;
                 }
                 if (value == "Build Fleet") {
-                    if (Territories.get(terrID).type != "Coast") {
+                    if (!["Coast","Strait"].includes(Territories.get(terrID).type)) {
                         alert("No coastal supply center selected (" + Territories.get(terrID).name + ")!");
                         interactiveMap.abortOrder();
                         return;
@@ -447,9 +447,14 @@ interactiveMap.loadOrders = function() {
         IA.convoyChain = new Array();
 
         IA.setConvoy = function(terrID) {
-            if (Territories.get(terrID).type == "Coast")
+            if (Territories.get(terrID).type == "Coast" || (Territories.get(terrID).type == "Strait" && !(this.isUnitIn(terrID) && Territories.get(terrID).Unit.type == "Fleet")))
                 this.finishConvoy(terrID);
-            else {
+			else if(Territories.get(terrID).type == "Strait" && this.convoyChain.last() == terrID && this.convoyChain.length > 1 ){
+				// a convoy is finished on a strait with a fleet already selected
+				// for that convoy -> remove the fleet again and finish
+				this.convoyChain.pop();
+				this.finishConvoy(terrID);
+			} else {
                 if (!this.isUnitIn(terrID)) {
                     interactiveMap.errorMessages.noUnit(terrID);
                     return;
@@ -589,15 +594,22 @@ interactiveMap.loadOrders = function() {
                 case "Convoy":
                     var currentUnit = Object.isUndefined(this.convoyChain[0]) ? this.Order.Unit : Territories.get(this.convoyChain[this.convoyChain.length - 1]).Unit;
                     this.terrChoices = currentUnit.getBorderUnits().select(function(u) {
-                        return u.Territory.type == "Sea";   //adjacent fleets
+                        return ["Sea","Strait"].includes(u.Territory.type);   //adjacent fleets
                     }).pluck("terrID");
                     if (currentUnit.type == "Fleet")
                         this.terrChoices = this.terrChoices.concat(currentUnit.Territory.getBorderTerritories().select(function(t) {
-                            return t.type == "Coast";       //adjacent coast if at least one fleet in convoyChain
+                            return ["Coast","Strait"].includes(t.type);       //adjacent coast if at least one fleet in convoyChain
                         }).pluck('id'));
                     this.terrChoices = this.terrChoices.select(function(terrID) {
                         return (this.convoyChain.indexOf(terrID) == -1) && (terrID != this.Order.Unit.terrID);   //remove already used fleets and army's origin
                     }, this);
+					// if the current territory is a fleet on a strait (and not the only fleet), 
+					// include that strait again so the user is notified about 
+					// the possibility to double select the strait for a direct convoy
+					if(this.convoyChain.length > 1 && currentUnit.type == "Fleet" 
+							&& currentUnit.Territory.type == "Strait")
+						this.terrChoices.push(currentUnit.Territory.id)
+					
                     break;
 
                 case "Retreat":

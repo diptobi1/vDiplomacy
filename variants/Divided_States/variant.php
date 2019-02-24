@@ -21,6 +21,7 @@
 	1.0: initial version
 	1.1: Error with the order-arrows fixed.
     1.1: convoy fix code removed as no longer needed
+	1.2.1: Fixed border
 	
 */
 
@@ -35,7 +36,7 @@ class Divided_StatesVariant extends WDVariant {
 	public $author     = 'Technostar';
 	public $adapter    = 'Technostar, Oliver Auth';
 	public $version    = '1';
-	public $codeVersion= '1.2';
+	public $codeVersion= '1.2.1';
 	
 	public $countries=array('Maine','New-Hampshire','Vermont','Massachusetts','Rhode-Island','Connecticut','New-York','New-Jersey','Pennsylvania','Delaware','Maryland','Virginia','North-Carolina','South-Carolina','Georgia','Florida','Alabama','Mississippi','Tennessee','Kentucky','West-Virginia','Ohio','Michigan','Indiana','Illinois','Wisconsin','Minnesota','Iowa','Missouri','Arkansas','Louisiana','Texas','Oklahoma','Kansas','Nebraska','South-Dakota','North-Dakota','Montana','Wyoming','Colorado','New-Mexico','Arizona','Utah','Nevada','Idaho','Washington','Oregon','California','Alaska','Hawaii');
 

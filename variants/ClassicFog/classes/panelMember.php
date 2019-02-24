@@ -69,6 +69,12 @@ class ClassicFogVariant_panelMember extends panelMember
 		return '<span class="member'.$this->id.'StatusIcon"><img src="variants/ClassicFog/resources/question.png" alt="?" title="Unknown orderstatus" /></span>';
 	}
 
-	
+	function memberFinalizedAnon()
+	{
+		global $User;
+		if( $this->status!='Playing' ) return '';
+		if (($this->userID == $User->id) || ($User->type['Admin'])) return parent::memberFinalizedAnon();
+		return '<span class="member'.$this->id.'StatusIcon"><img src="variants/ClassicFog/resources/question.png" alt="?" title="Unknown orderstatus" /></span>';
+	}
 }
 
