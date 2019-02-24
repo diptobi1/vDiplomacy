@@ -57,6 +57,8 @@ class SuezCanal_OrderInterface extends TransSib_OrderInterface
         {
                 global $DB;
                 
+                $this->switchSuezTo(8);
+				
                 //Check if a player is allowed to enter a special "Suez Order" (allowing a fleet to use the Suez)
                 if($this->phase == 'Diplomacy')
                 {
@@ -67,13 +69,11 @@ class SuezCanal_OrderInterface extends TransSib_OrderInterface
                 }
                 
                 parent::load();
-                
-                $this->switchSuezTo(8);
         }
         
         private function switchSuezTo($countryID){
                 global $DB;
-
+				
                 $DB->sql_put('UPDATE wD_Units u INNER JOIN wD_Orders o ON u.id = o.unitID SET u.countryID = '.$countryID.', o.countryID = '.$countryID.' WHERE u.gameID = '.$this->gameID.' AND u.terrID = 126');
         }
 }

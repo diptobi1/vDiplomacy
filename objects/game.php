@@ -49,13 +49,19 @@ class Game
 
 	public static function mapFilename($gameID, $turn, $mapType=false)
 	{
+		global $Game;
+		
 		if( $mapType==false ) $mapType = self::mapType();
 
 		if( defined('DATC') )
 			$folder='datc/maps';
 		else
 			$folder=self::gameFolder($gameID);
-
+		
+		
+		if( defined('DATC') && $Game->variantID != 1)
+			$turn = ($Game->variantID*1000)+$turn;
+			
 		$filename=$turn.'-'.$mapType.'.map';
 
 		return $folder.'/'.$filename;

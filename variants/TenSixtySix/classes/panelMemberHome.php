@@ -26,9 +26,18 @@ class Fog_panelMemberHome extends panelMemberHome
 	function memberFinalized()
 	{
 		global $User;
-		if ($this->userID == $User->id) return parent::memberFinalized();
+		if ($this->status!='Playing' ) return '';
+		if (($this->userID == $User->id) || ($User->type['Admin'])) return parent::memberFinalized();
 		return '<span class="member'.$this->id.'StatusIcon"><img src="variants/TenSixtySix/resources/question.png" alt="?" title="Unknown orderstatus" /></span>';
-	}	
+	}
+	
+	function memberFinalizedAnon()
+	{
+		global $User;
+		if( $this->status!='Playing' ) return '';
+		if (($this->userID == $User->id) || ($User->type['Admin'])) return parent::memberFinalizedAnon();
+		return '<span class="member'.$this->id.'StatusIcon"><img src="variants/TenSixtySix/resources/question.png" alt="?" title="Unknown orderstatus" /></span>';
+	}
 }
 
 class TenSixtySixVariant_panelMemberHome extends Fog_panelMemberHome {}
