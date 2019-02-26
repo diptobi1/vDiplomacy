@@ -29,8 +29,8 @@ class ClassicBritainVariant extends WDVariant {
 	public $author      ='Bruce McIntyre & Danny Loeb';
 	public $adapter     ='Enriador & Oliver Auth';
 	public $version     ='1';
-	public $codeVersion ='1.0';
-	public $homepage    ='http://uk.diplom.org/?page=aboutbritain';
+	public $codeVersion ='1.1';
+	public $homepage    ='http://uk.diplom.org/?page=about_britain ';
 
 	public $countries=array('England', 'France', 'Italy', 'Germany', 'Austria', 'Turkey', 'Russia');
 

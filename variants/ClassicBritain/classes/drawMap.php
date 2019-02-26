@@ -34,7 +34,7 @@ class ClassicBritainVariant_drawMap extends drawMap {
 		4 => array( 86,  86,  86), // Germany
 		5 => array(231,  52,  63), // Austria
 		6 => array(255, 205,  58), // Turkey
-		7 => array(255, 205,  58)  // Russia
+		7 => array(255, 245, 231)  // Russia
 	);
 
 	protected function resources() {
