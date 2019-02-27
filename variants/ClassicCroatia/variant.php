@@ -29,7 +29,7 @@ class ClassicCroatiaVariant extends WDVariant {
 	public $author      ='Unknown';
 	public $adapter     ='Enriador & Oliver Auth';
 	public $version     ='1';
-	public $codeVersion ='1.0';
+	public $codeVersion ='1.1';
 
 	public $countries=array('England', 'France', 'Italy', 'Germany', 'Austria', 'Turkey', 'Russia');
 
