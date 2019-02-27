@@ -38,7 +38,7 @@ class NeutralUnits_processMembers extends processMembers
 	}
 }
 
-class ColonialVariant_processMembers extends NeutralUnits_processMembers {
+class HongKong_processMembers extends NeutralUnits_processMembers {
 
 	function countUnitsSCs()
 	{
@@ -62,5 +62,19 @@ class ColonialVariant_processMembers extends NeutralUnits_processMembers {
 	}	
 
 }
+
+class Suez_processMembers extends HongKong_processMembers {
+	
+	// remove a Suez order unit from units before counting SCs (in a way that works with DATC test)
+	function countUnitsSCs() {
+		global $DB;
+		
+		$DB->sql_put("UPDATE wD_Units u SET u.countryID = 8 WHERE u.terrID = 126 AND u.gameID = ".$this->Game->id); //126 = Egypt
+			
+		parent::countUnitsSCs();
+	}
+}
+
+class ColonialVariant_processMembers extends Suez_processMembers {}
 
 ?>
