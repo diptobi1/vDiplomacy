@@ -16,7 +16,12 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with vDiplomacy.  If not, see <http://www.gnu.org/licenses/>.
- */
+	
+	Changelog:
+	1.0: initial release
+	1.1: fiex a problem with a wrong interactive map.
+
+*/
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
@@ -29,7 +34,7 @@ class ClassicEgyptVariant extends WDVariant {
 	public $author      ='Geoff Tonks';
 	public $adapter     ='Enriador & Oliver Auth';
 	public $version     ='1';
-	public $codeVersion ='1.0';
+	public $codeVersion ='1.1';
 	public $homepage    ='http://www.variantbank.org/results/rules/e/egypt.htm';
 
 	public $countries=array('England', 'France', 'Italy', 'Germany', 'Austria', 'Turkey', 'Russia');
