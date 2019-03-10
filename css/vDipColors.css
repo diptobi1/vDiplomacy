@@ -71,6 +71,10 @@ TABLE.orders {
 	border: solid #6898A1 1px; /* solid #c1c1c1 1px; */
 }
 
+.topnav {
+	background-color: #ccc;
+  }
+
 /* ############# Gamepanel.css #############*/
 .gamePanel {
 	width:100%;
