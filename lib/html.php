@@ -791,6 +791,7 @@ class libHTML
 			{
 				$links['logon.php']=array('name'=>'Log off', 'inmenu'=>false, 'title'=>"Log onto webDiplomacy using an existing user account");
 				$links['gamecreate.php']=array('name'=>'New game', 'inmenu'=>TRUE, 'title'=>"Start up a new game");
+				$links['detailedSearch.php']=array('name'=>'Search', 'inmenu'=>TRUE, 'title'=>"advanced search of users and games");
 				$links['usercp.php']=array('name'=>'Settings', 'inmenu'=>TRUE, 'title'=>"Change your user specific settings");
 			}
 		}
@@ -1169,7 +1170,7 @@ class libHTML
 		$footerIncludes[] = l_j('utility.js');
 		$footerIncludes[] = l_j('cacheUpdate.js');
 		$footerIncludes[] = l_j('timeHandler.js');
-		$footerIncludes[] = l_j('forum.js');          
+		$footerIncludes[] = l_j('forum.js');
 		$footerIncludes[] = l_j('Color.Vision.Daltonize.js');
 		
 		// Don't localize all the footer includes here, as some of them may be dynamically generated

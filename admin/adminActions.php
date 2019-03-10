@@ -33,17 +33,18 @@ class adminActions extends adminActionsForms
 	public static $actions = array(
 			'drawGame' => array(
 				'name' => 'Draw game',
-				'description' => 'Splits points among all the surviving players in a game according to 	its scoring system, and ends the game.',
+				'description' => 'Splits points among all the surviving players in a game according to its scoring system, and ends the game.',
 				'params' => array('gameID'=>'Game ID'),
 			),
 			'cancelGame' => array(
 				'name' => 'Cancel game',
-				'description' => 'Refunds points each player has bet, and deletes the game.',
+				'description' => 'Refunds points each player has bet unless the game is finished. Finished games need manual point adjustments. Then deletes the game. Does not work on games that have not started, instead force all users into CD.',
 				'params' => array('gameID'=>'Game ID'),
 			),
 			'togglePause' => array(
 				'name' => 'Toggle-pause game',
-				'description' => 'Flips a game\'s paused status; if it\'s paused it\'s unpaused, otherwise it\'s paused.',
+				'description' => 'Flips a game\'s paused status; if it\'s paused it\'s unpaused, otherwise it\'s paused.<br />
+					If you are using this tool on a phone navigate away from this page after using or an auto refresh will cause accidental toggles.',
 				'params' => array('gameID'=>'Game ID'),
 			),
 			'makePublic' => array(
@@ -58,15 +59,26 @@ class adminActions extends adminActionsForms
 			),
 			'cdUser' => array(
 				'name' => 'Force a user into CD',
-				'description' => 'Force a user into CD in all his games, or in one game specifically if non-zero gameID given.<br />
-					Forced CDs do not count against the player\'s RR.',
+				'description' => 'Force a user into CD in all their games, or in one game if non-zero gameID given.<br />
+					Forced CDs do not count against the player\'s RR.<br />
+					If the game has not started yet the user will be removed from the game entirely, and if they were the only user in the game, the game will be cancelled.',
 				'params' => array('userID'=>'User ID','gameID'=>'Game ID'),
+			),
+			'replaceCoutries' => array(
+				'name' => 'Replace country-player.',
+				'description' => 'Replace one player in a given game with another one. This does not impact points. If the replacing player does not meet the RR requirements for the game or is already in the game, that game replacement will not occur.',
+				'params' => array('userID'=>'UserID to be replaced','replaceID'=>'UserID replacing','gameIDs'=>'GameID (all active if empty)', )
 			),
 			'banIP' => array(
 				'name' => 'Ban an IP',
 				'description' => 'Bans a certain IP address.<br />
 					Note: Doesn\'t work.',
 				'params' => array('IP'=>'IP address (xxx.xxx.xxx.xxx)'),
+			),
+			'tempBan' => array(
+				'name' => 'Temporary ban a player',
+				'description' => 'Stops a player from joining or creating new games for that many days. To remove a temp ban, enter 0 days',
+				'params' => array('userID'=>'User ID', 'ban'=>'Days')
 			),
 			'banUser' => array(
 				'name' => 'Ban a user',
@@ -75,7 +87,7 @@ class adminActions extends adminActionsForms
 			),
 			'unbanUser' => array(
 				'name' => 'Unban a user',
-				'description' => 'Unbans a user; does not return the player from civil disorder or return the points taken.',
+				'description' => 'Unbans a user; does not return the player from civil disorder, remove the ban comment from their profile, or return the points taken.',
 				'params' => array('userID'=>'Banned User ID'),
 			),
 			'givePoints' => array(
@@ -86,36 +98,6 @@ class adminActions extends adminActionsForms
 			'resetPass' => array(
 				'name' => 'Reset password',
 				'description' => 'Resets a users password',
-				'params' => array('userID'=>'User ID'),
-			),
-			'makeDonator' => array(
-				'name' => 'Give donator benefits',
-				'description' => 'Give donator benefits (in practical terms this just means opt-out of the distributed processing).<br />
-					<em>Only for owner use.</em>',
-				'params' => array('userID'=>'User ID'),
-			),
-			'makeDonatorPlatinum' => array(
-				'name' => 'Donator: platinum',
-				'description' => 'Give platinum donator marker<br />
-					<em>Only for owner use.</em>',
-				'params' => array('userID'=>'User ID'),
-			),
-			'makeDonatorGold' => array(
-				'name' => 'Donator: gold',
-				'description' => 'Give gold donator marker<br />
-					<em>Only for owner use.</em>',
-				'params' => array('userID'=>'User ID'),
-			),
-			'makeDonatorSilver' => array(
-				'name' => 'Donator: silver',
-				'description' => 'Give silver donator marker<br />
-					<em>Only for owner use.</em>',
-				'params' => array('userID'=>'User ID'),
-			),
-			'makeDonatorBronze' => array(
-				'name' => 'Donator: bronze',
-				'description' => 'Give bronze donator marker<br />
-					<em>Only for owner use.</em>',
 				'params' => array('userID'=>'User ID'),
 			),
 			'setProcessTimeToPhase' => array(
@@ -206,11 +188,6 @@ class adminActions extends adminActionsForms
 					Note: Doesn\'t work.',
 				'params' => array('userID'=>'User ID'),
 			),
-			'syncForumLikes' => array(
-				'name' => 'Sync forum likes',
-				'description' => 'Synchronizes the cached forum post like counts with the user-tracked like records, in case they somehow get out of sync.',
-				'params' => array(),
-			),
 			'setDirector' => array(
 				'name' => 'Set a user as a game director',
 				'description' => 'Sets the given user ID to be the director of the given game ID (set to 0 to remove someone as game director). 
@@ -230,22 +207,6 @@ class adminActions extends adminActionsForms
 		$Game = $Variant->processGame($params['gameID']);
 		$Game->resetMinimumBet();
 		return l_t("The minimum bet has been reset.");
-		
-	}
-	public function syncForumLikes(array $params)
-	{
-		global $DB;
-		
-		$DB->sql_put("UPDATE wD_ForumMessages fm
-			INNER JOIN (
-			SELECT f.id, COUNT(*) as likeCount
-			FROM wD_ForumMessages f
-			INNER JOIN wD_LikePost lp ON f.id = lp.likeMessageID
-			GROUP BY f.id
-			) l ON l.id = fm.id
-			SET fm.likeCount = l.likeCount");
-		
-		return l_t("All forum like counts have been synced, %s posts affected.", $DB->last_affected());
 	}
 	
 	public function unCrashGames(array $params)
@@ -658,36 +619,7 @@ class adminActions extends adminActionsForms
 		return l_t('Panic button '.($Misc->Panic?'turned on':'turned off'));
 	}
 
-	private function makeDonatorType(array $params, $type='') {
-		global $DB;
-
-		$userID = (int)$params['userID'];
-
-		$DB->sql_put("UPDATE wD_Users SET type = CONCAT_WS(',',type,'Donator".$type."') WHERE id = ".$userID);
-
-		return l_t('User ID %s given donator status.',$userID);
-	}
-
-	public function makeDonator(array $params)
-	{
-		return $this->makeDonatorType($params);
-	}
-	public function makeDonatorPlatinum(array $params)
-	{
-		return $this->makeDonatorType($params,'Platinum');
-	}
-	public function makeDonatorGold(array $params)
-	{
-		return $this->makeDonatorType($params,'Gold');
-	}
-	public function makeDonatorSilver(array $params)
-	{
-		return $this->makeDonatorType($params,'Silver');
-	}
-	public function makeDonatorBronze(array $params)
-	{
-		return $this->makeDonatorType($params,'Bronze');
-	}
+	
 
 	public function resetPassConfirm(array $params)
 	{
@@ -793,8 +725,13 @@ class adminActions extends adminActionsForms
 			 * 
 			 * We need to get back all winnings that have been distributed first, then we need to 
 			 * return all starting bets.
+			 * 
+			 * Note: with the introduction of new scoring systems and with the introduction of free takeovers this logic no longer works right. 
+			 * As such it is being commented out. It is more important for moderators to be able to cancel an old game if absolutely necessary 
+			 * and to have to make manual point adjustments then to have this key functionality broken. 
 			 */
-			$transactions = array();
+			
+			/*$transactions = array();
 			$sumPoints = 0; // Used to ensure the total points transactions add up roughly to 0
 			$tabl = $DB->sql_tabl("SELECT type, points, userID, memberID FROM wD_PointsTransactions WHERE gameID = ".$Game->id
 				." FOR UPDATE"); // Lock it for update, so other transactions can't interfere with these ones
@@ -809,7 +746,6 @@ class adminActions extends adminActionsForms
 				
 				$transactions[$userID][$type] += $points;
 			}
-			
 			
 			// Check that the total points transactions within this game make sense (i.e. they add up to roughly 0 accounting for rounding errors)
 			if( $sumPoints < (count($transactions)*-1) or count($transactions) < $sumPoints )
@@ -862,7 +798,7 @@ class adminActions extends adminActionsForms
 						"%s points had to be added/taken from your account to undo the effects of the game. ".
 					"Please contact the mod team with any queries.", $sumPoints, $points), 
 					$Game->name, $Game->id);
-			}
+			}*/
 			
 			// Now backup and erase the game from existence, then commit:
 			processGame::eraseGame($Game->id);
@@ -912,6 +848,7 @@ class adminActions extends adminActionsForms
 	}
 	public function cdUser(array $params)
 	{
+		global $DB, $Game;
 
 		require_once(l_r('gamemaster/game.php'));
 
@@ -921,11 +858,29 @@ class adminActions extends adminActionsForms
 			$Variant=libVariant::loadFromGameID($params['gameID']);
 			$Game = $Variant->processGame($params['gameID']);
 
-			if( $Game->phase == 'Pre-game' || $Game->phase == 'Finished' )
+			// If the game is finished do not CD and throw an error.
+			if( $Game->phase == 'Finished' )
+			{
 				throw new Exception(l_t("Invalid phase to set CD"));
+			}
 
-			$Game->Members->ByUserID[$User->id]->setLeft(1);
-			$Game->resetMinimumBet();
+			// If the game hasn't started check if there's just 1 person in it. If there is then delete the game, otherwise remove that 1 user.  
+			else if( $Game->phase == 'Pre-game' )
+			{
+				if(count($Game->Members->ByID)==1) {
+					processGame::eraseGame($Game->id);
+				}
+				else{
+					$DB->sql_put("DELETE FROM wD_Members WHERE gameID = ".$Game->id." AND userID = ".$params['userID']);
+					
+					// If there are still people in the game reset the min bet in case the game was full to readd the join button.
+					$Game->resetMinimumBet();
+				}
+			}
+			else{
+				$Game->Members->ByUserID[$User->id]->setLeft(1);
+				$Game->resetMinimumBet();
+			}
 		}
 		else
 		{
@@ -942,8 +897,88 @@ class adminActions extends adminActionsForms
 			}
 		}
 
-		return l_t('This user put into civil-disorder'.
+		return l_t('This user was put into civil-disorder'.
 			((isset($params['gameID']) && $params['gameID'])?', in this game':', in all his games'));
+	}
+	
+	public function replaceCoutries(array $params)
+	{
+		global $DB;
+		
+		$gameIDs   = (int)$params['gameIDs'];
+		$userID    = (int)$params['userID'];
+		$replaceID = (int)$params['replaceID'];
+		$games = array();
+		$tabl = $DB->sql_tabl(
+			'SELECT gameID FROM wD_Members
+				WHERE status = "Playing" AND userID = "'.$userID.'"'.($gameIDs != 0 ? ' AND gameID = "'.$gameIDs.'"':'') );
+		while(list($gameID) = $DB->tabl_row($tabl))
+			$games[] = $gameID;
+		
+		// Load the two users as Userobjects.
+		try
+		{
+			$SendToUser = new User($replaceID);
+		}
+		catch (Exception $e)
+		{
+			$error = l_t("Invalid user ID given.");
+		}
+		
+		try
+		{
+			$SendFromUser = new User($userID);
+		}
+		catch (Exception $e)
+		{
+			$error = l_t("Invalid user ID given.");
+		}
+		$ret = '';
+		
+		foreach ($games AS $gameID)
+		{
+			$Variant=libVariant::loadFromGameID($gameID);
+			$Game = $Variant->Game($gameID);
+		
+			list($blocked) = $DB->sql_row("SELECT count(*) FROM wD_Members AS m WHERE m.gameID = ".$Game->id);
+			
+			// Check for additional requirements:	 
+			if ( $Game->minimumReliabilityRating > $SendToUser->reliabilityRating)
+			{
+				$ret .= '<b>Error:</b> The reliability of '.$SendToUser->username.' is not high enough to join the game <a href="board.php?gameID='.$Game->id.'">'.$Game->name.'</a>.<br>';
+			}
+			
+			elseif ( array_key_exists ( $SendToUser->id , $Game->Members->ByUserID))
+			{
+				$ret .= '<b>Error:</b> '.$SendToUser->username.' is already a member of the game <a href="board.php?gameID='.$Game->id.'">'.$Game->name.'</a>.<br>';
+			}
+			
+			else
+			{
+				$DB->sql_put("UPDATE wD_Members SET userID = ".$SendToUser->id." WHERE userID=".$SendFromUser->id." AND gameID=".$Game->id);
+				$ret.= 'In game <a href="board.php?gameID='.$Game->id.'">'.$Game->name.'</a> the user '.$SendFromUser->username.' was removed and replaced by '.$SendToUser->username.'.<br>';
+			}
+		}
+		return $ret;
+	}
+	public function replaceCoutriesConfirm(array $params)
+	{
+		global $DB;
+		
+		$userID    = (int)$params['userID'];
+		$replaceID = (int)$params['replaceID'];
+		$gameIDs   = (int)$params['gameIDs'];
+		
+		list($userName)    = $DB->sql_row("SELECT username FROM wD_Users WHERE id=".$userID);
+		list($replaceName) = $DB->sql_row("SELECT username FROM wD_Users WHERE id=".$replaceID);
+		
+		if ($gameIDs == 0)
+		{
+			return 'The user '.$userName.' will be removed and replaced by '.$replaceName.' in all his active games.';
+		}
+		
+		list($gameName) = $DB->sql_row("SELECT name FROM wD_Games WHERE id=".$gameIDs);
+		return 'In game '.$gameName.' (id='.$gameIDs.') the user '.$userName.' will be removed and replaced by '.$replaceName.'.';
 	}
 
 	public function banUserConfirm(array $params)
@@ -1045,6 +1080,11 @@ class adminActions extends adminActionsForms
 				$Game->Members->ByUserID[$userID]->setLeft(1);
 				$Game->resetMinimumBet();
 			}
+			else if($Game->phase == 'Pre-game')
+			{
+				// If there are still people in the game reset the min bet in case the game was full to readd the join button.
+				$Game->resetMinimumBet();
+			}
 
 			libGameMessage::send('Global','GameMaster', $banMessage);
 
@@ -1058,6 +1098,18 @@ class adminActions extends adminActionsForms
 		unset($Game);
 
 		return l_t('This user was banned, and had their %s points removed and their games set to civil disorder.',$banUser->points);
+	}
+	public function tempBan(array $params)
+	{
+		global $DB;
+		
+		$userID = (int)$params['userID'];
+		$days   = (int)$params['ban'];
+ 		$DB->sql_put("UPDATE wD_Users SET tempBan = ". ( time() + ($days * 86400) )." WHERE id=".$userID);
+ 		if ($days == 0)
+			return 'This user is now unblocked and can join and create games again.';
+			
+		return 'This user is now blocked from joining and creating games for <b>'.$days.'</b> days.';
 	}
 	public function givePoints(array $params)
 	{

@@ -178,25 +178,42 @@ font-style:normal;
 	</ul>
 </p>
 
-<a name="PCA"></a><h4>4. Do not make Public Cheating Accusations</h4>
+<a name="Press Rules"></a><h4>4. Keep press appropriate.</h4>
 <p>
-	The decision about whether a player has or has not cheated and the consequences to be given lie solely with the Mod/Admin Team. All accusations against other players must be made directly to the Mod/Admin Team, in private, reporting your concerns on the <a href="modforum.php">ModForum</a>.
-	Any cheating accusation made anywhere else are considered "Public" and will be punished, regardless of the truth or falsehood of the accusation. A "accusation" is any statement (true or false) which claims, suggests, implies, or hints that another player is guilty of an action or activity not allowed by the site rules.
-	Any attempts to bend the definition of 'public cheating accusation' are expressly forbidden.<br /><br />
-	A public cheating accusation can be perceived as cheating if it gives the accuser an advantage in a game (such as convincing other players to attack the so-called cheater, or to vote for cancel if the accuser is doing poorly, etc...). In such a case the accuser is trying to gain an unfair advantage, so punishments are harsher than normal policy and can lead to a ban.
+Diplomacy is a game of many strategies and your discussions with other players can sometimes be hostile, impolite, and even uncivilized. These press strategies are all permissible on webDiplomacy and in Diplomacy in general. However, your press with other players should never include the following:
+</br></br>
+-Messages of sexual nature</br>
+-Overt racism or sexism of any kind</br>
+-Doxxing (revealing any real life information) of another player</br>
+</br>
+This rule also applies to game titles.
+</br></br>
+First offenses will result in a warning in some circumstances but may result in a severe point dock and removal from the game in question if the offense necessitates such action. Second offenses may result in a temporary or permanent ban from webDiplomacy.
 </p>
 
-<a name="Bugs"></a><h4>5. Do not use the software as a diplomacy tactic</h4>
+<a name="Mods"></a><h4>5. Do not use the software or moderators as a diplomacy tactic</h4>
+<p>
+  Lying is fine in Diplomacy except when it gives mods/admins unnecessary work to do!<br /><br />
+  Falsely accusing someone of being a multi-accounter/meta-gaming to rally others against them in a game, or claiming that your orders didn't
+  come out the way you entered them to cover up your motives, means mods/admins spend time looking for cheaters/bugs which were made up.<br /><br />
+
+  All accusations against other players must be made directly to the mod/admin team directly as specified below, in private, for this reason, and software bug claims
+  must be genuine, even if only told to another player. Avoid making cheating accusations in game, via pm, or on the forum. 
+</p>
+
+<a name="Pause"></a><h4>6. The Pause/Unpause feature is not a diplomatic tool</h4>
 <p>
 	Lying is fine in Diplomacy <em>except when it gives mods/admins unnecessary work to do!</em><br /><br />
 	Falsely accusing someone of being a multi-accounter/meta-gaming to rally others against them in a game, or claiming that your orders didn't
 	come out the way you entered them to cover up your motives, means mods/admins spend time looking for cheaters/bugs which were made up.<br /><br />
 
-	Avoid making cheating accusations in game, via pm, or on the forum. Software bug claims must be genuine and should be reported as soon as possible to the <a href="modforum.php">ModForum</a>.
-	If another player took advantage from a bug, please report it to us as soon as possible, and we will follow the policy found <a href="features.php?#1_6">here</a>.
+<a name="Account"></a><h4>7. You may not access another player's account without permission</h4>
+<p>
+  In general, account sitting (getting someone you trust to log on as you and issue orders when you are unable to) is encouraged.&nbsp; However, you must not get a sitter or sit for somebody you share games with. Also, anything done by the sitter whilst on your account is your responsibility, so make sure you're happy with that before you give them your password.<br />
+  It is also your responsibility to change your password after allowing someone to use your account.
 </p>
 
-<a name="Pause"></a><h4>6. The Pause - Unpause - Extend features are not diplomatic tools</h4>
+<h4><a name="Spam"></a>8. Do not spam the forum or private messaging system</h4>
 <p>
 	Pause and Extend features are there to help players avoid missing their orders, but are not part of the game.  As such pausing and unpausing should not be used for diplomatic gain. Examples of actions that break this rule are refusing to unpause unless other players will draw the game, or purposely not voting Extend to have that opponent miss the next turn. 
 	If these features ares being abused the Mod/Admin Team may step in to sort it out and give penalties to players who are partaking in unfair/unsportsmanlike conduct.
@@ -204,14 +221,14 @@ font-style:normal;
 	Also, before asking for pause or extend, consider switching your country to another site member as explained in <a href="howto.php?howto=CountrySwap">this HOWTO's section</a>.
 </p>
 
-<a name="Account"></a><h4>7. Do not access the account of another player. Account-sitting is forbidden, use game-sitting</h4>
+<a name="Answer"></a><h4>9. You must answer communication from site staff</h4>
 <p>
 	You must register your account using an email address that you own. The owner of the email address used to register an account is the only person authorized to use the account. You are not allowed to give your account's password to anyone under any circumstance. Account-sitting (getting someone you trust to log on as you and issue orders when you are unable to) is expressly forbidden on this site. The exception is if the person you ask to sit your account is a non-member who will never be joining the site. 
 	Remember that "Protect your account with a strong password and a secure account e-mail address." is your responsibility. You are not allowed to change your account's email address to one belonging to someone else.<br /><br />
 	If you are unable to take care of your games for a while, you are strongly encouraged to find one or more volunteer game-sitters. Then you can switch your game(s) to those game-sitters with the "CountrySwitch" feature on the "Settings" page. You may want to advertise for game-sitters on the Forum. Please use the designated thread and keep your request undetailed. Simply state you are looking for game-sitters. Avoid mentioning details about your ongoing games to avoid breaking rule #3. Find more information on Country Swapping <a href="howto.php?howto=CountrySwap">here</a>. 
 </p>
 
-<a name="Spam"></a><h4>8. Do not spam the forum or private messaging system</h4>
+<a name="CommonSense"></a><h4>10. Follow common sense</h4>
 <p>
 	You are welcome and indeed encouraged to join in with the community but be sensible. Do not start too many threads at once. Try to keep your replies relevant to the conversation and do not encourage discussions having nothing to do with the thread's topic. 
 	Simply remember that you have the responsibility to be respectful to your fellow members so avoid trolling their conversations. <br />
@@ -364,6 +381,22 @@ font-style:normal;
 	Contact us on the <a href="modforum.php">ModForum</a>. You can access this from the Mods button, at the top-right of any vDip page when you are logged in the site. A message posted there will alert all mods to check on this issue and you can keep track of your issue in the thread. You are only able to view threads you started and nobody else but the mods can see your threads there. Mods won't reveal anything about what threads you opened and on what you wrote on the moderator forum. 
 	If you can't log in the site email the moderators at <a href="mailto:<?php print (isset(Config::$modEMail) ? Config::$modEMail : Config::$adminEMail); ?>"> <?php print (isset(Config::$modEMail) ? Config::$modEMail : Config::$adminEMail); ?></a>, not their personal addresses.
 </p>
+<ul>
+<li>Potential TD's must request approval *before* advertising. The moderator team reserves the right to deny tournaments or tournament directors.</li>
+<li>TD's must include a set of rules for potential participants to agree upon, that all participants must agree too. Mid-Tournament rule changes are discouraged and require new permission from the moderator team.</li>
+<li>The moderator team will enforce site-wide rules in tournaments as they do other games.</li>
+<li>Discussion related to your or other players' usernames, as well as other potentially identifying information is strictly forbidden in all anonymous tournament games.</li>
+<li>All press and negotiations must take place within game chat in all anonymous tournament games.</li>
+<li>Players within tournaments must accept that the TD moderates their own tournament decisions. Please choose which tournaments to join carefully.</li>
+<li>TD's may not play in their own tournaments.</li>
+<li>TD's may utilize WFO (Wait for Orders) mode to prevent NMR's in games.</li>
+<li>TD's may request the list and position of players in their tournament even in anonymous games.</li> 
+<li>TD's may request the moderator team pm or email any player with questions or warnings regarding the tournament. </li>
+<li>TD's may request a message be posted in every games public messaging, including anon games, to remind participants of tournament rules or for tournament scoring updates.</li>
+<li>As with all mod/admin decisions if you disagree with a TD's decision you can appeal it directly to an admin or owner. See below for the mod/admin contact details.</li>
+</ul>
+<p>Please e-mail the mod/admin team at <a href="mailto:<?php print (isset(Config::$modEMail) ? Config::$modEMail : Config::$adminEMail); ?>" class="light">
+  <?php print (isset(Config::$modEMail) ? Config::$modEMail : Config::$adminEMail); ?></a> if you want to start a tournament (see the contact details below), and you will be asked to fill out an application form that will help us set the tournament up.</p>
 
 <h4>What to send:</h4>
 <p>

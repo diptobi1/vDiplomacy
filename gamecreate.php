@@ -276,6 +276,7 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 		}
 		// END RELIABILITY-PATCH
 
+		// Prevent temp banned players from making new games.
 		if ($User->tempBan > time())
 		{
 			processGame::eraseGame($Game->id);

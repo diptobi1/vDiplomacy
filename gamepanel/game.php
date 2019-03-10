@@ -502,6 +502,11 @@ class panelGame extends Game
 		{
 			$buf = '';
 			
+			if ($User->tempBan > time()) 
+			{
+				$tempBanned = 1;
+			}
+			
 			if ($this->minimumReliabilityRating > 0)
 			{
 				$buf .= l_t('Minimum Reliability Rating: <span class="%s">%s%%</span>. ',
@@ -550,6 +555,29 @@ class panelGame extends Game
 				
 					$buf .= '<form style="display: inline;" onsubmit="return confirm(\''.$question.'\');" method="post" action="board.php?gameID='.$this->id.'">
 						<input type="hidden" name="formTicket" value="'.libHTML::formTicket().'" />';
+					$buf .= l_t('Minimum Reliability Rating: <span class="%s">%s%%</span>.',
+						($User->reliabilityRating < $this->minimumReliabilityRating ? 'Austria' :'Italy'), 
+						($this->minimumReliabilityRating));
+				}
+				
+				if ($User->reliabilityRating >= $this->minimumReliabilityRating) 
+				{
+					if (time() >= $User->tempBan)
+					{
+						$buf .= '<form onsubmit="return confirm(\''.$question.'\');" method="post" action="board.php?gameID='.$this->id.'"><div>
+							<input type="hidden" name="formTicket" value="'.libHTML::formTicket().'" />';
+
+						if( $this->phase == 'Pre-game' )
+						{
+							$buf .= l_t('Bet to join: %s: ','<em>'.$this->minimumBet.libHTML::points().'</em>');
+						}
+						else
+						{
+							$buf .= $this->Members->selectCivilDisorder();
+						}
+
+						if ( $this->private )
+							$buf .= '<br />'.self::passwordBox();
 						
 					if( $this->phase == 'Pre-game'&& count($this->Members->ByCountryID)>0 )
 					{
@@ -565,9 +593,10 @@ class panelGame extends Game
 						$buf .= $this->Members->selectCivilDisorder();
 					}
 
-					if ( $this->private )
-						$buf .= '<br />'.self::passwordBox();
+						$buf .= ' <input type="submit" name="join" value="'.l_t('Join').'" class="form-submit" />';
 
+						$buf .= '</div></form>';
+					}
 					$buf .= ' <input type="submit" name="join" value="'.l_t('Join').'" class="form-submit" />';
 
 					$buf .= '</form>';
@@ -587,6 +616,7 @@ class panelGame extends Game
 				$buf .= '</form>';
 			}
 		}
+		
 		return $buf;
 	}
 

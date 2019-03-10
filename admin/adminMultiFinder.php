@@ -124,11 +124,10 @@ class adminMultiCheck
 				'and gives a more detailed picture of what is happening.').'
 				</p>';
 
-		print '<p><strong>'.l_t('Links between user accounts have to share active games:').'</strong>
+		print '<p><strong>'.l_t('Links between users share public games:').'</strong>
 				<input type="checkbox" name="activeLinks" /><br />
-				'.l_t('With this checked links between users will be ignored if they aren\'t currently playing in '.
-				'the same games. This helps ensure that the data being checked is relevant and cuts out the '.
-				'clutter.').'
+				'.l_t('Ignores links if the users have not played in '.
+				'the same public games. If there are no shared public game connections the normal multi finder results will be displayed instead.').'
 				</p>';
 
 		print '<input type="submit" name="Submit" class="form-submit" value="'.l_t('Check').'" />
@@ -332,14 +331,14 @@ class adminMultiCheck
 	{
 		global $DB;
 
-		if ( isset($_REQUEST['activeLinks']) and count($this->aLogsData['activeGameIDs']) )
+		if ( isset($_REQUEST['activeLinks']) and count($this->aLogsData['PublicGameIDs']) )
 		{
 			$tabl = $DB->sql_tabl(
 				"SELECT DISTINCT a.userID
 				FROM wD_AccessLog a
 				INNER JOIN wD_Members m ON ( a.userID = m.userID )
 				WHERE
-					m.gameID IN (".implode(',', $this->aLogsData['activeGameIDs']).")
+					m.gameID IN (".implode(',', $this->aLogsData['PublicGameIDs']).")
 					AND NOT a.userID = ".$this->aUserID."
 					AND (
 						a.cookieCode IN ( ".implode(',',$this->aLogsData['cookieCodes'])." )
@@ -446,7 +445,7 @@ class adminMultiCheck
 	public function aLogsDataCollect()
 	{
 		global $DB;
-
+		global $User;
 		$this->aLogsData = array();
 
 		$this->aLogsData['IPs'] = self::sql_list(
@@ -477,6 +476,11 @@ class adminMultiCheck
 			}
 		}
 
+		// Insert or update the wD_UserConnections record here with the mod who checked it and when it was checked.  
+        $DB->sql_put("INSERT INTO wD_UserConnections (userID, modLastCheckedBy, modLastCheckedOn, matchesLastUpdatedOn, countMatchedIPUsers, countMatchedCookieUsers) 
+        VALUES (".$this->aUserID.", ".$User->id.", ".time().", null, 0, 0) ON DUPLICATE KEY UPDATE modLastCheckedBy=VALUES(modLastCheckedBy), 
+        modLastCheckedOn=VALUES(modLastCheckedOn)");
+
 		$this->aLogsData['fullGameIDs'] = self::sql_list(
 			"SELECT DISTINCT gameID
 			FROM wD_Members
@@ -491,6 +495,12 @@ class adminMultiCheck
 			"SELECT DISTINCT m.gameID
 			FROM wD_Members m INNER JOIN wD_Games g ON ( g.id = m.gameID )
 			WHERE m.userID = ".$this->aUserID." AND NOT g.phase = 'Finished'"
+		);
+
+		$this->aLogsData['PublicGameIDs'] = self::sql_list(
+			"SELECT DISTINCT m.gameID
+			FROM wD_Members m INNER JOIN wD_Games g ON ( g.id = m.gameID )
+			WHERE m.userID = ".$this->aUserID." and g.password is null"
 		);
 	}
 

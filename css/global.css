@@ -279,7 +279,7 @@ a.light {
 #header-container {
 	padding-left:0;
 	background-color: #fff;
-	height:50px;
+	height:70px;
 	padding-right:0;
 	padding-top:6px;
 	padding-bottom:4px;
@@ -309,7 +309,7 @@ a.light {
 #header-goto {
 	padding:0;
 	margin:0;
-	margin-top: 18px;
+	margin-top: 38px;
 	text-align:right;
 	clear:right;
 }
@@ -705,6 +705,258 @@ TD.army, div.army {
 	color:#34870b;
 }
 
+/* This section is for the new AdminCP and Mod tools */
+.modTools {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	border-collapse: collapse;
+}
+
+input[type="text"].modTools, input[type="password"].modTools, textarea.modTools, select.modTools {
+	font-size: 14px;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	background-color: #ffffff !important;
+	border: 1px solid #c1c1c1;
+	color:#000000;
+}
+  
+.modTools td, .modTools th {
+	border: 1px solid #ddd;
+	padding: 6px;
+}
+
+.modTools tr:nth-child(even){background-color: #f2f2f2; word-break: break-word;}
+.modTools tr:nth-child(odd){background-color: #ffffff; word-break: break-word;}
+
+.modTools th {
+	padding-top: 12px;
+	padding-bottom: 12px;
+	text-align: left;
+	background-color: #009902;
+	color: white;
+	min-width:70px;
+}
+
+.modToolsCP {
+	border-radius: 25px;
+	background: rgb(222, 224, 222);
+	padding: 8px; 
+}
+
+.modToolsHeadings {
+    color: #000000 !important;
+	margin-bottom: 5px;
+	font-weight: bold;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	text-decoration: underline;
+}
+
+li.modToolsformlistfield {
+	list-style: none;
+	margin: 10px 0 0 0;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+li.modToolsformlistdesc {
+	font-weight: normal;
+	color: #000000b2 !important;
+	list-style: none;
+	margin-left:20px;
+	margin-right:20px;
+	border-left: 1px solid #aaa;
+	padding-left: 10px;
+	margin-bottom: 30px;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+li.modToolsformlisttitle {
+	font-weight: bold;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	text-decoration: underline;
+}
+.modToolsform-submit {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	color: #fff !important;
+	text-transform: uppercase;
+	background: #60a3bc !important;
+	padding: 5px;
+	border-radius: 50px;
+	display: inline-block;
+	border: none;
+}
+.modToolsform-submit:hover {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	text-shadow: 0px 0px 6px rgba(255, 255, 255, 1);
+	transition: all 0.4s ease 0s;
+}
+
+.modToolsCollapsible {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	background-color: #777;
+	color: white;
+	cursor: pointer;
+	padding: 10px;
+	width: 100%;
+	border: none;
+	text-align: left;
+	outline: none;
+  }
+
+  .active, .modToolsCollapsible:hover {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	background-color: #555;
+  }
+
+  .modToolsContent {
+	padding: 0 10px;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	display: none;
+	overflow: hidden;
+	background-color: #f1f1f1;
+  }
+
+.topnav {
+	display: flex;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	overflow: hidden;
+	background-color: #333;
+  }
+
+ul.modTools {
+	padding: 0;
+	margin-bottom: 40px;
+	list-style: none;
+}
+
+.modToolsCP {
+	padding: 15px;
+}
+  
+.topnav a {
+	float: left;
+	color: #f2f2f2;
+	text-align: center;
+	padding: 10px 12px;
+	text-decoration: none;
+	font-size: 14px;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+  
+.topnav a:hover {
+	background-color: #ddd;
+	color: black;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+.topnavActive {
+	background-color: #4CAF50;
+	color: white;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+.topnavActive a {
+	background-color: #4CAF50;
+	color: white;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+/* Mod Tools section ends here */
+
+/* This section is for the new advanced search page. */
+  .userSearchCollapsible {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	background-color: #777;
+	color: white;
+	cursor: pointer;
+	padding: 10px;
+	width: 100%;
+	border: none;
+	text-align: left;
+	outline: none;
+  }
+
+  .active, .userSearchCollapsible:hover {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	background-color: #555;
+  }
+
+  .gameSearchCollapsible {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	background-color: #777;
+	color: white;
+	cursor: pointer;
+	padding: 10px;
+	width: 100%;
+	border: none;
+	text-align: left;
+	outline: none;
+  }
+
+  .active, .gameSearchCollapsible:hover {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	background-color: #555;
+  }
+
+  .advancedSearch {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	border-collapse: collapse;
+	font-size: 12px;
+}
+
+input[type="text"].advancedSearch, input[type="password"].advancedSearch, textarea.advancedSearch, select.advancedSearch {
+	font-size: 12px;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	background-color: #ffffff !important;
+	border: 1px solid #c1c1c1;
+	color:#000000;
+}
+  
+.advancedSearch td, .advancedSearch th {
+	border: 1px solid #ddd;
+	padding: 6px;
+}
+
+.advancedSearch tr:nth-child(even){background-color: #f2f2f2; word-break: break-word;}
+.advancedSearch tr:nth-child(odd){background-color: #ffffff; word-break: break-word;}
+
+.advancedSearch th {
+	padding-top: 12px;
+	padding-bottom: 12px;
+	text-align: left;
+	background-color: #009902;
+	color: white;
+	min-width:35px;
+}
+
+.advancedSearchform-submit {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	color: #fff !important;
+	text-transform: uppercase;
+	background: #60a3bc !important;
+	padding: 5px;
+	border-radius: 50px;
+	display: inline-block;
+	border: none;
+}
+.advancedSearchform-submit:hover {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	text-shadow: 0px 0px 6px rgba(255, 255, 255, 1);
+	transition: all 0.4s ease 0s;
+}
+
+  .advancedSearchContent {
+	padding: 0 10px;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	display: none;
+	overflow: hidden;
+	background-color: #f1f1f1;
+  }
+
+ul.advancedSearch {
+	padding: 0;
+	margin-bottom: 40px;
+	list-style: none;
+}
+/* advanced search page section ends */
+
 
 span.orderNotice {
 	font-weight:bold;
@@ -845,5 +1097,8 @@ input[id^="FinalizeButton"]{
 	}
 	.message-contents{
 		word-wrap: break-word;
+	}
+	.top-nav {
+		justify-content: left;
 	}
 }

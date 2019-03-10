@@ -106,9 +106,9 @@ function adminCPTabs()
 {
 	$tabs = array(
 			'Control Panel'=>l_t('Perform admin tasks'),
-			'Mod notes'=>l_t('Notes/reports left for/by the mod team'),
-			'Status lists'=>l_t('View server status lists'),
-			'CP Logs'=>l_t('Log of recent admin tasks'),
+			// 'Mod notes'=>l_t('Notes/reports left for/by the mod team'),
+			'Status Info'=>l_t('View server status lists'),
+			'Logs'=>l_t('Log of recent admin tasks'),
 			'Multi-accounts'=>l_t('Multi-account detector'),
 			'Chatlogs'=>l_t('Check the ingame chat.'),
 			'AccessLog'=>l_t('Check the user-actions sort by IP and Username.'),
@@ -127,20 +127,18 @@ function adminCPTabs()
 		$tab = $_SESSION['adminCPTab'];
 	}
 
-	print '<div class="gamelistings-tabs">';
-
+	print '<div class="topnav">';
 	foreach($tabs as $tabChoice=>$tabTitle)
 	{
 		print '<a title="'.$tabTitle.'" alt="'.l_t($tabChoice).'" href="admincp.php?tab='.$tabChoice;
 
 		if ( $tab == $tabChoice )
-			print '" class="current"';
+			print '"class="topnavActive"';
 		else
-			print '"';
+			print '"class="topnav"';
 
-		print '>'.l_t($tabChoice).'</a>';
+		print '>'.l_t($tabChoice).'</a></li>';
 	}
-
 	print '</div>';
 
 	return $tab;
@@ -148,7 +146,6 @@ function adminCPTabs()
 
 $tab=adminCPTabs();
 
-print '<h3>'.l_t($tab).'</h3>';
 switch($tab)
 {
 	case 'Control Panel':
@@ -160,10 +157,10 @@ switch($tab)
 		libModNotes::checkInsertNote();
 		print libModNotes::reportsDisplay('All');
 		break;
-	case 'Status lists':
+	case 'Status Info':
 		require_once(l_r('admin/adminStatusLists.php'));
 		break;
-	case 'CP Logs':
+	case 'Logs':
 		require_once(l_r('admin/adminLog.php'));
 		break;
 	case 'Multi-accounts':

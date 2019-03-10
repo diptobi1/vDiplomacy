@@ -51,6 +51,9 @@ class processMember extends Member
 
 		$this->cancelBet();
 
+		// This logic is deleting the record from the database, and intentionally not reloading the this object to have a new count of
+		// number of records in the database so that the count in the if statement will equal 1. This is amazingly deceptive code and 
+		// needs to be fixed at some point.
 		$DB->sql_put("DELETE FROM wD_Members WHERE id=".$this->id);
 
 		if(count($Game->Members->ByUserID)==1 && $Game->directorUserID == 0)
@@ -60,6 +63,11 @@ class processMember extends Member
 		}
 		else
 		{
+			// If there are still people in the game reset the min bet in case the game was full to readd the join button.
+			$Variant=libVariant::loadFromGameID($Game->id);
+			$Game = $Variant->processGame($Game->id);
+			$Game->resetMinimumBet();			
+
 			// Notify the remaining players
 			if ( $this->Game->isMemberInfoHidden() )
 				$name = 'Someone';
@@ -67,6 +75,8 @@ class processMember extends Member
 				$name = "<strong>".$this->username."</strong>";
 				
 			$Game->Members->sendExcept($this,'No',l_t("<strong>%s</strong> left the game.",$name));
+
+			$Game = $this->Game;
 		}
 
 		header('refresh: 4; url=index.php');

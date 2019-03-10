@@ -177,6 +177,12 @@ class User {
 	 */
 	public $options;
 
+	/*
+	 * The user is blocked from joining or creating new games till the given time
+	 * @var timestamp
+	 */
+	public $tempBan;
+	
 	/**
 	 * Number of available points
 	 * @var int
@@ -227,12 +233,6 @@ class User {
 	 * or is blocked from creating these games even if he does met the criteria.
 	 */
 	public $directorLicense;
-	
-	/*
-	 * The user is blocked from joining or creating new games till the given time
-	 * @var timestamp
-	 */
-	public $tempBan;
 	
 	/**
 	 * 'No' if the player can submit mod reports, 'Yes' if they are muted
@@ -642,6 +642,7 @@ class User {
 			u.phaseCount,
 			u.gameCount,
 			u.reliabilityRating,
+			u.tempBan,
 			u.rlGroup,
 			u.showCountryNames,
 			u.showCountryNamesMap,
@@ -654,7 +655,6 @@ class User {
 			u.scrollbars,
 			u.buttonWidth,
 			u.directorLicense,
-			u.tempBan,
 			u.vpoints,
 			u.integrityBalance,
 			u.cssStyle,

@@ -565,7 +565,7 @@ class panelMember extends Member
 	function memberBar()
 	{
 		global $User;
-		if ($this->Game->anon == 'No' || (isset($this->isNameHidden) && !$this->isNameHidden) )
+		if ($this->Game->anon == 'No' || (!$this->isNameHidden) && isset($this->isNameHidden))
 		{
 			$buf = '<td class="memberLeftSide">
 			<span class="memberCountryName">'.$this->memberSentMessages().' '.$this->memberFinalized().$this->memberCountryName().'</span>';
