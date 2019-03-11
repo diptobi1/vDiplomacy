@@ -401,6 +401,11 @@ abstract class drawMap
 		 * selected from the map, and imagecolorset() is used to change the
 		 * territory's unique color to the desired color
 		 */
+		 
+		// Somehow sometimes there is an unassigned countryID to color caused by the fogmap code.
+		//	I have no clue why this is, but this case just return and don't throw an error.
+		if (!(isset($this->countryColors[$countryID])))return;
+
 		list($x, $y) = $this->territoryPositions[$terrID];
 
 		$territoryColor = imagecolorat($this->map['image'], $x, $y);
