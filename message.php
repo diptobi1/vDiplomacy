@@ -36,7 +36,7 @@ try {
     die("Error loading Game");
 }
 
-if ( 'Pre-game' != $Game->phase ) {
+//if ( 'Pre-game' != $Game->phase ) {
 
     $CB = $Game->Variant->Chatbox();
 
@@ -48,7 +48,7 @@ if ( 'Pre-game' != $Game->phase ) {
 
     $DB->sql_put("COMMIT");
 
-}
+//}
 
 //RE-generate chat box
 
