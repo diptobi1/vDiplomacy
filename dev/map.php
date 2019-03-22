@@ -41,7 +41,9 @@ switch($mode) {
 }
 
 // view or edit data, or different confirm screens
-$edit = (isset($_REQUEST['edit'])) ? $_REQUEST['edit'] : 'newoff'; 
+if ($edit == true) // first check if the user can edit the map (set in dev.php)
+	$edit = (isset($_REQUEST['edit'])) ? $_REQUEST['edit'] : 'newoff'; 
+
 switch($edit) {
 	case 'off':
 	case 'on':
