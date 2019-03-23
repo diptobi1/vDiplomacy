@@ -800,6 +800,8 @@ class libHTML
 		// Items not displayed on the menu
 		$links['map.php']=array('name'=>'Map', 'inmenu'=>FALSE);
 		$links['faq.php']=array('name'=>'FAQ', 'inmenu'=>FALSE);
+		$links['contactUs.php']=array('name'=>'Contact Us', 'inmenu'=>FALSE);
+		$links['tournaments.php']=array('name'=>'Tournaments', 'inmenu'=>FALSE);
 		$links['rules.php']=array('name'=>'Rules', 'inmenu'=>FALSE);
 		$links['recentchanges.php']=array('name'=>'Recent changes', 'inmenu'=>FALSE);
 		$links['intro.php']=array('name'=>'Intro', 'inmenu'=>FALSE);
@@ -1205,6 +1207,7 @@ class libHTML
 					'.l_jf('setForumMessageIcons').'();
 					'.l_jf('setPostsItalicized').'();
 					'.l_jf('updateTimestamps').'();
+					'.l_jf('updateTimestampGames').'();
 					'.l_jf('updateUTCOffset').'();
 					'.l_jf('updateTimers').'();
 	

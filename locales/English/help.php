@@ -29,8 +29,11 @@ print libHTML::pageTitle('webDiplomacy Help and Links','Links to pages with more
 ?>
 <ul class="formlist">
 
-<li><a href="rules.php">Rulebook/Contacting the Mods</a></li>
-<li class="formlistdesc">The webDiplomacy rulebook. Moderator and Co-owner emails.</li>
+<li><a href="rules.php">Rulebook/Moderator Policies</a></li>
+<li class="formlistdesc">The webDiplomacy rulebook. Moderator policies.</li>
+
+<li><a href="contactUs.php">Contacting the Mods</a></li>
+<li class="formlistdesc">Need help? Moderator and Owner emails.</li>
  
 <li><a href="intro.php">The intro to Diplomacy</a></li>
 <li class="formlistdesc">An introduction to playing webDiplomacy. Gives details on unit types, move types, and the basic rules of webDiplomacy.</li>
@@ -82,6 +85,9 @@ print libHTML::pageTitle('webDiplomacy Help and Links','Links to pages with more
 
 <li><a href="AGPL.txt">GNU Affero General License</a></li>
 <li class="formlistdesc">The OSI approved license which applies to the vast majority of webDiplomacy.</li>
+
+<li><a href="recentchanges.php">Recent changes</a></li>
+<li class="formlistdesc">Recent changes to the webDiplomacy software.</li>
 
 </ul>
 

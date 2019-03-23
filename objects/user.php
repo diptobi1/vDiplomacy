@@ -182,6 +182,18 @@ class User {
 	 * @var timestamp
 	 */
 	public $tempBan;
+
+	/**
+	 * UNIX timestamp of when a mod last checked this user
+	 * @var int
+	 */
+	public $modLastCheckedOn;
+
+	/**
+	 * userID of the last mod to check this user
+	 * @var int
+	 */
+	public $modLastCheckedBy;
 	
 	/**
 	 * Number of available points
@@ -659,9 +671,12 @@ class User {
 			u.integrityBalance,
 			u.cssStyle,
 			IF(s.userID IS NULL,0,1) as online,
-			u.deletedCDs
+			u.deletedCDs, 
+			c.modLastCheckedOn,
+			c.modLastCheckedBy
 			FROM wD_Users u
 			LEFT JOIN wD_Sessions s ON ( u.id = s.userID )
+			LEFT JOIN wD_UserConnections c on ( u.id = c.userID )
 			WHERE ".( $username ? "u.username='".$username."'" : "u.id=".$this->id ));
 
 		if ( ! isset($row['id']) or ! $row['id'] )
@@ -853,6 +868,11 @@ class User {
 	function timeJoinedtxt()
 	{
 		return libTime::text($this->timeJoined);
+	}
+
+	function timeModLastCheckedtxt()
+	{
+		return libTime::text($this->modLastCheckedOn);
 	}
 
 	/**
@@ -1047,6 +1067,54 @@ class User {
 		}
 
 		return $rankingDetails;
+	}
+
+	/*
+	 * A lighter version of rankingDetails with just the game % stats for variant games. 
+	 */
+	public function rankingDetailsVariants()
+	{
+		global $DB;
+
+		$rankingDetailsVariants = array();
+
+		$tabl = $DB->sql_tabl(
+			"SELECT COUNT(m.id), m.status FROM wD_Members m 
+			 inner join wD_Games g on g.id = m.gameID WHERE m.userID = ".$this->id." AND g.variantID <> 1 and g.gameOver <> 'No' 
+			 GROUP BY m.status"
+		);
+
+		$rankingDetailsVariants['stats'] = array();
+		while ( list($number, $status) = $DB->tabl_row($tabl) )
+		{
+			if ($status != "Playing") {	$rankingDetailsVariants['stats'][$status] = $number; }
+		}
+
+		return $rankingDetailsVariants;
+	}
+
+	/*
+	 * A lighter version of rankingDetails with just the game % stats for classic games. 
+	 */
+	public function rankingDetailsClassic()
+	{
+		global $DB;
+
+		$rankingDetailsClassic = array();
+
+		$tabl = $DB->sql_tabl(
+				"SELECT COUNT(m.id), m.status FROM wD_Members m 
+				 inner join wD_Games g on g.id = m.gameID WHERE m.userID = ".$this->id." AND g.variantID = 1 and g.gameOver <> 'No' 
+				 GROUP BY m.status"
+			);
+
+		$rankingDetailsClassic['stats'] = array();
+		while ( list($number, $status) = $DB->tabl_row($tabl) )
+		{
+			if ($status != "Playing") {	$rankingDetailsClassic['stats'][$status] = $number; }
+		}
+
+		return $rankingDetailsClassic;
 	}
 
 	static function pointsInPlay($userID, $excludeGameID=false)
