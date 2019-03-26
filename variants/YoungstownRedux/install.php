@@ -613,7 +613,6 @@ $bordersRawData=array(
 	array('Hebei','Qinghai','No','Yes'),
 	array('Hebei','Shanghai','No','Yes'),
 	array('Hebei (North Coast)','Yellow Sea','Yes','No'),
-	array('Hebei (South Coast)','Yellow Sea','Yes','No'),
 	array('Hebei (South Coast)','East China Sea','Yes','No'),
 	array('Hebei (South Coast)','Shanghai','Yes','No'),
 	array('Delhi','Calcutta','No','Yes'),
