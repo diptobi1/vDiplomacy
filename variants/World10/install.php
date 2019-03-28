@@ -223,6 +223,7 @@ $bordersRawData=array(
 	array('Thule','Labrador Sea','Yes','No'),
 	array('Thule','Greenland Sea','Yes','No'),
 	array('Godthab','Labrador Sea','Yes','No'),
+	array('Godthab','Norwegian Sea','Yes','No'),
 	array('Godthab','Greenland Sea','Yes','No'),
 	array('Baffin Island','Labrador Sea','Yes','No'),
 	array('Baffin Island','Greenland Sea','Yes','No'),
@@ -258,6 +259,7 @@ $bordersRawData=array(
 	array('British Columbia','North Pacific Ocean','Yes','No'),
 	array('Northwest Territories','Yukon','No','Yes'),
 	array('Northwest Territories','Yukon (North Coast)','Yes','No'),
+	array('Northwest Territories','Greenland Sea','Yes','No'),
 	array('Northwest Territories','Hudson Bay','Yes','No'),
 	array('Northwest Territories','Chukchi Sea','Yes','No'),
 	array('Yukon','Alaska','No','Yes'),
@@ -674,6 +676,7 @@ $bordersRawData=array(
 	array('Peru','Northeast Pacific','Yes','No'),
 	array('Kamchatka','Chukchi Sea','Yes','No'),
 	array('Kamchatka','Bering Sea','Yes','No'),
+	array('Kamchatka','Northwest Pacific','Yes','No'),
 	array('Kamchatka','Sea of Othoksk','Yes','No'),
 	array('Hokkaido','Honshu','Yes','Yes'),
 	array('Hokkaido','Northwest Pacific','Yes','No'),
@@ -802,3 +805,4 @@ if (!file_exists('variants/'.$this->name.'/cache/sampleMap.png'))
 	copy ('variants/'.$this->name.'/resources/sampleMap.png','variants/'.$this->name.'/cache/sampleMap.png');
 
 ?>
+
