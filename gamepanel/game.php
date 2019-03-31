@@ -567,39 +567,26 @@ class panelGame extends Game
 						$buf .= '<form onsubmit="return confirm(\''.$question.'\');" method="post" action="board.php?gameID='.$this->id.'"><div>
 							<input type="hidden" name="formTicket" value="'.libHTML::formTicket().'" />';
 
-						if( $this->phase == 'Pre-game' )
+						if ( $this->private )
+							$buf .= '<br />'.self::passwordBox();
+						
+						if( $this->phase == 'Pre-game'&& count($this->Members->ByCountryID)>0 )
 						{
-							$buf .= l_t('Bet to join: %s: ','<em>'.$this->minimumBet.libHTML::points().'</em>');
+							$buf .= $this->Members->selectCountryPreGame();
+						}
+						elseif( $this->phase == 'Pre-game' )
+						{
+							if ( $this->pot > 0 )
+								$buf .= 'Bet to join: <em>'.$this->minimumBet.libHTML::points().'</em>: ';
 						}
 						else
 						{
 							$buf .= $this->Members->selectCivilDisorder();
 						}
-
-						if ( $this->private )
-							$buf .= '<br />'.self::passwordBox();
 						
-					if( $this->phase == 'Pre-game'&& count($this->Members->ByCountryID)>0 )
-					{
-						$buf .= $this->Members->selectCountryPreGame();
-					}
-					elseif( $this->phase == 'Pre-game' )
-					{
-						if ( $this->pot > 0 )
-							$buf .= 'Bet to join: <em>'.$this->minimumBet.libHTML::points().'</em>: ';
-					}
-					else
-					{
-						$buf .= $this->Members->selectCivilDisorder();
-					}
-
 						$buf .= ' <input type="submit" name="join" value="'.l_t('Join').'" class="form-submit" />';
-
 						$buf .= '</div></form>';
 					}
-					$buf .= ' <input type="submit" name="join" value="'.l_t('Join').'" class="form-submit" />';
-
-					$buf .= '</form>';
 				}
 			}
 			if( $User->type['User'] && $this->phase != 'Finished')

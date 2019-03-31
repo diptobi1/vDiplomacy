@@ -155,7 +155,7 @@ class userMember extends panelMember
 				if ($voteText == 'Extend')
 					$msg .= 'If 2/3 of the active players vote Extend the the current phase will be extend by 4 days. Please consider backing this. If the majority is not reached by "'.$this->Game->Variant->turnAsDate($this->Game->turn + 2).'" the votes will be cleared.';
 				if ($voteText == 'Concede')
-					$msg .= 'If everyone (but one) votes Concede the game will end and the player _not_ voting Conceede will get all the points. Everybody else will get a defeat.';			
+					$msg .= 'If everyone (but one) votes concede the game will end and the player _not_ voting Concede will get all the points. Everybody else will get a defeat.';			
 				libGameMessage::send(0, 'GameMaster', $msg , $this->Game->id);
 			}
 		}
