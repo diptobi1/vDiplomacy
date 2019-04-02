@@ -33,7 +33,7 @@ class World10Variant extends WDVariant {
 	public $author      ='Mercy';
 	public $adapter     ='Mercy & Oliver Auth';
 	public $version     ='X';
-	public $codeVersion ='1.0.2';
+	public $codeVersion ='1.0.3';
 	public $homepage    ='';
 
 	public $countries=array('Argentina','Brazil','China','EU','Frozen','Ghana','India','Japan','Egypt','Near East','Siberia','Quebec','Russia','South Africa','USA','Canada','Australia');

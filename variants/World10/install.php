@@ -367,7 +367,9 @@ $bordersRawData=array(
 	array('Northwest Indian','Iraq','Yes','No'),
 	array('Northwest Indian','Somalia','Yes','No'),
 	array('Northwest Indian','Saudi Arabia (South Coast)','Yes','No'),
+	array('Northwest Indian','Kenya','Yes','No'),
 	array('Northwest Indian','Madagascar','Yes','No'),
+	array('Northwest Indian','Mid Indian Ocean','Yes','No'),
 	array('Northwest Indian','Northeast Indian','Yes','No'),
 	array('Northwest Indian','Mozambique Channel','Yes','No'),
 	array('Red Sea','Egypt','Yes','No'),
@@ -805,4 +807,5 @@ if (!file_exists('variants/'.$this->name.'/cache/sampleMap.png'))
 	copy ('variants/'.$this->name.'/resources/sampleMap.png','variants/'.$this->name.'/cache/sampleMap.png');
 
 ?>
+
 
