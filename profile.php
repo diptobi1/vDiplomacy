@@ -18,7 +18,7 @@
     along with webDiplomacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/** 
+/**
  * @package Base
  */
 
@@ -28,7 +28,6 @@ require_once(l_r('gamesearch/search.php'));
 require_once(l_r('pager/pagergame.php'));
 require_once(l_r('objects/game.php'));
 require_once(l_r('gamepanel/game.php'));
-require_once(l_r('lib/reliability.php'));		 
 
 if ( isset($_REQUEST['userID']) && intval($_REQUEST['userID'])>0 )
 {
@@ -89,46 +88,38 @@ if ( !$userID )
 {
 	libHTML::starthtml(l_t('Search for user'));
 
-	print libHTML::pageTitle(l_t('Search for user'),l_t('Search for a user using either their ID, username, e-mail address, or any combination of the three.'));
+	print libHTML::pageTitle(l_t('Search for user'),l_t('Search for a user using either their ID, username, or e-mail address.'));
 	?>
 
 	<?php if( isset($searchReturn) ) print '<p class="notice">'.$searchReturn.'</p>'; ?>
+	<div class = "userSearch_show">
+		<form action="profile.php" method="post">
+		<ul class="formlist">
+			<p>
+				<strong><?php print l_t('User ID:'); ?></strong> </br>
+				<input class = "userSearch" type="text" name="searchUser[id]" value="" size="10">
+			</p>
 
-	<form action="profile.php" method="post">
-	<ul class="formlist">
+			<p>
+				<strong><?php print l_t('Username:'); ?></strong> </br>
+				<input class = "userSearch" type="text" name="searchUser[username]" value="" size="40">
+				</br>
+				<?php print l_t('(Not case sensitive, but otherwise must match exactly.)'); ?>
+			</p>
 
-		<li class="formlisttitle"><?php print l_t('ID number:'); ?></li>
-		<li class="formlistfield">
-			<input type="text" name="searchUser[id]" value="" size="10">
-		</li>
-		<li class="formlistdesc">
-			<?php print l_t('The user\'s ID number.'); ?>
-		</li>
+			<p>
+				<strong><?php print l_t('Email address:'); ?></strong> </br>
+				<input class = "userSearch" type="text" name="searchUser[email]" value="" size="40">
+				</br>
+				<?php print l_t('Not case sensitive, but otherwise must match exactly.)'); ?>
+			</p>
+			<p>
+				<input type="submit" class="userSearch-submit" value="<?php print l_t('Search'); ?>">
+			</p>
+		</ul>
 
-		<li class="formlisttitle"><?php print l_t('Username:'); ?></li>
-		<li class="formlistfield">
-			<input type="text" name="searchUser[username]" value="" size="30">
-		</li>
-		<li class="formlistdesc">
-			<?php print l_t('The user\'s username (This isn\'t case sensitive, but otherwise it must match exactly.)'); ?>
-		</li>
-
-		<li class="formlisttitle"><?php print l_t('E-mail address:'); ?></li>
-		<li class="formlistfield">
-			<input type="text" name="searchUser[email]" value="" size="50">
-		</li>
-		<li class="formlistdesc">
-			<?php print l_t('The user\'s e-mail address (This also isn\'t case sensitive, but otherwise it must match exactly.)'); ?>
-		</li>
-	</ul>
-
-	<div class="hr"></div>
-
-	<p class="notice">
-		<input type="submit" class="form-submit" value="<?php print l_t('Search'); ?>">
-	</p>
-	</form>
-
+		</form>
+	</div>
 	</div>
 	<?php
 	libHTML::footer();
@@ -163,7 +154,6 @@ if ( ! $UserProfile->type['User'] && !$UserProfile->type['Banned'] )
 	}
 	libHTML::error($message);
 }
-
 
 libHTML::starthtml();
 
@@ -206,7 +196,8 @@ if ( isset($_REQUEST['detail']) )
 			break;
 
 		case 'replies':
-/*			$dir=User::cacheDir($UserProfile->id);
+			/*	This had to be removed due to placing too heavy of a load on the server. 	
+			$dir=User::cacheDir($UserProfile->id);
 			if( file_exists($dir.'/profile_replies.html') )
 				print file_get_contents($dir.'/profile_replies.html');
 			else
@@ -233,151 +224,130 @@ if ( isset($_REQUEST['detail']) )
 			break;
 
 		case 'civilDisorders':
-			if ( $User->type['Moderator'] || $User->id == $UserProfile->id ) {
-
+			print '<div class = "rrInfo">';
+			if ( $User->type['Moderator'] || $User->id == $UserProfile->id ) 
+			{
 				$tabl = $DB->sql_tabl("SELECT g.name, c.countryID, c.turn, c.bet, c.SCCount, c.gameId, c.forcedByMod
-					FROM wD_CivilDisorders c INNER JOIN wD_Games g ON ( c.gameID = g.id )
+					FROM wD_CivilDisorders c 
+					INNER JOIN wD_Games g ON ( c.gameID = g.id )
 					WHERE c.userID = ".$UserProfile->id . ($User->type['Moderator'] ? '' : ' AND c.forcedByMod = 0'));
 	
-				print '<h4>'.l_t('Civil disorders:').'</h4>
-					<ul>';
+				print '<h4>'.l_t('Civil disorders:').'</h4>';
 					
-				if ($DB->last_affected() == 0) {
+				if ($DB->last_affected() == 0) 
+				{
 					print l_t('No civil disorders found for this profile.');
 				}
-
-				while(list($name, $countryID, $turn, $bet, $SCCount, $gameID, $forcedByMod)=$DB->tabl_row($tabl))
+				else
 				{
-					if (!$forcedByMod || $User->type['Moderator'])
+					print '<TABLE class="rrInfo">';
+					print '<tr>';
+					print '<th class= "rrInfo">Game:</th>';
+					print '<th class= "rrInfo">Country:</th>';
+					print '<th class= "rrInfo">Turn:</th>';
+					print '<th class= "rrInfo">Bet:</th>';
+					print '<th class= "rrInfo">Supply Centers:</th>';
+					if ( $User->type['Moderator'] ) print '<th class= "rrInfo">Ignored:</th>';
+					print '</tr>';
+
+					while(list($name, $countryID, $turn, $bet, $SCCount,$gameID,$forcedByMod)=$DB->tabl_row($tabl))
 					{
-						$Variant=libVariant::loadFromGameID($gameID);
-						print '<li>';
-						if ($forcedByMod) print '<s>';
-						print 	l_t('Game:').' <strong><a href="board.php?gameID='.$gameID.'">'.$name.'</a></strong>, 
-								'.l_t('country:').' <strong>'.$Variant->countries[$countryID - 1].'</strong><ul>
-								'.l_t('turn:').' <strong>'.$Variant->turnAsDate($turn).'</strong>,
-								'.l_t('bet:').' <strong>'.$bet.libHTML::points().'</strong>,
-								'.l_t('supply centers:').' <strong>'.$SCCount.'</strong></ul>';
-						if ($forcedByMod) print '</s>';
-						print '</li>';
+						print '<tr>';
+						print '<td> <strong><a href="board.php?gameID='.$gameID.'">'.$name.'</a></strong></td>';
+						print '<td> <strong>'.$countryID.'</strong></td>';
+						print '<td> <strong>'.$turn.'</strong></td>';
+						print '<td> <strong>'.$bet.'</strong></td>';
+						print '<td> <strong>'.$SCCount.'</strong></td>';
+						if ( $User->type['Moderator'] ) print '<td> <strong>'.$forcedByMod.'</strong></td>';
+						print '</tr>';
 					}
+					print '</table>';
 				}
-				print '</ul>';
 
 				$tabl = $DB->sql_tabl("SELECT c.countryID, c.turn, c.bet, c.SCCount, c.gameId, c.forcedByMod
-					FROM wD_CivilDisorders c LEFT JOIN wD_Games g ON c.gameID = g.id
+					FROM wD_CivilDisorders c 
+					LEFT JOIN wD_Games g ON c.gameID = g.id
 					WHERE g.id is null AND c.userID = ".$UserProfile->id . ($User->type['Moderator'] ? '' : ' AND c.forcedByMod = 0'));
 					
-				if ($DB->last_affected() != 0) {
-					print '<h4>'.l_t('Cancelled civil disorders:').'</h4><ul>';
+				if ($DB->last_affected() != 0) 
+				{
+					print '<h4>'.l_t('Cancelled civil disorders:').'</h4>';
+					print '<TABLE class="rrInfo">';
+					print '<tr>';
+					print '<th class= "rrInfo">Game ID:</th>';
+					print '<th class= "rrInfo">Country:</th>';
+					print '<th class= "rrInfo">Turn:</th>';
+					print '<th class= "rrInfo">Bet:</th>';
+					print '<th class= "rrInfo">Supply Centers:</th>';
+					if ( $User->type['Moderator'] ) print '<th class= "rrInfo">Ignored:</th>';
+					print '</tr>';
+
 					while(list($countryID, $turn, $bet, $SCCount,$gameID,$forcedByMod)=$DB->tabl_row($tabl))
 					{
-						if (!$forcedByMod || $User->type['Moderator'])
-						{
-							print '<li>';
-							if ($forcedByMod) print '<s>';
-							print l_t('Game:').' <strong>'.$gameID.'</strong>,
-								'.l_t('country #:').' <strong>'.$countryID.'</strong>,
-								'.l_t('turn:').' <strong>'.$turn.'</strong>,
-								'.l_t('bet:').' <strong>'.$bet.'</strong>,
-								'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>';
-							if ($forcedByMod) print '</s>';
-							print '</li>';
-						}
+						print '<tr>';
+						print '<td> <strong>'.$gameID.'</strong></td>';
+						print '<td> <strong>'.$countryID.'</strong></td>';
+						print '<td> <strong>'.$turn.'</strong></td>';
+						print '<td> <strong>'.$bet.'</strong></td>';
+						print '<td> <strong>'.$SCCount.'</strong></td>';
+						if ( $User->type['Moderator'] ) print '<td> <strong>'.$forcedByMod.'</strong></td>';
+						print '</tr>';
 					}
-					print "</ul>";
+					print '</table>';
 				}
-				if ($UserProfile->deletedCDs != 0) {
+
+				if ($UserProfile->deletedCDs != 0) 
+				{
 					print 'Additionally, there are ' . $UserProfile->deletedCDs . ' deleted CDs for this account (eg, self CD positions retaken by this user).';
 				}
-				print '<h4>'.l_t('NMRs:').'</h4><ul>';
-				// Add all vDip NMRs without a recorded game.
-				list($NMRCounter) = $DB->sql_row("SELECT COUNT(*) FROM wD_NMRs WHERE gameID = 0 AND userID  = ".$UserProfile->id);
-				if ($NMRCounter > 0)
-					print '<li>'.$NMRCounter.' NMR'.($NMRCounter > 1 ? 's' : '').' without a gameID found.</li>';
 
-				$tabl = $DB->sql_tabl("SELECT n.gameID, n.countryID, n.turn, n.bet, n.SCCount, g.name, n.ignoreNMR FROM wD_NMRs n LEFT JOIN wD_Games g ON n.gameID = g.id WHERE g.id != 0 AND n.userID = ".$UserProfile->id);
-				if ($DB->last_affected() != 0) {
-					while(list($gameID, $countryID, $turn, $bet, $SCCount, $name, $ignoreNMR)=$DB->tabl_row($tabl))
-					{                                          
-						if (!$ignoreNMR || $User->type['Moderator'])
+				print '<h4>'.l_t('NMRs:').'</h4>';
+				$tabl = $DB->sql_tabl("SELECT n.gameID, n.countryID, n.turn, n.bet, n.SCCount, g.name 
+				FROM wD_NMRs n 
+				LEFT JOIN wD_Games g ON n.gameID = g.id 
+				WHERE n.userID = ".$UserProfile->id);
+
+				if ($DB->last_affected() != 0) 
+				{
+					print '<TABLE class="rrInfo">';
+					print '<tr>';
+					print '<th class= "rrInfo">Game:</th>';
+					print '<th class= "rrInfo">Country:</th>';
+					print '<th class= "rrInfo">Turn:</th>';
+					print '<th class= "rrInfo">Bet:</th>';
+					print '<th class= "rrInfo">Supply Centers:</th>';
+					print '</tr>';
+
+					while(list($gameID, $countryID, $turn, $bet, $SCCount, $name)=$DB->tabl_row($tabl))
+					{
+						print '<tr>';
+						
+						if ($name != '') 
 						{
-							$Variant=libVariant::loadFromGameID($gameID);
-							print '<li>';
-							if ($ignoreNMR) print '<s>';
-							print 	l_t('Game:').' <strong><a href="board.php?gameID='.$gameID.'">'.$name.'</a></strong>, 
-									'.l_t('country:').' <strong>'.$Variant->countries[$countryID - 1].'</strong><ul>
-									'.l_t('turn:').' <strong>'.$Variant->turnAsDate($turn).'</strong>,
-									'.l_t('bet:').' <strong>'.$bet.libHTML::points().'</strong>,
-									'.l_t('supply centers:').' <strong>'.$SCCount.'</strong></ul>';
-							if ($ignoreNMR) print '</s>';
-							print '</li>';
+							print '<td> <strong><a href="board.php?gameID='.$gameID.'">'.$name.'</a></strong></td>';
+						} 
+						else 
+						{	
+							print '<td> <strong>Cancelled Game</strong></td>';
 						}
+						print '<td> <strong>'.$countryID.'</strong></td>';
+						print '<td> <strong>'.$turn.'</strong></td>';
+						print '<td> <strong>'.$bet.'</strong></td>';
+						print '<td> <strong>'.$SCCount.'</strong></td>';
+						print '</tr>';
 					}
-				} elseif ( $NMRCounter == 0) {
+					print '</table>';
+				} 
+				else 
+				{
 					print l_t('No NMRs found for this profile.');
 				}
-				print '</ul>';
-				
-				$tabl = $DB->sql_tabl("SELECT n.gameID, n.countryID, n.turn, n.bet, n.SCCount, g.name, n.ignoreNMR FROM wD_NMRs n 
-											LEFT JOIN wD_Games g ON n.gameID = g.id 
-											WHERE g.id is null AND n.countryID != 0 AND n.userID = ".$UserProfile->id);
-
-				if ($DB->last_affected() != 0) {
-					print '<h4>'.l_t('Cancelled NMRs:').'</h4><ul>';
-					
-					while(list($gameID, $countryID, $turn, $bet, $SCCount, $name, $ignoreNMR)=$DB->tabl_row($tabl))
-					{                                          
-						if (!$ignoreNMR || $User->type['Moderator'])
-						{
-							print '<li>';
-							if ($ignoreNMR) print '<s>';
-							print 	l_t('Game:').' <strong>'.$gameID.'</strong>,
-									'.l_t('country #:').' <strong>'.$countryID.'</strong>,
-									'.l_t('turn:').' <strong>'.$turn.'</strong>,
-									'.l_t('bet:').' <strong>'.$bet.'</strong>,
-									'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>';
-							if ($ignoreNMR) print '</s>';
-							print '</li>';
-						}
-					}
-					print '</ul>';
-				}				
-
-				// Added Civil disorders taken on vDip:
-				$tabl = $DB->sql_tabl("SELECT g.name, c.userID, c.countryID, c.turn, c.bet, c.SCCount, c.gameId
-					FROM wD_Members ct
-					INNER JOIN wD_CivilDisorders c ON ( c.gameID = ct.gameID AND c.countryID = ct.countryID AND NOT c.userID = ct.userID )
-					INNER JOIN wD_Games g ON ( c.gameID = g.id )
-					WHERE ct.userID = ".$UserProfile->id." AND c.turn = (
-						SELECT MAX(sc.turn) 
-						FROM wD_CivilDisorders sc 
-						WHERE sc.gameID = c.gameID AND sc.countryID = c.countryID)");
-	
-				print '<h4>'.l_t('Civil disorders taken:').'</h4>
-					<ul>';
-					
-				if ($DB->last_affected() == 0) {
-					print l_t('No civil disorders taken from this user.');
-				}
-
-				while(list($name, $userID, $countryID, $turn, $bet, $SCCount,$gameID)=$DB->tabl_row($tabl))
-				{
-					print '<li>
-					'.l_t('Game:').' <strong><a href="board.php?gameID='.$gameID.'">'.$name.'</a></strong>,
-						'.l_t('from userID:').' <strong>'.$userID.'</strong>,
-						'.l_t('country #:').' <strong>'.$countryID.'</strong>,
-						'.l_t('turn:').' <strong>'.$turn.'</strong>,
-						'.l_t('bet:').' <strong>'.$bet.'</strong>,
-						'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>
-						</li>';
-				}
-				print '</ul>';
-				
-			} else {
-				print l_t('You do not have permission to view this page.');
+			} 
+			else 
+			{
+                print l_t('You do not have permission to view this page.');
 			}
-
+			print '</div>';
 			break;
 
 		case 'reports':
@@ -390,127 +360,52 @@ if ( isset($_REQUEST['detail']) )
 				print libModNotes::reportsDisplay('User', $UserProfile->id);
 			}
 		break;
-
-		case 'relations':
-			require_once('lib/relations.php');
-			libRelations::checkRelationsChange();
-			print libRelations::reportsDisplay($UserProfile->id);
-		break;
 	}
 
 	print '</div>';
 	libHTML::footer();
 }
 
-print '<div><div class="rightHalf">
-		';
+print '<div>';
+print '<h2 class = "profileUsername">'.$UserProfile->username;
+if ( $User->type['User'] && $UserProfile->type['User'] && ! ( $User->id == $UserProfile->id || $UserProfile->type['Moderator'] || $UserProfile->type['Guest'] || $UserProfile->type['Admin'] ) )
+{
+	$userMuted = $User->isUserMuted($UserProfile->id);
+
+	print '<a name="mute"></a>';
+	if( isset($_REQUEST['toggleMute'])) {
+		$User->toggleUserMute($UserProfile->id);
+		$userMuted = !$userMuted;
+	}
+	$muteURL = 'profile.php?userID='.$UserProfile->id.'&toggleMute=on&rand='.rand(0,99999).'#mute';
+	print ' '.($userMuted ? libHTML::muted($muteURL) : libHTML::unmuted($muteURL));
+}
+print '</h2>';
+print '<div class = "profile-show">';
+print '<div class="rightHalf">';
 
 $rankingDetails = $UserProfile->rankingDetails();
+$rankingDetailsClassic = $UserProfile->rankingDetailsClassic();
+$rankingDetailsClassicPress = $UserProfile->rankingDetailsClassicPress();
+$rankingDetailsClassicGunboat = $UserProfile->rankingDetailsClassicGunboat();
+$rankingDetailsClassicRanked = $UserProfile->rankingDetailsClassicRanked();
+$rankingDetailsVariants = $UserProfile->rankingDetailsVariants();
 
 $showAnon = ($UserProfile->id == $User->id || $User->type['Moderator']);
 
 print '<ul class="formlist">';
 
-print '<li><strong>'.l_t('Rank:').'</strong> '.$rankingDetails['rank'].'</li>';
+print '<li title="Diplomat/Mastermind/Pro/Experienced/Member/Casual/Puppet (top 5/10/20/50/90/100%/not ranked)"><strong>'.l_t('Rank:').'</strong> '.$rankingDetails['rank'].'</li>';
 
-if ( $rankingDetails['vPosition'] < $rankingDetails['rankingPlayers'] )
-	print '<li><strong>'.l_t('Position:').'</strong> '.$rankingDetails['vPosition'].' / '.
-		$rankingDetails['rankingPlayers'].' '.l_t('(top %s%%)',$rankingDetails['vpercentile']).'</li>';
+if ( $rankingDetails['position'] < $rankingDetails['rankingPlayers'] )
+	print '<li><strong>'.l_t('Position:').'</strong> '.$rankingDetails['position'].'/'.
+		$rankingDetails['rankingPlayers'].' '.l_t('(top %s%%)',$rankingDetails['percentile']).'</li>';
 
-print '<li><strong>'.l_t('vPoints:').'</strong> '.$UserProfile->vpoints.' '.libHTML::vpoints().'</li>';
-print '<li><strong>'.l_t('Available points:').'</strong> '.$UserProfile->points.' '.libHTML::points().'</li>';
+print '<li><strong>'.l_t('Available points:').'</strong> '.number_format($UserProfile->points).' '.libHTML::points().'</li>';
 
-print '<li><strong>'.l_t('Points in play:').'</strong> '.($rankingDetails['worth']-$UserProfile->points-($showAnon ? 0 : $rankingDetails['anon']['points'])).' '.libHTML::points().'</li>';
+print '<li><strong>'.l_t('Points in play:').'</strong> '.number_format(($rankingDetails['worth']-$UserProfile->points-($showAnon ? 0 : $rankingDetails['anon']['points']))).' '.libHTML::points().'</li>';
 
-print '<li><strong>'.l_t('Total points:').'</strong> '.$rankingDetails['worth'].' '.libHTML::points().'</li>';
-
-/**
- * Add possibility for mods to write down notes
- */
-if ( $User->type['Moderator'])
-{
-
-	// Edit the note of the group
-	if (isset($_REQUEST['EditNote']))
-	{
-		$DB->sql_put("DELETE FROM wD_ModeratorNotes WHERE linkIDType='User' AND type='PrivateNote' AND linkID=".$UserProfile->id);			
-
-		// turn modalert on or off
-		if (isset($_REQUEST['alert']))
-		{
-			$DB->sql_put("UPDATE wD_Users SET type = CONCAT_WS(',',type,'ModAlert') WHERE id = ".$UserProfile->id);
-			$UserProfile->type['ModAlert'] = true;
-		}
-		else
-		{
-			$DB->sql_put("UPDATE wD_Users SET type = REPLACE(type,'ModAlert','') WHERE id = ".$UserProfile->id);		
-			$UserProfile->type['ModAlert'] = false;
-		}
-		
-		$notes=$DB->msg_escape($_REQUEST['EditNote'],false);
-		if ($notes == '')
-		{
-			if ($UserProfile->type['ModAlert'])
-			{
-				$DB->sql_put("UPDATE wD_Users SET type = REPLACE(type,'ModAlert','') WHERE id = ".$UserProfile->id);					
-				$UserProfile->type['ModAlert'] = false;
-			}
-		}
-		else
-		{
-		
-			$notes = preg_replace('#(modforum.php.viewthread[:= _]?)([0-9]+)#i',
-				'<a href="modforum.php?viewthread=\2#\2" class="light">\1\2</a>',$notes);
-			$notes = preg_replace('#(modforum.php.threadID[:= _]?)([0-9]+)#i',
-				'<a href="modforum.php?threadID=\2#\2" class="light">\1\2</a>',$notes);
-
-			$DB->sql_put("INSERT INTO wD_ModeratorNotes SET 
-				note='".$notes."',
-				linkID=".$UserProfile->id.",
-				timeSent=".time().",
-				fromUserID='".$User->id."',
-				type='PrivateNote',
-				linkIDType='User'");
-		}
-	}
-	
-	list($notes)=$DB->sql_row("SELECT note FROM wD_ModeratorNotes WHERE linkIDType='User' AND linkID=".$UserProfile->id);
-	
-	if ($notes== '')
-		print '<li>&nbsp;</li>
-		<b>ModNotes<span id="EditNoteButton"> (<a href="#" onclick="$(\'EditNoteBox\').show(); $(\'EditNoteButton\').hide(); return false;">Add</a>)</span>:</b>
-		<span id="EditNoteBox" style="display:none;">
-			<TABLE>
-				<TD style="border: 1px solid #666">
-					<form method="post" style="display:inline;">
-						<textarea name="EditNote" style="width:100%;height:200px"></textarea><br />
-						<TABLE>
-							<TD><input type="checkbox" name="alert" value="on" '.($UserProfile->type['ModAlert'] ? 'checked="checked"':'').'> ModAlert</TD>
-							<TD align="right"><input type="Submit" value="Submit" /></TD>
-						</TABLE>
-					</form>				
-				</TD>
-			</TABLE>
-		</span>';
-	else
-		print '<li>&nbsp;</li>'.($UserProfile->type['ModAlert'] ? libHTML::alert() : '').'
-		<b>ModNotes<span id="EditNoteButton"> (<a href="#" onclick="$(\'EditNoteBox\').show(); $(\'EditNoteText\').hide(); $(\'EditNoteButton\').hide(); return false;">Edit</a>)</span>: '.($UserProfile->type['ModAlert'] ? libHTML::alert() : '').'</b>
-		<TABLE>
-			<TD style="border: 1px solid #666">
-				<span id="EditNoteText">'.$notes.'</span>
-				<span id="EditNoteBox" style="display:none;">
-					<form method="post" style="display:inline;">
-						<textarea name="EditNote" style="width:100%;height:200px">'.str_ireplace("</textarea>", "<END-TA-DO-NOT-EDIT>", str_ireplace("<br />", "\n",
-							preg_replace('#<a href..modforum.php.viewthread.*class..light.>(.*)</a>#Ui','\1',$notes))).'</textarea><br />
-						<TABLE>
-							<TD><input type="checkbox" name="alert" value="on" '.($UserProfile->type['ModAlert'] ? 'checked="checked"':'').'> ModAlert</TD>
-							<TD align="right"><input type="Submit" value="Submit" /></TD>
-						</TABLE>
-					</form>				
-				</span>
-			</TD>
-		</TABLE>';
-}
+print '<li><strong>'.l_t('Total points:').'</strong> '.number_format($rankingDetails['worth']).' '.libHTML::points().'</li>';
 
 if( $UserProfile->type['DonatorPlatinum'] )
 	$donatorMarker = libHTML::platinum().' - <strong>'.l_t('Platinum').'</strong>';
@@ -526,30 +421,17 @@ else
 if( $donatorMarker )
 	print '<li>&nbsp;</li><li><strong>'.l_t('Donator:').'</strong> '.$donatorMarker.'</li>';
 
-if( $UserProfile->type['DevGold'] )
-	$donatorMarker = libHTML::devgold().' - <strong>Gold</strong>';
-elseif( $UserProfile->type['DevSilver'] )
-	$donatorMarker = libHTML::devsilver().' - Silver';
-elseif( $UserProfile->type['DevBronze'] )
-	$donatorMarker = libHTML::devbronze().' - Bronze';
-else
-	$donatorMarker = false;
-
-if( $donatorMarker )
-	print '<li>&nbsp;</li><li><strong>Developer:</strong> '.$donatorMarker.'</li>';
-	
 print '<li>&nbsp;</li>';
-
 
 list($posts) = $DB->sql_row(
 	"SELECT SUM(gameMessagesSent) FROM wD_Members m
 	WHERE m.userID = ".$UserProfile->id);
 if( is_null($posts) ) $posts=0;
-print '<li><strong>'.l_t('Game messages:').'</strong> '.$posts.'</li>';
+print '<li><strong>'.l_t('Game messages:').'</strong> '.number_format($posts).'</li>';
 
 print '<li>&nbsp;</li>';
 $total = 0;
-$includeStatus=array('Won','Drawn','Survived','Defeated','Abandoned', 'Left');
+$includeStatus=array('Won','Drawn','Survived','Defeated','Resigned');
 foreach($rankingDetails['stats'] as $name => $status)
 {
 	if ( !in_array($name, $includeStatus) ) continue;
@@ -559,17 +441,12 @@ foreach($rankingDetails['stats'] as $name => $status)
 		$total -= $rankingDetails['anon'][$name];
 }
 
-if (isset($rankingDetails['stats']['Playing']))
+if( $total )
 {
-	$playing = $rankingDetails['stats']['Playing'];
-	if (!$showAnon && isset($rankingDetails['anon']['Playing']))
-		$playing -= $rankingDetails['anon']['Playing'];
-}
+	print '<div class = "profile_title">';
+	print '<li><strong>'.l_t('All Game stats:').'</strong> </div><div class = "profile_content_show">';
 
-if( $total || (isset($playing) && $playing) )
-{
-	print '<li><strong>'.l_t('Game stats:').'</strong> <ul class="gamesublist">';
-
+	// Shows each of the game details
 	foreach($rankingDetails['stats'] as $name => $status)
 	{
 		if ( !in_array($name, $includeStatus) ) continue;
@@ -578,13 +455,11 @@ if( $total || (isset($playing) && $playing) )
 			$status -= $rankingDetails['anon'][$name];
 
 		print '<li>'.l_t($name.': <strong>%s</strong>',$status);
-		if ($total > 0) print ' ( '.round(($status/$total)*100).'% )';
+		print ' ( '.round(($status/$total)*100).'% )';
 		print '</li>';
 	}
 
-	if ($total)
-		print '<li>'.l_t('Total (finished): <strong>%s</strong>',$total).'</li>';
-
+	// This shows the Playing/Civil Disorder and CD takeover stats. 
 	foreach($rankingDetails['stats'] as $name => $status)
 	{
 		if ( in_array($name, $includeStatus) ) continue;
@@ -593,141 +468,174 @@ if( $total || (isset($playing) && $playing) )
 			$status -= $rankingDetails['anon'][$name];
 		print '<li>'.l_t($name.': <strong>%s</strong>',$status).'</li>';
 	}
+	print '<li>'.l_t('Total (finished): <strong>%s</strong>',$total).'</li>';
+	print '</li>';
 
-	/* We use a different layout on vDip:
+	// Get a count of the number of classic games that have been played. 
+	$totalClassic = 0;
+	foreach($rankingDetailsClassic['stats'] as $name => $status)
+	{
+		if ( !in_array($name, $includeStatus) ) continue;
+
+		$totalClassic += $status;
+	}
+	print '</div>';
+	
+	// Print out Classic stats if any classic games have been finished. 
+	if( $totalClassic )
+	{
+		print '<div class = "profile_title">';
+		print '<li><strong>'.l_t('Classic:').'</strong></div><div class = "profile_content">';
+		foreach($rankingDetailsClassic['stats'] as $name => $status)
+		{
+			if ( !in_array($name, $includeStatus) ) continue;
+
+			print '<li>'.l_t($name.': <strong>%s</strong>',$status);
+			print ' ( '.round(($status/$totalClassic)*100).'% )';
+			print '</li>';
+		}
+		print '<li>'.l_t('Total (finished): <strong>%s</strong>',$totalClassic).'</li>';
+		print '</li>';
+		print '</div>';
+		// print '</div>';
+	}
+	
+	// Get a count of the number of classic press games that have been played. 
+	$totalClassicPress = 0;
+	foreach($rankingDetailsClassicPress['stats'] as $name => $status)
+	{
+		if ( !in_array($name, $includeStatus) ) continue;
+
+		$totalClassicPress += $status;
+	}
+
+	// Print out Classic Press stats if any classic press games have been finished. 
+	if( $totalClassicPress )
+	{
+		print '<div class = "profile_title">';
+		print '<li><strong>'.l_t('Classic Press:').'</strong> </div><div class = "profile_content">';
+
+		foreach($rankingDetailsClassicPress['stats'] as $name => $status)
+		{
+			if ( !in_array($name, $includeStatus) ) continue;
+
+			print '<li>'.l_t($name.': <strong>%s</strong>',$status);
+			print ' ( '.round(($status/$totalClassicPress)*100).'% )';
+			print '</li>';
+		}
+		print '<li>'.l_t('Total (finished): <strong>%s</strong>',$totalClassicPress).'</li>';
+		print '</li>';
+		print '</div>';
+	}
+
+	// Get a count of the number of classic gunboat games that have been played. 
+	$totalClassicGunboat = 0;
+	foreach($rankingDetailsClassicGunboat['stats'] as $name => $status)
+	{
+		if ( !in_array($name, $includeStatus) ) continue;
+
+		$totalClassicGunboat += $status;
+	}
+
+	// Print out Classic Gunboat stats if any classic gunboat games have been finished. 
+	if( $totalClassicGunboat )
+	{
+		print '<div class = "profile_title">';
+		print '<li><strong>'.l_t('Classic Gunboat:').'</strong> </div><div class = "profile_content">';
+
+		foreach($rankingDetailsClassicGunboat['stats'] as $name => $status)
+		{
+			if ( !in_array($name, $includeStatus) ) continue;
+
+			print '<li>'.l_t($name.': <strong>%s</strong>',$status);
+			print ' ( '.round(($status/$totalClassicGunboat)*100).'% )';
+			print '</li>';
+		}
+		print '<li>'.l_t('Total (finished): <strong>%s</strong>',$totalClassicGunboat).'</li>';
+		print '</li>';
+		print '</div>';
+	}
+
+	// Get a count of the number of classic ranked games that have been played. 
+	$totalClassicRanked = 0;
+	foreach($rankingDetailsClassicRanked['stats'] as $name => $status)
+	{
+		if ( !in_array($name, $includeStatus) ) continue;
+
+		$totalClassicRanked += $status;
+	}
+
+	// Print out Classic Ranked stats if any classic ranked games have been finished. 
+	if( $totalClassicRanked )
+	{
+		print '<div class = "profile_title">';
+		print '<li><strong>'.l_t('Classic Ranked:').'</strong> </div><div class = "profile_content">';
+
+		foreach($rankingDetailsClassicRanked['stats'] as $name => $status)
+		{
+			if ( !in_array($name, $includeStatus) ) continue;
+
+			print '<li>'.l_t($name.': <strong>%s</strong>',$status);
+			print ' ( '.round(($status/$totalClassicRanked)*100).'% )';
+			print '</li>';
+		}
+		print '<li>'.l_t('Total (finished): <strong>%s</strong>',$totalClassicRanked).'</li>';
+		print '</li>';
+		print '</div>';
+	}
+
+	// Get a count of the number of classic games that have been played. 
+	$totalVariants = 0;
+	foreach($rankingDetailsVariants['stats'] as $name => $status)
+	{
+		if ( !in_array($name, $includeStatus) ) continue;
+
+		$totalVariants += $status;
+	}
+
+	// Print out Variant stats if any variant games have been finished. 
+	if( $totalVariants )
+	{
+		print '<div class = "profile_title">';
+		print '<li><strong>'.l_t('Variant stats:').'</strong> </div> <div class = "profile_content">';
+
+		foreach($rankingDetailsVariants['stats'] as $name => $status)
+		{
+			if ( !in_array($name, $includeStatus) ) continue;
+
+			print '<li>'.l_t($name.': <strong>%s</strong>',$status);
+			print ' ( '.round(($status/$totalVariants)*100).'% )';
+			print '</li>';
+		}
+		print '<li>'.l_t('Total (finished): <strong>%s</strong>',$totalVariants).'</li>';
+		print '</li>';
+		print '</div>';
+	}
+
+	print '</br>';
+	print '<li><strong>'.l_t('Reliability:').'</strong>';
 	if ( $User->type['Moderator'] || $User->id == $UserProfile->id )
 	{
-		print '<li>'.l_t('No moves received / received:').' <strong>'.$UserProfile->nmrCount.'/'.$UserProfile->phaseCount.'</strong></li>';
+		print '<li style="font-size:13px">'.l_t('No moves received/received:').' <strong>'.$UserProfile->nmrCount.'/'.$UserProfile->phaseCount.'</strong></li>';
 	}
-	print '<li>'.l_t('Reliability rating:').' <strong>'.($UserProfile->reliabilityRating).'%</strong>';
+	print '<li style="font-size:13px">'.l_t('Reliability rating:').' <strong>'.($UserProfile->reliabilityRating).'%</strong>';
 	if( $User->type['Moderator'] || $User->id == $UserProfile->id )
 	{
 		print ' <a class="light" href="profile.php?detail=civilDisorders&userID='.$UserProfile->id.'">'.l_t('breakdown').'</a>';
 	}                                                                                                         
 	print '</li>';
 	
-	print '<li>'.l_t('Total (finished): <strong>%s</strong>',$total).'</li>';
-
 	if ( $rankingDetails['takenOver'] )
-		print '<li>'.l_t('Left and taken over: <strong>%s</strong>',$rankingDetails['takenOver']).
+		print '<li style="font-size:13px">'.l_t('Left and taken over: <strong>%s</strong>',$rankingDetails['takenOver']).
 			'(<a href="profile.php?detail=civilDisorders&userID='.$UserProfile->id.'">'.l_t('View details').'</a>)</li>';
-	*/
-			
-	print '</ul></li>';
-}
-print '<li>&nbsp;</li>';
 
-print '<style type="text/css"> .tooltip { position: absolute; display: none; background-color: #eaeaea;} </style>
-		<div id="RRtooltip" class="tooltip">RR = ((noNMR + noCD)/2)^3</div>
-		<div id="Itooltip" class="tooltip">Integrity = CDtakeovers - NMRs * 0.2 - CDs * 0.6</div>
-		<script type="text/javascript">
-			document.onmousemove = updateWMTT;
-			function updateWMTT(e) {
-				if (wmtt != null && wmtt.style.display == "block") {
-					x = (e.pageX ? e.pageX : window.event.x) + wmtt.offsetParent.scrollLeft - wmtt.offsetParent.offsetLeft;
-					y = (e.pageY ? e.pageY : window.event.y) + wmtt.offsetParent.scrollTop - wmtt.offsetParent.offsetTop;
-					wmtt.style.left = (x + 20) + "px";
-					wmtt.style.top = (y - 20) + "px";
-				}
-			}
-		    function showRR() {
-				wmtt = document.getElementById("RRtooltip");
-				wmtt.style.display = "block"
-			}
-		    function showI() {
-				wmtt = document.getElementById("Itooltip");
-				wmtt.style.display = "block"
-			}
-			function hideWMTT() {
-				wmtt.style.display = "none";
-			}
-		</script>';
-		
-print '<li><strong>'.l_t('Reliability stats').'</strong> ';
-	if( $User->type['Moderator'] || $User->id == $UserProfile->id )
-		print ' (<a class="light" href="profile.php?detail=civilDisorders&userID='.$UserProfile->id.'">'.l_t('breakdown').'</a>)';
-
-print ': <ul class="gamesublist">';
-print '<li>Reliability: 
-	<a onmouseover="showRR();"; onmouseout="hideWMTT();" href="#">
-    <strong>'.libReliability::getGrade($UserProfile).'</strong></a> ';
-print '</li>';
-
-if ($UserProfile->phaseCount > 0)
-	print '<li>NoNMR: <strong>'.round (100 * ( 1 - $UserProfile->nmrCount / $UserProfile->phaseCount ) , 2).'%</strong> (<strong>'.$UserProfile->nmrCount.'</strong> missed phases out of <strong>'.$UserProfile->phaseCount.'</strong>)</li>';
-
-if ($UserProfile->gameCount > 0)
-	print '<li>NoCD: <strong>'.round (100 * ( 1 - $UserProfile->cdCount / $UserProfile->gameCount ) , 2).'%</strong> (<strong>'.$UserProfile->cdCount.'</strong> abandoned games out of <strong>'.$UserProfile->gameCount.'</strong>)</li>';
-
-if ( $User->type['Moderator'])
-	print '<li>Integrity: 
-		<a onmouseover="showI();"; onmouseout="hideWMTT();" href="#">
-		<strong>'.libReliability::integrityRating($UserProfile).'</strong></a> (<strong>'.$UserProfile->cdTakenCount.'</strong> CD takeovers + <strong>'.$UserProfile->integrityBalance.'</strong> balance)</li>';
-
-print '</ul>';
-
-if ( $User->type['Moderator'])
-{
-	print '<li>&nbsp;</li>';
-
-	$tabl = $DB->sql_tabl("SELECT b.blockUserID, u.username FROM wD_BlockUser b LEFT JOIN wD_Users u ON (b.blockUserID = u.id) WHERE b.userID = ".$UserProfile->id);
-	if ($DB->last_affected() != 0)
-	{
-		print '<li><strong>'.l_t('Blocklist').':</strong>';
-		print '<ul class="gamesublist">';
-		while(list($blockUserID,$name)=$DB->tabl_row($tabl))
-			print '<li><a href="profile.php?userID='.$blockUserID.'">'.$name.'</a></li>';
-		print '</ul>';
-	}
-	$tabl = $DB->sql_tabl("SELECT b.userID, u.username FROM wD_BlockUser b LEFT JOIN wD_Users u ON (b.userID = u.id) WHERE b.blockUserID = ".$UserProfile->id);
-	if ($DB->last_affected() != 0)
-	{
-		print '<li><strong>'.l_t('Blocked by').':</strong>';
-		print '<ul class="gamesublist">';
-		while(list($blockUserID,$name)=$DB->tabl_row($tabl))
-			print '<li><a href="profile.php?userID='.$blockUserID.'">'.$name.'</a></li>';
-		print '</ul>';
-	}
-	print '</ul>';
+	print '</li>';
 }
 
-print '</li></div>';
-
-print "<h2>".$UserProfile->username;
-if ( $User->type['User'] && $UserProfile->type['User'] && ! ( $User->id == $UserProfile->id || $UserProfile->type['Moderator'] || $UserProfile->type['Guest'] || $UserProfile->type['Admin'] ) )
-{
-	$userMuted = $User->isUserMuted($UserProfile->id);
-
-	print '<a name="mute"></a>';
-	if( isset($_REQUEST['toggleMute'])) {
-		$User->toggleUserMute($UserProfile->id);
-		$userMuted = !$userMuted;
-	}
-	$muteURL = 'profile.php?userID='.$UserProfile->id.'&toggleMute=on&rand='.rand(0,99999).'#mute';
-	print ' '.($userMuted ? libHTML::muted($muteURL) : libHTML::unmuted($muteURL));
-}
-	
-// Start BlockUser-feature (Same as mute, but he can't join your games. (Works on admins too)
-if ( $User->type['User'] && $UserProfile->type['User'] && ! ( $User->id == $UserProfile->id || $UserProfile->type['Guest'] || $UserProfile->type['Admin'] ) )
-{
-	$userBlocked = $User->isUserBlocked($UserProfile->id);
-
-	print '<a name="block"></a>';
-	if( isset($_REQUEST['toggleBlock'])) {
-		$User->toggleUserBlock($UserProfile->id);
-		$userBlocked = !$userBlocked;
-	}
-	$blockURL = 'profile.php?userID='.$UserProfile->id.'&toggleBlock=on&rand='.rand(0,99999).'#block';
-	print ' '.($userBlocked ? libHTML::blocked($blockURL) : libHTML::unblocked($blockURL));
-// End BlockUserFeature	
-}
-print '</h2>';
+print '</ul></div>';
 
 // Regular user info starts here:
 print '<div class="leftHalf" style="width:50%">';
-
-
-
 
 if( $UserProfile->type['Banned'] )
 	print '<p><strong>'.l_t('Banned').'</strong></p>';
@@ -744,6 +652,7 @@ if( $User->type['Moderator'] )
 		print '<p>Investigated: Never</p>';
 	}
 }
+
 list($serverHasPHPBB) = $DB->sql_row("SELECT count(1) FROM information_schema.tables WHERE table_name = 'phpbb_users'");
 
 if ($serverHasPHPBB == 1)
@@ -760,14 +669,15 @@ if ( $UserProfile->comment )
 
 print '<p><ul class="formlist">';
 
-if ( $UserProfile->type['ForumModerator'] || $UserProfile->type['Admin'] )
+if ( $UserProfile->type['Moderator'] ||  $UserProfile->type['ForumModerator'] || $UserProfile->type['Admin'] )
 {
 	if ($UserProfile->id !=15658)
 	{
 		print '<li><strong>'.l_t('Mod/Admin team').'</strong></li>';
-		print '<li>'.l_t('The best way to get moderator assistance is to contact a the mod-team at 
-		the <a href="modforum.php">ModForum</a>. Please do not PM moderators directly as moderators 
-		are not required to regularly check their messages').'</li>';
+		print '<li>'.l_t('The best way to get moderator assistance is to contact a moderator at 
+		<a href="mailto:'.(isset(Config::$modEMail) ? Config::$modEMail : Config::$adminEMail).'">'
+		.(isset(Config::$modEMail) ? Config::$modEMail : Config::$adminEMail).'</a>. Please do not pm 
+		moderators directly as moderators are not required to regularly check their messages').'</li>';
 		print '<li>&nbsp;</li>';
 	}
 }
@@ -777,38 +687,38 @@ if ( $UserProfile->online || time() - (24*60*60) < $UserProfile->timeLastSession
 else
 	print '<li><strong>'.l_t('Last visited:').'</strong> '.libTime::text($UserProfile->timeLastSessionEnded).'</li>';
 
-list($posts) = $DB->sql_row(
-	"SELECT (
-		SELECT COUNT(fromUserID) FROM `wD_ForumMessages` WHERE type='ThreadStart' AND fromUserID = ".$UserProfile->id."
-		) + (
-		SELECT COUNT(fromUserID) FROM `wD_ForumMessages` WHERE type='ThreadReply' AND fromUserID = ".$UserProfile->id."
-		)"); // Doing the query this way makes MySQL use the type, fromUserID index
-if( is_null($posts) ) $posts=0;
-list($likes) = $DB->sql_row("SELECT COUNT(*) FROM wD_LikePost WHERE userID=".$UserProfile->id);
-list($liked) = $DB->sql_row("SELECT COUNT(*) FROM wD_ForumMessages fm 
-	INNER JOIN wD_LikePost lp ON lp.likeMessageID = fm.id 
-	WHERE fm.fromUserID=".$UserProfile->id);
-$likes = ($likes ? '<strong>'.l_t('Likes:').'</strong> '.$likes : '');
-$liked = ($liked ? '<strong>'.l_t('Liked:').'</strong> '.$liked : '');
+if (!isset(Config::$customForumURL))
+{
+	// Doing the query this way makes MySQL use the type, fromUserID index
+	list($posts) = $DB->sql_row(
+		"SELECT (
+			SELECT COUNT(fromUserID) FROM `wD_ForumMessages` WHERE type='ThreadStart' AND fromUserID = ".$UserProfile->id."
+			) + (
+			SELECT COUNT(fromUserID) FROM `wD_ForumMessages` WHERE type='ThreadReply' AND fromUserID = ".$UserProfile->id."
+			)"); 
 
-print '<li><strong>'.l_t('Forum posts:').'</strong> '.$posts.'<br />';
-	//<strong>'.l_t('View:').'</strong> <a class="light" href="profile.php?detail=threads&userID='.$UserProfile->id.'">'.l_t('Threads').'</a>,
-	//	<a class="light" href="profile.php?detail=replies&userID='.$UserProfile->id.'">'.l_t('replies').'</a>';
+	if( is_null($posts) ) $posts=0;
+	list($likes) = $DB->sql_row("SELECT COUNT(*) FROM wD_LikePost WHERE userID=".$UserProfile->id);
+	list($liked) = $DB->sql_row("SELECT COUNT(*) FROM wD_ForumMessages fm 
+		INNER JOIN wD_LikePost lp ON lp.likeMessageID = fm.id 
+		WHERE fm.fromUserID=".$UserProfile->id);
+	$likes = ($likes ? '<strong>'.l_t('Likes:').'</strong> '.$likes : '');
+	$liked = ($liked ? '<strong>'.l_t('Liked:').'</strong> '.$liked : '');
 
-print '<br/>'.implode(' / ',array($likes,$liked)).'
-	</li>';
-unset($likes,$liked);
+	print '<li><strong>'.l_t('Forum posts:').'</strong> '.$posts.'<br />';
 
-print '<li>&nbsp;</li>';
+	print '<br/>'.implode(' / ',array($likes,$liked)).'</li>';
+	unset($likes,$liked);
+}
+
 print '<li><strong>'.l_t('Joined:').'</strong> '.$UserProfile->timeJoinedtxt().'</li>';
 print '<li><strong>'.l_t('User ID#:').'</strong> '.$UserProfile->id.'</li>';
 if( $User->type['Moderator'] )
 {
 	print '<li><strong>'.l_t('E-mail:').'</strong>
-			'.$UserProfile->email.($UserProfile->hideEmail == 'No' ? '' : ' <em>'.l_t('(hidden for non-mods)').'</em>').'
-		</li>';
+			'.$UserProfile->email.($UserProfile->hideEmail == 'No' ? '' : ' <em>'.l_t('(hidden for non-mods)').'</em>').'</li>';
 }
-elseif ( $UserProfile->hideEmail == 'No' )
+else if ( $UserProfile->hideEmail == 'No' )
 {
 	$emailCacheFilename = libCache::dirID('users',$UserProfile->id).'/email.png';
 	if( !file_exists($emailCacheFilename) )
@@ -846,29 +756,7 @@ print '<li>&nbsp;</li>';
 
 //print '<li>&nbsp;</li>';
 
-if ( $User->type['Moderator'])
-{
-	if ($UserProfile->rlGroup != 0)
-	{
-		print '<li><a href="profile.php?detail=relations&userID='.$UserProfile->id.'" class="light">'.$UserProfile->username.' is currently in a RL-Group.</a>
-			(<img src="images/icons/'.($UserProfile->rlGroup < 0 ? 'bad':'').'friends.png">)</li>';
-
-		list($rlNotes)=$DB->sql_row("SELECT note FROM wD_ModeratorNotes WHERE linkIDType='rlGroup' AND linkID=".abs($UserProfile->rlGroup));
-		if ($rlNotes!= '')
-		print '
-		<TABLE>
-			<TD style="border: 1px solid #666">
-				<span id="EditNoteText">'.$rlNotes.'</span>
-			</TD>
-		</TABLE>';
-	}
-	else
-	{
-		print '<li><a href="profile.php?detail=relations&userID='.$UserProfile->id.'" class="light">'.$UserProfile->username.' is currently in no RL-Group.</a></li>';
-	}
-}
 print '</li></ul></p></div><div style="clear:both"></div></div>';
-
 
 // Start interactive area:
 
@@ -883,6 +771,7 @@ if ( $User->type['Moderator'] && $User->id != $UserProfile->id )
 
 	if( !$UserProfile->type['Admin'] && ( $User->type['Admin'] || !$UserProfile->type['Moderator'] ) )
 		$modActions[] = libHTML::admincp('banUser',array('userID'=>$UserProfile->id), l_t('Ban user'));
+	
 	$modActions[] = '<a href="admincp.php?tab=Multi-accounts&aUserID='.$UserProfile->id.'" class="light">'.
 		l_t('Enter multi-account finder').'</a>';
 
@@ -894,9 +783,7 @@ if ( $User->type['Moderator'] && $User->id != $UserProfile->id )
 		print '</p>';
 	}
 	
-	
-	if( !$UserProfile->type['Admin'] 
-		&& ( $User->type['Admin'] || $User->type['ForumModerator'] ) )
+	if( !$UserProfile->type['Admin'] && ( $User->type['Admin'] || $User->type['ForumModerator'] ) )
 	{
 		$silences = $UserProfile->getSilences();
 		
@@ -920,8 +807,8 @@ if ( $User->type['Moderator'] && $User->id != $UserProfile->id )
 		print '</li></ul></p>';
 	}
 }
-
-if ( $User->type['User'] && $User->id != $UserProfile->id && !$User->notifications->ForceModMessage)
+print '</div>';
+if ( $User->type['User'] && $User->id != $UserProfile->id)
 {
 	print '<div class="hr"></div>';
 
@@ -960,6 +847,22 @@ if ( $User->type['User'] && $User->id != $UserProfile->id && !$User->notificatio
 		</ul>
 		</div>';
 }
+
+?>
+<script type="text/javascript">
+   var coll = document.getElementsByClassName("profile_title");
+   var searchCounter;
+   
+   for (searchCounter = 0; searchCounter < coll.length; searchCounter++) {
+     coll[searchCounter].addEventListener("click", function() {
+       this.classList.toggle("active");
+       var content = this.nextElementSibling;
+   		if (content.style.display === "block") { content.style.display = "none"; } 
+   		else { content.style.display = "block"; }
+     });
+   }
+</script>
+<?php
 
 libHTML::pagebreak();
 
@@ -1053,6 +956,6 @@ else
 	print '<a name="bottom"></a>';
 
 print '</div>';
-libHTML::footer();
 
+libHTML::footer();
 ?>

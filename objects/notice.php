@@ -149,7 +149,7 @@ class notice
 					</div>
 					</div>';*/
 
-		$buf .= '<div class="hr"></div></div>';
+		$buf .= '</div>';
 
 		return $buf;
 	}

@@ -146,8 +146,6 @@ class search
 			
 			$G = $Variant->panelGame($row);
 			print $G->summary(false);
-
-			print '<div class="hr"></div>';
 		}
 		print '</div>';
 

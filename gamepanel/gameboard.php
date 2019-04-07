@@ -210,7 +210,8 @@ class panelGameBoard extends panelGame
 			else
 				$vVote[]=$vote;
 
-		$buf = '<div class="bar membersList memberVotePanel"><a name="votebar"></a>
+				$buf = '<div style="width: 300px; margin: 0 auto; text-align:center;"><a href="contactUsDirect.php" align="center";>Need help?</a></div>
+				<div class="bar membersList memberVotePanel"><a name="votebar"></a>
 				<table><tr class="member">
 			<td class="memberLeftSide">
 				<strong>'.l_t('Votes:').'</strong>
@@ -392,7 +393,7 @@ class panelGameBoard extends panelGame
 	{
 		global $User;
 		libHTML::$alternate=2;
-		$buf = '<div class="titleBar barAlt'.libHTML::alternate().'">
+		$buf = '<div class="titleBar">
 				'.$this->titleBar().'
 			</div>';
 		

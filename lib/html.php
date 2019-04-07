@@ -33,7 +33,7 @@ class libHTML
 <div class="pageTitle barAlt1">
 	'.$title.'
 </div>
-<div class="pageDescription barAlt2">
+<div class="pageDescription">
 	'.$description.'
 </div>
 </div>
@@ -800,7 +800,8 @@ class libHTML
 		// Items not displayed on the menu
 		$links['map.php']=array('name'=>'Map', 'inmenu'=>FALSE);
 		$links['faq.php']=array('name'=>'FAQ', 'inmenu'=>FALSE);
-		$links['contactUs.php']=array('name'=>'Contact Us', 'inmenu'=>FALSE);
+		$links['contactUs.php']=array('name'=>'Contact Info', 'inmenu'=>FALSE);
+		$links['contactUsDirect.php']=array('name'=>'Contact Us', 'inmenu'=>FALSE);
 		$links['tournaments.php']=array('name'=>'Tournaments', 'inmenu'=>FALSE);
 		$links['rules.php']=array('name'=>'Rules', 'inmenu'=>FALSE);
 		$links['recentchanges.php']=array('name'=>'Recent changes', 'inmenu'=>FALSE);
@@ -919,9 +920,82 @@ class libHTML
 						'>'.
 						l_t($script['name']).'</a>';
 				}
-			}
+			} 
 
-			$menu .= '</div></div>';
+			// $menu .= '
+            // <div class ="nav-wrap">
+                
+			// 	<div class = "nav-tab"> <a href="index.php?" title="See what\'s happening">Home</a> </div>';
+			// if( isset(Config::$customForumURL) ) 
+			// {
+			// 	$menu.='<div class = "nav-tab"> <a href="'.Config::$customForumURL.'" title="The forum; chat, get help, help others, arrange games, discuss strategies">Forum</a> </div>';
+			// } 
+			// else 
+			// {
+			// 	$menu.='<div class = "nav-tab"> <a href="forum.php" title="The forum; chat, get help, help others, arrange games, discuss strategies">Forum</a> </div>';
+			// }
+
+			// if (is_object($User))
+			// {
+			// 	if( !$User->type['User'] )
+			// 	{
+			// 		$menu.='<div class = "nav-tab"> <a href="logon.php" title="Log onto webDiplomacy using an existing user account">Log on</a> </div>';
+			// 		$menu.='<div class = "nav-tab"> <a href="register.php" title="Make a new user account">Register</a> </div>';
+			// 	}
+			// 	else
+			// 	{
+			// 		$menu.='
+			// 		<div id="navSubMenu" class = "nav-tab">Games ▼
+            //             <div id="nav-drop">
+			// 				<a href="gamelistings.php" title="Game listings; a searchable list of the games on this server">Game Listings</a>
+			// 				<a href="gamecreate.php" title="Start up a new game">New Game</a>
+            //             </div>
+            //         </div>
+			// 		<div class = "nav-tab"> <a href="detailedSearch.php" title="advanced search of users and games">Search</a> </div>';
+					
+			// 		if( isset(Config::$customForumURL) ) 
+			// 		{
+			// 			$menu.='
+			// 			<div id="navSubMenu" class = "nav-tab">Settings ▼
+			// 				<div id="nav-drop">
+			// 					<a href="usercp.php" title="Change your user specific settings">Site Settings</a>
+			// 					<a href="/contrib/phpBB3/ucp.php?i=179" title="Change your forum user settings">Forum User Settings</a>
+			// 				</div>
+            //         	</div>';		
+			// 		}
+			// 		else
+			// 		{
+			// 			$menu.='<div class = "nav-tab"> <a href="usercp.php" title="Change your user specific settings">Settings</a> </div>';
+			// 		}
+			// 	}
+			// }
+			
+			// $menu.=' <div id="navSubMenu" class = "nav-tab">Help ▼
+            //             <div id="nav-drop">
+			// 				<a href="help.php" title="Get help and information; guides, intros, FAQs, stats, links">Help/Donate</a>
+			// 				<a href="faq.php" title="Frequently Asked Questions">FAQ</a>
+			// 				<a href="contactUsDirect.php">Contact Us Directly</a>
+			// 				<a href="contactUs.php">Contact Information</a>
+			// 				<a href="rules.php">Site Rules</a>
+            //             </div>
+            //         </div>';
+			
+			// if ( is_object($User) )
+			// {
+			// 	if ( $User->type['Admin'] or $User->type['Moderator'] )
+			// 	{
+			// 		$menu.=' <div id="navSubMenu" class = "nav-tab">Mods ▼
+            //             <div id="nav-drop">
+			// 				<a href="admincp.php">Admin CP</a>
+			// 				<a href="profile.php">Find User</a>
+			// 				<a href="admincp.php?tab=AccessLog">Access Log</a>
+							
+            //             </div>
+			// 		</div>';
+			// 	}
+			// }
+			// $menu.='</div>';</div>
+			$menu.='</div></div>'; 
 		}
 		else
 		{
@@ -1085,36 +1159,11 @@ class libHTML
 			<a href="http:impresum.php">Impresum</a> - <a href="gdpr.php">GDPR/Datenschutz</a><br />');
 	}
 
-	/*
-	 * By jayp, saved for future cacheing improvements
-	 public static function cacheControl($expire=-1, $etag=NULL, $lastmod=NULL) {
-		if ($expire < 0) {
-			header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-			header("Cache-Control: no-store, no-cache, must-revalidate");
-			header("Cache-Control: post-check=0, pre-check=0", false);
-		} else {
-			if (!empty($etag))
-				header('Etag: "'.$etag.'"');
-			if (!empty($lastmod))
-				header('Last-Modified: '.gmdate("D, d M Y H:i:s", $lastmod)." GMT");
-			header('Expires: '.gmdate("D, d M Y H:i:s", (time()+$expire)).' GMT');
-			header('Cache-Control: max-age='.$expire.', must-revalidate');
-			if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] == $etag) {
-				header('HTTP/1.0 304 Not Modified', TRUE, 304);
-				die();
-			} else if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastmod) {
-				header('HTTP/1.0 304 Not Modified', TRUE, 304);
-				die();
-			}
-		}
-	}*/
-
 	public static $footerScript=array();
 	public static $footerIncludes=array();
 	
 	public static function likeCount($likeCount) {
 		if($likeCount==0) return '';
-		//return ' <span class="likeCount">('.$likeCount.' like'.($likeCount>1?'s':'').')</span>';
 		return ' <span class="likeCount">(+'.$likeCount.')</span>';
 	}
 	
@@ -1126,12 +1175,12 @@ class libHTML
 		$buf = '';
 
 		// onlineUsers, for the online icons
-		$statsDir = libCache::dirName('stats');
-		$onlineFile = l_s($statsDir.'/onlineUsers.json');
-		if( file_exists($onlineFile) )
-			$buf .= '<script type="text/javascript" src="'.STATICSRV.$onlineFile.'"></script>';
-		else
-			$buf .= '<script type="text/javascript">onlineUsers = $A([ ]);</script>';
+		// $statsDir = libCache::dirName('stats');
+		// $onlineFile = l_s($statsDir.'/onlineUsers.json');
+		// if( file_exists($onlineFile) )
+		// 	$buf .= '<script type="text/javascript" src="'.STATICSRV.$onlineFile.'"></script>';
+		// else
+		// 	$buf .= '<script type="text/javascript">onlineUsers = $A([ ]);</script>';
 
 		if( !is_object($User) ) return $buf;
 		elseif( $User->type['User'] ) // Run user-specific page modifications
@@ -1201,9 +1250,7 @@ class libHTML
 				try {
 					'.l_jf('Locale.onLoad').'();
 					
-					'.l_jf('onlineUsers.push').'(User.id);
-	
-					'.l_jf('setUserOnlineIcons').'();
+
 					'.l_jf('setForumMessageIcons').'();
 					'.l_jf('setPostsItalicized').'();
 					'.l_jf('updateTimestamps').'();
