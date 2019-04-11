@@ -28,7 +28,8 @@ require_once(l_r('gamesearch/search.php'));
 require_once(l_r('pager/pagergame.php'));
 require_once(l_r('objects/game.php'));
 require_once(l_r('gamepanel/game.php'));
-require_once(l_r('lib/modnotes.php')); // Add Modnotes tp profiles
+require_once(l_r('lib/modnotes.php'));  // Add Modnotes to profiles
+require_once(l_r('lib/blockuser.php')); // Users can block each other if they don't want common games
 
 if ( isset($_REQUEST['userID']) && intval($_REQUEST['userID'])>0 )
 {
@@ -381,6 +382,9 @@ if ( $User->type['User'] && $UserProfile->type['User'] && ! ( $User->id == $User
 	$muteURL = 'profile.php?userID='.$UserProfile->id.'&toggleMute=on&rand='.rand(0,99999).'#mute';
 	print ' '.($userMuted ? libHTML::muted($muteURL) : libHTML::unmuted($muteURL));
 }
+
+print libBlockUser::BlockUserHTML(); // BlockUserFeature
+
 print '</h2>';
 print '<div class = "profile-show">';
 print '<div class="rightHalf">';
@@ -632,6 +636,9 @@ if( $total )
 
 	print '</li>';
 }
+
+if ( $User->type['Moderator'])  // Print who is on a players blocklist, and who is blocking this player. (only for mods)
+	libBlockUser::blockUserProfileInfo();
 
 print '</ul></div>';
 
