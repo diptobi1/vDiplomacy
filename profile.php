@@ -28,6 +28,7 @@ require_once(l_r('gamesearch/search.php'));
 require_once(l_r('pager/pagergame.php'));
 require_once(l_r('objects/game.php'));
 require_once(l_r('gamepanel/game.php'));
+require_once(l_r('lib/modnotes.php')); // Add Modnotes tp profiles
 
 if ( isset($_REQUEST['userID']) && intval($_REQUEST['userID'])>0 )
 {
@@ -651,6 +652,10 @@ if( $User->type['Moderator'] )
 	{
 		print '<p>Investigated: Never</p>';
 	}
+	
+	// VDip: add userNotes:
+	if (isset($_REQUEST['EditNote'])) libModNotes::SetUserNotes();
+	print libModNotes::UserNotesHTML();
 }
 
 list($serverHasPHPBB) = $DB->sql_row("SELECT count(1) FROM information_schema.tables WHERE table_name = 'phpbb_users'");
