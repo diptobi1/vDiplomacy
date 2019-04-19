@@ -316,16 +316,20 @@ class processGame extends Game
 		}
 
 		// Find a unique game name
+		$name = substr($name,0,50);
 		$unique = false;
 		$i = 1;
 		while ( ! $unique )
 		{
 			list($count) = $DB->sql_row("SELECT COUNT(id) FROM wD_Games WHERE name='".$name.($i > 1 ? '-'.$i : '')."'");
-
 			if ( $count == 0 )
+			{
 				$unique = true;
-			else
+			}
+			else{
 				$i++;
+				$name = substr($name,0,50-strlen('-'.$i));
+			}
 		}
 		
 		/*
@@ -455,7 +459,7 @@ class processGame extends Game
 			if ( count($this->Members->ByID)<count($this->Variant->countries) )
 				{
 				// The old logic here did not work in many cases, pre game everyone should be entering the game with the same bet,
-				// there is no need to do anything fancy to figure it out. 
+				// there is no need to do anything fancy to figure it out.
 				// $minimumBet = ceil($this->pot / count($this->Members->ByID));
 				list($getMinBet) = $DB->sql_row("select min(bet) from wD_Members where gameID = ".$this->id);
 				$minimumBet = $getMinBet;
@@ -488,7 +492,7 @@ class processGame extends Game
 	private function recordNMRs()
 	{
 		global $DB;
-		
+
 		// Only for VDip: Do not record NMRs for 2-player or live games
 		// Also on VDip the NMRs and phases-played do add up, even if a country is in CD. So watch your game...
 		if ( (count($this->Variant->countries) == 2) or ($this->phaseMinutes <= 30) )
@@ -502,11 +506,11 @@ class processGame extends Game
 		$DB->sql_put("INSERT INTO wD_NMRs (gameID, userID, countryID, turn, bet, SCCount)
 				SELECT m.gameID, m.userID, m.countryID, ".$this->turn." as turn, m.bet, m.supplyCenterNo
 				FROM wD_Members m
-				WHERE m.gameID = ".$this->id." 
-					AND ( m.status='Playing' OR m.status='Left' ) 
+				WHERE m.gameID = ".$this->id."
+					AND ( m.status='Playing' OR m.status='Left' )
 					AND EXISTS(SELECT o.id FROM wD_Orders o WHERE o.gameID = m.gameID AND o.countryID = m.countryID)
 					AND NOT m.orderStatus LIKE '%Saved%' AND NOT m.orderStatus LIKE '%Ready%'");
-		
+
 		/*
 		 * Increment the moves received counter for users who could have submitted moves. This is a counter because it's a large number
 		 * users are unlikely to question, and calculating it from stored data is very involved.
@@ -514,11 +518,11 @@ class processGame extends Game
 		$DB->sql_put("UPDATE wD_Users u
 				INNER JOIN wD_Members m ON m.userID = u.id
 				SET u.phaseCount = u.phaseCount + 1
-				WHERE m.gameID = ".$this->id." 
+				WHERE m.gameID = ".$this->id."
 					AND ( m.status='Playing' OR m.status='Left' )
 					AND EXISTS(SELECT o.id FROM wD_Orders o WHERE o.gameID = m.gameID AND o.countryID = m.countryID)");
 		}
-	
+
 	/**
 	 * Process; the main gamemaster function for managing games; processes orders, adjudicates them,
 	 * applies the results, creates new orders, updates supply center/army numbers, and moves the
@@ -553,7 +557,7 @@ class processGame extends Game
 		 * - Create new orders for the current phase
 		 * - Set the next date for game processing
 		 */
-		
+
 		$this->recordNMRs();
 
 		/*
@@ -662,7 +666,7 @@ class processGame extends Game
 						SET m.orderStatus=IF(o.id IS NULL, 'None',''),
 							missedPhases=IF(m.status='Playing' AND NOT o.id IS NULL, missedPhases + 1, missedPhases)
 						WHERE m.gameID = ".$this->id);
-			
+
 			$this->processTime = time() + $this->phaseMinutes*60;
 			
 			// Extend the processTime by a day if no processing is allowed.
