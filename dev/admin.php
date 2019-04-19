@@ -26,7 +26,7 @@ if ($edit != true)
 	libHTML::footer();
 	exit;
 }
-	
+
 print '<p><strong>'.l_t('Error logs:').'</strong>  (<a class="light" href="dev.php?tab=Admin&clearErrorLog">Clear</a>)</p>';
 
 $dir =  libDevError::directory();
@@ -35,7 +35,6 @@ $dir =  libDevError::directory();
 if ( isset($_REQUEST['clearErrorLog']) && $edit == true)
 	foreach(glob($dir."/*.txt") as $logfile)
 		unlink($logfile);
-
 $errorlogs = libDevError::errorTimes();
 
 $alternate = false;

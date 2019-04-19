@@ -13,6 +13,19 @@ body {
 div.pageTitle {
     color:#472C12; /* #009922; */
 }
+
+/* TopNav bar
+ *************/
+.nav-wrap{
+	background-color: #c0c0c0;
+}
+#navSubMenu{
+	color: #6d5238;
+}
+#navSubMenu div#nav-drop {
+	background-color: #a0a0a0;
+}
+
 input[type="submit"] {
 	background-color: #f0f0f0; /* #eaffea; */
 	color:#e0d6cd;             /* #009902 */

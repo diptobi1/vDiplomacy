@@ -298,4 +298,77 @@ class libError
 	}
 }
 
+class libDevError
+{
+	public static function isLoggingEnabled()
+	{
+		return !( false === Config::errorlogDirectory() );
+	}
+
+	public static function directory()
+	{
+		static $dir;
+
+		if ( isset($dir) ) return $dir;
+
+		if ( !libError::isLoggingEnabled() )
+			return false;
+
+		$dir = Config::errorlogDirectory()."/dev";
+
+		if ( ! is_dir($dir) )
+			mkdir($dir);
+
+		if ( ! is_file($dir.'/index.html') )
+			touch($dir.'/index.html');
+
+		if ( ! is_writable($dir) )
+			libHTML::error("Error log directory not ready; does not exist, or no protective index file");
+
+		return $dir;
+	}
+
+	public static function errorTimes()
+	{
+		if ( !libError::isLoggingEnabled() )
+			return array();
+
+		static $errorTimes;
+		if ( isset($errorTimes) ) return $errorTimes;
+
+		$dir = self::directory();
+
+		if ( ! ( $handle = @opendir($dir) ) )
+			libHTML::error("Could not open error log directory");
+
+		$errorTimes = array();
+		while ( false !== ( $file = readdir($handle) ) )
+		{
+			list($timestamp) = explode('.', $file);
+
+			if ( intval($timestamp) < 1000 ) continue;
+			else $errorTimes[] = intval($timestamp);
+
+		}
+		closedir($handle);
+
+		sort($errorTimes, SORT_NUMERIC);
+		$errorTimes = array_reverse($errorTimes);
+
+		return $errorTimes;
+	}
+
+	public static function clear()
+	{
+		if ( !libError::isLoggingEnabled() )
+			return false;
+
+		$dir = self::directory();
+
+		$times = self::errorTimes();
+
+		foreach($times as $time)
+			unlink($dir.'/'.$time.'.txt');
+	}
+}
 ?>

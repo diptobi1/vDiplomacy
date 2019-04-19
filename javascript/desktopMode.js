@@ -57,7 +57,7 @@ function changeCSS(toggle) {
         newlinkGamePanel.setAttribute("rel", "stylesheet");
         newlinkGamePanel.setAttribute("type", "text/css");
         newlinkGamePanel.setAttribute("id", "game-panel-css");
-        newlinkGamePanel.setAttribute("href", cssDirectory + "/desktopOnly/gamepanel.css?ver=" + cssVersion);
+        newlinkGamePanel.setAttribute("href", cssDirectory + "/desktopOnly/gamepanel.css?var=" + cssVersion);
         document.getElementsByTagName("head").item(0).appendChild(newlinkGamePanel);
 
         document.getElementsByTagName("head").item(0).appendChild(document.getElementById("vdipColors-css"));
@@ -105,12 +105,12 @@ function changeCSS(toggle) {
         }
 
         var oldlinkGamePanel = document.getElementById("game-panel-css");
-        if(oldlinkGamePanel.getAttribute("href") !== cssDirectory + "/gamepanel.css?ver=" + cssVersion) {
+        if(oldlinkGamePanel.getAttribute("href") !== cssDirectory + "/gamepanel.css?var=" + cssVersion) {
             var newlinkGamePanel = document.createElement("link");
             newlinkGamePanel.setAttribute("rel", "stylesheet");
             newlinkGamePanel.setAttribute("type", "text/css");
             newlinkGamePanel.setAttribute("id", "game-panel-css");
-            newlinkGamePanel.setAttribute("href", cssDirectory + "/gamepanel.css?ver=" + cssVersion);
+            newlinkGamePanel.setAttribute("href", cssDirectory + "/gamepanel.css?var=" + cssVersion);
             document.getElementsByTagName("head").item(0).appendChild(newlinkGamePanel);
             newlinkGamePanel.onload = function(){
                 oldlinkGamePanel.remove();

@@ -24,10 +24,8 @@
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
-define("VERSION", 147);
+define("VERSION", 148);
 define("VDIPVERSION", 64);
-define("CSSVERSION", 21);
-define("JSVERSION", 23);
 
 // Some integer values which are named for clarity.
 
@@ -47,6 +45,10 @@ define("STATICSRV", Config::$facebookStaticURL);
 // problems (people complaining about bugs in old code)
 define("JSDIR", 'javascript');
 define("CSSDIR", 'css');
+
+//Increment these versions whenever you update any js or css files for cachebusting
+define("JSVERSION",1.2);
+define("CSSVERSION",1.2);
 
 if( !defined('FACEBOOK') )
 	define('FACEBOOK',false);

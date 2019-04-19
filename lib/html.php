@@ -26,9 +26,11 @@
  *
  * @package Base
  */
+
 class libHTML
 {
-	public static function pageTitle($title, $description=false) {
+	public static function pageTitle($title, $description=false) 
+	{
 		return '<div class="content-bare content-board-header content-title-header">
 <div class="pageTitle barAlt1">
 	'.$title.'
@@ -84,17 +86,17 @@ class libHTML
 	{
 		return ' <img src="'.l_s('images/icons/bronze.png').'" alt="(B)" title="'.l_t('Donator - bronze').'" />';
 	}
-	
+
 	static function service()
 	{
 		return ' <img src="'.l_s('images/icons/service.png').'" alt="(P)" title="'.l_t('Service Award').'" />';
 	}
-	
+
 	static function owner()
 	{
 		return ' <img src="'.l_s('images/icons/owner.png').'" alt="(P)" title="'.l_t('Site Co-Owner').'" />';
 	}
-	
+
 	static function adamantium()
 	{
 		return ' <img src="'.l_s('images/icons/adamantium.png').'" alt="(P)" title="'.l_t('Donator - adamantium').'" />';
@@ -332,18 +334,18 @@ class libHTML
 		else
 			return $output;
 	}
-	
-	
-	public static function threadLink($postID) {
+
+	public static function threadLink($postID) 
+	{
 		global $DB;
-	
+
 		$postID = (int)$postID;
-	
+
 		list($toID) = $DB->sql_row("SELECT toID FROM wD_ForumMessages WHERE id=".$postID);
-	
+
 		if( $toID == null || $toID == 0 )
 		$toID = $postID;
-	
+
 		return '<a href="forum.php?threadID='.$toID.'#'.$postID.'">'.l_t('Go to thread').'</a>';
 	}
 	static function admincpType($actionType, $id)
@@ -407,6 +409,7 @@ class libHTML
 	 */
 	static public function prebody ( $title )
 	{
+		require_once(l_r('global/definitions.php'));
 		$jsVersion = JSVERSION;  // increment this to force clients to reload their JS files
 
 		global $User;
@@ -414,7 +417,7 @@ class libHTML
 		/* Instead of many small css files only load one big file:
 		$variantCSS=array();
 		foreach(Config::$variants as $variantName)
-			$variantCSS[] = '<link rel="stylesheet" href="'.STATICSRV.l_s('variants/'.$variantName.'/resources/style.css').'" type="text/css" />';
+			$variantCSS[] = '<link rel="stylesheet" href="'.STATICSRV.l_s('variants/'.$variantName.'/resources/style.css').'?var='.CSSVERSION.'" type="text/css" />';
 		$variantCSS=implode("\n",$variantCSS);
 		*/
 		$CSSname = libCache::Dirname("css")."/variants-".md5(filesize('config.php')).".css";
@@ -438,9 +441,7 @@ class libHTML
 			
 		/*
 		 * This line when included in the header caused certain translated hyphenated letters to come out as black diamonds with question marks.
-		 * 
-		
-		*/
+		 */
 		return '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 		<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
 	<head>
@@ -459,15 +460,16 @@ class libHTML
 		<link rel="stylesheet" id="vdipColors-css"  href="'.CSSDIR.l_s('/'.$cssColors.'Colors.css').'?ver='.CSSVERSION.'" type="text/css" />
 		<link rel="apple-touch-icon-precomposed" href="'.STATICSRV.'apple-touch-icon.png" />
 		'.$variantCSS.'
-		<script type="text/javascript" src="useroptions.php"'.'?ver='.JSVERSION.'></script>
-		<script type="text/javascript" src="'.STATICSRV.l_j('contrib/js/prototype.js').'?ver='.JSVERSION.'"></script>
-		<script type="text/javascript" src="'.STATICSRV.l_j('contrib/js/scriptaculous.js').'?ver='.JSVERSION.'"></script>
+		<script type="text/javascript" src="useroptions.php"></script>
+		<script type="text/javascript" src="javascript/clickhandler.js"></script>
+		<script type="text/javascript" src="'.STATICSRV.l_j('contrib/js/prototype.js').'"></script>
+		<script type="text/javascript" src="'.STATICSRV.l_j('contrib/js/scriptaculous.js').'"></script>
 		<link rel="stylesheet" type="text/css" href="'.STATICSRV.l_s('contrib/js/pushup/src/css/pushup.css').'" />
 		<script type="text/javascript" src="'.STATICSRV.l_j('contrib/js/pushup/src/js/pushup.js').'?ver='.JSVERSION.'"></script>
 		<script type="text/javascript">
 		    STATICSRV="'.STATICSRV.'";
 		    var cssDirectory = "'.CSSDIR.'";
-		    var cssVersion = "'.CSSVERSION.'";
+				var cssVersion = "'.CSSVERSION.'";
 		</script>
 		<script type="text/javascript" src="'.l_j('javascript/desktopMode.js').'?ver='.JSVERSION.'"></script>
 		<title>'.l_t('%s - vDiplomacy',$title).'</title>
@@ -519,12 +521,12 @@ class libHTML
 				</div></noscript>';
 
 		print self::globalNotices();
-		
+
 		if (isset($User) && $User->tempBan > time())
 		{
 			print '<div class="content-notice">
 					<p class="notice"><br>'.l_t('You are blocked from joining or creating new games for %s.',libTime::remainingText($User->tempBan)).'<br><br><hr></p>
-				</div>';			
+				</div>';
 		}
 		
 /* Disable chat.
@@ -642,7 +644,7 @@ class libHTML
 				l_t('PM').' <img src="'.l_s('images/icons/mail.png').'" alt="'.l_t('New private messages').'" title="'.l_t('New private messages!').'" />'.
 				'</a></span> ';
 		}
-		
+
 		if( isset(Config::$customForumURL) ) {
 			// We are using a PHPBB install; pull private messages from the phpBB install for this user
 			$tabl = $DB->sql_tabl(
@@ -653,16 +655,16 @@ class libHTML
 				INNER JOIN wD_Users fromU ON fromU.Id = fromm.webdip_user_id
 				WHERE (pm_new = 1 OR pm_unread = 1) AND toU.webdip_user_id = ".$User->id);
 			while($row_hash = $DB->tabl_hash($tabl)) {
-				
+
 				$profile_link = $row_hash['username'];
 				$profile_link.=' ('.$row_hash['points'].libHTML::points().User::typeIcon($row_hash['type']).')';
-				
+
 				$gameNotifyBlock .= '<span class=""><a href="'.Config::$customForumURL.'ucp.php?i=pm&mode=view&p='.$row_hash['msg_id'].'">'.
 						l_t('PM from %s',$profile_link).' <img src="'.l_s('images/icons/mail.png').'" alt="'.l_t('New private message').'" title="'.l_t('New private message!').'" />'.
 						'</a></span> ';
 			}
 		}
-		
+
 /*****************************************************
 *  Alert the mods about a new Mesage in the ModForum *
 *****************************************************/
@@ -771,7 +773,7 @@ class libHTML
 		$links=array();
 
 		// Items displayed in the menu
-		$links['index.php']=array('name'=>'Home', 'inmenu'=>TRUE, 'title'=>"See what's happening");  
+		$links['index.php']=array('name'=>'Home', 'inmenu'=>TRUE, 'title'=>"See what's happening");
 	    if( isset(Config::$customForumURL) ) {
 			$links[Config::$customForumURL]=array('name'=>'Forum', 'inmenu'=>TRUE, 'title'=>"The forum; chat, get help, help others, arrange games, discuss strategies");
 			$links['forum.php']=array('name'=>'Old Forum', 'inmenu'=>false, 'title'=>"The old forum; chat, get help, help others, arrange games, discuss strategies");
@@ -882,6 +884,7 @@ class libHTML
 							<img id="logo" src="'.l_s('images/vlogo.png').'" alt="'.l_t('vDiplomacy').'" />
 						</a>';
 
+
 		if ( is_object( $User ) )
 		{
 			if ( ! $pages[$scriptname]['inmenu'] )
@@ -902,114 +905,208 @@ class libHTML
 						:l_t('Welcome, Guest')).'
 					</div>';
 
-			$menu .= '<div id="header-goto">';
+			/* begin dropdown menu */
 
-			if( isset($pages[$scriptname]) and ! $pages[$scriptname]['inmenu'] )
+			$menu .= '
+			<div id="header-goto">
+            <div class="nav-wrap">
+
+				<div class = "nav-tab"> <a href="index.php?" title="See what\'s happening">Home</a> </div>';
+			if( isset(Config::$customForumURL) )
 			{
-				$menu .= '<a href="'.$scriptname.'?'.$arguments.'" title="'.l_t('The current page; click to refresh').'" class="current">'
-					.l_t($pages[$scriptname]['name']).'</a>';
+				$menu.='<div class = "nav-tab"> <a href="'.Config::$customForumURL.'" title="The forum; chat, get help, help others, arrange games, discuss strategies">Forum</a> </div>';
+			}
+			else
+			{
+				$menu.='<div class = "nav-tab"> <a href="forum.php" title="The forum; chat, get help, help others, arrange games, discuss strategies">Forum</a> </div>';
 			}
 
-			foreach($pages as $page=>$script)
+			if (is_object($User))
 			{
-				if($script['inmenu'])
+				if( !$User->type['User'] )
 				{
-					$menu .= '<a href="'.$page.
-						( $page==$scriptname ? '?'.$arguments.'" class="current"' : '"').' '.
-						( isset($script['title']) ? 'title="'.l_t($script['title']).'"' :'').' '.
-						'>'.
-						l_t($script['name']).'</a>';
+					$menu.='
+					<div class="nav-tab">
+						<a href="logon.php" title="Log onto webDiplomacy using an existing user account">
+							Log on
+						</a>
+					</div>';
+					$menu.='
+					<div class="nav-tab">
+						<a href="register.php" title="Make a new user account">
+							Register
+						</a>
+					</div>';
+					$menu.='
+					<div id="navSubMenu" class = "clickable nav-tab">Help ▼
+                        <div id="nav-drop">
+                        	<a href="rules.php">
+								Site Rules
+							</a>
+							<a href="faq.php" title="Frequently Asked Questions">
+								FAQ
+							</a>
+							<a href="intro.php" title="Intro to Diplomacy">
+								Intro to Diplomacy
+							</a>
+							<a href="points.php" title="Points and Scoring Systems">
+								Points/Scoring
+							</a>
+							<a href="variants.php" title="Active webDiplomacy variants">
+								Variants
+							</a>
+							<a href="help.php" title="Get help and information; guides, intros, FAQs, stats, links">
+								Help/Donate
+							</a>
+                        </div>
+                    </div>';
 				}
-			} 
-
-			// $menu .= '
-            // <div class ="nav-wrap">
-                
-			// 	<div class = "nav-tab"> <a href="index.php?" title="See what\'s happening">Home</a> </div>';
-			// if( isset(Config::$customForumURL) ) 
-			// {
-			// 	$menu.='<div class = "nav-tab"> <a href="'.Config::$customForumURL.'" title="The forum; chat, get help, help others, arrange games, discuss strategies">Forum</a> </div>';
-			// } 
-			// else 
-			// {
-			// 	$menu.='<div class = "nav-tab"> <a href="forum.php" title="The forum; chat, get help, help others, arrange games, discuss strategies">Forum</a> </div>';
-			// }
-
-			// if (is_object($User))
-			// {
-			// 	if( !$User->type['User'] )
-			// 	{
-			// 		$menu.='<div class = "nav-tab"> <a href="logon.php" title="Log onto webDiplomacy using an existing user account">Log on</a> </div>';
-			// 		$menu.='<div class = "nav-tab"> <a href="register.php" title="Make a new user account">Register</a> </div>';
-			// 	}
-			// 	else
-			// 	{
-			// 		$menu.='
-			// 		<div id="navSubMenu" class = "nav-tab">Games ▼
-            //             <div id="nav-drop">
-			// 				<a href="gamelistings.php" title="Game listings; a searchable list of the games on this server">Game Listings</a>
-			// 				<a href="gamecreate.php" title="Start up a new game">New Game</a>
-            //             </div>
-            //         </div>
-			// 		<div class = "nav-tab"> <a href="detailedSearch.php" title="advanced search of users and games">Search</a> </div>';
+				else
+				{
+					$menu.='
+					<div id="navSubMenu" class="clickable nav-tab">Search ▼
+                        <div id="nav-drop">
+                       		<a href="profile.php">
+								Find User
+							</a>
+							<a href="detailedSearch.php" title="advanced search of users and games">
+								Search Games
+							</a> 
+						</div>
+					</div>
+					<div id="navSubMenu" class="clickable nav-tab">Games ▼
+                        <div id="nav-drop">
+							<a href="gamelistings.php?page-games=1&gamelistType=New" title="Game listings; a searchable list of the games on this server">
+								Game Listings
+							</a>
+							<a href="gamelistings.php?page-games=1&gamelistType=Joinable" title="Open positions dropped by other players, free to claim">
+								Open Positions
+							</a>
+							<a href="gamecreate.php" title="Start up a new game">
+								Create a New Game
+							</a>
+							<a href="https://sites.google.com/view/webdipinfo/ghost-ratings" target=_blank title="Ghost Ratings (external site)">
+								Ghost Ratings
+							</a>
+							<a href="tournaments.php" title="Information about tournaments on webDiplomacy">
+								Tournaments
+							</a>
+                        </div>
+                    </div>
+					<div id="navSubMenu" class="clickable nav-tab">Account ▼
+						<div id="nav-drop">';
+						if( isset(Config::$customForumURL) ) {
+							$menu.='
+								<a href="contrib/phpBB3/ucp.php?i=pm" title="Read your messages">
+									Private Messages
+								</a>
+								<a href="contrib/phpBB3/ucp.php?i=179" title="Change your forum user settings">
+									Forum Settings
+								</a>';
+						}
+						$menu.='
+							<a href="usercp.php" title="Change your user specific settings">
+								Site Settings
+							</a>
+						</div>
+                	</div>
+                	<div id="navSubMenu" class = "clickable nav-tab">Help ▼
+                        <div id="nav-drop">
+                        	<a href="rules.php">
+								Site Rules
+							</a>
+							<a href="faq.php" title="Frequently Asked Questions">
+								FAQ
+							</a>
+							<a href="intro.php" title="Intro to Diplomacy">
+								Intro to Diplomacy
+							</a>
+							<a href="points.php" title="Points and Scoring Systems">
+								Points/Scoring
+							</a>
+							<a href="variants.php" title="Active webDiplomacy variants">
+								Variants
+							</a>
+							<a href="help.php" title="Get help and information; guides, intros, FAQs, stats, links">
+								Help/Donate
+							</a>
+							<a href="contactUsDirect.php">
+								Contact Us
+							</a>
+                        </div>
+                    </div>';
 					
-			// 		if( isset(Config::$customForumURL) ) 
-			// 		{
-			// 			$menu.='
-			// 			<div id="navSubMenu" class = "nav-tab">Settings ▼
-			// 				<div id="nav-drop">
-			// 					<a href="usercp.php" title="Change your user specific settings">Site Settings</a>
-			// 					<a href="/contrib/phpBB3/ucp.php?i=179" title="Change your forum user settings">Forum User Settings</a>
-			// 				</div>
-            //         	</div>';		
-			// 		}
-			// 		else
-			// 		{
-			// 			$menu.='<div class = "nav-tab"> <a href="usercp.php" title="Change your user specific settings">Settings</a> </div>';
-			// 		}
-			// 	}
-			// }
-			
-			// $menu.=' <div id="navSubMenu" class = "nav-tab">Help ▼
-            //             <div id="nav-drop">
-			// 				<a href="help.php" title="Get help and information; guides, intros, FAQs, stats, links">Help/Donate</a>
-			// 				<a href="faq.php" title="Frequently Asked Questions">FAQ</a>
-			// 				<a href="contactUsDirect.php">Contact Us Directly</a>
-			// 				<a href="contactUs.php">Contact Information</a>
-			// 				<a href="rules.php">Site Rules</a>
-            //             </div>
-            //         </div>';
-			
-			// if ( is_object($User) )
-			// {
-			// 	if ( $User->type['Admin'] or $User->type['Moderator'] )
-			// 	{
-			// 		$menu.=' <div id="navSubMenu" class = "nav-tab">Mods ▼
-            //             <div id="nav-drop">
-			// 				<a href="admincp.php">Admin CP</a>
-			// 				<a href="profile.php">Find User</a>
-			// 				<a href="admincp.php?tab=AccessLog">Access Log</a>
-							
-            //             </div>
-			// 		</div>';
-			// 	}
-			// }
-			// $menu.='</div>';</div>
-			$menu.='</div></div>'; 
+					// Now add some vDip-Stuff to the menue...
+					 
+					// Make the devTools top-menue visible to developers
+					if (is_object($User))
+						if ($User->id == 5 || isset(Config::$devs))
+							if ($User->type['Admin'] || array_key_exists($User->username, Config::$devs))
+								$menu.='<div class = "nav-tab"> <a href="dev.php" title="The devtools.">DevTools</a> </div>';
+					
+					// Add the modforumlink
+					$menu.='<div class = "nav-tab"> <a href="modforum.php" title="The modforum; ask your mod-team for help.">ModForum</a> </div>';
+					
+				}
+			}
+
+			if ( is_object($User) )
+			{
+				if ( $User->type['Admin'] or $User->type['Moderator'] )
+				{
+					$menu.=' <div id="navSubMenu" class = "clickable nav-tab">Mods ▼
+                        <div id="nav-drop">
+							<a href="admincp.php">
+								Admin CP
+							</a>';
+						if( isset(Config::$customForumURL) ) {
+							$menu.='
+								<a href="contrib/phpBB3/mcp.php">
+									Forum CP
+								</a>';
+						}
+						$menu.='
+							<a href="admincp.php?tab=Multi-accounts">
+								Multi Finder
+							</a>
+							<a href="admincp.php?tab=Chatlogs">
+								Pull Press
+							</a>
+							<a href="admincp.php?tab=AccessLog">
+								Access Log
+							</a>
+							<a href="profile.php">
+								Find User
+							</a>
+                        </div>
+					</div>';
+				}
+			}
+			$menu.='</div></div></div>';
 		}
 		else
 		{
-			$menu .= '<div id="header-welcome">&nbsp;</div>
-				<div id="header-goto">
-					<a href="index.php">'.l_t('Home').'</a>
-					<a href="'.$scriptname.'">'.l_t('Reload current page').'</a>
-				</div>';
+			$menu .= '
+				<div id="header-welcome">&nbsp;</div>
+					<div id="header-goto">
+						<div class="nav-wrap">
+							<div class="nav-tab">
+								<a style="color:#6d5238" href="index.php">'.l_t('Home').'</a>
+							</div>
+							<div class="nav-tab">
+							<a style="color:#6d5238" href="'.$scriptname.'">'.l_t('Reload current page').'</a>
+							</div>
+						</div>
+					</div>';
 		}
-		$menu .= '</div>
-		</div>
-		<div id="seperator"></div>
-		<div id="seperator-fixed"></div>
-		<!-- Menu end. -->';
+		
+		$menu .= '
+			</div></div>
+			<div id="seperator"></div>
+			<div id="seperator-fixed"></div>
+			<!-- Menu end. -->';
+
+		/* end dropdown menu */
 
 		return $menu;
 	}
@@ -1040,7 +1137,7 @@ class libHTML
 			{
 				print self::footerDebugData();
 			}
-			
+
 			print self::footerScripts();
 		}
 		else
@@ -1053,26 +1150,29 @@ class libHTML
 
 		close();
 	}
-	
-	private static function footerDebugData() {
+
+	private static function footerDebugData() 
+	{
 		global $Locale, $DB;
-		
+
 		$buf = '';
 		if( is_object($DB) )
 			$buf .= $DB->profilerPrint();
-		
+
 		if( is_object($Locale) )
 		{
 			$buf .= '<br /><strong>Missed localization lookups:</strong><br />';
 			foreach($Locale->failedLookups as $failedText)
 				$buf .= htmlentities($failedText).'<br />';
 		}
-		
+
 		return $buf;
 	}
 
-	private static function footerStats() {
+	private static function footerStats() 
+	{
 		global $DB, $Misc, $User;
+		require_once(l_r('global/definitions.php'));
 
 		$buf = '';
 
@@ -1144,7 +1244,8 @@ class libHTML
 		return $buf;
 	}
 
-	static private function footerCopyright() {
+	static private function footerCopyright() 
+	{
 		// Cookie-check as requested by the EU-laws...
 		$cookiesWarning='<div id="cookiesWarning"></div><script language="JavaScript" type="text/javascript">checkCookieExist();</script>';
 	
@@ -1161,16 +1262,16 @@ class libHTML
 
 	public static $footerScript=array();
 	public static $footerIncludes=array();
-	
-	public static function likeCount($likeCount) {
+
+	public static function likeCount($likeCount) 
+	{
 		if($likeCount==0) return '';
 		return ' <span class="likeCount">(+'.$likeCount.')</span>';
 	}
-	
-	static private function footerScripts() {
-		global $User, $Locale;
 
-		$jsVersion = JSVERSION;  // increment this to force clients to reload their JS files
+	static private function footerScripts() 
+	{
+		global $User, $Locale;
 
 		$buf = '';
 
@@ -1209,7 +1310,7 @@ class libHTML
 				libHTML::$footerScript[]=l_jf('setForumParticipatedIcons').'();';
 			}
 		}
-		
+
 		if( is_object($Locale) )
 			$Locale->onFinish();
 
@@ -1223,10 +1324,10 @@ class libHTML
 		$footerIncludes[] = l_j('timeHandler.js');
 		$footerIncludes[] = l_j('forum.js');
 		$footerIncludes[] = l_j('Color.Vision.Daltonize.js');
-		
+
 		// Don't localize all the footer includes here, as some of them may be dynamically generated
 		foreach( array_merge($footerIncludes,self::$footerIncludes) as $includeJS ) // Add on the dynamically added includes
-			$buf .= '<script type="text/javascript" src="'.STATICSRV.JSDIR.'/'.$includeJS.'?ver='.$jsVersion.'"></script>';
+			$buf .= '<script type="text/javascript" src="'.STATICSRV.JSDIR.'/'.$includeJS.'?ver='.JSVERSION.'"></script>';
 
 		// Utility (error detection, message protection), HTML post-processing,
 		// time handling functions. Only logged-in users need to run these
@@ -1242,14 +1343,14 @@ class libHTML
 				this.token="'.md5(Config::$secret.$User->id.'Array').'";
 			}
 			User = new UserClass();
-			
+			var headerEvent = document.getElementsByClassName("clickable");
+
 			WEBDIP_DEBUG='.(Config::$debug ? 'true':'false').';
 
 			document.observe("dom:loaded", function() {
-			
+
 				try {
 					'.l_jf('Locale.onLoad').'();
-					
 
 					'.l_jf('setForumMessageIcons').'();
 					'.l_jf('setPostsItalicized').'();
@@ -1257,15 +1358,31 @@ class libHTML
 					'.l_jf('updateTimestampGames').'();
 					'.l_jf('updateUTCOffset').'();
 					'.l_jf('updateTimers').'();
-	
+
 					'.implode("\n", self::$footerScript).'
-					
+
 					'.l_jf('Locale.afterLoad').'();
 				}
 				catch( e ) {
-				'.(Config::$debug ? 'alert(e);':'').'
+					'.(Config::$debug ? 'alert(e);':'').'
 				}
 			}, this);
+			document.observe("click", function(e) {
+				try {
+					'.l_jf('clickOut').'(e);
+				} catch (e) {
+					'.(Config::$debug ? 'alert(e);':'').'
+				}
+			}, this)
+			for (var i = 0; i < headerEvent.length; i++) {
+				headerEvent[i].addEventListener("click", function(e){
+					try {
+						'.l_jf('click').'(e);
+					} catch ( e ){
+						'.(Config::$debug ? 'alert(e);':'').'
+					}
+				}, this);
+			}
 			var toggle = localStorage.getItem("desktopEnabled");
 			var toggleElem = document.getElementById(\'js-desktop-mode\');
             if (toggle == "true") {
@@ -1279,7 +1396,7 @@ class libHTML
             }
 		</script>
 		';
-		
+
 		if( Config::$debug )
 			$buf .= '<br /><strong>JavaScript localization lookup failures:</strong><br /><span id="jsLocalizationDebug"></span>';
 		if (isset(Config::$piwik))

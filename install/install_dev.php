@@ -1223,8 +1223,31 @@ Values
 (1933,1,'Fleet',2,'Move',32,NULL,'No','Success','Yes'),
 (1933,1,'Fleet',1,'Support move',32,2,'No','Hold','Yes');";
 
+// Webdip 1.44
+$sql[]="ALTER TABLE `wD_Users` ADD `tempBan` int(10) unsigned;";
+
+// Webdip 1.45
+$sql[]="CREATE TABLE `wD_UserConnections` (
+`userID` mediumint(8) unsigned NOT NULL UNIQUE,
+`modLastCheckedBy` mediumint(8) unsigned,
+`modLastCheckedOn` int(10) unsigned,
+`matchesLastUpdatedOn` int(10) unsigned,
+`countMatchedIPUsers` mediumint(8) unsigned NOT NULL DEFAULT 0,
+`countMatchedCookieUsers` mediumint(8) unsigned NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+
+// VDip 1.46
+$sql[]="ALTER TABLE `wD_Members` ADD `hideNotifications` boolean DEFAULT false;";
+$sql[]="ALTER TABLE `wD_Backup_Members` ADD `hideNotifications` boolean DEFAULT false;";
+
+// VDip 1.47
+$sql[]="ALTER TABLE `wD_UserOptions` ADD `orderSort` enum('No Sort','Alphabetical','Convoys Last') NOT NULL DEFAULT 'Convoys Last';";
+
+// VDip 1.48
+$sql[]="ALTER TABLE `wD_Users` ADD `emergencyPauseDate` int(10) unsigned Default 0;";
+
 // Set the correct version-information in the database	
-$sql[]="UPDATE `wD_Misc`     SET `value` = '143' WHERE `name` = 'Version';";
+$sql[]="UPDATE `wD_Misc`     SET `value` = '148' WHERE `name` = 'Version';";
 $sql[]="UPDATE `wD_vDipMisc` SET `value` = '63'  WHERE `name` = 'Version';";
 
 // Create a default Admin-Account
