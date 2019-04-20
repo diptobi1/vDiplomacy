@@ -420,7 +420,7 @@ a.light {
 	flex-wrap: wrap;
 	overflow: hidden;
 	border-radius: 7px;
-	background-color: #777;
+	background-color: #0e8805;
 	width: auto;
 }
 
@@ -456,10 +456,11 @@ a.light {
 }
 
 .nav-tab a:hover, #navSubMenu:hover {
-	background-color: rgba(255, 255, 255, 0.75);
+	background-color: rgba(255, 255, 255, 0.8);
 	border-radius: 15px 0 15px 0;
-	color: #009902 !important;
+	color: rgb(0, 83, 115) !important;
 	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	text-decoration: none;
 }
 
 .nav-tabActive {
@@ -483,8 +484,9 @@ a.light {
 	margin-top: 25px;
 	width: auto;
 	z-index: 999;
-	background-color: #555;
+	background-color: #0e8805;
 	border-radius: 7px;
+	border: 1px solid black;
 }
 
 #nav-drop {
@@ -1032,6 +1034,92 @@ TD.army, div.army {
 	min-width:70px;
 }
 /* End of section for Hall of Fame styling */
+
+/* Section for donations page styling */
+.donations_title {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	background-color: #777;
+	color: white;
+	cursor: pointer;
+	padding: 10px;
+	border: none;
+	text-align: left;
+	outline: none;
+	border-radius: 7px;
+	margin-top: 3px;
+	font-size: 14px;
+}
+
+.donations_title:hover {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	background-color: #555;
+}
+
+.donations_content {
+	padding: 0;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	display: none;
+	overflow: hidden;
+	padding: 0 0 0 10px;
+	background-color: #f1f1f1;
+	font-size: 14px;
+	margin-top:0px !important;
+	border-radius: 7px;
+}
+
+.donations_content_show {
+	border-radius: 7px;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	overflow: hidden;
+	background-color: #f1f1f1;
+	font-size: 14px;
+	padding: 0 0 0 10px;
+	margin-top:0px !important;
+}
+/* End of section for donations page styling */
+
+/* Section for help page styling */
+.help_title {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	background-color: #777;
+	color: white;
+	cursor: pointer;
+	padding: 10px;
+	border: none;
+	text-align: left;
+	outline: none;
+	border-radius: 7px;
+	margin-top: 3px;
+	font-size: 14px;
+}
+
+.help_title:hover {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	background-color: #555;
+}
+
+.help_content {
+	padding: 0;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	display: none;
+	overflow: hidden;
+	padding: 0 0 0 10px;
+	background-color: #f1f1f1;
+	font-size: 14px;
+	margin-top:0px !important;
+	border-radius: 7px;
+}
+
+.help_content_show {
+	border-radius: 7px;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	overflow: hidden;
+	background-color: #f1f1f1;
+	font-size: 14px;
+	padding: 0 0 0 10px;
+	margin-top:0px !important;
+}
+/* End of section for help page styling */
 
 /* Section for contactUsDirect page styling */
 .contactUs {

@@ -1,6 +1,29 @@
 <?php
+/*
+    Copyright (C) 2004-2010 Kestas J. Kuliukas
+
+	This file is part of webDiplomacy.
+
+    webDiplomacy is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    webDiplomacy is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with webDiplomacy.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
+
+/**
+ * @package Base
+ * @subpackage Static
+ */
 
 $faq = array();
 
@@ -100,8 +123,11 @@ $globalFaq = array(
 		You can extend the same phase more than once to push the process-date back even further.",
 
 );
+
 foreach($globalFaq as $Q=>$A)
+{
 	$faq[$Q]=$A;
+}
 
 $i=1;
 
@@ -109,47 +135,56 @@ print libHTML::pageTitle('Features','Features you should be aware of (not availa
 
 $sections = array();
 $section=0;
-foreach( $faq as $q => $a )
-	if ( $a == "Sub-section" )
-		$sections[] = '<a href="#faq_'.$section++.'" class="light">'.$q.'</a>';
-print '<div style="text-align:center; font-weight:bold"><strong>Sections:</strong> '.implode(' - ', $sections).'</div>
-	<div class="hr"></div>';
 
-$section=0;
 foreach( $faq as $q => $a )
 {
 	if ( $a == "Sub-section" )
 	{
-		if( $section ) print '</ul></div>';
+		$sections[] = '<a href="#faq_'.$section++.'" class="faq">'.$q.'</a>';
+	}
+}
 
-		print '<div><p><a name="faq_'.$section.'"></a><strong>'.$q.'</strong></p><ul>';
+print '<div class = "faq" style="text-align:center;"><strong>Sections:</strong></br> '.implode(' - ', $sections).'</div> <div class="hr"></div>';
+
+$section=0;
+
+foreach( $faq as $q => $a )
+{
+	if ( $a == "Sub-section" )
+	{
+		if( $section ) { print '</div>'; }
+
+		print '<div class = "faq"><h2 class = "faq"><a name="faq_'.$section.'"></a><strong>'.$q.'</strong></h2>';
 
 		$question=1;
 		$section++;
 	}
 	else
 	{
-		print '<li><div id="faq_answer_'.$section.'_'.$question.'">
-			<a class="faq_question" name="faq_'.$section.'_'.$question.'"
-			onclick="FAQShow('.$section.', '.$question.'); return false;" href="#">'.$q.'</a>
-			<div class="faq_answer" style="margin-top:5px; display:none; margin-bottom:15px;"><ul><li>'.$a.'</li></ul></div>
-			</div></li>';
+		print '<button class="faq_question" name="faq_'.$section.'_'.$question.'" onclick="FAQShow('.$section.', '.$question.'); return false;">'.$q.'</button>';
+		print '<div class="faq_answer" style="margin-top:5px; margin-bottom:15px;"><p class = "faq">'.$a.'</p></div>';
 		$question++;
 	}
 }
+
 print '</ul></div>
 </div>';
 
 ?>
 <script type="text/javascript">
-function FAQHide() {
-	$$('.faq_question').map( function (e) {e.setStyle({fontWeight:'normal'});} );
-	$$('.faq_answer').map( function (e) {e.hide();} );
-}
-function FAQShow(section, question) {
-	FAQHide();
-	$$('#faq_answer_'+section+'_'+question+' .faq_answer').map(function (e) {e.show();});
-	$$('#faq_answer_'+section+'_'+question+' .faq_question').map(function (e) {e.setStyle({fontWeight:'bold'});});
+var coll = document.getElementsByClassName("faq_question");
+var searchCounter;
+
+for (searchCounter = 0; searchCounter < coll.length; searchCounter++) {
+  coll[searchCounter].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+		if (content.style.display === "block") { content.style.display = "none"; } 
+		else { content.style.display = "block"; }
+  });
 }
 </script>
-<?php libHTML::$footerScript[] = 'FAQHide();'; ?>
+
+<?php
+libHTML::footer();
+?>
