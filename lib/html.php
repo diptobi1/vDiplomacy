@@ -1198,7 +1198,7 @@ class libHTML
 			<a href="http://github.com/Sleepcap/vDiplomacy/issues" class="light">Bug Reports</a> | 
 			<a href="modforum.php" class="light">Contact Moderator</a>
 			<br><br>
-			<a href="http:impresum.php">Impresum</a> - <a href="gdpr.php">GDPR/Datenschutz</a><br />');
+			<a href="impresum.php">Impresum</a> - <a href="gdpr.php">GDPR/Datenschutz</a><br />');
 	}
 
 	public static $footerScript=array();
