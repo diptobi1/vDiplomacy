@@ -953,6 +953,7 @@ class libHTML
                         <div id="nav-drop">
                        		<a href="profile.php">Find User</a>
 							<a href="detailedSearch.php" title="advanced search of users and games">Search Games</a> 
+                       		<a href="halloffame.php">Hall of Fame</a>
 						</div>
 					</div>
 					<div id="navSubMenu" class="clickable nav-tab">Games ▼

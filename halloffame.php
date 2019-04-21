@@ -29,9 +29,9 @@ require_once('header.php');
 
 libHTML::starthtml();
 
-print libHTML::pageTitle(l_t('Hall of fame'),l_t('The webDiplomacy hall of fame; the 100 highest ranking players on this server.'));
+print libHTML::pageTitle(l_t('Hall of fame'),l_t('The vDiplomacy hall of fame; the 100 highest ranking players on this server.'));
 
-print '<p align="center"><img src="'.l_s('images/points/stack.png').'" alt=" " title="'.l_t('webDiplomacy points').'" /></p>';
+print '<p align="center"><img src="'.l_s('images/points/vstack.png').'" alt=" " title="'.l_t('vDiplomacy points').'" /></p>';
 
 print '<p></p>';
 
@@ -39,18 +39,19 @@ print '<button class="SearchCollapsible">All Time</button>';
 
 print'<div class="advancedSearchContent">';
 
-if ( $User->type['User'] && $User->points > 100 )
+if ( $User->type['User'] && $User->vpoints > 1000 )
 {
-	list($position) = $DB->sql_row("SELECT COUNT(id)+1 FROM wD_Users WHERE points > ".$User->points);
+	list($position) = $DB->sql_row("SELECT COUNT(id)+1 FROM wD_Users WHERE vpoints > ".$User->vpoints);
 
-	$players = $Misc->RankingPlayers;
-
-	print '<p class = "hof">'.l_t('You are ranked %s out of %s players with over 100%s','<a href="#me" class="light">#'.$position.'</a>',$players,libHTML::points()).
+//	$players = $Misc->RankingPlayers;
+	list($players) = $DB->sql_row("SELECT COUNT(id)+1 FROM wD_Users WHERE vpoints > 1000");
+	
+	print '<p class = "hof">'.l_t('You are ranked %s out of %s players with over 1000%s','<a href="#me" class="light">#'.$position.'</a>',$players,libHTML::vpoints()).
 		l_t('. For more stats on your ranking visit <a class="light" href="profile.php?userID='.$User->id.'">your profile</a>.').'</p>';
 }
 
 $i=1;
-$crashed = $DB->sql_tabl("SELECT id, username, points FROM wD_Users order BY points DESC LIMIT 100 ");
+$crashed = $DB->sql_tabl("SELECT id, username, vpoints FROM wD_Users order BY vpoints DESC LIMIT 100 ");
 
 print "<TABLE class='hof'>";
 print "<tr>";
@@ -63,7 +64,7 @@ while ( list($id, $username, $points) = $DB->tabl_row($crashed) )
 {
 
 	print ' <tr class="hof">
-			<td class="hof"> '.number_format($points).' '.libHTML::points().' - #'.$i.' </td>';
+			<td class="hof"> '.number_format($points).' '.libHTML::vpoints().' - #'.$i.' </td>';
 	if ($User->username == $username)
 	{
 		print '<td class="hof"><a href="profile.php?userID='.$id.'" style="color:red;">'.$username.'</a></td> ';
@@ -77,14 +78,14 @@ while ( list($id, $username, $points) = $DB->tabl_row($crashed) )
 	$i++;
 }
 
-if ( $User->type['User'] && $User->points > 100 and $showMe == 1 )
+if ( $User->type['User'] && $User->vpoints > 1000 and $showMe == 1 )
 {
 	print ' <tr class="hof">
 			<td class="hof">...</td>
 			<td class="hof">...</td>
 			</tr>';
 	print ' <tr class="hof">
-			<td class="hof"> '.number_format($User->points).' '.libHTML::points().' - <a name="me"></a>#'.$position.' </td>
+			<td class="hof"> '.number_format($User->vpoints).' '.libHTML::vpoints().' - <a name="me"></a>#'.$position.' </td>
 			<td class="hof" style="color:red;"><strong><em>'.$User->username.'</em></strong></td>
 			</tr>';
 }
@@ -99,19 +100,19 @@ print '<button class="SearchCollapsible">Active (Last 6 Months)</button>';
 print'<div class="advancedSearchContent"></br>';
 $sixMonths = time() - 15552000;
 
-if ( $User->type['User'] && $User->points > 100 && $User->timeLastSessionEnded > $sixMonths)
+if ( $User->type['User'] && $User->vpoints > 1000 && $User->timeLastSessionEnded > $sixMonths)
 {
-	list($position) = $DB->sql_row("SELECT COUNT(id)+1 FROM wD_Users WHERE points > ".$User->points." AND timeLastSessionEnded > ".$sixMonths);
+	list($position) = $DB->sql_row("SELECT COUNT(id)+1 FROM wD_Users WHERE vpoints > ".$User->vpoints." AND timeLastSessionEnded > ".$sixMonths);
 
-	list($playersSixMonths) = $DB->sql_row("SELECT COUNT(1) FROM wD_Users WHERE points > 100  AND timeLastSessionEnded > ".$sixMonths);
+	list($playersSixMonths) = $DB->sql_row("SELECT COUNT(1) FROM wD_Users WHERE vpoints > 1000  AND timeLastSessionEnded > ".$sixMonths);
 
-	print '<p class = "hof">'.l_t('You are ranked %s out of %s players with over 100%s who have been active in the last six months','<a href="#me" class="light">#'.$position.'</a>',$playersSixMonths,libHTML::points()).
+	print '<p class = "hof">'.l_t('You are ranked %s out of %s players with over 1000%s who have been active in the last six months','<a href="#me" class="light">#'.$position.'</a>',$playersSixMonths,libHTML::vpoints()).
 		l_t('. For more stats on your ranking visit <a class="light" href="profile.php?userID='.$User->id.'">your profile</a>.').'</p>';
 }
 
 $i=1;
 
-$crashed = $DB->sql_tabl("SELECT id, username, points FROM wD_Users WHERE timeLastSessionEnded > ".$sixMonths." order BY points DESC LIMIT 100 ");
+$crashed = $DB->sql_tabl("SELECT id, username, vpoints FROM wD_Users WHERE timeLastSessionEnded > ".$sixMonths." order BY vpoints DESC LIMIT 100 ");
 
 print "<TABLE class='hof'>";
 print "<tr>";
@@ -124,7 +125,7 @@ while ( list($id, $username, $points) = $DB->tabl_row($crashed) )
 {
 
 	print ' <tr class="hof">
-			<td class="hof"> '.number_format($points).' '.libHTML::points().' - #'.$i.' </td>';
+			<td class="hof"> '.number_format($points).' '.libHTML::vpoints().' - #'.$i.' </td>';
 	if ($User->username == $username)
 	{
 		print '<td class="hof"><a href="profile.php?userID='.$id.'" style="color:red;">'.$username.'</a></td> ';
@@ -137,14 +138,14 @@ while ( list($id, $username, $points) = $DB->tabl_row($crashed) )
 	print'	</tr>';
 	$i++;
 }
-if ( $User->type['User'] && $User->points > 100 &&  $User->timeLastSessionEnded > $sixMonths and $showMe == 1 )
+if ( $User->type['User'] && $User->vpoints > 1000 &&  $User->timeLastSessionEnded > $sixMonths and $showMe == 1 )
 {
 	print ' <tr class="hof">
 			<td class="hof">...</td>
 			<td class="hof">...</td>
 			</tr>';
 	print ' <tr class="hof">
-			<td class="hof"> '.number_format($User->points).' '.libHTML::points().' - <a name="me"></a>#'.$position.' </td>
+			<td class="hof"> '.number_format($User->vpoints).' '.libHTML::vpoints().' - <a name="me"></a>#'.$position.' </td>
 			<td class="hof" style="color:red;"><strong><em>'.$User->username.'</em></strong></td>
 			</tr>';
 }
