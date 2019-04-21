@@ -960,9 +960,9 @@ class libHTML
 							<a href="gamelistings.php?page-games=1&gamelistType=New" title="Game listings; a searchable list of the games on this server">Game Listings</a>
 							<a href="gamelistings.php?page-games=1&gamelistType=Joinable" title="Open positions dropped by other players, free to claim">Open Positions</a>
 							<a href="gamecreate.php" title="Start up a new game">Create a New Game</a>
-							<a href="https://sites.google.com/view/webdipinfo/ghost-ratings" target=_blank title="Ghost Ratings (external site)">Ghost Ratings</a>
-							<a href="tournaments.php" title="Information about tournaments on webDiplomacy">Tournaments</a>
-                        </div>
+'./*							<a href="https://sites.google.com/view/webdipinfo/ghost-ratings" target=_blank title="Ghost Ratings (external site)">Ghost Ratings</a>
+								<a href="tournaments.php" title="Information about tournaments on webDiplomacy">Tournaments</a>
+*/'                        </div>
                     </div>
 					<div id="navSubMenu" class="clickable nav-tab">Account ▼
 						<div id="nav-drop">';
@@ -975,28 +975,29 @@ class libHTML
 							<a href="usercp.php" title="Change your user specific settings">Site Settings</a>
 						</div>
                 	</div>
-                	<div id="navSubMenu" class = "clickable nav-tab">Help ▼
+					<div id="navSubMenu" class = "clickable nav-tab">Help ▼
                         <div id="nav-drop">
                         	<a href="rules.php">Site Rules</a>
 							<a href="faq.php" title="Frequently Asked Questions">FAQ</a>
 							<a href="features.php" title="Features you should be aware of (not available on webDip).">vDip Features</a>
 							<a href="intro.php" title="Intro to Diplomacy">Diplomacy Intro</a>
 							<a href="points.php" title="Points and Scoring Systems">Points/Scoring</a>
-							<a href="variants.php" title="Active webDiplomacy variants">Variants</a>
-							<a href="help.php" title="Site information; guides, stats, links">More Info</a>
-							<a href="contactUsDirect.php">Contact Us</a>
+'./*						<a href="variants.php" title="Active webDiplomacy variants">Variants</a>
+*/'							<a href="help.php" title="Site information; guides, stats, links">More Info</a>
+'./*						<a href="contactUsDirect.php">Contact Us</a>
 							<a href="donations.php">Donate</a>
-                        </div>
+*/'                        </div>
                     </div>';
 					
 					// Now add some vDip-Stuff to the menue...
 					 
 					// Make the devTools top-menue visible to developers
 					if (is_object($User))
-						if ($User->id == 5 || isset(Config::$devs))
-							if ($User->type['Admin'] || array_key_exists($User->username, Config::$devs))
-								$menu.='<div class = "nav-tab"> <a href="dev.php" title="The devtools.">DevTools</a> </div>';
-					
+						if ( ($User->id == 5 || isset(Config::$devs)) && ($User->type['Admin'] || array_key_exists($User->username, Config::$devs)) )
+							$menu.='<div class = "nav-tab"> <a href="dev.php" title="The devtools.">DevTools</a> </div>';
+						else
+							$menu.='<div class="nav-tab"> <a href="variants.php" title="Active webDiplomacy variants">Variants</a> </div>';
+
 					// Add the modforumlink
 					$menu.='<div class = "nav-tab"> <a href="modforum.php" title="The modforum; ask your mod-team for help.">ModForum</a> </div>';
 					
