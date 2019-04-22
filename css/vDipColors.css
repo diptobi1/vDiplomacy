@@ -42,7 +42,7 @@ div.pageTitle {
 input[type="submit"] {
 	background-color: #f0f0f0; /* #eaffea; */
 	background: #f0f0f0;	   /* #eaffea; */
-	color:#e0d6cd;             /* #009902 */
+	color: #6d5238;             /* #009902 */
 	border: 1px solid #c1c1c1;
 }
 input[type="text"], input[type="password"], select, .buttonIA, #orderLineIA {
