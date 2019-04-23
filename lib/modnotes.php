@@ -48,48 +48,51 @@ class libModNotes {
 	}
 	
 	// UserNotes here:
-	static function UserNotesHTML()
+	static function UserNotesProfileHTML()
 	{
 		global $DB, $UserProfile;
 		list($notes)=$DB->sql_row("SELECT note FROM wD_ModeratorNotes WHERE linkIDType='User' AND linkID=".$UserProfile->id);
 		
 		if ($notes== '')
-			print '
-			<p><ul class="formlist">
-			<b>ModNotes<span id="EditNoteButton"> (<a href="#" onclick="$(\'EditNoteBox\').show(); $(\'EditNoteButton\').hide(); return false;">Add</a>)</span>:</b>
-			<span id="EditNoteBox" style="display:none;">
-				<TABLE>
+			return '
+			<p><div>
+				ModNotes<span id="EditNoteButton"> (<a href="#" onclick="$(\'EditNoteBox\').show(); $(\'EditNoteButton\').hide(); return false;">Add</a>)</span>:
+				<div id="EditNoteBox" style="display:none;">
+					<TABLE style="width:90%">
+						<TD style="border: 1px solid #666">
+							<form method="post" style="display:inline;">
+								<textarea name="EditNote" style="width:100%;height:200px"></textarea><br />
+								<TABLE>
+									<TD><input type="checkbox" name="alert" value="on" '.($UserProfile->type['ModAlert'] ? 'checked="checked"':'').'> ModAlert</TD>
+									<TD align="right"><input type="Submit" class="form-submit" value="Submit" /></TD>
+								</TABLE>
+							</form>				
+						</TD>
+					</TABLE>
+				</div>
+			</div></p>';
+		else
+			return '
+			<p><div>
+				'.($UserProfile->type['ModAlert'] ? libHTML::alert() : '').'
+				ModNotes<span id="EditNoteButton"> (<a href="#" onclick="$(\'EditNoteBox\').show(); $(\'EditNoteText\').hide(); $(\'EditNoteButton\').hide(); return false;">Edit</a>)</span>:
+				'.($UserProfile->type['ModAlert'] ? libHTML::alert() : '').'
+				<TABLE style="width:90%">
 					<TD style="border: 1px solid #666">
-						<form method="post" style="display:inline;">
-							<textarea name="EditNote" style="width:100%;height:200px"></textarea><br />
-							<TABLE>
-								<TD><input type="checkbox" name="alert" value="on" '.($UserProfile->type['ModAlert'] ? 'checked="checked"':'').'> ModAlert</TD>
-								<TD align="right"><input type="Submit" class="form-submit" value="Submit" /></TD>
-							</TABLE>
-						</form>				
+						<span id="EditNoteText">'.$notes.'</span>
+						<span id="EditNoteBox" style="display:none;">
+							<form method="post" style="display:inline;">
+								<textarea name="EditNote" style="width:100%;height:200px">'.str_ireplace("</textarea>", "<END-TA-DO-NOT-EDIT>", str_ireplace("<br />", "\n",
+									preg_replace('#<a href..modforum.php.viewthread.*class..light.>(.*)</a>#Ui','\1',$notes))).'</textarea><br />
+								<TABLE>
+									<TD><input type="checkbox" name="alert" value="on" '.($UserProfile->type['ModAlert'] ? 'checked="checked"':'').'> ModAlert</TD>
+									<TD align="right"><input type="Submit" class="form-submit" value="Submit" /></TD>
+								</TABLE>
+							</form>				
+						</span>
 					</TD>
 				</TABLE>
-			</span>
-			</ul></p>';
-		else
-			print '<p><ul class="formlist">'.($UserProfile->type['ModAlert'] ? libHTML::alert() : '').'
-			<b>ModNotes<span id="EditNoteButton"> (<a href="#" onclick="$(\'EditNoteBox\').show(); $(\'EditNoteText\').hide(); $(\'EditNoteButton\').hide(); return false;">Edit</a>)</span>: '.($UserProfile->type['ModAlert'] ? libHTML::alert() : '').'</b>
-			<TABLE>
-				<TD style="border: 1px solid #666">
-					<span id="EditNoteText">'.$notes.'</span>
-					<span id="EditNoteBox" style="display:none;">
-						<form method="post" style="display:inline;">
-							<textarea name="EditNote" style="width:100%;height:200px">'.str_ireplace("</textarea>", "<END-TA-DO-NOT-EDIT>", str_ireplace("<br />", "\n",
-								preg_replace('#<a href..modforum.php.viewthread.*class..light.>(.*)</a>#Ui','\1',$notes))).'</textarea><br />
-							<TABLE>
-								<TD><input type="checkbox" name="alert" value="on" '.($UserProfile->type['ModAlert'] ? 'checked="checked"':'').'> ModAlert</TD>
-								<TD align="right"><input type="Submit" class="form-submit" value="Submit" /></TD>
-							</TABLE>
-						</form>				
-					</span>
-				</TD>
-			</TABLE>
-			</ul></p>';
+			</div></p>';
 	}
 	
 	static function reportBoxHTML($linkIDType, $linkID) {

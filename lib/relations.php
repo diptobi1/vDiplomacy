@@ -469,4 +469,28 @@ class libRelations {
 				$DB->sql_put('UPDATE wD_Users SET rlGroup="0" WHERE id='.$id);
 		}
 	}
+	
+	static function RLGroupsProfileHTML()
+	{
+		global $UserProfile, $DB;
+
+		$html = '';
+		if ($UserProfile->rlGroup != 0)
+		{
+			$html .= '<p><div>'.$UserProfile->username.' is currently in a RL-Group (<img src="images/icons/'.($UserProfile->rlGroup < 0 ? 'bad':'').'friends.png">)
+			(<a href="profile.php?detail=relations&userID='.$UserProfile->id.'">Show</a>)';
+
+			list($rlNotes)=$DB->sql_row("SELECT note FROM wD_ModeratorNotes WHERE linkIDType='rlGroup' AND linkID=".abs($UserProfile->rlGroup));
+			if ($rlNotes!= '')
+				$html .= '<TABLE style="width:90%"> <TD style="border: 1px solid #666"> <span id="rlNotes">'.$rlNotes.'</span> </TD> </TABLE>';
+			
+			$html .= '</div></p>';
+		}
+		else
+		{
+			$html .= '<p>'.$UserProfile->username.' is currently in no RL-Group. (<a href="profile.php?detail=relations&userID='.$UserProfile->id.'">Add</a>)</p>';
+		}
+		return $html;
+	}
+	
 }

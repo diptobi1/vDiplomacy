@@ -29,6 +29,7 @@ require_once(l_r('pager/pagergame.php'));
 require_once(l_r('objects/game.php'));
 require_once(l_r('gamepanel/game.php'));
 require_once(l_r('lib/modnotes.php'));  // Add Modnotes to profiles
+require_once(l_r('lib/relations.php')); // Add real-life groupinformation to profiles
 require_once(l_r('lib/blockuser.php')); // Users can block each other if they don't want common games
 
 if ( isset($_REQUEST['userID']) && intval($_REQUEST['userID'])>0 )
@@ -361,6 +362,13 @@ if ( isset($_REQUEST['detail']) )
 				print libModNotes::reportBoxHTML('User', $UserProfile->id);
 				print libModNotes::reportsDisplay('User', $UserProfile->id);
 			}
+			break;
+		case 'relations':
+			if ( $User->type['Moderator'] )
+			{
+				libRelations::checkRelationsChange();
+				print libRelations::reportsDisplay($UserProfile->id);
+			}
 		break;
 	}
 
@@ -675,7 +683,9 @@ if( $User->type['Moderator'] )
 	
 	// VDip: add userNotes:
 	if (isset($_REQUEST['EditNote'])) libModNotes::SetUserNotes();
-	print libModNotes::UserNotesHTML();
+	print libModNotes::UserNotesProfileHTML();
+	print libRelations::RLGroupsProfileHTML();
+	
 }
 
 list($serverHasPHPBB) = $DB->sql_row("SELECT count(1) FROM information_schema.tables WHERE table_name = 'phpbb_users'");
@@ -697,9 +707,10 @@ print '<p><ul class="formlist">';
 if ( $UserProfile->type['Moderator'] ||  $UserProfile->type['ForumModerator'] || $UserProfile->type['Admin'] )
 {
 	print '<li><strong>'.l_t('Mod/Admin team').'</strong></li>';
-	print '<li>'.l_t('The best way to get moderator assistance is to contact a moderator at 
+	print '<li>'.l_t('The best way to get moderator assistance is to contact a moderator at '. /*
 	<a href="mailto:'.(isset(Config::$modEMail) ? Config::$modEMail : Config::$adminEMail).'">'
-	.(isset(Config::$modEMail) ? Config::$modEMail : Config::$adminEMail).'</a>. Please do not pm 
+	.(isset(Config::$modEMail) ? Config::$modEMail : Config::$adminEMail).'</a>. Please do not pm */
+	'the <a href="modforum.php"> modforum</a>. Please do not pm 
 	moderators directly as moderators are not required to regularly check their messages').'</li>';
 	print '<li>&nbsp;</li>';
 }
