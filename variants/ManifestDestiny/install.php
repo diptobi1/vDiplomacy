@@ -126,7 +126,6 @@ $bordersRawData=array(
 	array('Yucatan','Western Caribbean','Yes','No'),
 	array('Yucatan','Central America (East Coast)','Yes','No'),
 	array('Oaxaca','Guadalajara','Yes','Yes'),
-	array('Oaxaca','Mexico City','No','Yes'),
 	array('Oaxaca','Veracruz','No','Yes'),
 	array('Oaxaca','Central America (West Coast)','Yes','No'),
 	array('Oaxaca','South Pacific Ocean','Yes','No'),
