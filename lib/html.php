@@ -1011,7 +1011,12 @@ class libHTML
 				{
 					$menu.=' <div id="navSubMenu" class = "clickable nav-tab">Mods ▼
                         <div id="nav-drop">
-							<a href="admincp.php">Admin CP</a>';
+							<a href="admincp.php?tab=Control Panel">Admin CP</a>';
+
+					if ( $User->type['Admin'] )
+						$menu.='
+							<a href="admincp.php?tab=Status Info">Status Info</a>
+							<a href="admincp.php?tab=Logs">Logfiles</a>';
 						
 					if( isset(Config::$customForumURL) ) { $menu.='<a href="contrib/phpBB3/mcp.php">Forum CP</a>'; }
 						$menu.='
