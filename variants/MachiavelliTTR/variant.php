@@ -21,6 +21,7 @@
 
 	Changelog:
 	1.0: initial version
+	1.1: Build anywhere fixed.
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -34,7 +35,7 @@ class MachiavelliTTRVariant extends WDVariant {
 	public $author      ='Enriador (original design by S. Craig Taylor & James B. Wood).';
 	public $adapter     ='Enriador & Oliver Auth';
 	public $version     ='1';
-	public $codeVersion ='1.0';
+	public $codeVersion ='1.1';
 	public $homepage    ='https://www.reddit.com/r/diplomacy/comments/bc49nu/machiavellitotherenaissance/';
 
 	public $countries=array('Aragon','Florence','Avignon','Milan','Genoa','Papacy','Venice');
