@@ -995,13 +995,30 @@ class libHTML
 					// Make the devTools top-menue visible to developers
 					if (is_object($User))
 						if ( ($User->id == 5 || isset(Config::$devs)) && ($User->type['Admin'] || array_key_exists($User->username, Config::$devs)) )
-							$menu.='<div class = "nav-tab"> <a href="dev.php" title="The devtools.">DevTools</a> </div>';
+						{
+							$variantID = ( isset($_REQUEST['variantID']) && (isset(Config::$variants[intval($_REQUEST['variantID'])])) ) 
+								? intval($_REQUEST['variantID']) 
+								: '0'; 
+
+							$menu.='
+								<div id="navSubMenu" class="clickable nav-tab">DevTools ▼
+									<div id="nav-drop">
+										<a href="dev.php?tab=Base&variantID='.$variantID.'">Settings</a>
+										<a href="dev.php?tab=Colors&variantID='.$variantID.'">Colors</a>
+										<a href="dev.php?tab=Map&variantID='.$variantID.'">Map</a>
+										<a href="dev.php?tab=Units&variantID='.$variantID.'">Units</a>
+										<a href="dev.php?tab=Files&variantID='.$variantID.'">Files</a>
+										<a href="dev.php?tab=Preview&variantID='.$variantID.'">Preview</a>
+										<div class="hr"></div>
+										<a href="dev.php?tab=MapResize&variantID='.$variantID.'">MapResize</a>
+										<a href="dev.php?tab=Converter&variantID='.$variantID.'">Converter</a>
+										<a href="dev.php?tab=Admin&variantID='.$variantID.'">Admin</a>
+									</div>
+								</div>';
+						}
 						else
 							$menu.='<div class="nav-tab"> <a href="variants.php" title="Active webDiplomacy variants">Variants</a> </div>';
 
-					// Add the modforumlink
-					$menu.='<div class = "nav-tab"> <a href="modforum.php" title="The modforum; ask your mod-team for help.">ModForum</a> </div>';
-					
 				}
 			}
 
@@ -1011,6 +1028,8 @@ class libHTML
 				{
 					$menu.=' <div id="navSubMenu" class = "clickable nav-tab">Mods ▼
                         <div id="nav-drop">
+							<a href="modforum.php" title="The modforum; ask your mod-team for help.">ModForum</a>
+							<div class="hr"></div>
 							<a href="admincp.php?tab=Control Panel">Admin CP</a>';
 
 					if ( $User->type['Admin'] )
@@ -1027,6 +1046,9 @@ class libHTML
                         </div>
 					</div>';
 				}
+				else
+					$menu.='<div class = "nav-tab"> <a href="modforum.php" title="The modforum; ask your mod-team for help.">ModForum</a> </div>';
+					
 			}
 			$menu.='</div></div></div>';
 		}
