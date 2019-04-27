@@ -35,8 +35,11 @@ if ($variantID != 0)
 		<div style="text-align:center">
 			<span id="Image_'. $Variant->name . '">
 				<a href="map.php?variantID=' . $Variant->id. '&largemap&/devmode" target="_blank">
-				<img src="map.php?variantID=' . $Variant->id.'&/devmode"
-				alt="Open large map" title="The map for the '. $Variant->name .' Variant" /></a>
+					<img src="map.php?variantID=' . $Variant->id.'&/devmode"
+					style="max-width: 730px;"
+					alt="Open large map"
+					title="The map for the '. $Variant->name .' Variant" />
+				</a>
 			</span>
 		</div>
 		<div class="content">
