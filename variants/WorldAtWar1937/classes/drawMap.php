@@ -141,8 +141,8 @@ class WorldAtWar1937Variant_drawMap extends WarpAround_drawMap {
 	protected $countryColors = array(
 		0 => array(226, 198, 158), // Neutral
 		1 => array(255, 0, 255), // Britain
-		2 => array( 53, 81, 219), // America
-		3 => array(0, 18, 106), // France
+		2 => array( 79,104, 227), // America
+		3 => array(18, 23, 232), // France
 		4 => array(101, 81,  83), // Germany
 		5 => array(57,  255,  0), // Italy
 		6 => array(0, 127,  0), // Portugal

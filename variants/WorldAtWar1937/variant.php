@@ -21,7 +21,7 @@
 
 	Changelog:
 	1.0:   initial release
-	
+	1.1:   slight color change for the blue countries
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -35,7 +35,7 @@ class WorldAtWar1937Variant extends WDVariant {
 	public $author     = 'michael_b';
 	public $adapter    = 'Technostar';
 	public $version    = '1';
-	public $codeVersion= '1.0.4';
+	public $codeVersion= '1.1';
 
 	public $countries=array('Britain', 'America', 'France','Germany','Italy','Portugal','Mexico','Russia','Turkey','China','Japan','Thailand');
 
