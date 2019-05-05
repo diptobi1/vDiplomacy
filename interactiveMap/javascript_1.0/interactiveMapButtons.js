@@ -51,8 +51,8 @@ interactiveMap.interface.create = function() {
     var interactiveInterface = IAswitch.appendChild(new Element('a',{'id':'IAInterface','href':'#mapstore','title':'View InteractiveMap-OrderInterface', 'onclick':'return false;'})).update('InteractiveMap-OrderInterface (loading)');
     interactiveInterface.observe('click', function(){if(interactiveMap.ready) interactiveMap.activate(true);});
     
-    var IADiv = new Element('div', {'id': 'IA'});
-    var saveSubmit = $('orderFormElement').childElements().find(function(e){return e.tagName === 'DIV';});
+    var IADiv = new Element('div', {'id': 'IA', class:'chatWrapper'});
+    var saveSubmit = $("UpdateButton"+context.memberID).parentNode;
     $('orderFormElement').insertBefore(IADiv, saveSubmit).hide();
     
     saveSubmit.observe('click', function(){interactiveMap.activate(false);});    //When saved or submittet, return dropDown-Interface
@@ -87,6 +87,19 @@ interactiveMap.interface.create = function() {
     interactiveMap.interface.orderLine.setStyle({'height': '15px', 'overflow': 'auto'});
     
     $('mapstore').appendChild(new Element('p',{'id':'IAnotice','style':'font-weight: bold;text-align: center;'})).update('The shown orders are a PREVIEW of your currently entered orders!<br>'+((!interactiveMap.autosave)?'They are not saved immediately!':'They were saved immediately!')+"<br><br> Hint: Reset button of order menu covers target territories? <br>Try clicking the unit of the current order again to disable and hide the button.").hide();
+//
+//	// --- alter eventlistener of DropDown orders to update interactive map if activated
+//	MyOrders.each(function(order){
+//		var onChangeOld = order.onChange
+//		
+//		order.onChange = function(event){
+//			onChangeOld.bind(order)(event);
+//			
+//			if(interactiveMap.isActivated)
+//				interactiveMap.resetOrder();
+//		}
+//	});
+
 };
 
 /*
@@ -499,7 +512,7 @@ interactiveMap.interface.toggle = function() {
         $('mapstore').childElements().each(function(e){if(e.tagName === 'P') e.hide();});
         $('IAnotice').show();
         
-        $('orderFormElement').childElements().find(function(e){return e.tagName === 'TABLE';}).hide(); //ORDER-TABLE
+        $('orderFormElement').childElements().find(function(e){return e.firstDescendant() !== null && e.firstDescendant().tagName === 'TABLE';}).hide(); //ORDER-TABLE
         $('IA').show();
     } else {
         for (var i = 0; i < buttons.length; i++) {
@@ -520,7 +533,7 @@ interactiveMap.interface.toggle = function() {
         $('IAnotice').hide();
         
         $('IA').hide();
-        $('orderFormElement').childElements().find(function(e){return e.tagName === 'TABLE';}).show(); //ORDER-TABLE
+		$('orderFormElement').childElements().find(function(e){return e.firstDescendant() !== null && e.firstDescendant().tagName === 'TABLE';}).show(); //ORDER-TABLE
     }
 };
 
