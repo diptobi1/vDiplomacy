@@ -290,8 +290,13 @@ interactiveMap.activate = function(activated) {
         interactiveMap.activated = activated;
         interactiveMap.visibleMap.load();
         interactiveMap.interface.orderMenu.load();
-        interactiveMap.interface.toggle();
+		interactiveMap.interface.mapUI.adjust(); // shows or hides the mapUI buttons
         if(interactiveMap.activated) {
+			 //detect if phase is Builds and sets the orders to "wait" so the user can save at any time.
+			if (context.phase == "Builds") {
+				interactiveMap.setWait();
+		    }
+			
             interactiveMap.resetOrder();
             interactiveMap.insertMessage("");
         } //reset IA if IA activated (redraws the map etc)
