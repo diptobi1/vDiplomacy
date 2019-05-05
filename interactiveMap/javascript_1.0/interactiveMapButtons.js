@@ -26,6 +26,7 @@ interactiveMap.interface.lastOrder;
 
 interactiveMap.interface.orderMenu = new Object();
 interactiveMap.interface.options = new Object();
+interactiveMap.interface.mapUI = new Object();
 
 
 /*
@@ -47,15 +48,15 @@ interactiveMap.interface.create = function() {
     var IAswitch = orderDiv.insertBefore(new Element('div',{'id':'IAswitch', 'class':'gamelistings-tabs'}), $('orderFormElement'));
     //create Pseudolinks to use the tab-styles
     var dropDownInterface = IAswitch.appendChild(new Element('a',{'id':'dropDownInterface','href':'#mapstore','title':'View DropDown-OrderInterface', 'class':'current', 'onclick':'return false;'})).update('DropDown-OrderInterface');
-    dropDownInterface.observe('click', function(){interactiveMap.activate(false);});
+    dropDownInterface.observe('click', function(){interactiveMap.interface.toggle(false);});
     var interactiveInterface = IAswitch.appendChild(new Element('a',{'id':'IAInterface','href':'#mapstore','title':'View InteractiveMap-OrderInterface', 'onclick':'return false;'})).update('InteractiveMap-OrderInterface (loading)');
-    interactiveInterface.observe('click', function(){if(interactiveMap.ready) interactiveMap.activate(true);});
+    interactiveInterface.observe('click', function(){if(interactiveMap.ready) interactiveMap.interface.toggle(true);});
     
     var IADiv = new Element('div', {'id': 'IA', class:'chatWrapper'});
     var saveSubmit = $("UpdateButton"+context.memberID).parentNode;
     $('orderFormElement').insertBefore(IADiv, saveSubmit).hide();
     
-    saveSubmit.observe('click', function(){interactiveMap.activate(false);});    //When saved or submittet, return dropDown-Interface
+    saveSubmit.observe('click', function(){interactiveMap.interface.toggle(false);});    //When saved or submittet, return dropDown-Interface
     
 //first row of table
     var tr1 = new Element('tr');
@@ -87,18 +88,21 @@ interactiveMap.interface.create = function() {
     interactiveMap.interface.orderLine.setStyle({'height': '15px', 'overflow': 'auto'});
     
     $('mapstore').appendChild(new Element('p',{'id':'IAnotice','style':'font-weight: bold;text-align: center;'})).update('The shown orders are a PREVIEW of your currently entered orders!<br>'+((!interactiveMap.autosave)?'They are not saved immediately!':'They were saved immediately!')+"<br><br> Hint: Reset button of order menu covers target territories? <br>Try clicking the unit of the current order again to disable and hide the button.").hide();
-//
-//	// --- alter eventlistener of DropDown orders to update interactive map if activated
-//	MyOrders.each(function(order){
-//		var onChangeOld = order.onChange
-//		
-//		order.onChange = function(event){
-//			onChangeOld.bind(order)(event);
-//			
-//			if(interactiveMap.isActivated)
-//				interactiveMap.resetOrder();
-//		}
-//	});
+
+	// --- alter eventlistener of DropDown orders to update interactive map if activated
+	MyOrders.each(function(order){
+		var onChangeOld = order.onChange
+		
+		order.onChange = function(event){
+			onChangeOld.bind(order)(event);
+			
+			if(interactiveMap.activated)
+				interactiveMap.resetOrder();
+		}
+	});
+
+	// --- add button to mapUI to switch to interactive map
+	interactiveMap.interface.mapUI.load();
 
 };
 
@@ -485,10 +489,13 @@ interactiveMap.interface.activateButton = function() {
 
 
 /*
- * enables/disables the orderButtons
+ * Switches between the drop down interface and the interactive interface (the button interface)
+ * and toggles the interactive map.
  * detects if phase is Builds and sets the orders to "wait" so the user can save at any time
  */
-interactiveMap.interface.toggle = function() {
+interactiveMap.interface.toggle = function(switchOn) {
+	interactiveMap.activate(switchOn);
+	
     var buttons = $("orderButtons").childNodes;
     if (interactiveMap.activated) {
         for (var i = 0; i < buttons.length; i++) {
@@ -497,19 +504,11 @@ interactiveMap.interface.toggle = function() {
         $("ResetOrder").disabled = false;
         interactiveMap.interface.orderLine.show();
         interactiveMap.interface.lastOrder.show();
-        //$("largeMap").disabled = false;
-        //$("greyOut").disabled = false;
         $("options").disabled = false;
         
-        //$("IAswitch").innerHTML = "deactivate IA";
         $("dropDownInterface").removeClassName('current');
         $("IAInterface").addClassName('current');
-        
-        if (context.phase == "Builds") {
-            interactiveMap.setWait();
-        }
-        
-        $('mapstore').childElements().each(function(e){if(e.tagName === 'P') e.hide();});
+
         $('IAnotice').show();
         
         $('orderFormElement').childElements().find(function(e){return e.firstDescendant() !== null && e.firstDescendant().tagName === 'TABLE';}).hide(); //ORDER-TABLE
@@ -521,21 +520,86 @@ interactiveMap.interface.toggle = function() {
         $("ResetOrder").disabled = true;
         interactiveMap.interface.orderLine.hide();
         interactiveMap.interface.lastOrder.hide();
-        //$("largeMap").disabled = true;
-        //$("greyOut").disabled = true;
         $("options").disabled = true;
         
-        //$("IAswitch").innerHTML = "activate IA";
         $("dropDownInterface").addClassName('current');
         $("IAInterface").removeClassName('current');
-        
-        $('mapstore').childElements().each(function(e){if(e.tagName === 'P') e.show();});
+
         $('IAnotice').hide();
         
         $('IA').hide();
 		$('orderFormElement').childElements().find(function(e){return e.firstDescendant() !== null && e.firstDescendant().tagName === 'TABLE';}).show(); //ORDER-TABLE
     }
 };
+
+/*
+ * Add an interactive map button to the mapUI to switch to interactive map mode
+ * without switching the interface.
+ */
+interactiveMap.interface.mapUI.load = function() {
+	this.maindiv = $$("div.maptools")[0];
+	this.buttonIDs = ['Start','Backward','Forward','End','Preview'];
+	if($('NoMoves'))
+		this.buttonIDs.push('NoMoves');
+	
+	this.IAbutton = new Element('div',{'class':'button','href':'#', 'onClick':'interactiveMap.interface.mapUI.toggleMap()'});
+	this.IAbutton.appendChild(new Element('img',{'id':"InteractiveMap", 'src':"interactiveMap/images/interactive.png",'alt':"InteractiveMap", 'title':"Interactive map mode"}));
+	this.IAbutton.insert(' Interactive');
+	this.maindiv.insertBefore(this.IAbutton, $('Preview').up());
+	this.IAbutton.insert({'after':"\n"});
+	
+	this.buttonState = new Hash();
+	this.buttonIDs.each(function(id){
+		this.buttonState.set(id, $(id).up().style.visibility);
+	}.bind(this));
+	
+	this.buttonState.set('History',$('History').style.visibility);
+};
+
+/*
+ * Toggles the interactive map mode. 
+ * 
+ * This function does NOT switch between the interactive map interface and the 
+ * drop down interface so a mixture of both input modes is possible as well as
+ * using the drop down list as a textual or the IA map as a graphical feedback to
+ * the oter input mode.
+ */
+interactiveMap.interface.mapUI.toggleMap = function() {
+	if(interactiveMap.ready && !interactiveMap.activated)
+		interactiveMap.activate(true);
+	else
+		interactiveMap.activate(false);
+};
+
+/*
+ * Check, if the interactive map is actived.
+ * 
+ * In this case, hide all other buttons (but store visibility for reactivation).
+ * Ohterwise show the mapUI again.
+ */
+interactiveMap.interface.mapUI.adjust = function() {
+	if(interactiveMap.activated){
+		
+		this.buttonIDs.each(function(id){
+			this.buttonState.set(id, $(id).up().style.visibility);
+			
+			$(id).up().style.visibility = 'hidden';
+		}.bind(this));
+		
+		this.buttonState.set('History',$('History').style.visibility);
+		$('History').style.visibility = 'hidden';
+		
+	} else {
+		
+		this.buttonIDs.each(function(id){
+			$(id).up().style.visibility = this.buttonState.get(id);
+		}.bind(this));
+		
+		$('History').style.visibility = this.buttonState.get('History');
+		
+	}
+		
+}
 
 /*
  * additional options
