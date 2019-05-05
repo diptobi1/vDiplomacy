@@ -148,7 +148,7 @@ else
 		print libVariant::cacheDir($Variant->name).'/sampleMap.png';
 	else
 		print 'map.php?variantID=' . $Variant->id."&/devlog";
-	print '" alt="Open large map" title="The map for the '. $Variant->name .' Variant" /></a></span> </div><br />';
+	print '" style="max-width: 730px;" alt="Open large map" title="The map for the '. $Variant->name .' Variant"></a></span> </div><br />';
 
 	print '<div class="content content-follow-on">';
 	print '<table>

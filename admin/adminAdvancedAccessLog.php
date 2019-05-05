@@ -4,6 +4,8 @@ defined('IN_CODE') or die('This script can not be run by itself.');
 
 if (!$User->type['Moderator']) { die ('Only admins or mods can run this script'); }
 
+require_once ('adminAdvancedAccessLogVDip.php'); // Load the vDip-detailed-search.
+
 class UserData
 {
     public $userID;

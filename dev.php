@@ -66,6 +66,7 @@ $tabNames = array_keys($tabs);
 if( isset($_REQUEST['tab']) && in_array($_REQUEST['tab'], $tabNames) ) $tab = $_REQUEST['tab'];
 
 // Print the different edit-tools only if we are in edit-mode.
+/*
 if ($edit == true)
 {
 	print '<div class="gamelistings-tabs">';
@@ -74,6 +75,7 @@ if ($edit == true)
 		 ( ( $tab == $tabChoice ) ?  '" class="current"' : '').'">'.l_t($tabChoice).'</a>';
 	print '</div><br>';
 }
+*/
 
 // Define some form-elemets needed by all dev-tools.
 $allVariants = Config::$variants;

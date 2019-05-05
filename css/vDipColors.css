@@ -19,16 +19,30 @@ div.pageTitle {
 .nav-wrap{
 	background-color: #c0c0c0;
 }
+.nav-tab a {
+	padding: 5px 5px;
+}
 #navSubMenu{
 	color: #6d5238;
+	padding: 5px 5px; 
 }
 #navSubMenu div#nav-drop {
 	background-color: #a0a0a0;
+	padding: 5px 5px; 
 }
 
+/*Hall of fame
+ **************/
+ .hof th {
+	background-color: #8e7054;
+}
+
+/* Input boxes recolor
+ **********************/
 input[type="submit"] {
 	background-color: #f0f0f0; /* #eaffea; */
-	color:#e0d6cd;             /* #009902 */
+	background: #f0f0f0;	   /* #eaffea; */
+	color: #6d5238;             /* #009902 */
 	border: 1px solid #c1c1c1;
 }
 input[type="text"], input[type="password"], select, .buttonIA, #orderLineIA {
