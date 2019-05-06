@@ -138,10 +138,10 @@ if( !isset($_REQUEST['variantID']) )
 	 * Get the two required parameters; game ID and turn
 	 */
 	global $Game;
-	$Variant=libVariant::loadFromGameID($_REQUEST['gameID']);
+	$Variant=libVariant::loadFromGameID((int)$_REQUEST['gameID']);
 	libVariant::setGlobals($Variant);
 	// The game is locked for update so the map isn't drawn twice at the same time
-	$Game=$Variant->Game($_REQUEST['gameID'],UPDATE);
+	$Game=$Variant->Game((int)$_REQUEST['gameID'],UPDATE);
 
 	/*
 	 * Determine which turn we are viewing. This is made a little trickier because
@@ -166,7 +166,7 @@ if( !isset($_REQUEST['variantID']) )
 }
 else
 {
-	$Variant=libVariant::loadFromVariantID($_REQUEST['variantID']);
+	$Variant=libVariant::loadFromVariantID((int)$_REQUEST['variantID']);
 	libVariant::setGlobals($Variant);
 	$mapType = Game::mapType();
 	$turn=-1;
