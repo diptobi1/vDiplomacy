@@ -53,7 +53,7 @@ interactiveMap.interface.create = function() {
     interactiveInterface.observe('click', function(){if(interactiveMap.ready) interactiveMap.interface.toggle(true);});
     
     var IADiv = new Element('div', {'id': 'IA', class:'chatWrapper'});
-    var saveSubmit = $("UpdateButton"+context.memberID).parentNode;
+    var saveSubmit = $("ordersNoticeArea"+context.memberID).parentNode;
     $('orderFormElement').insertBefore(IADiv, saveSubmit).hide();
     
     saveSubmit.observe('click', function(){interactiveMap.interface.toggle(false);});    //When saved or submittet, return dropDown-Interface
