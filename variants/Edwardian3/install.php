@@ -365,6 +365,7 @@ $bordersRawData=array(
 	array('Gibraltar','Spain (West Coast)','Yes','No'),
 	array('Gibraltar','Spain (East Coast)','Yes','No'),
 	array('Gibraltar','Atlantic','Yes','No'),
+	array('Gibraltar','Bay of Biscay','Yes','No'),
 	array('Gibraltar','Western Mediterranean','Yes','No'),
 	array('Spain','Portugal','No','Yes'),
 	array('Spain','Gascony','No','Yes'),
