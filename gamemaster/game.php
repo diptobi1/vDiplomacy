@@ -615,28 +615,28 @@ class processGame extends Game
 		/*
 		 * Handle the NMRs. This method does record 
 		 */
-		$this->Members->handleNMRs();
-			
-		
-		if( $this->Members->withActiveNMRs() )
-		{
-			require_once(l_r('lib/gamemessage.php'));
-			/*
-			 * There are NMRs by active members. The game will not be processed, but instead
-			 * the phase will be extended.
-			 * 
-			 * All orders are unreadied, the phase time is reset and members are notified.
-			 */
-			$extendMessage = 'Game was extended due to at least 1 member failing to enter orders and having an excused missed turn available. This has un-readied all orders.';
-			
-			$this->Members->unreadyMembers();
-			$this->resetProcessTime();
-			$this->Members->notifyGameExtended();
-			
-			libGameMessage::send('Global','GameMaster', $extendMessage);
-		} 
-		else 
-		{
+//		$this->Members->handleNMRs();
+//		
+//		
+//		if( $this->Members->withActiveNMRs() )
+//		{
+//			require_once(l_r('lib/gamemessage.php'));
+//			/*
+//			 * There are NMRs by active members. The game will not be processed, but instead
+//			 * the phase will be extended.
+//			 * 
+//			 * All orders are unreadied, the phase time is reset and members are notified.
+//			 */
+//			$extendMessage = 'Game was extended due to at least 1 member failing to enter orders and having an excused missed turn available. This has un-readied all orders.';
+//			
+//			$this->Members->unreadyMembers();
+//			$this->resetProcessTime();
+//			$this->Members->notifyGameExtended();
+//			
+//			libGameMessage::send('Global','GameMaster', $extendMessage);
+// 		} 
+//		else 
+//		{
 			/*
 			 * Clear all extend-votes for the current phase
 			 */
@@ -758,7 +758,7 @@ class processGame extends Game
 			// Set the "lastProcessed"-time for the chessClock
 			$this->lastProcessed = time();
 			$DB->sql_put("UPDATE wD_Games SET lastProcessed = ".$this->lastProcessed." WHERE id = ".$this->id);
-		}
+//		}
 		
 		$this->Members->updateReliabilityStats();
 		
