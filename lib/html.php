@@ -520,7 +520,7 @@ class libHTML
 					<p class="notice">'.l_t('You do not have JavaScript enabled. It is required to use webDiplomacy fully.').'</p>
 				</div></noscript>';
 
-//		print self::globalNotices();
+		print self::globalNotices();
 
 		if (isset($User) && $User->tempBan > time())
 		{

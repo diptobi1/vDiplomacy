@@ -49,10 +49,9 @@ if ( 'Pre-game' != $Game->phase )
     $CB->postMessage($msgCountryID);
 
     $DB->sql_put("COMMIT");
-//}
+}
 
 //RE-generate chat box
-
 $messages = $CB->getMessages($msgCountryID);
 
 if ( $messages == "" )
