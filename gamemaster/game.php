@@ -497,11 +497,6 @@ class processGame extends Game
 	{
 		global $DB;
 
-		// Only for VDip: Do not record NMRs for 2-player or live games
-		// Also on VDip the NMRs and phases-played do add up, even if a country is in CD. So watch your game...
-		if ( (count($this->Variant->countries) == 2) or ($this->phaseMinutes <= 30) )
-			return;
-			
 		/*
 		* Make a note of NMRs. An NMR is where a member's orderStatus does not contain "Saved", but there are orders to
 		* be submitted and the user is playing. (Note this could be changed to require orderStatus is "Completed", if
@@ -601,6 +596,11 @@ class processGame extends Game
 		 * - Create new orders for the current phase
 		 * - Set the next date for game processing
 		 */
+		 
+		// Only for VDip: Do not record NMRs for 2-player or live games
+		// Also on VDip the NMRs and phases-played do add up, even if a country is in CD. So watch your game...
+		if ( (count($this->Variant->countries) == 2) or ($this->phaseMinutes <= 30) )
+			$DB->sql_put("UPDATE wD_Members SET orderStatus = 'Ready' WHERE status='Playing' AND gameID=".$this->id);
 
 		/*
 		* Register the turn for each member with orders and update their phase count
@@ -616,7 +616,7 @@ class processGame extends Game
 		 * Handle the NMRs. This method does record 
 		 */
 		$this->Members->handleNMRs();
-			
+		
 		
 		if( $this->Members->withActiveNMRs() )
 		{
@@ -634,7 +634,7 @@ class processGame extends Game
 			$this->Members->notifyGameExtended();
 			
 			libGameMessage::send('Global','GameMaster', $extendMessage);
-		} 
+ 		} 
 		else 
 		{
 			/*
