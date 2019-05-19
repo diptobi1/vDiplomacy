@@ -30,16 +30,6 @@ defined('IN_CODE') or die('This script can not be run by itself.');
 class adminActionsTD extends adminActionsForms
 {
 	public static $actions = array(
-			'drawGame' => array(
-				'name' => 'Draw game',
-				'description' => 'Splits points among all the surviving players in a game according to its scoring system, and ends the game.',
-				'params' => array(),
-			),
-			'cancelGame' => array(
-				'name' => 'Cancel game',
-				'description' => 'Refunds points each player has bet, and deletes the game.',
-				'params' => array(),
-			),
 			'togglePause' => array(
 				'name' => 'Toggle-pause game',
 				'description' => 'Flips a game\'s paused status; if it\'s paused it\'s unpaused, otherwise it\'s paused.',
@@ -95,7 +85,34 @@ class adminActionsTD extends adminActionsForms
 				'params' => array(
 					'newSetting'=>'Enter a number for the desired setting: 1=Regular, 2=PublicPressOnly, 3=NoPress, 4=RuleBookPress'
 					),
+			),
+			'cdUser' => array(
+				'name' => 'Force a user into CD',
+				'description' => 'Force a user into CD in this game.<br />
+					Forced CDs do not count against the player\'s RR.',
+				'params' => array('userID'=>'User ID'),
+			),
+			'excusedMissedTurnsIncreaseAll' => array(
+				'name' => 'Excused Missed Turns - Add for All',
+				'description' => 'Adds 1 excused missed turn to all members in the game.',
+				'params' => array(),
+			),
+			'excusedMissedTurnsDecreaseAll' => array(
+				'name' => 'Excused Missed Turns - Remove for All',
+				'description' => 'Removes 1 excused missed turn for all members in the game. If the user(s) do not have excused turns left nothing will happen.',
+				'params' => array(),
+			),
+			'excusedMissedTurnsIncrease' => array(
+				'name' => 'Excused Missed Turns - Add',
+				'description' => 'Adds 1 excused missed turn to a specific user in a game.',
+				'params' => array('userID'=>'User ID'),
+			),
+			'excusedMissedTurnsDecrease' => array(
+				'name' => 'Excused Missed Turns - Remove',
+				'description' => 'Removes 1 excused missed turn for a specific user in a game. If the user(s) do not have excused turns left nothing will happen.',
+				'params' => array('userID'=>'User ID'),
 			)
+
 		);
 
 	private $fixedGameID;
@@ -474,6 +491,53 @@ class adminActionsTD extends adminActionsForms
 			$Game->resetMinimumBet();
 
 		return l_t('This user put into civil-disorder in this game');
+	}
+	public function excusedMissedTurnsIncreaseAll(array $params)
+	{
+		global $DB;
+
+		$gameID = $this->fixedGameID;
+
+		$DB->sql_put("UPDATE wD_Members SET excusedMissedTurns = excusedMissedTurns + 1 WHERE gameID = ".$gameID);
+		return l_t("All users in this game have been given an extra excused missed turn.");
+	}
+
+	public function excusedMissedTurnsDecreaseAll(array $params)
+	{
+		global $DB;
+
+		$gameID = $this->fixedGameID;
+
+		$DB->sql_put("UPDATE wD_Members SET excusedMissedTurns = excusedMissedTurns - 1 WHERE gameID = ".$gameID." and excusedMissedTurns > 0");
+		return l_t("All users in this game have had an excused missed turn removed.");
+	}
+
+	public function excusedMissedTurnsIncrease(array $params)
+	{
+		global $DB;
+
+		$userIDtoUpdate = (int)$params['userID'];
+		$gameID = $this->fixedGameID;
+
+		if ($userIDtoUpdate > 0)
+		{
+			$DB->sql_put("UPDATE wD_Members SET excusedMissedTurns = excusedMissedTurns + 1 WHERE gameID = ".$gameID." and userID = ".$userIDtoUpdate);
+			return l_t("UserID: ".$userIDtoUpdate." has been given an extra excused missed turn in this game.");
+		}
+	}
+
+	public function excusedMissedTurnsDecrease(array $params)
+	{
+		global $DB;
+
+		$userIDtoUpdate = (int)$params['userID'];
+		$gameID = $this->fixedGameID;
+
+		if ($userIDtoUpdate > 0)
+		{
+			$DB->sql_put("UPDATE wD_Members SET excusedMissedTurns = excusedMissedTurns - 1 WHERE gameID = ".$gameID." and userID = ".$userIDtoUpdate." and excusedMissedTurns > 0");
+			return l_t("UserID: ".$userIDtoUpdate." has had an excused missed turn removed in this game.");
+		}
 	}
 	public function disableVotes(array $params)
 	{

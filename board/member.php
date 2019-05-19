@@ -45,9 +45,9 @@ class userMember extends panelMember
 		{
 			$this->setBackFromLeft();
 		}
-		elseif( (time() - $this->timeLoggedIn) > 3*60  || $this->missedPhases>0 )
+		elseif( (time() - $this->timeLoggedIn) > 3*60)
 		{
-			$DB->sql_put("UPDATE wD_Members SET missedPhases=0, timeLoggedIn = ".time()." WHERE id = ".$this->id);
+			$DB->sql_put("UPDATE wD_Members SET timeLoggedIn = ".time()." WHERE id = ".$this->id);
 			$this->timeLoggedIn=time();
 			$this->missedPhases=0;
 		}
@@ -65,7 +65,12 @@ class userMember extends panelMember
 	 */
 	protected function setBackFromLeft()
 	{
-		global $DB,$Game;
+		global $DB,$Game,$User;
+		
+		if ( $this->Game->Members->isTempBanned() )
+		{
+			throw new Exception("You are blocked from rejoining your games.");
+		}
 
 		unset($this->Game->Members->ByStatus[$this->status][$this->id]);
 		$this->status = 'Playing';
@@ -94,13 +99,12 @@ class userMember extends panelMember
 					AND countryID = ".$this->countryID
 				);
 				
-
 		$this->orderStatus->Ready=false;
 
 		$DB->sql_put(
 				"UPDATE wD_Members
 				SET status = 'Playing', ".( $this->orderStatus->updated ? "orderStatus='".$this->orderStatus."', " : '' )."
-					missedPhases=0, timeLoggedIn = ".time()."
+					timeLoggedIn = ".time()."
 				WHERE id = ".$this->id
 			);
 			

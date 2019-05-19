@@ -460,7 +460,6 @@ else
 			<option value="c/c">Custom</option>
 		</select>
 		
-		
 		<span id="NMRpolicyCustom" style="display:none">
 			 - Turns: </b><input 
 							type="text" 
@@ -503,6 +502,23 @@ else
 		</ul>
 		Any value greater 90 will set the value to &infin;, a value of 0 will set this to off.
 		<br /><br /><strong>Default:</strong> <?php print $specialCDturnsTxt;?> / <?php print $specialCDcountTxt;?>
+	</li>
+
+	<li class="formlisttitle">
+		Excused delays per player:
+	</li>
+	<li class="formlistfield"> 
+		<input type="radio" name="newGame[excusedMissedTurns]" value="1" checked>1
+		<input type="radio" name="newGame[excusedMissedTurns]" value="2">2
+		<input type="radio" name="newGame[excusedMissedTurns]" value="3">3
+		<input type="radio" name="newGame[excusedMissedTurns]" value="4">4
+	</li>
+	<li class="formlistdesc">
+		The number of excused delays before a player is removed from the game and can be replaced. 
+		If a player is missing orders at a deadline, the deadline will reset and the player will be 
+		charged 1 excused delay. If they are out of excuses they will go into Civil Disorder.
+		The game will only progress with missing orders if no replacement is found within one phase of a player being forced into Civil Disorder. 
+		Set this value low to prevent delays to your game, set it higher to be more forgiving to people who might need occasional delays.
 	</li>
 
 	<li class="formlisttitle">

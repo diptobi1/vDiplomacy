@@ -21,8 +21,8 @@
 defined('IN_CODE') or die('This script can not be run by itself.');
 
 /**
- * This class will enable adminActions and adminActionsForum moderator 
- * tasks to be performed, but also allow tasks which only admins should 
+ * This class will enable adminActions and adminActionsForum moderator
+ * tasks to be performed, but also allow tasks which only admins should
  * be able to perform.
  * This will be included anyway, but the class will only be initialized if
  * the user is an admin.
@@ -57,7 +57,7 @@ class adminActionsRestricted extends adminActionsRestrictedVDip
 			'clearAccessLogs' => array(
 				'name' => 'Clear access logs',
 				'description' => 'Clears access log table of logs older than 30 days.</br>
-					<em>WARNING:</em> Doing this will make catching cheaters difficult or impossible. 
+					<em>WARNING:</em> Doing this will make catching cheaters difficult or impossible.
 					If possible, please take a backup if possible before clearing this table.',
 				'params' => array(),
 			),
@@ -65,7 +65,7 @@ class adminActionsRestricted extends adminActionsRestrictedVDip
 				'name' => 'Clear admin logs',
 				'description' => 'Clears admin log table.</br>
 					<em>WARNING:</em> Doing this removes the record of Moderator actions from the site.
-					This makes referencing past actions impossible, and damages moderator ability to function. 
+					This makes referencing past actions impossible, and damages moderator ability to function.
 					If possible, please take a backup if possible before clearing this table.',
 				'params' => array(),
 			),
@@ -127,15 +127,29 @@ class adminActionsRestricted extends adminActionsRestrictedVDip
 			),
 			'notice' => array(
 				'name' => 'Toggle site-wide notice',
-				'description' => 'Toggle the notice which is displayed in a noticebar across the whole site. The
-					notice itself can be set in config.php',
+				'description' => 'Toggle the notice which is displayed in a noticebar across the whole site.',
 				'params' => array(),
+			),
+			'noticeMessage' => array(
+				'name' => 'Change notice message',
+				'description' => 'Sets the notice which is displayed in a noticebar across the whole site. Sample is: Excused missed turns have been added to all games. See more (<)a href="/contrib/phpBB3/viewtopic.php?f=5&t=1551">here(<)/a(>)(<)/br(>) (<)font color="red"(>)If you are seeing an error on games please clear your browsers cache.(<)/font(>)',
+				'params' => array('message'=>'Message'),
 			),
 			'maintenance' => array(
 				'name' => 'Toggle maintenance',
 				'description' => 'Toggle maintenance mode, which makes the server inaccessible except to admins
 					so changes can be made.',
 				'params' => array(),
+			),
+			'maintenanceMessage' => array(
+				'name' => 'Change maintenance message',
+				'description' => 'Change the message that is displayed while the site is undergoing maintenance.',
+				'params' => array('message'=>'Message'),
+			),
+			'panicMessage' => array(
+				'name' => 'Change panic message',
+				'description' => 'Changes the message that is displayed while the site is in panic mode.',
+				'params' => array('message'=>'Message'),
 			),
 			'globalAddTime' => array(
 				'name' => 'Add time to all games',
@@ -170,17 +184,36 @@ class adminActionsRestricted extends adminActionsRestrictedVDip
 			'recreateUnitDestroyIndex' => array(
 				'name' => 'Recreate the destroy unit indexes',
 				'description' => 'Refreshes the unit destroy indexes for a certain map ID. This will generally only
-					be run if there has been a bug found in the unit destroy index generation code which requires 
+					be run if there has been a bug found in the unit destroy index generation code which requires
 					the indexes to be recreated.<br />
 					Note that this uses the generic installation code, so if there are any variant-specific modifications
 					running this may give unpredictable results. Please confirm with the variant maintainer before
 					using this admin action.',
 				'params' => array('mapID'=>'Map ID'),
-			),		
+			),
 			'recalculateRR' => array(
 				'name' => 'Recalculate reliability ratings',
 				'description' => 'Updates the reliability ratings for all users.',
 				'params' => array()
+			),
+			'resetLastProcessTime' => array(
+				'name' => 'Reset last process time',
+				'description' => 'Once the reason for the period of no processing is known, and it\'s safe to reenable
+					game processing, the last process time can be reset here.<br />
+					<em>Only a dev</em> should run this function after they ensure the issue has been fixed.',
+				'params' => array(),
+			),
+			'banIP' => array(
+				'name' => 'Ban an IP',
+				'description' => 'Bans a certain IP address.<br />
+					Note: Doesn\'t work.',
+				'params' => array('IP'=>'IP address (xxx.xxx.xxx.xxx)'),
+			),
+			'unCrashGames' => array(
+				'name' => 'Uncrash games',
+				'description' => 'Uncrashes all crashed games except the games specified (if any).<br />
+					<em>ONLY A DEV</em> should run this function. The reason for the crash needs to be found out before the games are uncrashed.',
+				'params' => array('excludeGameIDs'=>'Except Game ID list'),
 			)
 		);
 
@@ -206,7 +239,7 @@ class adminActionsRestricted extends adminActionsRestrictedVDip
 	public function backupGame(array $params)
 	{
 		global $DB;
-		
+
 		require_once(l_r('objects/game.php'));
 
 		$gameID = (int)$params['gameID'];
@@ -220,7 +253,7 @@ class adminActionsRestricted extends adminActionsRestrictedVDip
 	public function restoreGameConfirm(array $params)
 	{
 		global $DB;
-		
+
 		require_once(l_r('objects/game.php'));
 		$Variant=libVariant::loadFromGameID($params['gameID']);
 		$Game = $Variant->Game($params['gameID']);
@@ -230,7 +263,7 @@ class adminActionsRestricted extends adminActionsRestrictedVDip
 	public function restoreGame(array $params)
 	{
 		global $DB;
-		
+
 		require_once(l_r('gamemaster/game.php'));
 
 		$gameID = (int)$params['gameID'];
@@ -248,7 +281,7 @@ class adminActionsRestricted extends adminActionsRestrictedVDip
 	public function wipeBackups(array $params)
 	{
 		global $DB;
-		
+
 		require_once(l_r('gamemaster/game.php'));
 
 		processGame::wipeBackups();
@@ -319,6 +352,15 @@ class adminActionsRestricted extends adminActionsRestrictedVDip
 		return l_t('Maintenance mode '.($Misc->Maintenance?'turned on':'turned off'));
 	}
 
+	public function maintenanceMessage(array $params)
+	{
+		global $DB;
+		$message = $params['message'];
+		$message = $DB->escape($message, $htmlAllowed=true);
+		$DB->sql_put("UPDATE wD_Config SET message='".$message."' WHERE name = 'Maintenance'");
+		return l_t('The maintenance message has been updated.');
+	}
+
 	public function notice(array $params)
 	{
 		global $Misc;
@@ -327,6 +369,24 @@ class adminActionsRestricted extends adminActionsRestrictedVDip
 		$Misc->write();
 
 		return l_t('Site-wide notice '.($Misc->Notice?'turned on':'turned off'));
+	}
+
+	public function noticeMessage(array $params)
+	{
+		global $DB;
+		$message = $params['message'];
+		$message = $DB->escape($message, $htmlAllowed=true);
+		$DB->sql_put("UPDATE wD_Config SET message='".$message."' WHERE name = 'Notice'");
+		return l_t('The site-wide notice message has been updated.');
+	}
+
+	public function panicMessage(array $params)
+	{
+		global $DB;
+		$message = $params['message'];
+		$message = $DB->escape($message, $htmlAllowed=true);
+		$DB->sql_put("UPDATE wD_Config SET message='".$message."' WHERE name = 'Panic'");
+		return l_t('The panic message has been updated.');
 	}
 
 	public function clearErrorLogs(array $params)
@@ -534,7 +594,7 @@ class adminActionsRestricted extends adminActionsRestrictedVDip
 		 * - Remove the invalid maps in the mapstore
 		 */
 		$DB->sql_put("BEGIN");
-		
+
 		require_once(l_r('gamemaster/game.php'));
 		$Variant=libVariant::loadFromGameID($gameID);
 		$Game = $Variant->processGame($gameID);
@@ -621,28 +681,28 @@ class adminActionsRestricted extends adminActionsRestrictedVDip
 	public function recreateUnitDestroyIndex(array $params)
 	{
 		global $DB;
-		
+
 		$mapID = (int)$params['mapID'];
-		
+
 		require_once("variants/install.php");
-		
+
 		InstallTerritory::loadExistingTerritories($mapID);
-		
+
 		// Generate the SQL before wiping & reinserting it
 		$unitDestroyIndexRecreateSQL = InstallTerritory::unitDestroyIndexSQL($mapID);
-		
+
 		$DB->sql_put("BEGIN");
-		
+
 		list($entriesBefore) = $DB->sql_row("SELECT COUNT(*) FROM wD_UnitDestroyIndex WHERE mapID = ".$mapID);
-		
+
  		$DB->sql_put("DELETE FROM wD_UnitDestroyIndex WHERE mapID = ".$mapID);
- 		
+
  		$DB->sql_put($unitDestroyIndexRecreateSQL);
- 		
+
  		list($entriesAfter) = $DB->sql_row("SELECT COUNT(*) FROM wD_UnitDestroyIndex WHERE mapID = ".$mapID);
- 		
+
 		$DB->sql_put("COMMIT");
-		
+
 		return l_t('The unit destroy indexes were recreated for map ID #%s ; there were %s entries before and there are currently %s entries.', $mapID, $entriesBefore, $entriesAfter);
 	}
 	
@@ -652,7 +712,8 @@ class adminActionsRestricted extends adminActionsRestrictedVDip
 		libGameMaster::updateReliabilityRating(true);
 		return l_t("Reliability Ratings have been recalculated");
 	}
-	private function makeDonatorType(array $params, $type='') {
+	private function makeDonatorType(array $params, $type='') 
+	{
 		global $DB;
 
 		$userID = (int)$params['userID'];
@@ -681,6 +742,87 @@ class adminActionsRestricted extends adminActionsRestrictedVDip
 	public function makeDonatorBronze(array $params)
 	{
 		return $this->makeDonatorType($params,'Bronze');
+	}
+	public function banIP(array $params)
+	{
+		User::banIP(ip2long($ip));
+	}
+	public function resetLastProcessTime(array $params)
+	{
+		global $Misc;
+
+		$Misc->LastProcessTime = time();
+		$Misc->write();
+
+		return l_t('Last process time reset');
+	}
+	public function unCrashGames(array $params)
+	{
+		global $DB;
+
+		require_once(l_r('gamemaster/game.php'));
+
+		$excludeGameIDs = explode(',', $params['excludeGameIDs']);
+
+		foreach($excludeGameIDs as $index=>$gameID)
+		{
+			$gameID = (int)$gameID;
+			$excludeGameIDs[$index] = $gameID;
+		}
+		$excludeGameIDs = implode(',', $excludeGameIDs);
+
+		$tabl = $DB->sql_tabl(
+			"SELECT * FROM wD_Games WHERE processStatus = 'Crashed' ".( $excludeGameIDs ? "AND id NOT IN (".$excludeGameIDs.")" : "" )." FOR UPDATE"
+		);
+		$count=0;
+		while($row=$DB->tabl_hash($tabl))
+		{
+			$count++;
+
+			$Variant=libVariant::loadFromVariantID($row['variantID']);
+			$Game = $Variant->processGame($row);
+
+			if( $Game->phase == 'Finished' )
+			{
+				$DB->sql_put("UPDATE wD_Games SET processStatus = 'Not-processing', pauseTimeRemaining=NULL, processTime = ".time()." WHERE id = ".$Game->id);
+				continue;
+			}
+
+			if ( $Game->phaseMinutes < 12*60 )
+			{
+				if( $Game->phase == 'Pre-game' )
+				{
+					$newTimeDetails = "";
+					$DB->sql_put("UPDATE wD_Games SET processStatus = IF(pauseTimeRemaining IS NULL,'Not-processing','Paused') WHERE id = ".$Game->id);
+				}
+				else
+				{
+					$newTimeDetails = l_t(", and the game has been paused, since it's a fast game, to give players a chance to regroup");
+					$Game->processStatus = 'Not-processing';
+					$Game->togglePause();
+				}
+			}
+			else
+			{
+				$newTimeDetails = l_t(", and the game's next process time has been reset");
+				$DB->sql_put("UPDATE wD_Games SET processStatus = 'Not-processing', processTime = ".time()." + 60*phaseMinutes, pauseTimeRemaining=NULL WHERE id = ".$Game->id);
+			}
+
+			$Game->Members->send('No',l_t("This game has been uncrashed%s. Thanks for your patience.",$newTimeDetails));
+		}
+
+		/* Simpler, but doesn't accomodate live games well
+		$DB->sql_put(
+			"UPDATE wD_Games SET processStatus = 'Not-processing', processTime = ".time()." + 60*phaseMinutes
+			WHERE AND processStatus = 'Crashed' ".( $excludeGameIDs ? "AND id NOT IN (".$excludeGameIDs.")" : "" )
+		);*/
+
+		$details = l_t('All crashed games were un-crashed');
+		if ( $excludeGameIDs )
+			$details .= l_t(', except: %s',$excludeGameIDs);
+		$details .= l_t('. %s games in total.',$count);
+
+		return $details;
 	}
 }
 

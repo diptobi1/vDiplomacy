@@ -23,6 +23,7 @@ pointlog.txt
 !.htaccess
 ghostRatingData.*
 gr.php
+adminInfo.php
 /variants/*/install-save*
 Thumbs.db
 /piwik

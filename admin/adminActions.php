@@ -69,16 +69,16 @@ class adminActions extends adminActionsForms
 				'description' => 'Replace one player in a given game with another one. This does not impact points. If the replacing player does not meet the RR requirements for the game or is already in the game, that game replacement will not occur.',
 				'params' => array('userID'=>'UserID to be replaced','replaceID'=>'UserID replacing','gameIDs'=>'GameID (all active if empty)', )
 			),
-			'banIP' => array(
-				'name' => 'Ban an IP',
-				'description' => 'Bans a certain IP address.<br />
-					Note: Doesn\'t work.',
-				'params' => array('IP'=>'IP address (xxx.xxx.xxx.xxx)'),
-			),
+
 			'tempBan' => array(
 				'name' => 'Temporary ban a player',
 				'description' => 'Stops a player from joining or creating new games for that many days. To remove a temp ban, enter 0 days',
 				'params' => array('userID'=>'User ID', 'ban'=>'Days')
+			),
+			'modExcuseDelay' => array(
+				'name' => 'Mod Excuse Missed Turn',
+				'description' => 'Enter the user to excuse and the ID of the missed turn to excuse (found on RR breakdown page)',
+				'params' => array('userID'=>'User ID', 'excuseID'=>'Excuse ID','reason'=>'Reason')
 			),
 			'banUser' => array(
 				'name' => 'Ban a user',
@@ -134,13 +134,6 @@ class adminActions extends adminActionsForms
 						<em>This effectively shuts down the site, so be sure before pressing this.</em>',
 				'params' => array(),
 			),
-			'resetLastProcessTime' => array(
-				'name' => 'Reset last process time',
-				'description' => 'Once the reason for the period of no processing is known, and it\'s safe to reenable
-					game processing, the last process time can be reset here.<br />
-					<em>Only a dev</em> should run this function after they ensure the issue has been fixed.',
-				'params' => array(),
-			),
 			'changePhaseLength' => array(
 				'name' => 'Change phase length',
 				'description' => 'Change the maximum number of minutes that a phase lasts.
@@ -165,7 +158,7 @@ class adminActions extends adminActionsForms
 					'reallocations'=>'Reallocations list (e.g "<em>R,T,A,G,I,F,E</em>")'
 				)
 			),
-	        	'drawType' => array(
+	        'drawType' => array(
 				'name' => 'Change the draw visibility',
 				'description' => 'Change a game\'s draw visibility (public or hidden).',
 				'params' => array(
@@ -173,7 +166,7 @@ class adminActions extends adminActionsForms
 					'newSetting'=>'Enter a number for the desired setting: 1=Public, 2=Hidden'
 				)
 			),
-	        	'alterMessaging' => array(
+			'alterMessaging' => array(
 				'name' => 'Alter game messaging',
 				'description' => 'Change a game\'s messaging settings, e.g. to convert from gunboat to public-only or all messages allowed.',
 				'params' => array(
@@ -181,22 +174,30 @@ class adminActions extends adminActionsForms
 					'newSetting'=>'Enter a number for the desired setting: 1=Regular, 2=PublicPressOnly, 3=NoPress, 4=RuleBookPress'
 				)
 			),
-			'unCrashGames' => array(
-				'name' => 'Uncrash games',
-				'description' => 'Uncrashes all crashed games except the games specified (if any).<br />
-					<em>ONLY A DEV</em> should run this function. The reason for the crash needs to be found out before the games are uncrashed.',
-				'params' => array('excludeGameIDs'=>'Except Game ID list'),
-			),
-			'reportMuteToggle' => array(
-				'name' => 'Toggle mod-report mute',
-				'description' => 'Toggles whether the given userID can submit reports, to prevent annoying users from abusing the report feature.</br>
-					Note: Doesn\'t work.',
-				'params' => array('userID'=>'User ID'),
-			),
 			'setDirector' => array(
 				'name' => 'Set a user as a game director',
-				'description' => 'Sets the given user ID to be the director of the given game ID (set to 0 to remove someone as game director). 
+				'description' => 'Sets the given user ID to be the director of the given game ID (set to 0 to remove someone as game director).
 					This will give them mod capabilities for this game.',
+				'params' => array('gameID'=>'Game ID','userID'=>'User ID'),
+			),
+			'excusedMissedTurnsIncreaseAll' => array(
+				'name' => 'Excused Missed Turns - Add for All',
+				'description' => 'Adds 1 excused missed turn to all members in the game.',
+				'params' => array('gameID'=>'Game ID'),
+			),
+			'excusedMissedTurnsDecreaseAll' => array(
+				'name' => 'Excused Missed Turns - Remove for All',
+				'description' => 'Removes 1 excused missed turn for all members in the game. If the user(s) do not have excused turns left nothing will happen.',
+				'params' => array('gameID'=>'Game ID'),
+			),
+			'excusedMissedTurnsIncrease' => array(
+				'name' => 'Excused Missed Turns - Add',
+				'description' => 'Adds 1 excused missed turn to a specific user in a game.',
+				'params' => array('gameID'=>'Game ID','userID'=>'User ID'),
+			),
+			'excusedMissedTurnsDecrease' => array(
+				'name' => 'Excused Missed Turns - Remove',
+				'description' => 'Removes 1 excused missed turn for a specific user in a game. If the user(s) do not have excused turns left nothing will happen.',
 				'params' => array('gameID'=>'Game ID','userID'=>'User ID'),
 			)
 		);
@@ -213,76 +214,6 @@ class adminActions extends adminActionsForms
 		$Game->resetMinimumBet();
 		return l_t("The minimum bet has been reset.");
 	}
-	
-	public function unCrashGames(array $params)
-	{
-		global $DB;
-
-		require_once(l_r('gamemaster/game.php'));
-
-		$excludeGameIDs = explode(',', $params['excludeGameIDs']);
-
-		foreach($excludeGameIDs as $index=>$gameID)
-		{
-			$gameID = (int)$gameID;
-			$excludeGameIDs[$index] = $gameID;
-		}
-		$excludeGameIDs = implode(',', $excludeGameIDs);
-
-		$tabl = $DB->sql_tabl(
-			"SELECT * FROM wD_Games WHERE processStatus = 'Crashed' ".( $excludeGameIDs ? "AND id NOT IN (".$excludeGameIDs.")" : "" )." FOR UPDATE"
-		);
-		$count=0;
-		while($row=$DB->tabl_hash($tabl))
-		{
-			$count++;
-
-			$Variant=libVariant::loadFromVariantID($row['variantID']);
-			$Game = $Variant->processGame($row);
-
-			if( $Game->phase == 'Finished' )
-			{
-				$DB->sql_put("UPDATE wD_Games SET processStatus = 'Not-processing', pauseTimeRemaining=NULL, processTime = ".time()." WHERE id = ".$Game->id);
-				continue;
-			}
-
-			if ( $Game->phaseMinutes < 12*60 )
-			{
-				if( $Game->phase == 'Pre-game' )
-				{
-					$newTimeDetails = "";
-					$DB->sql_put("UPDATE wD_Games SET processStatus = IF(pauseTimeRemaining IS NULL,'Not-processing','Paused') WHERE id = ".$Game->id);
-				}
-				else
-				{
-					$newTimeDetails = l_t(", and the game has been paused, since it's a fast game, to give players a chance to regroup");
-					$Game->processStatus = 'Not-processing';
-					$Game->togglePause();
-				}
-			}
-			else
-			{
-				$newTimeDetails = l_t(", and the game's next process time has been reset");
-				$DB->sql_put("UPDATE wD_Games SET processStatus = 'Not-processing', processTime = ".time()." + 60*phaseMinutes, pauseTimeRemaining=NULL WHERE id = ".$Game->id);
-			}
-
-			$Game->Members->send('No',l_t("This game has been uncrashed%s. Thanks for your patience.",$newTimeDetails));
-		}
-
-		/* Simpler, but doesn't accomodate live games well
-		$DB->sql_put(
-			"UPDATE wD_Games SET processStatus = 'Not-processing', processTime = ".time()." + 60*phaseMinutes
-			WHERE AND processStatus = 'Crashed' ".( $excludeGameIDs ? "AND id NOT IN (".$excludeGameIDs.")" : "" )
-		);*/
-
-		$details = l_t('All crashed games were un-crashed');
-		if ( $excludeGameIDs )
-			$details .= l_t(', except: %s',$excludeGameIDs);
-		$details .= l_t('. %s games in total.',$count);
-
-		return $details;
-	}
-
 	public function countryReallocate(array $params)
 	{
 		global $DB;
@@ -409,13 +340,6 @@ class adminActions extends adminActionsForms
 			'.l_t('These changes can be reversed with "%s"',$changeBackStr);
 	}
 
-	public function reportMuteToggle(array $params) {
-		global $DB;
-
-		$userID=(int)$params['userID'];
-		$DB->sql_put("UPDATE wD_Users SET muteReports=IF(muteReports='Yes','No','Yes') WHERE id=".$userID);
-		return l_t("User's reporting ability has been toggled.");
-	}
 	public function drawType(array $params)
 	{
 		global $DB;
@@ -508,17 +432,6 @@ class adminActions extends adminActionsForms
 		$DB->sql_put("UPDATE wD_Games SET missingPlayerPolicy = '".$setting."' WHERE id = ".$Game->id);
 		return l_t($msg);
 	}
-
-	public function resetLastProcessTime(array $params)
-	{
-		global $Misc;
-
-		$Misc->LastProcessTime = time();
-		$Misc->write();
-
-		return l_t('Last process time reset');
-	}
-
 	public function setProcessTimeToPhaseConfirm(array $params)
 	{
 		global $DB;
@@ -624,7 +537,7 @@ class adminActions extends adminActionsForms
 		return l_t('Panic button '.($Misc->Panic?'turned on':'turned off'));
 	}
 
-	
+
 
 	public function resetPassConfirm(array $params)
 	{
@@ -704,7 +617,7 @@ class adminActions extends adminActionsForms
 	}
 	public function cancelGame(array $params)
 	{
-		global $DB, $Game;
+		global $DB, $Game, $User;
 
 		$gameID = (int)$params['gameID'];
 
@@ -716,26 +629,35 @@ class adminActions extends adminActionsForms
 
 		if( $Game->phase == 'Diplomacy' or $Game->phase == 'Retreats' or $Game->phase == 'Builds' )
 		{
+			list($gameName, $pot, $potType, $varID) = $DB->sql_row("SELECT name, pot, potType, variantID FROM wD_Games WHERE id=".$gameID);
+			$logInfo = 'Game ID: '.$gameID.' was cancelled. Name: '.$gameName.', Pot: '.$pot.', Pot Type: '.$potType.', VariantID: '.$varID;
+			$tabl = $DB->sql_tabl("SELECT countryID, userID, bet, status FROM wD_Members WHERE gameID=".$gameID);
+			while(list($curCountryID,$curUserID,$curBet,$curStatus) = $DB->tabl_row($tabl))
+			{
+				$logInfo = $logInfo . ', {CountryID: '.$curCountryID.', UserID: '.$curUserID.', Bet: '.$curBet.', Status: '.$curStatus.'}';
+			}
+			$DB->sql_put("INSERT INTO wD_AdminLog ( name, userID, time, details, params )
+									VALUES ( 'Game Cancelled', ".$User->id.", ".time().", '".$logInfo."', '' )");
 			$Game->setCancelled(); // This throws an exception, since it expects to be run from within the
 			// main gamemaster loop, and wants to stop the loop from continuing to use this game after
 			// it has been cancelled. But it also contains its own commit, so the exception does not prevent
 			// the game from being cancelled (it is messy though).
-			
+
 			// This point after $Game->setCancelled(); shouldn't actually be reached.
 		}
 		elseif( $Game->phase == 'Finished' )
 		{
-			/* 
+			/*
 			 * Some special action is needed; this game has already finished.
-			 * 
-			 * We need to get back all winnings that have been distributed first, then we need to 
+			 *
+			 * We need to get back all winnings that have been distributed first, then we need to
 			 * return all starting bets.
-			 * 
-			 * Note: with the introduction of new scoring systems and with the introduction of free takeovers this logic no longer works right. 
-			 * As such it is being commented out. It is more important for moderators to be able to cancel an old game if absolutely necessary 
-			 * and to have to make manual point adjustments then to have this key functionality broken. 
+			 *
+			 * Note: with the introduction of new scoring systems and with the introduction of free takeovers this logic no longer works right.
+			 * As such it is being commented out. It is more important for moderators to be able to cancel an old game if absolutely necessary
+			 * and to have to make manual point adjustments then to have this key functionality broken.
 			 */
-			
+
 			/*$transactions = array();
 			$sumPoints = 0; // Used to ensure the total points transactions add up roughly to 0
 			$tabl = $DB->sql_tabl("SELECT type, points, userID, memberID FROM wD_PointsTransactions WHERE gameID = ".$Game->id
@@ -744,21 +666,21 @@ class adminActions extends adminActionsForms
 			{
 				if( !isset($transactions[$userID])) $transactions[$userID] = array();
 				if( !isset($transactions[$userID][$type])) $transactions[$userID][$type] = 0;
-				
+
 				if( $type != 'Bet' ) $points = $points * -1; // Bets are to be credited back, everything else is to be debited
-				
+
 				if( $type != 'Supplement') $sumPoints += $points;
-				
+
 				$transactions[$userID][$type] += $points;
 			}
-			
+
 			// Check that the total points transactions within this game make sense (i.e. they add up to roughly 0 accounting for rounding errors)
 			if( $sumPoints < (count($transactions)*-1) or count($transactions) < $sumPoints )
 				throw new Exception(l_t("The total points transactions (in a finished game) add up to %s, but there are %s members; ".
 					"cannot cancel game with an unusual points transaction log.", $sumPoints, count($transactions)), 274);
-			
+
 			// The points transactions make sense; we can now try and reverse them.
-			
+
 			// Get the current points each user has
 			$tabl = $DB->sql_tabl("SELECT u.id, u.points FROM wD_Users u INNER JOIN wD_PointsTransactions pt ON pt.userID = u.id WHERE pt.gameID = ".$Game->id
 			." GROUP BY u.id, u.points "
@@ -770,8 +692,8 @@ class adminActions extends adminActionsForms
 				$sumPoints = 0;
 				foreach($transactions[$userID] as $type=>$typePoints)
 					$sumPoints += $typePoints;
-				
-				
+
+
 				if( ( $points + $sumPoints) < 0 )
 				{
 					// If the user doesn't have enough points on hand to pay back the points transactions for this game we will need to supplement him the points to do it:
@@ -780,12 +702,12 @@ class adminActions extends adminActionsForms
 					$DB->sql_put("INSERT INTO wD_PointsTransactions ( type, points, userID, gameID ) VALUES ( 'Supplement', ".$supplementPoints.", ".$userID.", ".$Game->id.")");
 					$DB->sql_put("UPDATE wD_Users SET points = ".$points." WHERE id = ".$userID);
 				}
-				
+
 				// Now we have given the user enough points so their points transactions for this game can definitely be undone:
 				$DB->sql_put("INSERT INTO wD_PointsTransactions ( type, points, userID, gameID ) VALUES ( 'Correction', ".$sumPoints.", ".$userID.", ".$Game->id.")");
 				$points += $sumPoints;
 				$DB->sql_put("UPDATE wD_Users SET points = ".$points." WHERE id = ".$userID);
-				
+
 				// Now check that they don't need a supplement to bring their total points in play back up to 100:
 				$pointsInPlay = User::pointsInPlay($userID);
 				if( ($points + $pointsInPlay) < 100 )
@@ -795,27 +717,37 @@ class adminActions extends adminActionsForms
 					$DB->sql_put("INSERT INTO wD_PointsTransactions ( type, points, userID, gameID ) VALUES ( 'Supplement', ".$supplementPoints.", ".$userID.", ".$Game->id.")");
 					$DB->sql_put("UPDATE wD_Users SET points = ".$points." WHERE id = ".$userID);
 				}
-				
+
 				notice::send(
 					$userID, $Game->id, 'Game',
-					'No', 'No', 
+					'No', 'No',
 					l_t("This game has been cancelled after having finished (usually to undo the effects of cheating). ".
 						"%s points had to be added/taken from your account to undo the effects of the game. ".
-					"Please contact the mod team with any queries.", $sumPoints, $points), 
+					"Please contact the mod team with any queries.", $sumPoints, $points),
 					$Game->name, $Game->id);
 			}*/
-			
+
 			// Now backup and erase the game from existence, then commit:
+			list($gameName, $pot, $potType, $varID) = $DB->sql_row("SELECT name, pot, potType, variantID FROM wD_Games WHERE id=".$gameID);
+			$logInfo = 'Game ID: '.$gameID.' was cancelled. Name: '.$gameName.', Pot: '.$pot.', Pot Type: '.$potType.', VariantID: '.$varID;
+			$tabl = $DB->sql_tabl("SELECT countryID, userID, bet, status FROM wD_Members WHERE gameID=".$gameID);
+			while(list($curCountryID,$curUserID,$curBet,$curStatus) = $DB->tabl_row($tabl))
+			{
+				$logInfo = $logInfo . ', {CountryID: '.$curCountryID.', UserID: '.$curUserID.', Bet: '.$curBet.', Status: '.$curStatus.'}';
+			}
+			$DB->sql_put("INSERT INTO wD_AdminLog ( name, userID, time, details, params )
+									VALUES ( 'Game Cancelled', ".$User->id.", ".time().", '".$logInfo."', '' )");
 			processGame::eraseGame($Game->id);
 		}
 		else
 		{
 			throw new Exception(l_t('This game is in phase %s, so it can\'t be cancelled',$Game->phase), 987);
 		}
-		
+
 		// $DB->sql_put("COMMIT"); // $
 
-		return l_t('This game was cancelled.'); 
+
+		return l_t('This game was cancelled.');
 	}
 	public function togglePause(array $params)
 	{
@@ -869,7 +801,7 @@ class adminActions extends adminActionsForms
 				throw new Exception(l_t("Invalid phase to set CD"));
 			}
 
-			// If the game hasn't started check if there's just 1 person in it. If there is then delete the game, otherwise remove that 1 user.  
+			// If the game hasn't started check if there's just 1 person in it. If there is then delete the game, otherwise remove that 1 user.
 			else if( $Game->phase == 'Pre-game' )
 			{
 				if(count($Game->Members->ByID)==1) {
@@ -877,7 +809,7 @@ class adminActions extends adminActionsForms
 				}
 				else{
 					$DB->sql_put("DELETE FROM wD_Members WHERE gameID = ".$Game->id." AND userID = ".$params['userID']);
-					
+
 					// If there are still people in the game reset the min bet in case the game was full to readd the join button.
 					$Game->resetMinimumBet();
 				}
@@ -905,11 +837,11 @@ class adminActions extends adminActionsForms
 		return l_t('This user was put into civil-disorder'.
 			((isset($params['gameID']) && $params['gameID'])?', in this game':', in all his games'));
 	}
-	
+
 	public function replaceCoutries(array $params)
 	{
 		global $DB;
-		
+
 		$gameIDs   = (int)$params['gameIDs'];
 		$userID    = (int)$params['userID'];
 		$replaceID = (int)$params['replaceID'];
@@ -919,7 +851,7 @@ class adminActions extends adminActionsForms
 				WHERE status = "Playing" AND userID = "'.$userID.'"'.($gameIDs != 0 ? ' AND gameID = "'.$gameIDs.'"':'') );
 		while(list($gameID) = $DB->tabl_row($tabl))
 			$games[] = $gameID;
-		
+
 		// Load the two users as Userobjects.
 		try
 		{
@@ -929,7 +861,7 @@ class adminActions extends adminActionsForms
 		{
 			$error = l_t("Invalid user ID given.");
 		}
-		
+
 		try
 		{
 			$SendFromUser = new User($userID);
@@ -939,25 +871,25 @@ class adminActions extends adminActionsForms
 			$error = l_t("Invalid user ID given.");
 		}
 		$ret = '';
-		
+
 		foreach ($games AS $gameID)
 		{
 			$Variant=libVariant::loadFromGameID($gameID);
 			$Game = $Variant->Game($gameID);
-		
+
 			list($blocked) = $DB->sql_row("SELECT count(*) FROM wD_Members AS m WHERE m.gameID = ".$Game->id);
-			
-			// Check for additional requirements:	 
+
+			// Check for additional requirements:
 			if ( $Game->minimumReliabilityRating > $SendToUser->reliabilityRating)
 			{
 				$ret .= '<b>Error:</b> The reliability of '.$SendToUser->username.' is not high enough to join the game <a href="board.php?gameID='.$Game->id.'">'.$Game->name.'</a>.<br>';
 			}
-			
+
 			elseif ( array_key_exists ( $SendToUser->id , $Game->Members->ByUserID))
 			{
 				$ret .= '<b>Error:</b> '.$SendToUser->username.' is already a member of the game <a href="board.php?gameID='.$Game->id.'">'.$Game->name.'</a>.<br>';
 			}
-			
+
 			else
 			{
 				$DB->sql_put("UPDATE wD_Members SET userID = ".$SendToUser->id." WHERE userID=".$SendFromUser->id." AND gameID=".$Game->id);
@@ -969,19 +901,19 @@ class adminActions extends adminActionsForms
 	public function replaceCoutriesConfirm(array $params)
 	{
 		global $DB;
-		
+
 		$userID    = (int)$params['userID'];
 		$replaceID = (int)$params['replaceID'];
 		$gameIDs   = (int)$params['gameIDs'];
-		
+
 		list($userName)    = $DB->sql_row("SELECT username FROM wD_Users WHERE id=".$userID);
 		list($replaceName) = $DB->sql_row("SELECT username FROM wD_Users WHERE id=".$replaceID);
-		
+
 		if ($gameIDs == 0)
 		{
 			return 'The user '.$userName.' will be removed and replaced by '.$replaceName.' in all his active games.';
 		}
-		
+
 		list($gameName) = $DB->sql_row("SELECT name FROM wD_Games WHERE id=".$gameIDs);
 		return 'In game '.$gameName.' (id='.$gameIDs.') the user '.$userName.' will be removed and replaced by '.$replaceName.'.';
 	}
@@ -998,10 +930,7 @@ class adminActions extends adminActionsForms
 		return l_t('Are you sure you want to ban %s (Reason: "%s")? Restoring mistakenly removed points takes a long time, so be sure this is correct!',
 			$User->username,$DB->msg_escape($params['reason']));
 	}
-	public function banIP(array $params)
-	{
-		User::banIP(ip2long($ip));
-	}
+	
 	public function banUser(array $params)
 	{
 		global $User, $DB, $Game;
@@ -1050,7 +979,7 @@ class adminActions extends adminActionsForms
 				else
 				{
 					$DB->sql_put("DELETE FROM wD_Members WHERE gameID = ".$Game->id." AND userID = ".$userID);
-					
+
 					// If there are still people in the game reset the min bet in case the game was full to readd the join button.
 					$Game->resetMinimumBet();
 				}
@@ -1064,7 +993,7 @@ class adminActions extends adminActionsForms
 
 					// It is worth adding an extension
 					$DB->sql_put(
-						"UPDATE wD_Games 
+						"UPDATE wD_Games
 						SET processTime = ".time()." + phaseMinutes*60
 						WHERE id = ".$Game->id
 					);
@@ -1107,14 +1036,30 @@ class adminActions extends adminActionsForms
 	public function tempBan(array $params)
 	{
 		global $DB;
-		
+
 		$userID = (int)$params['userID'];
 		$days   = (int)$params['ban'];
- 		$DB->sql_put("UPDATE wD_Users SET tempBan = ". ( time() + ($days * 86400) )." WHERE id=".$userID);
- 		if ($days == 0)
+		User::tempBanUser($userID, $days);
+		if ($days == 0)
 			return 'This user is now unblocked and can join and create games again.';
-			
-		return 'This user is now blocked from joining and creating games for <b>'.$days.'</b> days.';
+
+		return 'This user is now blocked from joining, rejoining, and creating games for <b>'.$days.'</b> days.';
+	}
+	public function modExcuseDelay(array $params)
+	{
+		global $DB;
+
+		$userID = (int)$params['userID'];
+		$excuseID   = (int)$params['excuseID'];
+
+		if( !isset($params['reason']) || strlen($params['reason'])==0 )
+			return l_t('Couldn\'t ban user; no reason was given.');
+
+		$modReason = $DB->msg_escape($params['reason']);
+
+		$DB->sql_put("UPDATE wD_MissedTurns SET modExcused = 1, modExcusedReason = '".$modReason."' WHERE id=".$excuseID);
+
+		return 'This user\'s missed turn has been excused.';
 	}
 	public function givePoints(array $params)
 	{
@@ -1142,9 +1087,9 @@ class adminActions extends adminActionsForms
 		$userID = (int)$params['userID'];
 		$setting = (int)$params['setting'];
 		$targetUser = new User($userID);
-		
+
 		if( $setting >= 0 ) { $targetUser->updateEmergencyPauseDate($setting); }
-		
+
 		return 'This users emergency pause date was set to '.$setting;
 	}
 	public function unbanUser(array $params)
@@ -1171,10 +1116,58 @@ class adminActions extends adminActionsForms
 
 		$userID = (int)$params['userID'];
 		$gameID = (int)$params['gameID'];
-		
+
 		$DB->sql_put("UPDATE wD_Games SET directorUserID = ".$userID." WHERE id = ".$gameID);
-		
+
 		return l_t("The specified user ID has been assigned as the director for this game.");
+	}
+
+	public function excusedMissedTurnsIncreaseAll(array $params)
+	{
+		global $DB;
+
+		$gameID = (int)$params['gameID'];
+
+		$DB->sql_put("UPDATE wD_Members SET excusedMissedTurns = excusedMissedTurns + 1 WHERE gameID = ".$gameID);
+		return l_t("All users in this game have been given an extra excused missed turn.");
+	}
+
+	public function excusedMissedTurnsDecreaseAll(array $params)
+	{
+		global $DB;
+
+		$gameID = (int)$params['gameID'];
+
+		$DB->sql_put("UPDATE wD_Members SET excusedMissedTurns = excusedMissedTurns - 1 WHERE gameID = ".$gameID." and excusedMissedTurns > 0");
+		return l_t("All users in this game have had an excused missed turn removed.");
+	}
+
+	public function excusedMissedTurnsIncrease(array $params)
+	{
+		global $DB;
+
+		$userIDtoUpdate = (int)$params['userID'];
+		$gameID = (int)$params['gameID'];
+
+		if ($userIDtoUpdate > 0)
+		{
+			$DB->sql_put("UPDATE wD_Members SET excusedMissedTurns = excusedMissedTurns + 1 WHERE gameID = ".$gameID." and userID = ".$userIDtoUpdate);
+			return l_t("UserID: ".$userIDtoUpdate." has been given an extra excused missed turn in this game.");
+		}
+	}
+
+	public function excusedMissedTurnsDecrease(array $params)
+	{
+		global $DB;
+
+		$userIDtoUpdate = (int)$params['userID'];
+		$gameID = (int)$params['gameID'];
+
+		if ($userIDtoUpdate > 0)
+		{
+			$DB->sql_put("UPDATE wD_Members SET excusedMissedTurns = excusedMissedTurns - 1 WHERE gameID = ".$gameID." and userID = ".$userIDtoUpdate." and excusedMissedTurns > 0");
+			return l_t("UserID: ".$userIDtoUpdate." has had an excused missed turn removed in this game.");
+		}
 	}
 }
 

@@ -34,7 +34,7 @@ class panelMember extends Member
 	function memberSentMessages()
 	{
 		global $User;
-		if($this->Game->Members->isJoined())
+		if($this->Game->Members->isJoined() && !$this->Game->Members->isTempBanned())
 			if(in_array($this->countryID,$this->Game->Members->ByUserID[$User->id]->newMessagesFrom))
 				return libHTML::unreadMessages('board.php?gameID='.$this->gameID.'&msgCountryID='.$this->countryID.'#chatbox');
 	}
@@ -49,8 +49,12 @@ class panelMember extends Member
 		libHTML::alternate();
 		
 		global $checkMissingOrders;
-		
-		if ( $this->Game->phase != 'Pre-game' && $this->Game->phase != 'Finished')
+
+		if( $this->Game->Members->isTempBanned() )
+		{
+			$buf .= '<div class="panelTempBanned"><b>You are blocked from rejoining this game.</b></div>';
+		}
+		elseif ( $this->Game->phase != 'Pre-game' && $this->Game->phase != 'Finished')		
 		{
 			global $DB;
 			
@@ -95,12 +99,13 @@ class panelMember extends Member
 			<td class="memberRightSide '.
 				($this->status=='Left'||$this->status=='Resigned'||$this->status=='Defeated'?'memberStatusFade':'').
 				'">
-				<div>
-				<div class="memberUserDetail">
+				<div>'.
+				( $this->Game->Members->isTempBanned() ? '':
+				'<div class="memberUserDetail">
 					'.$this->memberFinalizedFull().'<br />
 					'.$this->memberMessagesFull().'
-				</div>
-				<div class="memberGameDetail">
+				</div>').
+				'<div class="memberGameDetail">
 					'.$this->memberGameDetail().'
 				</div>
 				<div style="clear:both"></div>
@@ -138,8 +143,6 @@ class panelMember extends Member
 			return l_t('No unread messages');
 	}
 
-	
-	
 	/**
 	 * The messages icon
 	 * @return string
@@ -201,6 +204,15 @@ class panelMember extends Member
 
 		return $this->isLastSeenHidden;
 	}
+
+	private $isMissedTurnsHidden;
+	function isMissedTurnsHidden()
+	{
+		$this->isMissedTurnsHidden = $this->isNameHidden();
+		
+		return $this->isMissedTurnsHidden;
+	}
+
 	/**
 	 * The name of the user playing as this member, his points, and whether he's logged on
 	 * @return string
@@ -324,8 +336,7 @@ class panelMember extends Member
 			$buf .=  libHTML::points();
 			return $buf;
 		}
-		elseif ( $this->status == 'Won' ||
-			($this->Game->potType == 'Points-per-supply-center' &&  $this->status == 'Survived') || $this->status == 'Drawn' )
+		elseif ( $this->status == 'Won' || ($this->Game->potType == 'Points-per-supply-center' &&  $this->status == 'Survived') || $this->status == 'Drawn' )
 		{
 			$buf .= l_t('won:').' <em';
 			$value = $this->pointsWon;
@@ -448,7 +459,7 @@ class panelMember extends Member
 	 */
 	function memberVotes()
 	{
-        	global $User;
+        global $User;
 
 		$buf=array();
 		foreach($this->votes as $voteName)
@@ -456,8 +467,7 @@ class panelMember extends Member
 			if ( $voteName == 'Pause' && $this->Game->processStatus=='Paused' )
 				$voteName = 'Unpause';
 			// Do we hide draws?
-			if ( $voteName == 'Draw' && $this->Game->drawType == 'draw-votes-hidden' 
-				&& $User->id != $this->userID ) 
+			if ( $voteName == 'Draw' && $this->Game->drawType == 'draw-votes-hidden' && $User->id != $this->userID ) 
 			{
 				// Moderators can see draws in games they're not in
 				if (($User->type['Moderator']) && (! $this->Game->Members->isJoined())) 
@@ -470,9 +480,7 @@ class panelMember extends Member
 		}
 
 		// Display hidden draw votes message if appropriate
-		if ( $this->Game->drawType == 'draw-votes-hidden'
-			&& $User->id != $this->userID 
-			&& !(($User->type['Moderator']) && (! $this->Game->Members->isJoined()))) 
+		if ( $this->Game->drawType == 'draw-votes-hidden' && $User->id != $this->userID && !(($User->type['Moderator']) && (! $this->Game->Members->isJoined()))) 
 			$buf[]=l_t("(any draw votes are hidden)");
 
 		if( count($buf) )
@@ -489,9 +497,16 @@ class panelMember extends Member
 	{
 		$buf = '<span class="memberName">'.$this->memberName().'</span> ';
 
-		if( $this->Game instanceof panelGameBoard
-			&& $this->status == 'Playing' && $this->Game->phase != 'Finished' )
+		if( $this->Game instanceof panelGameBoard && $this->status == 'Playing' && $this->Game->phase != 'Finished' )
 		{
+			if(!$this->isMissedTurnsHidden())
+			{
+				if($this->Game->excusedMissedTurns > 0)
+					$buf .= ' - '.l_t('Delays left: %s of %s','<span class="excusedNMRs">'.$this->excusedMissedTurns.'</span>','<span class="excusedNMRs">'.$this->Game->excusedMissedTurns.'</span>');
+				
+				if ( $this->missedPhases >= 1 )
+					$buf .= ' - <span class="missedPhases">'.l_t('Delayed last turn').'</span>';
+			}
 			if ( !$this->isLastSeenHidden() )
 				$buf .= '<br /><span class="memberLastSeen">
 						'.l_t('Last seen:').' <strong>'.$this->lastLoggedInTxt().'</strong>';
@@ -500,13 +515,8 @@ class panelMember extends Member
 			if($voteList)
 				$buf .= '<br />'.$voteList;
 
-			if ( $this->missedPhases == 2 )
-				$buf .= '<br /><span class="missedPhases">'.l_t('Missed the last phase').'</span>';
-
 			$buf .= '</span>';
 		}
-
-
 		return $buf;
 	}
 
@@ -528,7 +538,8 @@ class panelMember extends Member
 		return '<span class="member'.$this->id.'StatusIcon">'.$this->orderStatus->iconAnon().'</span>';
 	}
 
-	private function muteMember() {
+	private function muteMember() 
+	{
 		global $User;
 
 		static $alreadyMuted;
@@ -539,7 +550,8 @@ class panelMember extends Member
 			$User->toggleCountryMute($this->gameID, $this->countryID);
 	}
 
-	private function muteIcon() {
+	private function muteIcon() 
+	{
 		global $User;
 
 		$buf = '';
@@ -547,7 +559,8 @@ class panelMember extends Member
 		{
 			$isMuted = $User->isCountryMuted($this->gameID, $this->countryID);
 
-			if( isset($_REQUEST['toggleMute']) && $_REQUEST['toggleMute']==$this->countryID) {
+			if( isset($_REQUEST['toggleMute']) && $_REQUEST['toggleMute']==$this->countryID) 
+			{
 				$this->muteMember();
 				$isMuted = !$isMuted;
 			}

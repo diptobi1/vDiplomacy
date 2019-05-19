@@ -200,6 +200,12 @@ class User {
 	 * @var int
 	 */
 	public $emergencyPauseDate;
+
+	/**
+	 * number of phases the user has played this year
+	 * @var int
+	 */
+	public $yearlyPhaseCount;
 	
 	/**
 	 * Number of available points
@@ -680,7 +686,8 @@ class User {
 			u.deletedCDs, 
 			c.modLastCheckedOn,
 			c.modLastCheckedBy,
-			u.emergencyPauseDate
+			u.emergencyPauseDate, 
+			u.yearlyPhaseCount
 			FROM wD_Users u
 			LEFT JOIN wD_Sessions s ON ( u.id = s.userID )
 			LEFT JOIN wD_UserConnections c on ( u.id = c.userID )
@@ -983,6 +990,33 @@ class User {
 			self::banIP($ip, $userID);
 	}
 
+	/**
+	 * Temporary prevent a user from joining games.
+	 * 
+	 * @param int $userID The id of the user to be temp banned.
+	 * @param int $days The time of the ban in days.
+	 * @param boolean $overwrite True, if the temp ban value should be overwritten
+	 *		in any case. If false, an existing temp ban might be only extended (for
+	 *		automated temp bans).
+	 */
+	public static function tempBanUser($userID, $days, $overwrite = true)
+	{
+		global $DB;
+		
+		/*
+		 * If the temp ban value should only be extended (no overwrite), check
+		 * if the given time span would extend the ban. If not, do nothing.
+		 */
+		if(!$overwrite)
+		{
+			list($tempBan) = $DB->sql_row("SELECT tempBan FROM wD_Users WHERE id = ".$userID);
+		
+			if( $tempBan > time() + ($days * 86400) ) return;
+		}
+		
+		$DB->sql_put("UPDATE wD_Users SET tempBan = ". ( time() + ($days * 86400) )." WHERE id=".$userID);
+	}
+
 	public function rankingDetails()
 	{
 		global $DB, $Misc;
@@ -1217,7 +1251,8 @@ class User {
 			return $pointsInPlay;
 	}
 
-	public function getMuteUsers() {
+	public function getMuteUsers() 
+	{
 		global $DB;
 
 		static $muteUsers;
@@ -1230,10 +1265,14 @@ class User {
 
 		return $muteUsers;
 	}
-	public function isUserMuted($muteUserID) {
+
+	public function isUserMuted($muteUserID) 
+	{
 		return in_array($muteUserID,$this->getMuteUsers());
 	}
-	public function toggleUserMute($muteUserID) {
+
+	public function toggleUserMute($muteUserID) 
+	{
 		global $DB;
 		$muteUserID = (int)$muteUserID;
 		if( $this->isUserMuted($muteUserID) )
@@ -1241,7 +1280,9 @@ class User {
 		else
 			$DB->sql_put("INSERT INTO wD_MuteUser (userID, muteUserID) VALUES (".$this->id.",".$muteUserID.")");
 	}
-	public function getMuteCountries($gameID=-1) {
+
+	public function getMuteCountries($gameID=-1) 
+	{
 		global $DB;
 		$gameID = (int) $gameID;
 
@@ -1264,7 +1305,9 @@ class User {
 
 		return $muteCountries[$gameID];
 	}
-	public function getLikeMessages() {
+
+	public function getLikeMessages() 
+	{
 		global $DB;
 
 		static $likeMessages;
@@ -1278,7 +1321,9 @@ class User {
 
 		return $likeMessages;
 	}
-	public function likeMessageToggleLink($messageID, $fromUserID=-1) {
+
+	public function likeMessageToggleLink($messageID, $fromUserID=-1) 
+	{
 		
 		if( $this->type['User'] && $this->id != $fromUserID && !in_array($messageID, $this->getLikeMessages()))
 			return '<a id="likeMessageToggleLink'.$messageID.'" 
@@ -1288,7 +1333,9 @@ class User {
 			'+1</a>';
 		else return '';
 	}
-	public function getMuteThreads($refresh=false) {
+
+	public function getMuteThreads($refresh=false) 
+	{
 		global $DB;
 
 		static $muteThreads;
@@ -1303,10 +1350,13 @@ class User {
 		return $muteThreads;
 	}
 	
-	public function isThreadMuted($threadID) {
+	public function isThreadMuted($threadID) 
+	{
 		return in_array($threadID,$this->getMuteThreads($threadID));
 	}
-	public function toggleThreadMute($threadID) {
+
+	public function toggleThreadMute($threadID) 
+	{
 		global $DB;
 		
 		if( $this->isThreadMuted($threadID)) 
@@ -1316,10 +1366,14 @@ class User {
 	
 		$this->getMuteThreads(true);
 	}
-	public function isCountryMuted($gameID, $muteCountryID) {
+
+	public function isCountryMuted($gameID, $muteCountryID) 
+	{
 		return in_array($muteCountryID,$this->getMuteCountries($gameID));
 	}
-	public function toggleCountryMute($gameID,$muteCountryID) {
+
+	public function toggleCountryMute($gameID,$muteCountryID) 
+	{
 		global $DB;
 		$gameID = (int)$gameID;
 		$muteCountryID = (int)$muteCountryID;
@@ -1339,7 +1393,6 @@ class User {
 	 */
 	public function getBlockUsers() {
 		global $DB;
-
 		static $blockUsers;
 		if( isset($blockUsers) ) return $blockUsers;
 		$blockUsers = array();
@@ -1406,5 +1459,41 @@ class User {
 		$DB->sql_put("update wD_Users set emergencyPauseDate = ".$updateDate." where id =".$this->id);
 	}
 
+	/*
+	 * Get the number of total non excused missed turns this year. 
+	 */
+	public function getYearlyUnExcusedMissedTurns() 
+	{
+		global $DB;
+		list($totalMissedTurns) = $DB->sql_row("
+		SELECT COUNT(1) FROM wD_MissedTurns t  
+		WHERE t.userID = ".$this->id." AND t.modExcused = 0 and t.samePeriodExcused = 0 and t.systemExcused = 0 and t.turnDateTime > ".(time() - 31536000));
+		
+		return $totalMissedTurns;
+	}
+
+	/*
+	 * Get the number of total non excused missed turns in the past 4 weeks. 
+	 */
+	public function getRecentUnExcusedMissedTurns() 
+	{
+		global $DB;
+		list($totalMissedTurns) = $DB->sql_row("SELECT COUNT(1) FROM wD_MissedTurns t  
+			WHERE t.userID = ".$this->id." AND t.modExcused = 0 and t.samePeriodExcused = 0 and t.systemExcused = 0 and t.turnDateTime > ".(time() - 2419200));
+		
+		return $totalMissedTurns;
+	}
+
+	/*
+	 * Get the number of missed turns in the past year. 
+	 */
+	public function getMissedTurns() 
+	{
+		global $DB;
+		list($totalMissedTurns) = $DB->sql_row("SELECT COUNT(1) FROM wD_MissedTurns t  
+			WHERE t.userID = ".$this->id." AND t.modExcused = 0 and t.turnDateTime > ".(time() - 2419200));
+		
+		return $totalMissedTurns;
+	}
 }
 ?>

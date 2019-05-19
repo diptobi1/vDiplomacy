@@ -265,63 +265,39 @@ class panelGame extends Game
 
 		$buf .= $this->gameVariants();
 
+		$buf .= '<div class="titleBarRightSide">'.
+					l_t('%s excused missed turn','<span class="excusedNMRs">'.$this->excusedMissedTurns.'</span>').
+				'</div>';
+
+		$buf .= '<div style="clear:both"></div>';
+
 		return $buf;
 	}
 
-	function gameVariants() {
+	function gameVariants() 
+	{
 	
 		global $User;
 		
 		$alternatives=array();
 		if( $this->variantID!=1 )
 			$alternatives[]=$this->Variant->link();
+
 		if( $this->pressType=='NoPress')
-			$alternatives[]='<a href="press.php#gunboat">'.l_t('Gunboat').'</a>';
+			$alternatives[]=l_t('No messaging');
 		elseif( $this->pressType=='RulebookPress')
 			$alternatives[]='<a href="press.php#rulebook">'.l_t('Rulebook press').'</a>';
 		elseif( $this->pressType=='PublicPressOnly' )
 			$alternatives[]='<a href="press.php#publicPress">'.l_t('Public Press').'</a>';
-		if( $this->anon=='Yes' )
-			$alternatives[]=l_t('Anon');
-		if( $this->chooseYourCountry=='Yes' )
-			$alternatives[]=l_t('ChooseYourCountry');
-		if( $this->chessTime > 0)
-			$alternatives[]=l_t('Chess:'.$this->chessTime." min.");
-			
-		// The NMR-policy defaults
-		if( ($this->specialCDturn != Config::$specialCDturnsDefault || $this->specialCDcount != Config::$specialCDcountDefault) && $this->specialCDturn >= $this->turn)
-		{
-			if ( $this->specialCDturn == 0 )
-				$alternatives[]=l_t('NMR: Off');
-			elseif( $this->specialCDturn == 5  && $this->specialCDcount == 2 )
-				$alternatives[]=l_t('NMR: Committed');
-			elseif( $this->specialCDturn > 90 && $this->specialCDcount > 90 )
-				$alternatives[]=l_t('NMR: Serious');
-			else
-			
-				$alternatives[]='NMR:'.($this->specialCDturn > 90 ? '&infin;' : $this->specialCDturn).'/'.($this->specialCDcount > 90 ? '&infin;' : ($this->specialCDcount == 0 ? 'off' : $this->specialCDcount));
-		}
-		
-		//	Show the end of the game in the options if set.
-		if(( $this->targetSCs > 0) && ($this->maxTurns > 0))
-			$alternatives[]='EoG: '.$this->targetSCs.' SCs or "'.$this->Variant->turnAsDate($this->maxTurns -1).'"';
-		elseif( $this->maxTurns > 0)
-			$alternatives[]='EoG: "'.$this->Variant->turnAsDate($this->maxTurns -1).'"';
-		elseif( $this->targetSCs > 0)
-			$alternatives[]='EoG: '.$this->targetSCs.' SCs';
-			
-		if( $this->rlPolicy=='Friends')
-			$alternatives[]=l_t('OnlyFriends');
 
-		// Use hardcoded explainations (with link) with the old names...
-		// $alternatives[]=$this->Scoring->longName();
-		if( $this->potType=='Winner-takes-all' && $this->pot > 0 )
-			$alternatives[]='<b><a href="points.php#ppscwta">'.l_t('WTA').'</a></b>';
-		elseif ($this->potType=='Points-per-supply-center' && $this->pot > 0 )
-			$alternatives[]='<b><a href="points.php#ppscwta">'.l_t('PPSC').'</a></b>';
-		
-		if( $this->drawType=='draw-votes-hidden') 
+		if( $this->anon=='Yes' )
+			$alternatives[]=l_t('Anonymous players');
+
+		$alternatives[]=$this->Scoring->longName();
+
+		if( $this->drawType=='draw-votes-hidden')
 			$alternatives[]=l_t('Hidden draw votes');
+			
 		if( $this->missingPlayerPolicy=='Wait' )
 			$alternatives[]=l_t('Wait for orders');
 			
@@ -333,7 +309,6 @@ class panelGame extends Game
 			return '<div class="titleBarLeftSide">
 				<span class="gamePotType">'.implode(', ',$alternatives).'</span>
 				</div>
-			<div style="clear:both"></div>
 			';
 		else
 			return '';
@@ -345,23 +320,24 @@ class panelGame extends Game
 	 */
 	function gameHoursPerPhase()
 	{
-		$buf = l_t('<strong>%s</strong> /phase',libTime::timeLengthText($this->phaseMinutes*60)).
-			' <span class="gameTimeHoursPerPhaseText">(';
+		$buf = l_t('<strong>%s</strong> /phase',libTime::timeLengthText($this->phaseMinutes*60));
+			// <span class="gameTimeHoursPerPhaseText">(';
 
-		if ( $this->isLiveGame() && $this->fixStart == 'No' )
-			$buf .= l_t('live');
-		elseif ( $this->phaseMinutes < 6*60 )
-			$buf .= l_t('very fast');
-		elseif ( $this->phaseMinutes < 16*60 )
-			$buf .= l_t('fast');
-		elseif ( $this->phaseMinutes < 36*60 )
-			$buf .= l_t('normal');
-		elseif ( $this->phaseMinutes < 3*24*60 )
-			$buf .= l_t('slow');
-		else
-			$buf .= l_t('very slow');
+		// if ( $this->isLiveGame() )
+		// 	$buf .= l_t('live');
+		// elseif ( $this->phaseMinutes < 6*60 )
+		// 	$buf .= l_t('very fast');
+		// elseif ( $this->phaseMinutes < 16*60 )
+		// 	$buf .= l_t('fast');
+		// elseif ( $this->phaseMinutes < 36*60 )
+		// 	$buf .= l_t('normal');
+		// elseif ( $this->phaseMinutes < 3*24*60 )
+		// 	$buf .= l_t('slow');
+		// else
+		// 	$buf .= l_t('very slow');
 
-		return $buf .')</span>';
+		return $buf ;
+		// .')</span>';
 	}
 
 	/**
@@ -414,8 +390,8 @@ class panelGame extends Game
 	{
 		$occupationBar = $this->Members->occupationBar();
 		$buf = '';
-		if ($this->moderatorSeesMemberInfo()) 
-		{                                                
+		if ($this->moderatorSeesMemberInfo())
+		{
                 	$buf .= '<div class="bar titleBar modEyes">Anonymous</div>';
 		}
 		$buf .= '<div class="panelBarGraph occupationBar">
@@ -498,15 +474,22 @@ class panelGame extends Game
 			else
 				return '';
 		}
-		else 
+		else
 		{
 			$buf = '';
-			
-			if ($User->tempBan > time()) 
+
+			if ($User->tempBan > time())
 			{
 				$tempBanned = 1;
 			}
-			
+
+			if ($this->minimumReliabilityRating > 0 && $User->type['User'])
+			{
+				$buf .= l_t('Required Reliability: <span class="%s">%s%%</span><br/>',
+					($User->reliabilityRating < $this->minimumReliabilityRating ? 'Austria' :'Italy'),
+					($this->minimumReliabilityRating));
+			}
+
 			if ($this->minimumReliabilityRating > 0)
 			{
 				$buf .= l_t('Minimum Reliability Rating: <span class="%s">%s%%</span>. ',
@@ -589,6 +572,21 @@ class panelGame extends Game
 					}
 				}
 			}
+			if ($User->type['User'])
+			{
+				if ($User->tempBan > time())
+				{
+					$buf .= '<span style="font-size:75%;">(Due to a temporary ban you cannot join games.)</span>';
+				}
+				elseif ($User->reliabilityRating < $this->minimumReliabilityRating)
+				{
+					$buf .= '<span style="font-size:80%;">(You are not reliable enough to join this game.)</span>';
+				}
+				elseif ($User->points < $this->minimumBet)
+				{
+					$buf .= '<span style="font-size:80%;">(You have too few points to join this game.)</span>';
+				}
+			}
 			if( $User->type['User'] && $this->phase != 'Finished')
 			{
 				$buf .= '<form method="post" action="redirect.php">'
@@ -603,7 +601,7 @@ class panelGame extends Game
 				$buf .= '</form>';
 			}
 		}
-		
+
 		return $buf;
 	}
 

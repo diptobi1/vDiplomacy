@@ -80,6 +80,9 @@ function error_handler($errno, $errstr, $errfile=false, $errline=false, $errcont
 	}
 
 	// PHP's print_r() is terrible, heap corruption errors all the time
+if (!function_exists('recursiveprint'))
+{
+ 
 	function recursiveprint ( &$array, $depth )
 	{
 		$tab = '';
@@ -109,7 +112,7 @@ function error_handler($errno, $errstr, $errfile=false, $errline=false, $errcont
 
 		return $tracetxt;
 	}
-
+}
 	$error .= ($errcontext ? 'Variable dump: '.recursiveprint($errcontext, 1)."\n\n" : '');
 
 	$bt = debug_backtrace();

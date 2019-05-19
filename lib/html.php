@@ -29,7 +29,7 @@
 
 class libHTML
 {
-	public static function pageTitle($title, $description=false) 
+	public static function pageTitle($title, $description=false)
 	{
 		return '<div class="content-bare content-board-header content-title-header">
 <div class="pageTitle barAlt1">
@@ -335,7 +335,7 @@ class libHTML
 			return $output;
 	}
 
-	public static function threadLink($postID) 
+	public static function threadLink($postID)
 	{
 		global $DB;
 
@@ -520,12 +520,12 @@ class libHTML
 					<p class="notice">'.l_t('You do not have JavaScript enabled. It is required to use webDiplomacy fully.').'</p>
 				</div></noscript>';
 
-		print self::globalNotices();
+//		print self::globalNotices();
 
 		if (isset($User) && $User->tempBan > time())
 		{
 			print '<div class="content-notice">
-					<p class="notice"><br>'.l_t('You are blocked from joining or creating new games for %s.',libTime::remainingText($User->tempBan)).'<br><br><hr></p>
+					<p class="notice"><br>'.l_t('You are blocked from joining, rejoining, or creating new games for %s.',libTime::remainingText($User->tempBan)).'<br><br><hr></p>
 				</div>';
 		}
 		
@@ -572,7 +572,7 @@ class libHTML
 	 */
 	static private function globalNotices()
 	{
-		global $Misc, $User;
+		global $Misc, $User, $DB;
 		$notice=array();
 		if ( $Misc->Maintenance and isset($User) and $User->type['Admin'])
 		{
@@ -587,11 +587,15 @@ class libHTML
 
 		if ( $Misc->Panic )
 		{
-			$notice[]=Config::$serverMessages['Panic'];
+			list($contents) = $DB->sql_row("SELECT message FROM wD_Config WHERE name = 'Panic'");
+			$notice[]=$contents;
 		}
 
 		if ( $Misc->Notice )
-			$notice[] = Config::$serverMessages['Notice'];
+		{
+			list($contents) = $DB->sql_row("SELECT message FROM wD_Config WHERE name = 'Notice'");
+			$notice[]=$contents;
+		}
 
 		if ( ( time() - $Misc->LastProcessTime ) > Config::$downtimeTriggerMinutes*60 )
 			$notice[] = l_t("The last process time was over %s minutes ".
@@ -623,8 +627,9 @@ class libHTML
 			FROM wD_Members m
 			INNER JOIN wD_Games g ON ( m.gameID = g.id )
 			WHERE m.userID = ".$User->id."
-				AND ( ( NOT m.orderStatus LIKE '%Ready%' AND NOT m.orderStatus LIKE '%None%' AND g.phase != 'Finished' ) OR NOT ( (m.newMessagesFrom+0) = 0 ) ) ORDER BY  g.processStatus ASC, g.processTime ASC");
-
+				AND ( ( NOT m.orderStatus LIKE '%Ready%' AND NOT m.orderStatus LIKE '%None%' AND g.phase != 'Finished' ) OR NOT ( (m.newMessagesFrom+0) = 0 ) ) ".
+				( ($User->tempBan > time()) ? "AND m.status != 'Left'" : "" ) // ingore left games of temp banned user who are banned from rejoining
+				." ORDER BY  g.processStatus ASC, g.processTime ASC");
 		$gameIDs = array();
 		$notifyGames = array();
 		while ( $game = $DB->tabl_hash($tabl) )
@@ -951,19 +956,22 @@ class libHTML
 					$menu.='
 					<div id="navSubMenu" class="clickable nav-tab">Search ▼
                         <div id="nav-drop">
-                       		<a href="profile.php">Find User</a>
-							<a href="detailedSearch.php" title="advanced search of users and games">Search Games</a> 
+							<a href="profile.php">Find User</a>
+							<a href="gamelistings.php?page-games=1&gamelistType=Search">Game Search</a>
+							<a href="detailedSearch.php" title="advanced search of users and games">Advanced Search</a>
                        		<a href="halloffame.php">Hall of Fame</a>
 						</div>
 					</div>
 					<div id="navSubMenu" class="clickable nav-tab">Games ▼
                         <div id="nav-drop">
-							<a href="gamelistings.php?page-games=1&gamelistType=New" title="Game listings; a searchable list of the games on this server">Game Listings</a>
+							<a href="gamelistings.php?page-games=1&gamelistType=New" title="Game listings; a searchable list of the games on this server">New Games</a>
 							<a href="gamelistings.php?page-games=1&gamelistType=Joinable" title="Open positions dropped by other players, free to claim">Open Positions</a>
-							<a href="gamecreate.php" title="Start up a new game">Create a New Game</a>
-'./*							<a href="https://sites.google.com/view/webdipinfo/ghost-ratings" target=_blank title="Ghost Ratings (external site)">Ghost Ratings</a>
-								<a href="tournaments.php" title="Information about tournaments on webDiplomacy">Tournaments</a>
-*/'                        </div>
+							<a href="gamecreate.php" title="Start up a new game">Create a New Game</a>'/*
+							<a href="https://sites.google.com/view/webdipinfo/ghost-ratings" target=_blank title="Ghost Ratings (external site)">Ghost Ratings</a>
+							<a href="tournaments.php" title="Information about tournaments on webDiplomacy">Tournaments</a>
+							<a href="halloffame.php" title="Information about tournaments on webDiplomacy">Hall of Fame</a> */.'
+                        </div>
+
                     </div>
 					<div id="navSubMenu" class="clickable nav-tab">Account ▼
 						<div id="nav-drop">';
@@ -1036,14 +1044,21 @@ class libHTML
 						$menu.='
 							<a href="admincp.php?tab=Status Info">Status Info</a>
 							<a href="admincp.php?tab=Logs">Logfiles</a>';
-						
+
 					if( isset(Config::$customForumURL) ) { $menu.='<a href="contrib/phpBB3/mcp.php">Forum CP</a>'; }
-						$menu.='
-							<a href="admincp.php?tab=Multi-accounts">Multi Finder</a>
-							<a href="admincp.php?tab=Chatlogs">Pull Press</a>
-							<a href="admincp.php?tab=AccessLog">Access Log</a>
-							<a href="profile.php">Find User</a>
-                        </div>
+
+					$menu.='
+						<a href="admincp.php?tab=Multi-accounts">Multi Finder</a>
+						<a href="admincp.php?tab=Chatlogs">Pull Press</a>
+						<a href="admincp.php?tab=AccessLog">Access Log</a>
+						<a href="profile.php">Find User</a>';
+
+					if ( $User->type['Admin'] && isset(Config::$customForumURL))
+					{
+						$menu.='<a href="adminInfo.php">Admin Info</a>';
+					}
+					
+					$menu.=' </div>
 					</div>';
 				}
 				else
@@ -1119,7 +1134,7 @@ class libHTML
 		close();
 	}
 
-	private static function footerDebugData() 
+	private static function footerDebugData()
 	{
 		global $Locale, $DB;
 
@@ -1137,7 +1152,7 @@ class libHTML
 		return $buf;
 	}
 
-	private static function footerStats() 
+	private static function footerStats()
 	{
 		global $DB, $Misc, $User;
 		require_once(l_r('global/definitions.php'));
@@ -1212,7 +1227,7 @@ class libHTML
 		return $buf;
 	}
 
-	static private function footerCopyright() 
+	static private function footerCopyright()
 	{
 		// Cookie-check as requested by the EU-laws...
 		$cookiesWarning='<div id="cookiesWarning"></div><script language="JavaScript" type="text/javascript">checkCookieExist();</script>';
@@ -1231,13 +1246,13 @@ class libHTML
 	public static $footerScript=array();
 	public static $footerIncludes=array();
 
-	public static function likeCount($likeCount) 
+	public static function likeCount($likeCount)
 	{
 		if($likeCount==0) return '';
 		return ' <span class="likeCount">(+'.$likeCount.')</span>';
 	}
 
-	static private function footerScripts() 
+	static private function footerScripts()
 	{
 		global $User, $Locale;
 

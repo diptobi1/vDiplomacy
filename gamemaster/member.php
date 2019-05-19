@@ -104,8 +104,9 @@ class processMember extends Member
 			$countryID = 0;
 			
 		$DB->sql_put("INSERT INTO wD_Members SET
-			userID = ".$userID.", gameID = ".$Game->id.", countryID=".$countryID.", orderStatus='Ready', bet = 0, timeLoggedIn = ".time());
-                $DB->sql_put('DELETE FROM wD_WatchedGames WHERE gameID='.$Game->id.' AND userID='.$userID);
+			userID = ".$userID.", gameID = ".$Game->id.", countryID=".$countryID.", orderStatus='None,Completed,Ready', bet = 0, timeLoggedIn = ".time().", excusedMissedTurns = ".$Game->excusedMissedTurns);
+		
+		$DB->sql_put('DELETE FROM wD_WatchedGames WHERE gameID='.$Game->id.' AND userID='.$userID);
 
 		$Game->Members->load();
 
@@ -485,7 +486,22 @@ class processMember extends Member
 
 		return $a;
 	}
-
+		
+	/**
+	 * Remove an excuse for a member and notify member about that.
+	 */
+	function removeExcuse() 
+	{
+		global $DB;
+		
+		$this->excusedMissedTurns--;
+		$DB->sql_put("UPDATE wD_Members m 
+				SET m.excusedMissedTurns = ".$this->excusedMissedTurns."
+				WHERE m.id = ".$this->id);
+		
+		$this->send('No','No',l_t("You have missed a deadline and lost an excuse (%s left). "
+				. "Be more reliable!",$this->excusedMissedTurns));
+	}
 }
 
 ?>

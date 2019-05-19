@@ -127,6 +127,25 @@ class Members
 	}
 
 	/**
+	 * Remove the order status 'Ready' from all members participating
+	 */
+	function unreadyMembers() 
+	{
+		global $DB;
+		
+		foreach($this->ByStatus['Playing'] as $Member) 
+		{
+			// do not adjust anything if there are no orders this phase
+			if( $Member->orderStatus->None ) continue;
+			
+			$Member->orderStatus->Ready=false;
+			
+			if( $Member->orderStatus->updated )
+				$DB->sql_put("UPDATE wD_Members SET orderStatus='".$Member->orderStatus."' WHERE id = ".$Member->id);
+		}
+	}
+
+	/**
 	 * Checks global $User, sees if he's a member of this game
 	 *
 	 * @return boolean
@@ -136,6 +155,19 @@ class Members
 		global $User;
 
 		return ( isset($this->ByUserID[$User->id]) );
+	}
+
+	/**
+	 * Checks global $User, sees if he's a member of this game but is temp banned
+	 * from rejoining.
+	 *
+	 * @return boolean
+	 */
+	function isTempBanned()
+	{
+		global $User;
+		
+		return ( $this->isJoined() && $this->ByUserID[$User->id]->status == "Left" && $User->tempBan > time() );
 	}
 
 	function makeUserMember($userID)
@@ -213,6 +245,7 @@ class Members
 				m.votes AS votes,
 				m.supplyCenterNo as supplyCenterNo,
 				m.unitNo as unitNo,
+				m.excusedMissedTurns as excusedMissedTurns,
 				m.chessTime AS chessTime,
 				m.ccMatch AS ccMatch,
 				m.ipMatch AS ipMatch,
@@ -298,7 +331,8 @@ class Members
 		$this->sendToWatchers($keep,$text);
 	}
 
-	function sendToWatchers($keep,$text) {
+	function sendToWatchers($keep,$text) 
+	{
 		global $DB;
 
 		$tabl = $DB->sql_tabl('SELECT userID FROM wD_WatchedGames WHERE gameID='.$this->Game->id);
