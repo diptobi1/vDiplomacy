@@ -293,7 +293,7 @@ class panelGame extends Game
 		if( $this->anon=='Yes' )
 			$alternatives[]=l_t('Anonymous players');
 
-		$alternatives[]=$this->Scoring->longName();
+		$alternatives[]=$this->Scoring->abbr();
 
 		if( $this->drawType=='draw-votes-hidden')
 			$alternatives[]=l_t('Hidden draw votes');

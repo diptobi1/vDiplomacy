@@ -618,7 +618,7 @@ class processGame extends Game
 		$this->Members->handleNMRs();
 		
 		
-		if( $this->Members->withActiveNMRs() )
+		if( $this->Members->withActiveNMRs() && $this->turn <= $this->specialCDturn)
 		{
 			require_once(l_r('lib/gamemessage.php'));
 			/*

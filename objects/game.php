@@ -714,6 +714,7 @@ class Game
 			 * Special CD for the first turns
 			 * In the first turns extend the gamephase and CD all users who failed to enter an order.
 			 */
+/*	 
 			if (($this->turn < $this->specialCDturn) && (count($this->Variant->countries) > 2))
 			{
 				require_once "lib/gamemessage.php";
@@ -760,7 +761,7 @@ class Game
 											minimumBet = ".$this->minimumBet."
 											WHERE id = ".$this->id);
 
-/*							Does not work with the new NMR-code. NMRs are stores per game & turn, so you can't grand more NMRs per turn if there is an extend.
+							Does not work with the new NMR-code. NMRs are stores per game & turn, so you can't grand more NMRs per turn if there is an extend.
 
 							// Check for missed turns and adjust the counter in the user-data
 							if ( (count($this->Variant->countries) > 2) and ($this->phaseMinutes > 30) )
@@ -784,7 +785,7 @@ class Game
 											AND m.status='Playing'
 											AND EXISTS(SELECT o.id FROM wD_Orders o WHERE o.gameID = m.gameID AND o.countryID = m.countryID)");
 							}							
-*/							
+							
 							foreach ($this->Members->ByID as $id => $Member)
 							{
 								$this->Members->ByID[$id]->orderStatus->Ready=false;
@@ -813,6 +814,7 @@ class Game
 					return false;
 				}
 			}
+*/			
 			return true;
 		}	
 		else
