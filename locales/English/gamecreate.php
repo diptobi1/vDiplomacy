@@ -182,6 +182,11 @@ else
 				print "document.getElementById('countryID').options[0]=new Option ('Random','0');";
 				for ($i=1; $i<=count($Variant->countries); $i++)
 					print "document.getElementById('countryID').options[".$i."]=new Option ('".$Variant->countries[($i -1)]."', '".$i."');";
+				print "\n";
+				if (count($Variant->countries) > 7)
+					print "document.getElementById('excusedMissedTurns').value=2; document.getElementById('delayDeadlineMaxTurn').value=3;";
+				else
+					print "document.getElementById('excusedMissedTurns').value=1; document.getElementById('delayDeadlineMaxTurn').value=999;";
 				print "break;\n";		
 			}	
 			ksort($checkboxes);	
@@ -422,100 +427,31 @@ else
 		This might lead to not enough people able to join your games, so choose your options wisely.<br /><br />
 		<strong>Default:</strong> No restrictions:
 	</li>
-
+	
 	<li class="formlisttitle">
-		NMR policy:
+		Excused missed turns per player:
 	</li>
 	<li class="formlistfield">
-		<?php 
-			$specialCDturnsTxt = ( Config::$specialCDturnsDefault == 0 ? 'off' : (Config::$specialCDturnsDefault > 99 ? '&infin;' : Config::$specialCDturnsDefault) );
-			$specialCDcountTxt = ( Config::$specialCDcountDefault == 0 ? 'off' : (Config::$specialCDcountDefault > 99 ? '&infin;' : Config::$specialCDcountDefault) );
-		?>
-		
-		<input type="hidden" id="specialCDturn"  name="newGame[specialCDturn]"  value="<?php print $specialCDturnsTxt;?>">
-		<input type="hidden" id="specialCDcount" name="newGame[specialCDcount]" value="<?php print $specialCDcountTxt;?>">
-		
-		<select id="NMRpolicy" name="newGame[NMRpolicy]" 
-			onChange="
-				if (this.value == 'c/c') {
-					$('NMRpolicyCustom').show();
-					$('NMRpolicyText').hide();
-				} else {
-					opt = this.value.split('/');
-					document.getElementById('specialCDturn').value  = opt[0];
-					document.getElementById('specialCDcount').value = opt[1];
-					if (opt[0] == 0) opt[0] = 'off'; if (opt[0] > 90) opt[0] = '&infin;'; 
-					if (opt[1] == 0) opt[1] = 'off'; if (opt[1] > 90) opt[1] = '&infin;'; 
-					document.getElementById('specialCDturnCustom').value  = opt[0];
-					document.getElementById('specialCDcountCustom').value = opt[1];
-					document.getElementById('NMRpolicyText').innerHTML = ' - Turns: <b>' + opt[0] + '</b> - Delay: <b>' + opt[1] + '</b>';
-					$('NMRpolicyCustom').hide();
-					$('NMRpolicyText').show();
-				}
-			">
-			<option value="0/0">Off</option>
-			<option value="<?php print $specialCDturnsTxt;?>/<?php print $specialCDcountTxt;?>" selected>Default</option>
-			<option value="5/2">Committed</option>
-			<option value="99/99">Serious</option>
-			<option value="c/c">Custom</option>
+		Excused missed turns:<select id="excusedMissedTurns" name="newGame[excusedMissedTurns]">
+			<option value=0>none</option>
+			<option value=1 selected>1</option>
+			<option value=2>2</option>
+			<option value=3>3</option>
+			<option value=4>4</option>
+		</select><br>
+		Reset deadline: <select id="delayDeadlineMaxTurn" name="newGame[delayDeadlineMaxTurn]">
+			<option value=0>never</option>
+			<option value=1>1 turn</option>
+			<option value=2>2 turns</option>
+			<option value=3>3 turns</option>
+			<option value=4>4 turns</option>
+			<option value=5>5 turns</option>
+			<option value=99 selected>always</option>
 		</select>
-		
-		<span id="NMRpolicyCustom" style="display:none">
-			 - Turns: </b><input 
-							type="text" 
-							id="specialCDturnCustom" 
-							size="2" 
-							value='<?php print $specialCDturnsTxt; ?>'
-							onkeypress="if (event.keyCode==13) this.blur(); return event.keyCode!=13"
-							onChange="document.getElementById('NMRpolicy').selectedIndex = 4;
-								if (this.value == 'off') this.value = 0;
-								this.value = parseInt(this.value);
-								document.getElementById('specialCDturn').value  = this.value;
-								if (this.value > 90) this.value = '&infin;';
-								if (this.value == 0) this.value = 'off';"
-							>
-			 - Delay: </b><input
-							type="text"
-							id="specialCDcountCustom"
-							value = '<?php print $specialCDcountTxt; ?>'
-							onkeypress="if (event.keyCode==13) this.blur(); return event.keyCode!=13"
-							onChange="document.getElementById('NMRpolicy').selectedIndex = 4;
-								if (this.value == 'off') this.value = 0;
-								this.value = parseInt(this.value);
-								document.getElementById('specialCDcount').value = this.value;
-								if (this.value > 90) this.value = '&infin;';
-								if (this.value == 0) this.value = 'off';"
-							size="2"
-							> 
-		</span>
-		<span id="NMRpolicyText">
-			 - Turns: <b><?php print $specialCDturnsTxt;?></b> - Delay: <b><?php print $specialCDcountTxt;?></b>
-		</span>
-	</li>
-	<li class="formlistdesc">
-		This rule will send a players into Civil Disorder (CD) if there are No Moves Received (NMR) from them.
-		<ul>
-		<li><strong>Turns:</strong> How many turns this action will be in effect for. Be carefull, a turn has up to three phases.
-		Example: A two will send the country in CD for the diplomacy, retreat and build phase of the first 2 turns (usually Spring and Autumn).</li>
-		<li><strong>Delay:</strong> How much time to advertise and find a replacement player (the current phase will be extended by the current phase length that many times).
-		A zero will send the country in CD, but proceed with the turn as usual. Countries with 1 or less SCs will not hold back the game from processing.</li>
-		</ul>
-		Any value greater 90 will set the value to &infin;, a value of 0 will set this to off.
-		<br /><br /><strong>Default:</strong> <?php print $specialCDturnsTxt;?> / <?php print $specialCDcountTxt;?>
-	</li>
-
-	<li class="formlisttitle">
-		Excused delays per player:
-	</li>
-	<li class="formlistfield"> 
-		<input type="radio" name="newGame[excusedMissedTurns]" value="1" checked>1
-		<input type="radio" name="newGame[excusedMissedTurns]" value="2">2
-		<input type="radio" name="newGame[excusedMissedTurns]" value="3">3
-		<input type="radio" name="newGame[excusedMissedTurns]" value="4">4
 	</li>
 	<li class="formlistdesc">
 		The number of excused delays before a player is removed from the game and can be replaced. 
-		If a player is missing orders at a deadline, the deadline will reset and the player will be 
+		If a player is missing orders at a deadline, and the game is in the first few turns the deadline will reset and the player will be 
 		charged 1 excused delay. If they are out of excuses they will go into Civil Disorder.
 		The game will only progress with missing orders if no replacement is found within one phase of a player being forced into Civil Disorder. 
 		Set this value low to prevent delays to your game, set it higher to be more forgiving to people who might need occasional delays.
@@ -550,17 +486,6 @@ else
 		<br /><br /><strong>Default:</strong> 0 (no fixed game duration / default number of SCs needed)
 	</li>
 
-<!-- 
-	<li class="formlisttitle">
-		Chess Timer:
-	</li>
-	<li class="formlistfield">
-		<b>Hours: </b><input type="text" name="newGame[chessTime]" value="0" size="8">
-	</li>
-	<li class="formlistdesc">
-		If you want a chesstimer you can enter the time each player has on it\'s clock here.
-	</li>
--->	
 	<li class="formlisttitle">
 		Moderated game:
 	</li>

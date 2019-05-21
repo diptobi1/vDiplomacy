@@ -298,9 +298,7 @@ class processGame extends Game
 		,$maxTurns 
 		,$targetSCs 
 		,$minPhases
-		,$specialCDturn 
-		,$specialCDcount
-		,$chessTime
+		,$delayDeadlineMaxTurn
 		,$moderator
 		,$chooseYourCountry
 		,$description
@@ -372,9 +370,7 @@ class processGame extends Game
 						maxTurns = ".$maxTurns.", 
 						targetSCs = ".$targetSCs.", 
 						minPhases = ".$minPhases.", 
-						specialCDturn = ".$specialCDturn.", 
-						specialCDcount = ".$specialCDcount.", 
-						chessTime = ".$chessTime.", 
+						delayDeadlineMaxTurn = ".$delayDeadlineMaxTurn.", 
 						directorUserID = ".$moderator.",
 						chooseYourCountry = '".$chooseYourCountry."',
 						description = '".$description."',
@@ -618,7 +614,7 @@ class processGame extends Game
 		$this->Members->handleNMRs();
 		
 		
-		if( $this->Members->withActiveNMRs() && $this->turn <= $this->specialCDturn)
+		if( $this->Members->withActiveNMRs() && $this->turn <= $this->delayDeadlineMaxTurn)
 		{
 			require_once(l_r('lib/gamemessage.php'));
 			/*

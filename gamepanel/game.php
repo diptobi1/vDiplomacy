@@ -266,7 +266,12 @@ class panelGame extends Game
 		$buf .= $this->gameVariants();
 
 		$buf .= '<div class="titleBarRightSide">'.
-					l_t('%s excused missed turn','<span class="excusedNMRs">'.$this->excusedMissedTurns.'</span>').
+					l_t('%s excused NMR','<span class="excusedNMRs">'.$this->excusedMissedTurns.'</span>');
+					if ($this->delayDeadlineMaxTurn > 90)
+						$buf .= l_t(' / extend always');
+					elseif ($this->turn <= $this->delayDeadlineMaxTurn)
+						$buf .= ' / '.l_t('extend the first %s turn(s)','<span class="excusedNMRs">'.$this->delayDeadlineMaxTurn.'</span>');
+		$buf .=				
 				'</div>';
 
 		$buf .= '<div style="clear:both"></div>';
@@ -291,7 +296,7 @@ class panelGame extends Game
 			$alternatives[]='<a href="press.php#publicPress">'.l_t('Public Press').'</a>';
 
 		if( $this->anon=='Yes' )
-			$alternatives[]=l_t('Anonymous players');
+			$alternatives[]=l_t('Anon');
 
 		$alternatives[]=$this->Scoring->abbr();
 
@@ -300,6 +305,16 @@ class panelGame extends Game
 			
 		if( $this->missingPlayerPolicy=='Wait' )
 			$alternatives[]=l_t('Wait for orders');
+
+		//	Show the end of the game in the options if set.
+		if(( $this->targetSCs > 0) && ($this->maxTurns > 0))
+			$alternatives[]='EoG: '.$this->targetSCs.' SCs or "'.$this->Variant->turnAsDate($this->maxTurns -1).'"';
+		elseif( $this->maxTurns > 0)
+			$alternatives[]='EoG: "'.$this->Variant->turnAsDate($this->maxTurns -1).'"';
+		elseif( $this->targetSCs > 0)
+			$alternatives[]='EoG: '.$this->targetSCs.' SCs';
+		if( $this->chooseYourCountry=='Yes' )
+			$alternatives[]=l_t('ChooseYourCountry');
 			
 		if( $this->noProcess != '')
 			$alternatives[]=l_t('noProcess:'.str_replace(array('1', '2', '3', '4', '5', '6', '0'), 

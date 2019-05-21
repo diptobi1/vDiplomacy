@@ -430,15 +430,6 @@ class Config
 	// public static $piwik='piwik/';
 
 	/**
-	 * If set to any value > 0 the game will not progress for the given turns if a country misses it's orders.
-	 * It will send the country in CD and extend the game for another phase for as many turns as in $specialCDturnsDefault.
-	 * (These are the defaults that can be changed during gamecreate
-	 * @var int.
-	 */
-	public static $specialCDcountDefault = 0;
-	public static $specialCDturnsDefault = 0;
-
-	/**
 	 * If set to any value it wil display this mail adress in the rules section instead of the admin-mail.
 	 */
 	//public static $modEMail = 'admin@vDiplomacy.com';

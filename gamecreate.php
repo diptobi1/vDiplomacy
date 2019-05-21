@@ -55,8 +55,7 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 						,'countryID'
 						,'minPhases'
 						,'maxTurns'
-						,'specialCDturn'
-						,'specialCDcount'
+						,'delayDeadlineMaxTurn'
 						,'targetSCs'
 						,'moderated'
 						,'description'
@@ -198,19 +197,9 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 		$input['targetSCs'] = (int)$input['targetSCs'];		
 		$input['countryID'] = (int)$input['countryID'];
 		
-		$input['specialCDturn'] = (int)$input['specialCDturn'];
-		if ( $input['specialCDturn'] <  0 ) $input['specialCDturn'] = 0;
-		if ( $input['specialCDturn'] > 99 ) $input['specialCDturn'] = 99;
-		
-		$input['specialCDcount'] = (int)$input['specialCDcount'];
-		if ( $input['specialCDcount'] <  0 ) $input['specialCDcount'] = 0;
-		if ( $input['specialCDcount'] > 99 ) $input['specialCDcount'] = 99;
-		
-		$input['chessTime'] = 0; // (int)$input['chessTime'];
-		if ( $input['chessTime'] < 0 or $input['chessTime'] > 1440*100 )
-		{
-			throw new Exception("The chessTime value is too large or small; it must be between 0 minutes and 100 days.");
-		}
+		$input['delayDeadlineMaxTurn'] = (int)$input['delayDeadlineMaxTurn'];
+		if ( $input['delayDeadlineMaxTurn'] <  0 ) $input['delayDeadlineMaxTurn'] = 0;
+		if ( $input['delayDeadlineMaxTurn'] > 99 ) $input['delayDeadlineMaxTurn'] = 99;
 		
 		$input['chooseYourCountry'] = ( ($input['countryID'] > 0) ? 'Yes' : 'No' );
 		
@@ -261,9 +250,7 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 			$input['maxTurns'],
 			$input['targetSCs'],
 			$input['minPhases'],
-			$input['specialCDturn'],
-			$input['specialCDcount'],
-			$input['chessTime']
+			$input['delayDeadlineMaxTurn']
 			,$input['moderator']
 			,$input['chooseYourCountry']
 			,$input['description']
