@@ -264,6 +264,7 @@ $bordersRawData=array(
 	array('Herzogovina','Bosnia','No','Yes'),
 	array('Herzogovina','Ragusa','Yes','Yes'),
 	array('Herzogovina','Albania','No','Yes'),
+	array('Herzogovina','Lower Adriatic Sea','Yes','No'),
 	array('Ragusa','Albania','Yes','Yes'),
 	array('Ragusa','Lower Adriatic Sea','Yes','No'),
 	array('Albania','Durazzo','Yes','Yes'),
