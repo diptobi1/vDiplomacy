@@ -186,7 +186,7 @@ else
 				if (count($Variant->countries) > 7)
 					print "document.getElementById('excusedMissedTurns').value=2; document.getElementById('delayDeadlineMaxTurn').value=3;";
 				else
-					print "document.getElementById('excusedMissedTurns').value=1; document.getElementById('delayDeadlineMaxTurn').value=999;";
+					print "document.getElementById('excusedMissedTurns').value=1; document.getElementById('delayDeadlineMaxTurn').value=99;";
 				print "break;\n";		
 			}	
 			ksort($checkboxes);	
