@@ -32,14 +32,14 @@ class libHTML
 	public static function pageTitle($title, $description=false)
 	{
 		return '<div class="content-bare content-board-header content-title-header">
-<div class="pageTitle barAlt1">
-	'.$title.'
-</div>
-<div class="pageDescription">
-	'.$description.'
-</div>
-</div>
-<div class="content content-follow-on">';
+					<div class="pageTitle barAlt1">
+						'.$title.'
+					</div>
+					<div class="pageDescription">
+						'.$description.'
+					</div>
+				</div>
+				<div class="content content-follow-on">';
 	}
 
 	/**
@@ -136,7 +136,6 @@ class libHTML
 		return '<a style="'.self::$hideStyle.'" class="messageIconForum" threadID="'.$threadID.'" messageID="'.$messageID.'" href="forum.php?threadID='.$threadID.'#'.$messageID.'">'.
 		'<img src="'.l_s('images/icons/mail.png').'" alt="'.l_t('New').'" title="'.l_t('Unread messages!').'" />'.
 		'</a> ';
-
 	}
 
 	static function forumParticipated($threadID)
@@ -204,16 +203,14 @@ class libHTML
 
 	public static function serveImage($filename, $contentType='image/png')
 	{
-		if ( ob_get_contents() != "" )
-			die();
+		if ( ob_get_contents() != "" ) { die(); }
 
 		header('Content-Length: '.filesize($filename));
 		header('Content-Type: '.$contentType);
 
 		print file_get_contents($filename);
 
-		if( DELETECACHE )
-			unlink($filename);
+		if( DELETECACHE ) {	unlink($filename); }
 
 		die();
 	}
@@ -289,8 +286,7 @@ class libHTML
 	 */
 	static public function checkTicket()
 	{
-		if( isset($_SESSION['formTickets']) && isset($_REQUEST['formTicket'])
-			&& isset($_SESSION['formTickets'][$_REQUEST['formTicket']]) )
+		if( isset($_SESSION['formTickets']) && isset($_REQUEST['formTicket']) && isset($_SESSION['formTickets'][$_REQUEST['formTicket']]) )
 		{
 			unset($_SESSION['formTickets'][$_REQUEST['formTicket']]);
 			return true;
@@ -789,7 +785,7 @@ class libHTML
 	 *
 	 * @return array
 	 */
-	static public function pages ()
+	static public function pages()
 	{
 		global $User;
 
@@ -832,6 +828,7 @@ class libHTML
 		$links['contactUsDirect.php']=array('name'=>'Contact Us', 'inmenu'=>FALSE);
 		$links['donations.php']=array('name'=>'Donations', 'inmenu'=>FALSE);
 		$links['tournaments.php']=array('name'=>'Tournaments', 'inmenu'=>FALSE);
+		$links['tournamentManagement.php']=array('name'=>'Manage Tournaments', 'inmenu'=>FALSE);
 		$links['rules.php']=array('name'=>'Rules', 'inmenu'=>FALSE);
 		$links['recentchanges.php']=array('name'=>'Recent changes', 'inmenu'=>FALSE);
 		$links['intro.php']=array('name'=>'Intro', 'inmenu'=>FALSE);
@@ -848,6 +845,8 @@ class libHTML
 		$links['press.php']=array('name'=>'Press', 'inmenu'=>FALSE);
 		$links['dev.php']=array('name'=>'DevTools', 'inmenu'=>FALSE);
 		$links['gdpr.php']=array('name'=>'GDPR/Datenschutz', 'inmenu'=>FALSE);
+		$links['tournamentInfo.php']=array('name'=>'Tournament Info', 'inmenu'=>FALSE);
+		$links['tournamentScoring.php']=array('name'=>'Tournament Scoring', 'inmenu'=>FALSE);
 
 		if ( is_object($User) )
 		{
@@ -933,7 +932,6 @@ class libHTML
 					</div>';
 
 			/* begin dropdown menu */
-
 			$menu .= '
 			<div id="header-goto">
             <div class="nav-wrap">
@@ -987,10 +985,11 @@ class libHTML
                         <div id="nav-drop">
 							<a href="gamelistings.php?gamelistType=New" title="Game listings; a searchable list of the games on this server">New Games</a>
 							<a href="gamelistings.php?gamelistType=Open%20Positions" title="Open positions dropped by other players, free to claim">Open Positions</a>
-							<a href="gamecreate.php" title="Start up a new game">Create a New Game</a>'/*
-							<a href="https://sites.google.com/view/webdipinfo/ghost-ratings" target=_blank title="Ghost Ratings (external site)">Ghost Ratings</a>
-							<a href="tournaments.php" title="Information about tournaments on webDiplomacy">Tournaments</a>
-							<a href="halloffame.php" title="Information about tournaments on webDiplomacy">Hall of Fame</a> */.'
+							<a href="gamecreate.php" title="Start up a new game">Create a New Game</a>
+'./*							<a href="https://sites.google.com/view/webdipinfo/ghost-ratings" target=_blank title="Ghost Ratings (external site)">Ghost Ratings</a>
+*/'							<a href="tournaments.php" title="Information about tournaments on webDiplomacy">Tournaments</a>
+							<a href="tournamentInfo.php" title="Information about tournaments on webDiplomacy">Tournament info</a>
+							<a href="halloffame.php" title="Information about tournaments on webDiplomacy">Hall of Fame</a>
                         </div>
 
                     </div>
@@ -1278,14 +1277,6 @@ class libHTML
 		global $User, $Locale;
 
 		$buf = '';
-
-		// onlineUsers, for the online icons
-		// $statsDir = libCache::dirName('stats');
-		// $onlineFile = l_s($statsDir.'/onlineUsers.json');
-		// if( file_exists($onlineFile) )
-		// 	$buf .= '<script type="text/javascript" src="'.STATICSRV.$onlineFile.'"></script>';
-		// else
-		// 	$buf .= '<script type="text/javascript">onlineUsers = $A([ ]);</script>';
 
 		if( !is_object($User) ) return $buf;
 		elseif( $User->type['User'] ) // Run user-specific page modifications
