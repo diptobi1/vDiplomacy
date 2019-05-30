@@ -151,27 +151,32 @@ else
 	print '" style="max-width: 730px;" alt="Open large map" title="The map for the '. $Variant->name .' Variant"></a></span> </div><br />';
 
 	print '<div class="content content-follow-on">';
+	
 	print '<table>
 		<td style="text-align:left">Search for games: 		
-			<form style="display: inline" action="gamelistings.php" method="POST">
-				<input type="hidden" name="gamelistType" value="New" />
-				<input type="hidden" name="searchOff" value="true" />
-				<input type="hidden" name="search[chooseVariant]" value="'.$Variant->id.'" />
-				<input type="submit" value="New" /></form>							
-			<form style="display: inline" action="gamelistings.php" method="POST">
-				<input type="hidden" name="gamelistType" value="Open" />
-				<input type="hidden" name="searchOff" value="true" />
-				<input type="hidden" name="search[chooseVariant]" value="'.$Variant->id.'" />
+			<FORM style="display: inline" method="get" action="gamelistings.php#results">
+				<input type="hidden" name="gamelistType" value="Search" />
+				<input type="hidden" name="status" value="Pre-game" />
+				<input type="hidden" name="variant" value="'.$Variant->name.'" />
+				<input type="hidden" name="Submit" value="Search" />
+				<input type="submit" value="New"/></form>							
+			<form style="display: inline" action="gamelistings.php#results" method="POST">
+				<input type="hidden" name="gamelistType" value="Search" />
+				<input type="hidden" name="seeJoinable" value="yes" />
+				<input type="hidden" name="variant" value="'.$Variant->name.'" />
+				<input type="hidden" name="Submit" value="Search" />
 				<input type="submit" value="Open"/></form>				
-			<form style="display: inline" action="gamelistings.php" method="POST">
-				<input type="hidden" name="gamelistType" value="Active" />
-				<input type="hidden" name="searchOff" value="true" />
-				<input type="hidden" name="search[chooseVariant]" value="'.$Variant->id.'" />
+			<form style="display: inline" action="gamelistings.php#results" method="POST">
+				<input type="hidden" name="gamelistType" value="Search" />
+				<input type="hidden" name="status" value="Active" />
+				<input type="hidden" name="variant" value="'.$Variant->name.'" />
+				<input type="hidden" name="Submit" value="Search" />
 				<input type="submit" value="Active" /></form>
-			<form style="display: inline" action="gamelistings.php" method="POST">
-				<input type="hidden" name="gamelistType" value="Finished" />
-				<input type="hidden" name="searchOff" value="true" />
-				<input type="hidden" name="search[chooseVariant]" value="'.$Variant->id.'" />
+			<form style="display: inline" action="gamelistings.php#results" method="POST">
+				<input type="hidden" name="gamelistType" value="Search" />
+				<input type="hidden" name="status" value="Finished" />
+				<input type="hidden" name="variant" value="'.$Variant->name.'" />
+				<input type="hidden" name="Submit" value="Search" />
 				<input type="submit" value="Finished" /></form>
 		</td> <td style="text-align:right">
 			<form style="display: inline" action="stats.php" method="GET">
