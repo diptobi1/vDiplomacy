@@ -387,17 +387,22 @@ if ( isset($_REQUEST['detail']) )
 
 print '<div>';
 print '<h2 class = "profileUsername">'.$UserProfile->username;
-if ( $User->type['User'] && $UserProfile->type['User'] && ! ( $User->id == $UserProfile->id || $UserProfile->type['Moderator'] || $UserProfile->type['Guest'] || $UserProfile->type['Admin'] ) )
-{
-	$userMuted = $User->isUserMuted($UserProfile->id);
 
-	print '<a name="mute"></a>';
-	if( isset($_REQUEST['toggleMute'])) {
-		$User->toggleUserMute($UserProfile->id);
-		$userMuted = !$userMuted;
+if (!isset(Config::$customForumURL))
+{
+	if ( $User->type['User'] && $UserProfile->type['User'] && ! ( $User->id == $UserProfile->id || $UserProfile->type['Moderator'] || $UserProfile->type['Guest'] || $UserProfile->type['Admin'] ) )
+	{
+		$userMuted = $User->isUserMuted($UserProfile->id);
+
+		print '<a name="mute"></a>';
+		if( isset($_REQUEST['toggleMute'])) 
+		{
+			$User->toggleUserMute($UserProfile->id);
+			$userMuted = !$userMuted;
+		}
+		$muteURL = 'profile.php?userID='.$UserProfile->id.'&toggleMute=on&rand='.rand(0,99999).'#mute';
+		print ' '.($userMuted ? libHTML::muted($muteURL) : libHTML::unmuted($muteURL));
 	}
-	$muteURL = 'profile.php?userID='.$UserProfile->id.'&toggleMute=on&rand='.rand(0,99999).'#mute';
-	print ' '.($userMuted ? libHTML::muted($muteURL) : libHTML::unmuted($muteURL));
 }
 
 print libBlockUser::BlockUserHTML(); // BlockUserFeature
