@@ -71,14 +71,14 @@ class CantonVariant_drawMap extends CustomIcons_drawmap {
 	 * @var array
 	 */
 	protected $countryColors = array(
-		0 => array(226, 198, 158), // Neutral
-		1 => array(  0, 127, 255), // Britain
-		2 => array(255, 191,   0), // China
-		3 => array(137, 207, 240), // France
-		4 => array(164, 198,  57), // Holland
-		5 => array(227,  38,  54), // Japan
-		6 => array(178, 190, 181), // Russia
-		7 => array(255, 140,   0)  // Turkey
+		0 => array(196, 171, 137), // Neutral
+		1 => array( 35,  78, 186), // Britain
+		2 => array(234, 199,  72), // China
+		3 => array( 91, 181, 211), // France
+		4 => array(224, 153,  53), // Holland
+		5 => array(226, 145, 145), // Japan
+		6 => array( 80, 119,  80), // Russia
+		7 => array(255,  58,  58)  // Turkey
 	);
 
 
