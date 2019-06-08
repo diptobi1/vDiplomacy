@@ -463,7 +463,7 @@ class processGame extends Game
 				$minimumBet = $getMinBet;
 			}
 		}
-		elseif ( $this->phase != 'Finished' )
+		elseif ( $this->phase != 'Finished' && count($this->Members->ByStatus['Playing']) > 0)
 		{
 			$minimumBet = $this->Members->pointsLowestCD();
 		}
@@ -626,7 +626,22 @@ class processGame extends Game
 		$this->Members->handleNMRs();
 		
 		
-		if( $this->Members->withActiveNMRs() && $this->turn <= $this->delayDeadlineMaxTurn)
+ 		// If all remaining players NMRed the same turn put all Left players back into the game and Draw.
+		if (count($this->Members->ByStatus['Playing']) == 0)
+		{
+			require_once(l_r('lib/gamemessage.php'));
+			$drawMessage = 'Game was drawn due to at all remaining members failing to enter orders.';
+			libGameMessage::send('Global','GameMaster', $drawMessage);
+
+			foreach($this->Members->ByStatus['Left'] as $Member)
+			{
+				$this->Members->ByStatus['Playing'][$Member->id] = $Member;
+				unset($this->Members->ByStatus['Left'][$Member->id]);
+			}
+
+			$this->setDrawn();
+		}
+		elseif( $this->Members->withActiveNMRs() && $this->turn <= $this->delayDeadlineMaxTurn)
 		{
 			require_once(l_r('lib/gamemessage.php'));
 			/*
