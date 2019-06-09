@@ -862,6 +862,7 @@ class libHTML
 		$links['gdpr.php']=array('name'=>'GDPR/Datenschutz', 'inmenu'=>FALSE);
 		$links['tournamentInfo.php']=array('name'=>'Tournament Info', 'inmenu'=>FALSE);
 		$links['tournamentScoring.php']=array('name'=>'Tournament Scoring', 'inmenu'=>FALSE);
+		$links['tournamentRegistration.php']=array('name'=>'Tournament Registration', 'inmenu'=>FALSE);
 
 		if ( is_object($User) )
 		{
