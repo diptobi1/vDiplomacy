@@ -365,35 +365,29 @@ function Order(orderData)
 			
 			var valueName = '';
 			
-			 
-			if (name == "toTerrID" || name == "fromTerrID")
+			optArray = []
+			options.each(function(pair) {
+				optArray.push(pair);
+			});
+			if (useroptions.orderSort != 'No Sort')
 			{
-				terrNames = []; terrNamesConvoy = [];
+				optArray.sort(function(a,b){
+					return a[1].localeCompare(b[1]);
+				});
+			}
+			if (useroptions.orderSort == 'Convoys Last'){
+				optArray.sort(function(a,b){
+					returnv = 0;
+					if (a[1].endsWith("(via convoy)")) returnv += 1;
+					if (b[1].endsWith("(via convoy)")) returnv -= 1;
+					return returnv;
+				});
+			}
+			optArray.forEach(function(pair){
+				if( !( Object.isUndefined(pair[0]) || pair[0]=='undefined' ) && pair[0] != value )
+					html=html+'<option value="'+pair[0]+'">'+pair[1]+'</option>';
+			});
 			
-				options.each(function(pair) {
-					if (pair[1].indexOf("(via convoy)") == -1 )
-						terrNames.push ({id: pair[0], name: pair[1]});
-					else
-						terrNamesConvoy.push ({id: pair[0], name: pair[1]});
-				});
-				
-				terrNames = terrNames.sort(function(a,b) {return a.name > b.name;}).concat(terrNamesConvoy.sort(function(a,b) {return a.name > b.name;}));
-				var length = terrNames.length;   
-				for (var i = 0; i < length; i++) 
-				{
-					html=html+'<option ';
-					if( !Object.isUndefined(value) && value == terrNames[i].id )
-						html=html+'selected="selected" ';
-					html=html+'value="'+terrNames[i].id+'">'+terrNames[i].name+'</option>';
-				}	
-			}
-			else
-			{
-				options.each(function(pair) {
-					if( !( Object.isUndefined(pair[0]) || pair[0]=='undefined' ) && pair[0] != value )
-						html=html+'<option value="'+pair[0]+'">'+pair[1]+'</option>';
-				});
-			}
 			html = html+'</select> ';
 			
 			return html;

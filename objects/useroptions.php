@@ -38,21 +38,21 @@ class UserOptions {
         'colourblind' => 'No',
 		'displayUpcomingLive' => 'Yes',
 		'showMoves' => 'Yes',
-//		'orderSort' => 'Convoys Last'
+		'orderSort' => 'Convoys Last'
 	);
 
 	public static $titles = array(
 		'colourblind' => 'Colourblindness',
 		'displayUpcomingLive' => 'Display upcoming live games',
 		'showMoves' => 'Show move arrows on the game map',
-//		'orderSort' => 'Sort possible orders'
+		'orderSort' => 'Sort possible orders'
 	);
 
 	public static $possibleValues = array(
 		'colourblind' => array('No','Protanope','Deuteranope','Tritanope'),
 		'displayUpcomingLive' => array('Yes','No'),
 		'showMoves' => array('Yes','No'),
-//		'orderSort' => array('No Sort','Alphabetical','Convoys Last')
+		'orderSort' => array('No Sort','Alphabetical','Convoys Last')
 	);
 
 	public $value;
