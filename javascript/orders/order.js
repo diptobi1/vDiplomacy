@@ -154,6 +154,7 @@ function Order(orderData)
 	};
 	
 	this.inputValue = function(name, value) {
+		if( !this.isValid(name,value) ) return;
 	
 		this.updateValue(name,value);
 		this.checkComplete();
@@ -383,11 +384,16 @@ function Order(orderData)
 					return returnv;
 				});
 			}
-			optArray.forEach(function(pair){
-				if( !( Object.isUndefined(pair[0]) || pair[0]=='undefined' ) && pair[0] != value )
-					html=html+'<option value="'+pair[0]+'">'+pair[1]+'</option>';
+			optArray.each(function(pair){
+				if( !( Object.isUndefined(pair[0]) || pair[0]=='undefined' ))
+				{
+					html=html+'<option ';
+					if( pair[0] == value )
+						html=html+'selected="selected" ';
+					html=html+'value="'+pair[0]+'">'+pair[1]+'</option>';
+				}
 			});
-			
+
 			html = html+'</select> ';
 			
 			return html;
