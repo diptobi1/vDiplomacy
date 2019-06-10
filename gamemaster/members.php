@@ -584,11 +584,6 @@ class processMembers extends Members
 		if ($message = libRelations::checkRelationsGame($User, $this->Game))
 			throw new Exception($message);
 
-		// Check for reliability-rating:
-		require_once(l_r('lib/reliability.php'));		 
-		if ( count($this->Game->Variant->countries)>2 && $this->Game->phase == 'Pre-game' && $message = libReliability::isReliable($User))
-			libHTML::notice('Reliable rating not high enough', $message);
-
 		// Check if there is a block against a player
 		list($muted) = $DB->sql_row("SELECT count(*) FROM wD_Members AS m
 									LEFT JOIN wD_BlockUser AS f ON ( m.userID = f.userID )

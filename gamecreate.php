@@ -250,17 +250,6 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 			,$input['fixStart']
 		);
 
-		/**
-		 * Check for reliability, bevore a user can create a new game...
-		 */
-		require_once(l_r('lib/reliability.php'));		 
-		if( (count($Game->Variant->countries)>2) && ($message = libReliability::isReliable($User)) )
-		{
-			processGame::eraseGame($Game->id);
-			libHTML::notice('Reliable rating not high enough', $message);
-		}
-		// END RELIABILITY-PATCH
-
 		// Prevent temp banned players from making new games.
 		if ($User->userIsTempBanned())
 		{
@@ -313,9 +302,6 @@ else
 
 if( isset($input) && isset($input['points']) ) { $formPoints = $input['points']; }
 else { $formPoints = $defaultPoints; }
-
-require_once('lib/reliability.php');
-libReliability::printCDNotice($User);
 
 require_once(l_r('locales/English/gamecreate.php'));
 

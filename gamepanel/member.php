@@ -249,7 +249,7 @@ class panelMember extends Member
 			
 		return '<a href="profile.php?userID='.$this->userID.'">'.$this->username.'</a>
 				'.'
-				<span class="points">('.$this->vpoints.libHTML::vpoints().User::typeIcon($this->userType,false).' / <b>R'.round($this->reliabilityRating).'</b>'.
+				<span class="points">('.$this->vpoints.libHTML::vpoints().User::typeIcon($this->userType,false).'</b>'.
 				$ccStr.$ipStr.				
 				(($User->type['Moderator'] && $this->rlGroup != 0 && count($this->Game->Members->ByRlGroup[$this->rlGroup])>1) ? 
 				' / <img src="'.libRelations::statusIcon($this->rlGroup).'">:<b>'.abs($this->rlGroup).'/'.count($this->Game->Members->ByRlGroup[$this->rlGroup]).'</b>'

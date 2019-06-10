@@ -161,10 +161,7 @@ class libSwitch
 										WHERE m.gameID = ".$Game->id." AND (f.blockUserID =".$SendUser->id." OR t.userID =".$SendUser->id.")");
 										
 				// Check for additional requirements:
-				require_once(l_r('lib/reliability.php'));		 
-				if ( count($Variant->countries)>2 && $message = libReliability::isReliable($SendUser))
-					$error = 'The User you selected can not join new games at the moment.';
-				elseif ( $Game->minPhases > $SendUser->phaseCount)
+				if ( $Game->minPhases > $SendUser->phaseCount)
 					$error = 'The User you selected did not play enough phases to join this game.';
 				elseif ( $Game->minimumReliabilityRating > $SendUser->reliabilityRating )
 					$error = 'The reliability of User you selected is not high enough to join this game.';
