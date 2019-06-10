@@ -422,13 +422,13 @@ $showAnon = ($UserProfile->id == $User->id || $User->type['Moderator']);
 
 print '<ul class="formlist">';
 
-print '<li title="Diplomat/Mastermind/Pro/Experienced/Member/Casual/Puppet (top 5/10/20/50/90/100%/not ranked)"><strong>'.l_t('Rank:').'</strong> '.$rankingDetails['rank'].'</li>';
+print '<li title="Diplomat/Mastermind/Pro/Experienced/Member/Casual/Puppet (top 5/10/20/50/90/100%/not ranked)"><strong>'.l_t('Rank:').'</strong> '.$rankingDetails['rank'].
+	' ('.number_format($UserProfile->vpoints).' '.libHTML::vpoints().')'.
+	'</li>';
 
 if ( $rankingDetails['vPosition'] < $rankingDetails['rankingPlayers'] )
 	print '<li><strong>'.l_t('Position:').'</strong> '.$rankingDetails['vPosition'].'/'.
 		$rankingDetails['rankingPlayers'].' '.l_t('(top %s%%)',$rankingDetails['vpercentile']).'</li>';
-
-print '<li><strong>'.l_t('vPoints:').'</strong> '.number_format($UserProfile->vpoints).' '.libHTML::vpoints().'</li>';
 
 print '<li><strong>'.l_t('Available points:').'</strong> '.number_format($UserProfile->points).' '.libHTML::points().'</li>';
 
