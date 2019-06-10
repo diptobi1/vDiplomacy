@@ -9,11 +9,6 @@ class adminActionsVDip extends adminActions
 		parent::__construct();
 
 		$vDipActions = array(
-			'changeReliability' => array(
-				'name' => 'Change reliability',
-				'description' => 'Enter the new phases played and missed and the new CD-count',
-				'params' => array('userID'=>'User ID', 'integrityBalance'=>'Integrity Balance')
-			),
 			'updateCCIP' => array(
 				'name' => 'Recalculate CC and IP',
 				'description' => 'Recalculate the CC and IP matches for a given game.',
@@ -23,11 +18,6 @@ class adminActionsVDip extends adminActions
 				'name' => 'Change the vDip-value of the game.',
 				'description' => 'Changes the vDip-points-value of the game by dividing the vDip-points of the game with the modifier. A necative vDip-score is set to 0.',
 				'params' => array('gameID'=>'Game ID', 'modifier'=>'Modifier for the point distribution')
-			),
-			'tempBan' => array(
-				'name' => 'Temporary ban a player',
-				'description' => 'How many days should the player be blocked from joining or creating new games.',
-				'params' => array('userID'=>'User ID', 'ban'=>'Days')
 			),
 			'changeTargetSCs' => array(
 				'name' => 'Change target SCs.',
@@ -70,41 +60,9 @@ class adminActionsVDip extends adminActions
 				'description' => 'Manually grand or remove the license to create moderated games.',
 				'params' => array('userID'=>'User ID','newLicense'=>'change license to (Yes, No or NULL)'),
 			),
-			'ChangeCDNMR' => array(
-				'name' => 'Change CDs and NMRs',
-				'description' => 'Change the CDs or NMRs in a given game or from a user. If you only enter a UserID or a GameID you get a list of all CDs and NMRs of this user or in this game.',
-				'params' => array('MyUserID'=>'User ID', 'MyGameID'=>'GameID', 'TurnID'=>'Turn', 'CDorNMR'=>'What to change'),
-			),
-			
 		);
 		
 		adminActions::$actions = array_merge(adminActions::$actions, $vDipActions);
-	}
-
-	public function changeReliability(array $params)
-	{
-		global $DB;
-		
-		$userID = (int)$params['userID'];
-		$integrityBalance = (int)$params['integrityBalance'];
-
-		list($integrityBalanceOld) = $DB->sql_row("SELECT integrityBalance FROM wD_Users WHERE id=".$userID);
-
-		$DB->sql_put("UPDATE wD_Users SET integrityBalance = ".$integrityBalance." WHERE id=".$userID);
-
-		return 'This users integrityBalance got changed from <b>'.$integrityBalanceOld.'</b> to <b>'.$integrityBalance.'</b>.';
-	}
-	
-	public function changeReliabilityConfirm(array $params)
-	{
-		global $DB;
-		
-		$userID = (int)$params['userID'];
-		$integrityBalance = (int)$params['integrityBalance'];
-		
-		list($integrityBalanceOld) = $DB->sql_row("SELECT integrityBalance FROM wD_Users WHERE id=".$userID);
-
-		return 'This users integrityBalance will be changed from <b>'.$integrityBalanceOld.'</b> to <b>'.$integrityBalance.'</b>.';
 	}
 	
 	public function updateCCIP(array $params)
@@ -119,21 +77,6 @@ class adminActionsVDip extends adminActions
 		$Game->Members->updateCCIP();
 		
 		return 'Matches recalculated.';
-	}
-	
-	public function tempBan(array $params)
-	{
-		global $DB;
-		
-		$userID = (int)$params['userID'];
-		$days   = (int)$params['ban'];
-
-		$DB->sql_put("UPDATE wD_Users SET tempBan = ". ( time() + ($days * 86400) )." WHERE id=".$userID);
-
-		if ($days == 0)
-			return 'This user is now unblocked and can join and create games again.';
-			
-		return 'This user is now blocked from joining and creating games for <b>'.$days.'</b> days.';
 	}
 	
 	public function changeTargetSCs(array $params)
@@ -354,98 +297,6 @@ class adminActionsVDip extends adminActions
 		$DB->sql_put("UPDATE wD_Users SET directorLicense = '".$newLicense."' WHERE id=".$userID);
 
 		return l_t('This users director license was set to %s.',$newLicense);
-	}
-	
-	public function ChangeCDNMR(array $params)
-	{
-		global $DB;
-		$MyUserID = (int)$params['MyUserID'];
-		$MyGameID = (int)$params['MyGameID'];
-		$TurnID   = strtoupper($params['TurnID']);
-		$CDorNMR  = strtoupper($params['CDorNMR']);
-		
-		if ($MyUserID==0 && $MyGameID==0) return l_t('Need a userID or a gameID');
-
-		if ($MyUserID!=0 && $MyGameID==0) $SQLchange = "userID = ".$MyUserID;
-		if ($MyUserID==0 && $MyGameID!=0) $SQLchange = "gameID = ".$MyGameID;
-		if ($MyUserID!=0 && $MyGameID!=0) $SQLchange = "userID = ".$MyUserID." AND gameID = ".$MyGameID;
-
-		if ($TurnID == '') $TurnID = 'ALL';
-		if ($TurnID != 'ALL')
-			$SQLchange .= " AND turn = ".(int)$TurnID;
-		
-		if ( (strpos($CDorNMR,'CD')!== false) || (strpos($CDorNMR,'ALL')!== false))
-			$DB->sql_put("UPDATE wD_CivilDisorders SET forcedByMod = !forcedByMod WHERE ". $SQLchange);
-
-		if ((strpos($CDorNMR,'NMR')!== false) || (strpos($CDorNMR,'ALL')!== false))
-			$DB->sql_put("UPDATE wD_NMRs SET ignoreNMR = !ignoreNMR WHERE ". $SQLchange);
-		
-		if ($MyUserID != 0) $checkList[] = "userID";
-		if ($MyGameID != 0) $checkList[] = "gameID";
-		
-		$info=''; $affectedUsers = array();
-
-		foreach ($checkList as $check)
-		{
-			if ($check == "userID") {
-				$SQL = "userID = ".$MyUserID;
-				$info .= '<li><strong>'.l_t('UserID ').' '.$MyUserID.':</strong></li>';
-			} else {
-				$SQL = "gameID = ".$MyGameID;
-				$info .= '<li><strong>'.l_t('GameID ').' '.$MyGameID.':</strong></li>';
-			}
-			
-			$tabl = $DB->sql_tabl("SELECT c.userID, g.name, c.countryID, c.turn, c.bet, c.SCCount, c.gameId, c.forcedByMod
-				FROM wD_CivilDisorders c LEFT JOIN wD_Games g ON ( c.gameID = g.id )
-				WHERE ". $SQL);
-			
-			while(list($userID, $name, $countryID, $turn, $bet, $SCCount, $gameID, $forcedByMod)=$DB->tabl_row($tabl))
-			{
-				$affectedUsers[]=$userID;
-				if ($forcedByMod == 1) $info .= '<s>';
-				$info .= '<li><strong>CD</strong>, 
-					'.($check == "gameID" ? l_t('UserID:')." <strong>".$userID : l_t('GameID:')." <strong>".$gameID) .'</strong>,
-					'.l_t('country #:').' <strong>'.$countryID.'</strong>,
-					'.l_t('turn:').' <strong>'.$turn.'</strong>,
-					'.l_t('bet:').' <strong>'.$bet.'</strong>,
-					'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>
-					</li>';
-				if ($forcedByMod == 1) $info .= '</s>';
-			}
-			
-			$tabl = $DB->sql_tabl("SELECT n.userID, n.gameID, n.countryID, n.turn, n.bet, n.SCCount, g.name, n.ignoreNMR 
-				FROM wD_NMRs n LEFT JOIN wD_Games g ON ( n.gameID = g.id )
-				WHERE g.id != 0 AND ".$SQL);
-				
-			while(list($userID, $gameID, $countryID, $turn, $bet, $SCCount, $name, $ignoreNMR)=$DB->tabl_row($tabl))
-			{                                          
-				$affectedUsers[]=$userID;
-				if ($ignoreNMR == 1) $info .= '<s>';
-				$info .= '<li><strong>NMR</strong>, 
-					'.($check == "gameID" ? l_t('UserID:')." <strong>".$userID : l_t('GameID:')." <strong>".$gameID) .'</strong>,
-					'.l_t('country #:').' <strong>'.$countryID.'</strong>,
-					'.l_t('turn:').' <strong>'.$turn.'</strong>,
-					'.l_t('bet:').' <strong>'.$bet.'</strong>,
-					'.l_t('supply centers:').' <strong>'.$SCCount.'</strong>
-					</li>';				
-				if ($ignoreNMR == 1) $info .= '</s>';
-			}
-			$info .= '<br>';
-		}
-		
-		$affectedUsers = array_unique($affectedUsers);
-		
-		$DB->sql_put("UPDATE wD_Users u 
-			SET u.cdCount = (SELECT COUNT(1) FROM wD_CivilDisorders c WHERE c.userID = u.id AND c.forcedByMod=0),
-				u.nmrCount = (SELECT COUNT(1) FROM wD_NMRs n WHERE n.userID = u.id AND n.ignoreNMR=0),
-				u.reliabilityRating = (POW( (
-					(100 * ( 1.0 - ((cast(u.cdCount as signed) + u.deletedCDs) / (u.gameCount+1)) ))
-				    +  (100 * (1.0 -   ((u.nmrCount)/(u.phaseCount+1))))
-			    )/2 , 3)/10000)
-			WHERE u.id IN (".implode(',',$affectedUsers).")");
-			
-		return $info;
-	
 	}
 	
 	public function potModifier(array $params)

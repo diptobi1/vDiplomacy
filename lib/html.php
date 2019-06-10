@@ -1018,6 +1018,8 @@ class libHTML
 						}
 						$menu.='
 							<a href="usercp.php" title="Change your user specific settings">Site Settings</a>
+							<a href="usercp.php?tab=IAmap" title="Change your interactive map settings">Interactive Map Settings</a>
+							<a href="usercp.php?tab=CountrySwitch" title="Give your countries to another player">Country Switch Tool</a>
 						</div>
                 	</div>
 					<div id="navSubMenu" class = "clickable nav-tab">Help ▼
