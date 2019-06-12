@@ -40,14 +40,4 @@ class CountryName_Chatbox extends Chatbox
 	}
 }
 
-class NewMessageLimit_Chatbox extends CountryName_Chatbox
-{
-	function getMessages ( $msgCountryID, $limit=20 )
-	{
-		global $Game;
-		$limit = $limit * 4;
-		return parent::getMessages( $msgCountryID, $limit );
-	}
-}
-
-class WWIVVariant_Chatbox extends NewMessageLimit_Chatbox {}
+class WWIVVariant_Chatbox extends CountryName_Chatbox {}
