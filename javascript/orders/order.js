@@ -350,15 +350,7 @@ function Order(orderData)
 			var html=' <select orderType="'+name+'" class="orderDropDown '+(isDisabled?' orderDisabled':'')+'" name="'+
 				elementName+'" style="background-color:#ffd4c9" '+(isDisabled?' disabled':'')+' >';
 			
-			if( !Object.isUndefined(value) && value != '' )
-			{
-				if (name != "toTerrID" && name != "fromTerrID")
-				{
-					var valueName = options.get(value);
-					html=html+'<option selected="selected" value="'+value+'">'+valueName+'</option>';
-				}
-			}
-			else
+			if( Object.isUndefined(value) || value == '' )
 			{
 				value = '';
 				html=html+'<option selected="selected" value=""></option>';
