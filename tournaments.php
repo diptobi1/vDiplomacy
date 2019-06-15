@@ -163,6 +163,8 @@ while (list($id, $name, $description, $status, $minRR, $year, $totalRounds, $for
 {
     print '<div class = "tournamentShow">';
     print '<h2 class = "tournamentCenter">'.$name.'</h2>';
+
+    list($watchers) = $DB->sql_row("select count(1) from  wD_TournamentSpectators s where s.tournamentID = ".$id);
     
     if ($tab == 'Finished')
     {
@@ -181,7 +183,14 @@ while (list($id, $name, $description, $status, $minRR, $year, $totalRounds, $for
             list($thirdUsername) = $DB->sql_row("Select u.username from wD_Users u where u.id =".$thirdPlace);
             print '<div class = "tournamentCenter">'.libHTML::bronzeStar().'Third Place: <a href="profile.php?userID='.$thirdPlace.'">'.$thirdUsername.'</a>'.libHTML::bronzeStar().'</div>';
         }  
+        print '<br>';
     }
+    else if ($watchers > 0)
+    {
+        print '<div class = "tournamentCenter">Spectator Count: '.$watchers.'</div>';
+        print '<br>';
+    }
+
     if ($status != 'PreStart')
     {
         if($status == 'Registration')
@@ -239,10 +248,11 @@ while (list($id, $name, $description, $status, $minRR, $year, $totalRounds, $for
         print '<TABLE class="tournament">';
         print '<tr>';
         print '<th class= "tournament">Game</th>';
-        print '<th class= "tournament">Turn</th>';
+        if ($tab != 'Finished') { print '<th class= "tournament">Turn</th>'; }
         print '<th class= "tournament">phase</th>';
         print '<th class= "tournament">Status</th>';
-        print '<th class= "tournament">Process Time</th>';
+        if ($tab != 'Finished') { print '<th class= "tournament">Process Time</th>'; }
+        else { print '<th class= "tournament">Finished Date</th>'; }
         print '</tr>';
         
         $tablRoundsGames = $DB->sql_tabl("select g.id, g.name, g.turn, g.phase, g.gameOver, g.processStatus, g.processTime from wD_TournamentGames t inner join 
@@ -251,16 +261,20 @@ while (list($id, $name, $description, $status, $minRR, $year, $totalRounds, $for
         // Loop through every game in the rounds. 
         while (list($gameID, $gameName, $turn, $phase, $gameOver, $processStatus, $processTime) = $DB->tabl_row($tablRoundsGames))
         {
-            // Load variant data so we can check game criteria to determine if it is WFO. 
-            $Variant=libVariant::loadFromGameID($gameID);
-            $Game = $Variant->Game($gameID);
+            // We only want to load the variant data if the tab isn't finished. 
+            if ($tab != 'Finished') 
+            {
+                // Load variant data so we can check game criteria to determine if it is WFO. 
+                $Variant=libVariant::loadFromGameID($gameID);
+                $Game = $Variant->Game($gameID);
+            }
 
             print '<TR><td><a href="board.php?gameID='.$gameID.'">'.$gameName.'</a></TD>';
-            print '<td>'.$Variant->turnAsDate($turn).'</td>';
+            if ($tab != 'Finished') { print '<td>'.$Variant->turnAsDate($turn).'</td>'; }
             print '<td>'.$phase.'</td>';
 
             // If the game is over show gameOver (won/draw), otherwise show if it is stuck in WFO, Paused, Crashed, or Running. 
-            if ($gameOver == 'No')
+            if ($gameOver == 'No' && $tab != 'Finished')
             {
                 if ($Game->missingPlayerPolicy=='Wait' && !$Game->Members->isCompleted() && time()>=$Game->processTime)
                 {
