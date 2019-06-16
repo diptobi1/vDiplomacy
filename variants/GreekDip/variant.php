@@ -29,6 +29,7 @@
 	1.1.5: 2 coasts added to territory Thrace
 	1.2:   now uses the codeversion instead of $version for code-change documentation
 	1.3:   only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
+	1.3.1: Problem with the IAMap fixed.
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');

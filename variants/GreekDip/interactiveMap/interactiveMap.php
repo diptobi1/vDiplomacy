@@ -37,8 +37,8 @@ class CustomIcons_IAmap extends IgnoreFakeTerritories_IAmap {
         protected function setTransparancies() {}
         
         protected function jsFooterScript() {
-                libHTML::$footerScript[] = "    interactiveMap.parameters.imgBuildArmy = 'interactiveMap/php/IAgetBuildIcon.php?unitType=Army_'+context.countryID+'&variantID=".$this->Variant->id."';
-                                        interactiveMap.parameters.imgBuildFleet = 'interactiveMap/php/IAgetBuildIcon.php?unitType=Fleet_'+context.countryID+'&variantID=".$this->Variant->id."';";
+                libHTML::$footerScript[] = "    interactiveMap.parameters.imgBuildArmy = 'interactiveMap/php/IAgetBuildIcon.php?unitType=Army&variantID=".$this->Variant->id."';
+                                        interactiveMap.parameters.imgBuildFleet = 'interactiveMap/php/IAgetBuildIcon.php?unitType=Fleet&variantID=".$this->Variant->id."';";
         
                 parent::jsFooterScript();
         }
