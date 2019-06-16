@@ -45,14 +45,14 @@ class CustomCountryIcons_drawMap extends MoveFlags_drawMap
 	// Load custom icons (fleet and army) for each country
 	protected function loadImages()
 	{
-		$this->army_c[0]  = $this->loadImage('variants/Europa_Renovatio/resources/armyNeutral.png');
-		$this->fleet_c[0] = $this->loadImage('variants/Europa_Renovatio/resources/fleetNeutral.png');
+//		$this->army_c[0]  = $this->loadImage('variants/Europa_Renovatio/resources/ArmyNeutral.png');
+//		$this->fleet_c[0] = $this->loadImage('variants/Europa_Renovatio/resources/FleetNeutral.png');
 		for ($i=1; $i<=count($GLOBALS['Variants'][VARIANTID]->countries); $i++) {
-			$this->army_c[$i]  = $this->loadImage('variants/Europa_Renovatio/resources/army' .$GLOBALS['Variants'][VARIANTID]->countries[$i-1].'.png');
-			$this->fleet_c[$i] = $this->loadImage('variants/Europa_Renovatio/resources/fleet'.$GLOBALS['Variants'][VARIANTID]->countries[$i-1].'.png');
+			$this->army_c[$i]  = $this->loadImage('variants/Europa_Renovatio/resources/Army' .$GLOBALS['Variants'][VARIANTID]->countries[$i-1].'.png');
+			$this->fleet_c[$i] = $this->loadImage('variants/Europa_Renovatio/resources/Fleet'.$GLOBALS['Variants'][VARIANTID]->countries[$i-1].'.png');
 		}
-		$this->army_c[51]  = $this->loadImage('variants/Europa_Renovatio/resources/armyNeutral.png');
-		$this->fleet_c[51] = $this->loadImage('variants/Europa_Renovatio/resources/fleetNeutral.png');
+//		$this->army_c[51]  = $this->loadImage('variants/Europa_Renovatio/resources/ArmyNeutral.png');
+//		$this->fleet_c[51] = $this->loadImage('variants/Europa_Renovatio/resources/FleetNeutral.png');
 		parent::loadImages();
 	}
 	
