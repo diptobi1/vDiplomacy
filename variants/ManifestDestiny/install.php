@@ -237,7 +237,6 @@ $bordersRawData=array(
 	array('Dallas','Panhandle','No','Yes'),
 	array('Dallas','Kansas','No','Yes'),
 	array('Austin','Panhandle','No','Yes'),
-	array('Austin','Galveston Bay','Yes','No'),
 	array('Panhandle','Kansas','No','Yes'),
 	array('Panhandle','Wyoming','No','Yes'),
 	array('Kansas','Wyoming','No','Yes'),

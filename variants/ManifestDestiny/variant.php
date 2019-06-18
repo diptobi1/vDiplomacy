@@ -40,7 +40,7 @@ class ManifestDestinyVariant extends WDVariant {
 	public $author      ='Morg (minor changes by Enriador)';
 	public $adapter     ='Enriador & Oliver Auth';
 	public $version     ='1.0';
-	public $codeVersion ='1.4';
+	public $codeVersion ='1.4.1';
 	public $homepage    ='https://playdiplomacy.com/forum/viewtopic.php?f=617&t=40302';
 
 	public $countries=array('Britain','United States','Texas','Mexico','Spain');
