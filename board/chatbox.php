@@ -95,7 +95,7 @@ class Chatbox
 		{
 			$newmessage = trim($_REQUEST['newmessage']);
 			
-			if ($Game->phase == 'Pre-game' && (isset($Member)))
+			if ($Game->phase == 'Pre-game' && (isset($Member)) && $Game->anon == 'No')
 				$newmessage = "(".$User->username."): ".$newmessage;
 
 			if ( isset($Member) &&
