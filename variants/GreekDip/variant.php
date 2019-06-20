@@ -30,6 +30,7 @@
 	1.2:   now uses the codeversion instead of $version for code-change documentation
 	1.3:   only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
 	1.3.1: Problem with the IAMap fixed.
+	1.4:   Problem the the new NMR-code fixed.
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -43,7 +44,7 @@ class GreekDipVariant extends WDVariant {
 	public $author     = 'Hirum Hibbert';
 	public $adapter    = 'Oliver Auth';
 	public $version    = '1.0';
-	public $codeVersion= '1.3';
+	public $codeVersion= '1.4';
 	
 	public $countries=array('Athens','Byzantinum','Macedonia','Persia','Rhodes','Sparta');
 

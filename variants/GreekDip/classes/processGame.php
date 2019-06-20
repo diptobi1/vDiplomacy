@@ -29,8 +29,8 @@ class GreekDipVariant_processGame extends processGame
 		if ( $this->phase == 'Diplomacy' && $this->turn==1 )
 		{
 			parent::process();		
+			$DB->sql_put("UPDATE wD_Members SET orderStatus = 'Ready' WHERE gameID=".$this->id);
 			parent::process();		
-			$DB->sql_put( "DELETE FROM wD_NMRs WHERE gameID = ".$this->id );			
 		}
 	}
 	
