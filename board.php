@@ -326,13 +326,6 @@ if ($Game->phase == 'Pre-game')
 
 	$CB = $Game->Variant->Chatbox();
 
-	if( isset($_REQUEST['newmessage']) AND $_REQUEST['newmessage']!="")
-	{
-		$_REQUEST['newmessage'] = "(".$User->username."): ".$_REQUEST['newmessage'];
-		$CB->postMessage(0);
-		$DB->sql_put("COMMIT");
-	}
-	
 	$forum = $CB->output(0);
 	unset($CB);
 

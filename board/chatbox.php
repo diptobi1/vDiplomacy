@@ -94,6 +94,9 @@ class Chatbox
 		if( isset($_POST['newmessage']) AND $_POST['newmessage']!="" )
 		{
 			$newmessage = trim($_REQUEST['newmessage']);
+			
+			if ($Game->phase == 'Pre-game' && (isset($Member)))
+				$newmessage = "(".$User->username."): ".$newmessage;
 
 			if ( isset($Member) &&
 			     ( $Game->pressType == 'Regular' ||                                        // All tabs allowed for Regular
@@ -223,6 +226,8 @@ class Chatbox
 					 ( $Game->pressType == 'Regular' && $Game->phase == 'Finished' )))))) // finished regular games only allow global chat.
 		{
             libHTML::$footerIncludes[] = l_j('message.js');
+			
+			$sendButtonName = ($Game->pressType == 'NoPress' && $User->type['Moderator'] && $Game->phase != 'Pre-game') ? 'Admin Send' : 'Send';
             $chatbox .= '<DIV class="chatbox">
 					<form method="post" class="safeForm" action="message.php?gameID='.$Game->id.'&amp;msgCountryID='.$msgCountryID.'" id="chatForm">
 					<TABLE>
@@ -239,7 +244,7 @@ class Chatbox
 					<TR class="barAlt2">
 						<TD class="left send">
 							<input type="hidden" name="formTicket" value="'.libHTML::formTicket().'" />
-							<input type="submit" tabindex="2" class="form-submit" value="'.l_t('Send').'" name="Send" onclick="return false;" id="message-send"/><br/>
+							<input type="submit" tabindex="2" class="form-submit" value="'.l_t($sendButtonName).'" name="Send" onclick="return false;" id="message-send"/><br/>
 
 
 					'.'

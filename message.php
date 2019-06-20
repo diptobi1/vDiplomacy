@@ -38,8 +38,8 @@ catch (Exception $e)
     die("Error loading Game");
 }
 
-//if ( 'Pre-game' != $Game->phase ) 
-//{
+if ( 'Pre-game' != $Game->phase ) 
+{
     $CB = $Game->Variant->Chatbox();
 
     // Now that we have retrieved the latest messages we can update the time we last viewed the messages
@@ -49,7 +49,18 @@ catch (Exception $e)
     $CB->postMessage($msgCountryID);
 
     $DB->sql_put("COMMIT");
-//}
+}
+else
+{
+    $CB = $Game->Variant->Chatbox();
+	
+	// Pregame CountryID is always 0
+	$msgCountryID = 0;
+	
+	$CB->postMessage($msgCountryID);
+	$DB->sql_put("COMMIT");
+}
+
 
 //RE-generate chat box
 $messages = $CB->getMessages($msgCountryID);
