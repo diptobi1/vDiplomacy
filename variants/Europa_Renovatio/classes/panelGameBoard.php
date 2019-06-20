@@ -32,7 +32,7 @@ class ZoomMap_panelGameBoard extends panelGameBoard
 		$html = parent::mapHTML();
 		
 		$old = '/img id="mapImage" src="(\S*)" alt=" " title="The small map for the current phase. If you are starting a new turn this will show the last turn\'s orders" \/>/';
-		$new = 'iframe id="mapImage" src="'.$mapLink.'" alt=" " width="750" height="403"> </iframe>';
+		$new = 'iframe id="mapImage" src="'.$mapLink.'" alt=" " width="750" height="690"> </iframe>';
 		
 		$html = preg_replace($old,$new,$html);
 		
