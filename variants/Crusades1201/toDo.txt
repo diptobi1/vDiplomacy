@@ -1,3 +1,0 @@
-<strike>* Apply unique army/fleet/smallarmy/smallfleet icons.
-* Build Anywhere.
-* SCs for victory: 14.</strike>
