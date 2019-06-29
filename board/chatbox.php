@@ -306,15 +306,40 @@ class Chatbox
 		if ( $Game->phase == 'Pre-game' )
 			return $tabs.'</div>';
 			
+// Hide unneccessary countrychats patch
+		global $DB;
+		$activeChats = $passiveChats = array();
+		$tabl=$DB->sql_tabl('
+			SELECT fromCountryID FROM wD_GameMessages 
+			WHERE gameID='.$Game->id.' AND toCountryID='.$Member->countryID.'
+			GROUP by fromCountryID');
+		while( list($fromCountryID) = $DB->tabl_row($tabl) )
+			$activeChats[] = $fromCountryID;
+		$tabl=$DB->sql_tabl('
+			SELECT toCountryID FROM wD_GameMessages 
+			WHERE gameID='.$Game->id.' AND fromCountryID='.$Member->countryID.' AND toCountryID <>0
+			GROUP by toCountryID');
+		while( list($toCountryID) = $DB->tabl_row($tabl) )
+			$activeChats[] = $toCountryID;
+// Hide unneccessary countrychats patch end
+			
 		for( $countryID=0; $countryID<=count($Game->Variant->countries); $countryID++)
 		{
 			// Do not allow country specific tabs for restricted press games.
 			if (($Game->pressType != 'Regular' && $Game->pressType != 'RulebookPress') && $countryID != 0 && $countryID != $Member->countryID ) continue;
 
+// Hide unneccessary countrychats patch
+			if ((!(in_array($countryID, $activeChats))) && ($countryID != $Member->countryID) && ($countryID != 0) && ($msgCountryID != $countryID))
+			{
+				$passiveChats[] = $countryID;
+				continue;
+			}
+// Hide unneccessary countrychats patch end
+
 			$tabs .= ' <a href="./board.php?gameID='.$Game->id.'&amp;msgCountryID='.$countryID.'&amp;rand='.rand(1,100000).'#chatboxanchor" '.
 				'class="country'.$countryID.' '.( $msgCountryID == $countryID ? 'current"'
 					: '" title="'.l_t('Open %s chatbox tab"',( $countryID == 0 ? 'the global' : $this->countryName($countryID)."'s" )) ).'>';
-
+			
 			if ( $countryID == $Member->countryID )
 			{
 				$tabs .= l_t('Notes');
@@ -340,7 +365,23 @@ class Chatbox
 
 			$tabs .= '</a>';
 		}
-
+		
+// Hide unneccessary countrychats patch
+		if (count($passiveChats) > 0)
+		{
+			$tabs .= '<select name="CounryChat" onchange="location = this.value;"
+						style="margin-left: 2px; margin-right: 2px;
+								padding-top: 2px; padding-bottom: 2px;
+								background-color: #eaeaea; border-bottom: 2px solid #6898A1 !important;
+								font-weight: bold;">
+						<option value="">Open new chat:</option>';
+			foreach ( $passiveChats as $countryID)
+				$tabs .= '<option value="board.php?gameID='.$Game->id.'&amp;msgCountryID='.$countryID.'&amp;rand='.rand(1,100000).'#chatboxanchor"'
+							.'class="country'.$countryID.'">'.$Game->Members->ByCountryID[$countryID]->memberCountryName().'</option>';
+			$tabs .= '</select>';
+		}
+// Hide unneccessary countrychats patch end
+		
 		$tabs .= '</div>';
 
 		return $tabs;
