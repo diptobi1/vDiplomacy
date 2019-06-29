@@ -132,16 +132,14 @@ class libSwitch
 
 	static public function NewSwitch($formData)
 	{
-		global $User, $DB;
-		$error = '';
 		
-		if ( isset ($formData['toID']) && $formData['toID']>0 && isset ($formData['gameID']))
+		if ( isset ($formData['toID']) && isset ($formData['gameID']))
 		{
+			global $User, $DB;
+			
 			$fromID = (int)$User->id;
 			$toID   = (int)$formData['toID'];
 			$gameID = (int)$formData['gameID'];
-			$Variant=libVariant::loadFromGameID($gameID);
-			$Game = $Variant->Game($gameID);
 			
 			try
 			{
@@ -149,36 +147,36 @@ class libSwitch
 			}
 			catch (Exception $e)
 			{
-				$error = l_t("Invalid user ID given.");
+				return l_t("Invalid user ID given.");
 			}
 			
-			if ($error == '')
-			{
-				// Check if there is a mute against a player
-				list($muted) = $DB->sql_row("SELECT count(*) FROM wD_Members AS m
-											LEFT JOIN wD_BlockUser AS f ON ( m.userID = f.userID )
-											LEFT JOIN wD_BlockUser AS t ON ( m.userID = t.blockUserID )
-										WHERE m.gameID = ".$Game->id." AND (f.blockUserID =".$SendUser->id." OR t.userID =".$SendUser->id.")");
-										
-				// Check for additional requirements:
-				if ( $Game->minPhases > $SendUser->phaseCount)
-					$error = 'The User you selected did not play enough phases to join this game.';
-				elseif ( $Game->minimumReliabilityRating > $SendUser->reliabilityRating )
-					$error = 'The reliability of User you selected is not high enough to join this game.';
-				elseif ( array_key_exists ( $toID , $Game->Members->ByUserID))
-					$error = 'The User you selected is already a member of this game.';
-				elseif ( $muted > 0)
-					$error = "The User you selected can't join. A player in this game has him muted or he muted a player in this game.";
-				else
-				{
-					$DB->sql_put('INSERT INTO wD_CountrySwitch (fromID, toID, gameID, status, hasWatched) VALUES ('.
-						$fromID.','.$toID.','.$gameID.', "Send", "No")');
-					$DB->sql_put("UPDATE wD_Users SET notifications = CONCAT_WS(',',notifications, 'CountrySwitch') WHERE id = ".$toID);
-				}
-			}
+				
+			// Check if there is a mute against a player
+			list($muted) = $DB->sql_row("SELECT count(*) FROM wD_Members AS m
+										LEFT JOIN wD_BlockUser AS f ON ( m.userID = f.userID )
+										LEFT JOIN wD_BlockUser AS t ON ( m.userID = t.blockUserID )
+									WHERE m.gameID = ".$gameID." AND (f.blockUserID =".$toID." OR t.userID =".$toID.")");
+			if ( $muted > 0)
+				return l_t("The User you selected can't join. A player in this game has him muted or he muted a player in this game.");
+
+			// Check for additional requirements:
+			list($minPhases, $minimumReliabilityRating) = $DB->sql_row("SELECT minPhases, minimumReliabilityRating FROM wD_Games WHERE id = ".$gameID);
+			
+			if ( $minPhases > $SendUser->phaseCount)
+				return l_t("The User you selected did not play enough phases to join this game.");
+			if ( $minimumReliabilityRating > $SendUser->reliabilityRating )
+				return l_t("The reliability of User you selected is not high enough to join this game.");
+
+			list($isMember) = $DB->sql_row("SELECT id FROM wD_Members WHERE userID=".$toID." AND gameID=".$gameID);
+			if ($isMember)
+				return l_t("The User you selected is already a member of this game.");
+				
+			$DB->sql_put('INSERT INTO wD_CountrySwitch (fromID, toID, gameID, status, hasWatched) VALUES ('.
+				$fromID.','.$toID.','.$gameID.', "Send", "No")');
+			$DB->sql_put("UPDATE wD_Users SET notifications = CONCAT_WS(',',notifications, 'CountrySwitch') WHERE id = ".$toID);
 						
 		}
-		return $error;
+		return;
 	}
 
 	static public function allSwitchesHTML($userID)
