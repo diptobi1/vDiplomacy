@@ -70,8 +70,8 @@ $territoryRawData=array(
 	array('Bahiriya (BHR)', 'Coast', 'No', 16, 2063, 2210, 2063, 2210),
 	array('Bahmut (BHM)', 'Land', 'No', 12, 2528, 1349, 2528, 1349),
 	array('Balearic Islands - Northeast (BAL ne)', 'Sea', 'No', 0, 1088, 1762, 1088, 1762),
-	array('Balearic Islands - South (BAL s)', 'Sea', 'No', 0, 1032, 1764, 1032, 1764),
-	array('Balearic Islands - West (BAL w)', 'Sea', 'No', 0, 982, 1883, 982, 1883),
+	array('Balearic Islands - South (BAL s)', 'Sea', 'No', 0, 985, 1885, 985, 1883),
+	array('Balearic Islands - West (BAL w)', 'Sea', 'No', 0, 983, 1815, 992, 1813),
 	array('Balearic Islands (BAL)', 'Coast', 'Yes', 0, 1098, 1803, 1098, 1803),
 	array('Bamberg (BAM)', 'Land', 'No', 0, 1429, 1284, 1429, 1284),
 	array('Bangazi (BNG)', 'Coast', 'Yes', 0, 1779, 2182, 1779, 2182),
@@ -4300,6 +4300,7 @@ if (!file_exists('variants/Europa_Renovatio/cache/sampleMapLarge.png'))
 	copy ('variants/Europa_Renovatio/resources/sampleMapLarge.png','variants/Europa_Renovatio/cache/sampleMapLarge.png');
 
 ?>
+
 
 
 

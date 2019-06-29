@@ -78,6 +78,7 @@ class CustomCountryIcons_drawMap extends MoveFlags_drawMap
 	// Draw the custom icons:
 	public function addUnit($terrID, $unitType)
 	{
+		if ($this->unit_c[$terrID] == 0) return;// Added for the map-tool
 		$this->army  = $this->army_c[$this->unit_c[$terrID]];
 		$this->fleet = $this->fleet_c[$this->unit_c[$terrID]];
 		parent::addUnit($terrID, $unitType);
