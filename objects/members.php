@@ -83,7 +83,10 @@ class Members
 	 */
 	function pointsPerSupplyCenter()
 	{
-		return ((float)$this->Game->pot / (float)$this->supplyCenterCount('Playing'));
+		if ($this->supplyCenterCount('Playing') > 0)
+			return ((float)$this->Game->pot / (float)$this->supplyCenterCount('Playing'));
+		else
+			return 0;
 	}
 
 	static $votes = array('Draw','Pause','Cancel','Extend','Concede');
