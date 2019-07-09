@@ -323,8 +323,16 @@ class Chatbox
 			$activeChats[] = $toCountryID;
 // Hide unneccessary countrychats patch end
 			
-		for( $countryID=0; $countryID<=count($Game->Variant->countries); $countryID++)
+//		for( $countryID=0; $countryID<=count($Game->Variant->countries); $countryID++)
+		$allCountries = $Game->Variant->countries;
+		$allCountries = array_diff($allCountries, array($Member->country));
+		sort($allCountries);
+		array_unshift($allCountries, 'Global'); array_push($allCountries, $Member->country);
+		
+		foreach ($allCountries as $countryChatName)
 		{
+			$countryID = ( $countryChatName == 'Global' ? 0 : $Game->Variant->countryID($countryChatName) );
+			
 			// Do not allow country specific tabs for restricted press games.
 			if (($Game->pressType != 'Regular' && $Game->pressType != 'RulebookPress') && $countryID != 0 && $countryID != $Member->countryID ) continue;
 
