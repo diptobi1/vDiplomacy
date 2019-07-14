@@ -203,8 +203,8 @@ interactiveMap.onClick = function(event) {
                         interactiveMap.currentOrder = currOrder;
                     else
                         interactiveMap.currentOrder = null;
-
-                    if ((interactiveMap.currentOrder != null) && (context.phase == "Builds")) {
+                    
+                    if (interactiveMap.currentOrder != null) {
                         interactiveMap.currentOrder.interactiveMap.coordinates = coor;
                     }
                     interactiveMap.insertMessage(""); //cleares Order-Line

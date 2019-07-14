@@ -52,7 +52,7 @@ function loadIAtransform() {
     }
 
     function addOrderMenuTransformButton() {
-		var origCreate = interactiveMap.interface.orderMenu.create;
+        var origCreate = interactiveMap.interface.orderMenu.create;
 		
         interactiveMap.interface.orderMenu.create = function() {
 			if (typeof interactiveMap.interface.orderMenu.element == "undefined") { 
@@ -64,7 +64,7 @@ function loadIAtransform() {
         };
 
         interactiveMap.interface.orderMenu.show = function(coor, drawResetButton) {
- 			/*
+			/*
 			 * If current coordinates for display of the order menu are given, use these.
 			 * If no coordinates are given, use the last coordinates given.
 			 */
@@ -115,8 +115,8 @@ function loadIAtransform() {
 						break;
 				}
 			}
-
-            this.positionMenu(coor);
+			
+			this.positionMenu(coor);
 			this.toggle(true);
         };
     }
@@ -141,7 +141,7 @@ function loadIAtransform() {
                         return;
                     }
 
-                this.orderType = value;
+				this.orderType = value;
 				// before entering order: store previous order in case process of entering
 				// order is aborted
 				this.previousOrder = {
@@ -152,14 +152,18 @@ function loadIAtransform() {
 				};
 
                 if (value === "Transform") { //get special transform code for order value
-                    value = "Transform_"+(parseInt(this.Order.Unit.Territory.coastParentID) + 1000);
-
-                    //Check if unit is an army on coast with two (or more) coasts (player will have to select the coast with extra click)
-                    if (this.Order.Unit.type === 'Army' && this.Order.Unit.Territory.coast === "Parent") {
-                        interactiveMap.insertMessage(" on coast ");
-                        interactiveMap.greyOut.draw(new Array(this.Order.Unit.terrID));
-                        return;
-                    }
+					if ( this.Order.Unit.type === 'Fleet' || this.Order.Unit.Territory.coast === "No") {
+						// a default transform order
+						value = "Transform_"+(parseInt(this.Order.Unit.Territory.coastParentID) + 1000);
+					} else {
+						// a transform to a fleet with several coasts 
+						// -> the correct coast has to be selected by the coordinates the user clicked on
+						var coastID = this.getCoastByCoords(Territories.select(function(t) {
+								return (t[1].coastParentID == interactiveMap.selectedTerritoryID) && (t[1].id != t[1].coastParentID)
+							}).pluck("1"), this.coordinates).id;
+							
+						value = "Transform_"+(parseInt(coastID) + 1000);
+					}
                 }
 
                 value = (value == "Convoy") ? "Move" : value;
@@ -190,44 +194,21 @@ function loadIAtransform() {
                         break;
 
                     case "Transform":
-                        interactiveMap.insertMessage(" transforms to " + ((this.Order.Unit.type === 'Army') ? interactiveMap.parameters.fleetName : interactiveMap.parameters.armyName), true);
+						interactiveMap.insertMessage(" transforms to " + ((this.Order.Unit.type === 'Army') ? interactiveMap.parameters.fleetName : interactiveMap.parameters.armyName));
+						
+						if ( this.Order.Unit.type === 'Army' && this.Order.Unit.Territory.coast === "Parent" ){
+							// print extra info if a coast was choosen
+							var coastID = this.getCoastByCoords(Territories.select(function(t) {
+								return (t[1].coastParentID == interactiveMap.selectedTerritoryID) && (t[1].id != t[1].coastParentID)
+							}).pluck("1"), this.coordinates).id;	
+							
+							interactiveMap.insertMessage(" on "+Territories.get(coastID).name.match(/\((.*)\)/)[1]);
+						}
+						
+						interactiveMap.insertMessage(" ",true);
+							
                         break;
                 }
-            };
-            
-            IA.setOrderPart = function(terrID, coordinates) {
-                switch (this.orderType) {
-                    case "Move":
-                        this.setMove(terrID, coordinates);
-                        break;
-                    case "Support hold":
-                        this.setSupportHold(terrID);
-                        break;
-                    case "Support move":
-                        this.setSupportMove(terrID, coordinates);
-                        break;
-                    case "Support move from":
-                        this.setSupportMoveFrom(terrID);
-                        break;
-                    case "Convoy":
-                        this.setConvoy(terrID);
-                        break;
-                    case "Transform":
-                        this.setTransformCoast(terrID, coordinates);
-                        break;
-                }
-            };
-            
-            IA.setTransformCoast = function(terrID, coordinates){
-                if (terrID != this.Order.Unit.terrID) {
-                    alert(interactiveMap.parameters.armyName + " in " + this.Order.Unit.Territory.name + " can not transform to " + interactiveMap.parameters.fleetName + " on " + Territories.get(terrID).name + " (not the same territory)");
-                    return;
-                }
-                
-                terrID = this.getCoastByCoords(Territories.filter(function(t){return t[1].coastParentID == terrID && t[1].coastParentID != t[1].id;}).pluck("1"), coordinates).id;
-                
-                interactiveMap.insertMessage(Territories.get(terrID).name.match(/\((.*)\)/)[1]);
-                this.enterOrder('type', "Transform_"+(parseInt(terrID) + 1000));
             };
         });
     }
