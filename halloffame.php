@@ -47,7 +47,7 @@ if ( $User->type['User'] && $User->vpoints > 1000 )
 	list($players) = $DB->sql_row("SELECT COUNT(id)+1 FROM wD_Users WHERE vpoints > 1000");
 	
 	print '<p class = "hof">'.l_t('You are ranked %s out of %s players with over 1000%s','<a href="#me" class="light">#'.$position.'</a>',$players,libHTML::vpoints()).
-		l_t('. For more stats on your ranking visit <a class="light" href="profile.php?userID='.$User->id.'">your profile</a>.').'</p>';
+		l_t('. For more stats on your ranking, visit <a class="light" href="profile.php?userID='.$User->id.'">your profile</a>.').'</p>';
 }
 
 $i=1;

@@ -257,6 +257,26 @@ class Config
 	);
 
 	/**
+	 * The API configuration. Whether to enable it or not, and restrict it to some variants or some gameIDs.
+	 *
+	 * @var array
+	 */
+	public static $apiConfig = array(
+		/* Whether the API is enabled or not */
+		"enabled" => true,
+
+		/* Only replace players in CD if they are in a NoPress game */
+		"noPressOnly" => true,
+
+		/* If the API should only be enabled for some game ids, set the list of game ids here */
+		"restrictToGameIDs" => array(),
+
+		/* List of variant IDs supported */
+		/* 1 = Classic, 15 = ClassicFvA, 23 = ClassicGvI */
+		"variantIDs" => array(1, 15, 23)
+	);
+
+	/**
 	 * An array of variants that are blocked for new game creation on the server.
 	 * If you remove the variant from the $variants array you get errors if someone needs to display older games of this
 	 * variant.
