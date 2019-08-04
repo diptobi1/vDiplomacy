@@ -24,7 +24,7 @@ require_once("lib/rating.php");
 libHTML::starthtml();
 
 print '<script type="text/javascript" src="contrib/tablekit/tablekit.js"></script>';
-print libHTML::pageTitle('Hall of fame','The webDiplomacy hall of fame; the 100 highest ranking players on this server.');
+print libHTML::pageTitle('vPoints','Details on the calculation of the vPoint-Rating.');
 
 print '<p align="center"><img src="images/points/vstack.png" alt=" "
 			title="webDiplomacy ranking points; who are the most skilled at gathering them from their foes?" /></p>';

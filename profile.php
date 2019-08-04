@@ -430,7 +430,7 @@ $showAnon = ($UserProfile->id == $User->id || $User->type['Moderator']);
 print '<ul class="formlist">';
 
 print '<li title="Diplomat/Mastermind/Pro/Experienced/Member/Casual/Puppet (top 5/10/20/50/90/100%/not ranked)"><strong>'.l_t('Rank:').'</strong> '.$rankingDetails['rank'].
-	' ('.number_format($UserProfile->vpoints).' '.libHTML::vpoints().')'.
+	' (<a href="hof.php?userID='.$UserProfile->id.'" style="text-decoration: none">'.number_format($UserProfile->vpoints).' '.libHTML::vpoints().'</a>)'.
 	'</li>';
 
 if ( $rankingDetails['vPosition'] < $rankingDetails['rankingPlayers'] )
@@ -649,33 +649,43 @@ if( $total )
 	}
 
 	print '</br>';
-	if( $User->type['Moderator'] || $User->id == $UserProfile->id )
-	{
-		print '<li><strong>'.l_t('Reliability:').' (<a href="profile.php?detail=civilDisorders&userID='.$UserProfile->id.'">'.l_t('Reliability Explained').'</a>) </strong>';
-	}
-	else
-	{
-		print '<li><strong>'.l_t('Reliability:').'</strong>';
-	}
-
-	if ( $User->type['Moderator'] || $User->id == $UserProfile->id )
-	{
-		$recentMissedTurns = $UserProfile->getRecentUnExcusedMissedTurns();
-		$allMissedTurns = $UserProfile->getYearlyUnExcusedMissedTurns();
-		If ($recentMissedTurns > 0)
-		{
-			print '<li style="font-size:13px"><font color="red"> Recent Un-excused Delays: ' . $recentMissedTurns.'</font></li>';
-			print '<li style="font-size:13px"><font color="red"> Recent Delay RR Penalty: ' . ($recentMissedTurns*6).'%</font></li>';
-			print '<li style="font-size:13px"><font color="red"> Yearly Delay RR Penalty: ' . ($allMissedTurns*5).'%</font></li>';
-		}
-		print '<li style="font-size:13px">'.l_t('Un-excused delays/phases:').' <strong>'.$allMissedTurns.'/'.$UserProfile->yearlyPhaseCount.'</strong></li>';
-	}
-	print '<li style="font-size:13px">'.l_t('Reliability rating:').' <strong>'.($UserProfile->reliabilityRating).'%</strong>';
-
-	print '</li>';
-
-	print '</li>';
 }
+
+
+if( $User->type['Moderator'] || $User->id == $UserProfile->id )
+{
+	print '<li><strong>'.l_t('Phases played:').'</strong> '.$UserProfile->phaseCount.'</li></br>';
+}
+
+
+if( $User->type['Moderator'] || $User->id == $UserProfile->id )
+{
+	print '<li><strong>'.l_t('Reliability:').' (<a href="profile.php?detail=civilDisorders&userID='.$UserProfile->id.'">'.l_t('Reliability Explained').'</a>) </strong>';
+}
+else
+{
+	print '<li><strong>'.l_t('Reliability:').'</strong>';
+}
+
+if ( $User->type['Moderator'] || $User->id == $UserProfile->id )
+{
+	$recentMissedTurns = $UserProfile->getRecentUnExcusedMissedTurns();
+	$allMissedTurns = $UserProfile->getYearlyUnExcusedMissedTurns();
+	If ($recentMissedTurns > 0)
+	{
+		print '<li style="font-size:13px"><font color="red"> Recent Un-excused Delays: ' . $recentMissedTurns.'</font></li>';
+		print '<li style="font-size:13px"><font color="red"> Recent Delay RR Penalty: ' . ($recentMissedTurns*6).'%</font></li>';
+		print '<li style="font-size:13px"><font color="red"> Yearly Delay RR Penalty: ' . ($allMissedTurns*5).'%</font></li>';
+	}
+	print '<li style="font-size:13px">'.l_t('Phases played in the last year:').' <strong>'.$UserProfile->yearlyPhaseCount.'</strong></li>';
+	print '<li style="font-size:13px">'.l_t('Un-excused delays/phases:').' <strong>'.$allMissedTurns.'/'.$UserProfile->yearlyPhaseCount.'</strong></li>';
+}
+print '<li style="font-size:13px">'.l_t('Reliability rating:').' <strong>'.($UserProfile->reliabilityRating).'%</strong>';
+
+print '</li>';
+
+print '</li>';
+
 
 if ( $User->type['Moderator'])  // Print who is on a players blocklist, and who is blocking this player. (only for mods)
 	libBlockUser::blockUserProfileInfo();
