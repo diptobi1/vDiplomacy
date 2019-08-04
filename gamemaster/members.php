@@ -728,6 +728,8 @@ class processMembers extends Members
 					AND EXISTS(SELECT o.id FROM wD_Orders o WHERE o.gameID = m.gameID AND o.countryID = m.countryID)");
 		
 		// update the turn count
+		// vdip: readded phaseCount increment (the old simple increment is sufficient and 
+		//	does also avoid overwriting records of the past)
 		$DB->sql_put("UPDATE wD_Users u
 				INNER JOIN wD_Members m ON m.userID = u.id
 				INNER JOIN (
@@ -736,7 +738,8 @@ class processMembers extends Members
 					WHERE t.turnDateTime > ".time()." - (3600 *24*365)
 					GROUP BY userID
 				  ) AS TotalTurns ON u.id = TotalTurns.userID
-				SET u.yearlyPhaseCount = TotalTurns.yearlyTurns
+				SET u.yearlyPhaseCount = TotalTurns.yearlyTurns,
+				u.phaseCount = u.phaseCount + 1
 				WHERE m.gameID = ".$this->Game->id." 
 					AND ( m.status='Playing' OR m.status='Left' )
 					AND EXISTS(SELECT o.id FROM wD_Orders o WHERE o.gameID = m.gameID AND o.countryID = m.countryID)");
