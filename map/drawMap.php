@@ -545,6 +545,7 @@ abstract class drawMap
 	 */
 	protected function drawText($text, $x, $y, $large=false, $topRight=false, $drawBox=false)
 	{
+		$text = html_entity_decode($text);
 		$size = ( $large ? 'largeSize' : 'size' );
 
 		$boundingBox = imageftbbox($this->font[$size],
