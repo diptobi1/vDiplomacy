@@ -43,5 +43,13 @@ class Classic1898FogVariant_panelMembersHome extends panelMembersHome
 
 		return $this->occupationBarCache;
 	}
+	
+	// Completely remove any ordering by SC if in running game
+	function indexMembers() {
+		if(!in_array($this->Game->phase, array('Pre-game','Finished')))
+			sort($this->ByOrder);
+		
+		parent::indexMembers();
+	}
 }
 

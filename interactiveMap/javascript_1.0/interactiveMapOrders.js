@@ -166,9 +166,10 @@ interactiveMap.loadOrders = function() {
 				 * check if the order is complete (so the last value is actually
 				 * valid (!= "")), so the IA order can be savely completed.
 				 */
-                if (this.Order.requirements[this.Order.requirements.length - 1] == n)
+                if (this.Order.requirements[this.Order.requirements.length - 1] == n) {
 					this.Order.checkComplete();
-				else
+					OrdersHTML.updateFormButtons();
+				} else
 					this.Order.isComplete = false;
             }
             if (((this.orderType == "Support move to") && (n == "toTerrID")) || ((this.orderType == "Support hold") || (this.orderType == "Retreat")) && (n == "type")) {

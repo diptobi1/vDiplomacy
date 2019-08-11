@@ -44,18 +44,11 @@ class Classic1898FogVariant_panelMembers extends panelMembers
 		return $this->occupationBarCache;
 	}
 
-	function membersList()
-	{
-		if( $this->Game->phase != 'Pre-game')
-		{
-			$membersList=array();
-			foreach($this->ByStatus['Playing'] as $Member)
-				$membersList[$Member->country] = $Member;
-			ksort ($membersList);
-			$this->ByStatus['Playing'] = $membersList;
+	// Completely remove any ordering by SC if in running game
+	function indexMembers() {
+		if(!in_array($this->Game->phase, array('Pre-game','Finished')))
+			sort($this->ByOrder);
+		
+		parent::indexMembers();
 		}			
-		return parent::membersList();
 	}
-	
-}
-

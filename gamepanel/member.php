@@ -506,7 +506,7 @@ class panelMember extends Member
 					$buf .= ' - '.l_t('Delays left: %s of %s','<span class="excusedNMRs">'.$this->excusedMissedTurns.'</span>','<span class="excusedNMRs">'.$this->Game->excusedMissedTurns.'</span>');
 
 				if ( $this->missedPhases >= 1 )
-					$buf .= ' - <span class="missedPhases">'.l_t('Delayed last turn').'</span>';
+					$buf .= ' - <span class="missedPhases">'.l_t('Missed last deadline').'</span>';
 			}
 			if ( !$this->isLastSeenHidden() )
 				$buf .= '<br /><span class="memberLastSeen">

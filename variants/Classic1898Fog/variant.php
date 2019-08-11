@@ -21,6 +21,7 @@
 	
 	Changelog:
 	1.0:    initial release
+	1.0.1:  updated FoW code
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -34,7 +35,7 @@ class Classic1898FogVariant extends WDVariant {
 	public $author='Randy Davis';
 	public $adapter='Yuriy Hryniv aka Flame';
 	public $version    = '1.0';
-	public $codeVersion= '1.0';
+	public $codeVersion= '1.0.1';
 
 	public $countries=array('England', 'France', 'Italy', 'Germany', 'Austria', 'Turkey', 'Russia');
 	
@@ -53,7 +54,7 @@ class Classic1898FogVariant extends WDVariant {
 		$this->variantClasses['panelMembers']         = 'Classic1898Fog';
 		$this->variantClasses['panelMembersHome']     = 'Classic1898Fog';
 		$this->variantClasses['userOrderDiplomacy']   = 'Classic1898Fog';
-		$this->variantClasses['OrderArchiv'] 		  = 'Classic1898Fog';
+		$this->variantClasses['Maps']				  = 'Classic1898Fog';
 
 		// Order validation code, changed to validate builds on non-home SCs
 		$this->variantClasses['userOrderBuilds'] = 'Classic1898Fog';
