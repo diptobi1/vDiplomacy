@@ -57,7 +57,7 @@ class Fog_panelMember extends panelMember
 	function lastLoggedInTxt()
 	{
 		global $User;
-		if ( ($this->userID == $User->id) || ( ($User->type['Moderator']) && (! $this->Game->Members->isJoined()) ) ) return parent::lastLoggedInTxt();
+		if (($this->userID == $User->id) || ( $User->type['Admin'] && !$this->Members->isJoined() )) return parent::lastLoggedInTxt();
 		return '??';
 	}	
 
@@ -73,16 +73,16 @@ class Fog_panelMember extends panelMember
 	{
 		global $User;
 		if( $this->status!='Playing' ) return '';
-		if ( ($this->userID == $User->id) || ( ($User->type['Moderator']) && (! $this->Game->Members->isJoined()) ) ) return parent::memberFinalized();
-		return '<span class="member'.$this->id.'StatusIcon"><img src="variants/TenSixtySix/resources/question.png" alt="?" title="Unknown orderstatus" /></span>';
+		if (($this->userID == $User->id) || ( $User->type['Admin'] && !$this->Members->isJoined() )) return parent::memberFinalized();
+		return '<span class="member'.$this->id.'StatusIcon"><img src="variants/'.$this->Game->Variant->name.'/resources/question.png" alt="?" title="Unknown orderstatus" /></span>';
 	}
 	
 	function memberFinalizedAnon()
 	{
 		global $User;
 		if( $this->status!='Playing' ) return '';
-		if (($this->userID == $User->id) || ($User->type['Admin'])) return parent::memberFinalizedAnon();
-		return '<span class="member'.$this->id.'StatusIcon"><img src="variants/TenSixtySix/resources/question.png" alt="?" title="Unknown orderstatus" /></span>';
+		if (($this->userID == $User->id) || ( $User->type['Admin'] && !$this->Members->isJoined() )) return parent::memberFinalizedAnon();
+		return '<span class="member'.$this->id.'StatusIcon"><img src="variants/'.$this->Game->Variant->name.'/resources/question.png" alt="?" title="Unknown orderstatus" /></span>';
 	}
 }
 
