@@ -29,15 +29,15 @@ class Classic1898FogVariant_panelMemberHome extends panelMemberHome
 	{
 		global $User;
 		if ($this->status!='Playing' ) return '';
-		if (($this->userID == $User->id) || ($User->type['Admin'])) return parent::memberFinalized();
-		return '<span class="member'.$this->id.'StatusIcon"><img src="variants/Classic1898Fog/resources/question.png" alt="?" title="Unknown orderstatus" /></span>';
+		if (($this->userID == $User->id) || ( $User->type['Admin'] && !$this->Members->isJoined() )) return parent::memberFinalized();
+		return '<span class="member'.$this->id.'StatusIcon"><img src="variants/'.$this->Game->Variant->name.'/resources/question.png" alt="?" title="Unknown orderstatus" /></span>';
 	}
 	
 	function memberFinalizedAnon()
 	{
 		global $User;
 		if( $this->status!='Playing' ) return '';
-		if (($this->userID == $User->id) || ($User->type['Admin'])) return parent::memberFinalizedAnon();
-		return '<span class="member'.$this->id.'StatusIcon"><img src="variants/Classic1898Fog/resources/question.png" alt="?" title="Unknown orderstatus" /></span>';
+		if (($this->userID == $User->id) || ( $User->type['Admin'] && !$this->Members->isJoined() )) return parent::memberFinalizedAnon();
+		return '<span class="member'.$this->id.'StatusIcon"><img src="variants/'.$this->Game->Variant->name.'/resources/question.png" alt="?" title="Unknown orderstatus" /></span>';
 	}
 }
