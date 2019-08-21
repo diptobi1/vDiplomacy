@@ -29,7 +29,7 @@ class ClassicFogVariant_panelMemberHome extends panelMemberHome
 	{
 		global $User;
 		if ($this->status!='Playing' ) return '';
-		if (($this->userID == $User->id) || ( $User->type['Admin'] && !$this->Members->isJoined() )) return parent::memberFinalized();
+		if (($this->userID == $User->id) || ( $User->type['Admin'] && !$this->Game->Members->isJoined() )) return parent::memberFinalized();
 		return '<span class="member'.$this->id.'StatusIcon"><img src="variants/'.$this->Game->Variant->name.'/resources/question.png" alt="?" title="Unknown orderstatus" /></span>';
 	}
 	
@@ -37,7 +37,7 @@ class ClassicFogVariant_panelMemberHome extends panelMemberHome
 	{
 		global $User;
 		if( $this->status!='Playing' ) return '';
-		if (($this->userID == $User->id) || ( $User->type['Admin'] && !$this->Members->isJoined() )) return parent::memberFinalizedAnon();
+		if (($this->userID == $User->id) || ( $User->type['Admin'] && !$this->Game->Members->isJoined() )) return parent::memberFinalizedAnon();
 		return '<span class="member'.$this->id.'StatusIcon"><img src="variants/'.$this->Game->Variant->name.'/resources/question.png" alt="?" title="Unknown orderstatus" /></span>';
 	}
 }

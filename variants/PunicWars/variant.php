@@ -41,6 +41,7 @@
 	1.3.3:	 Savely removed any information about SC order in running games
 	1.3.4:	 Added map history (code already used in RatWars and TenSixtySix)
 	1.3.5:	 Added working order archive
+	1.3.6:   updated FoW code (less information for participating admins)
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -54,7 +55,7 @@ class PunicWarsVariant extends WDVariant {
 	public $author     ='M.A.S.V & Yuriy Hryniv aka Flame';
 	public $adapter    ='Yuriy Hryniv aka Flame & tobi1';
 	public $version    ='1.3';
-	public $codeVersion='1.3.5';
+	public $codeVersion='1.3.6';
 	public $homepage   ='http://www.diplomail.ru';
 
 	public $countries=array('Puni','Helleni','Etrusci','Romani');
