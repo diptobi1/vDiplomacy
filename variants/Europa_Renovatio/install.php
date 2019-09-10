@@ -1874,7 +1874,6 @@ $bordersRawData=array(
 	array('Cape Bon - Southwest (CPB sw)','Eastern Mediterranean - Southwest (EMD sw)','Yes','No'),
 	array('Cape Bon - Southwest (CPB sw)','Eastern Mediterranean (EMD)','Yes','No'),
 	array('Cape Bon - Southwest (CPB sw)','Kabylia (KBY)','Yes','No'),
-	array('Cape Bon (CPB)','Cape of Good Hope - South (CGH s)','Yes','No'),
 	array('Cape Bon (CPB)','Eastern Mediterranean - Southeast (EMD se)','Yes','No'),
 	array('Cape Bon (CPB)','Eastern Mediterranean - Southwest (EMD sw)','Yes','No'),
 	array('Cape Bon (CPB)','Eastern Mediterranean (EMD)','Yes','No'),
@@ -4300,6 +4299,7 @@ if (!file_exists('variants/Europa_Renovatio/cache/sampleMapLarge.png'))
 	copy ('variants/Europa_Renovatio/resources/sampleMapLarge.png','variants/Europa_Renovatio/cache/sampleMapLarge.png');
 
 ?>
+
 
 
 
