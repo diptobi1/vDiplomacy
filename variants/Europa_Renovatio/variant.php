@@ -16,6 +16,11 @@
 
 	You should have received a copy of the GNU Affero General Public License
 	along with webDiplomacy. If not, see <http://www.gnu.org/licenses/>.
+ 
+	---
+	
+	Changelog:
+	1.1:	Bug with Build Anywhere variants using the unit destroy index fixed
 	
 */
 
@@ -34,7 +39,7 @@ class Europa_RenovatioVariant extends WDVariant {
 	public $author     = 'Technostar';
 	public $adapter    = 'Technostar';
 	public $version    = '1';
-	public $codeVersion= '1.0.6';
+	public $codeVersion= '1.1';
 	
 	public $countries=array('Aragon','Austria','Bavaria','Bohemia','Brandenburg','Burgundy','Castille','Denmark','England','France','Genoa','Great-Horde','Hungary','Lithuania','Livonian-Order','Mamluks','Milan','Morocco','Muscovy','Naples','Norway','Novgorod','Ottomans','Papacy','Poland','Portugal','Qara-Qoyunlu','Savoy','Saxony','Scotland','Sweden','Switzerland','Teutonic-Order','Tlemcen','Tunis','Venice');
 	public function __construct() {
