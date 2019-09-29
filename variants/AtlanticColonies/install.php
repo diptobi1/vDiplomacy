@@ -375,7 +375,6 @@ $bordersRawData=array(
 	array('Bermuda','Eastern Seaboard','Yes','No'),
 	array('Trinidad','Barbados','Yes','Yes'),
 	array('Trinidad','Windward Islands','Yes','Yes'),
-	array('Trinidad','Eastern Caribbean','Yes','No'),
 	array('Trinidad','Caribbean Atlantic','Yes','No'),
 	array('Barbados','Windward Islands','Yes','Yes'),
 	array('Barbados','Caribbean Atlantic','Yes','No'),
