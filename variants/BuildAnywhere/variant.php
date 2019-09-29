@@ -3,6 +3,11 @@
 /**
  * This variant lets players build on any SC they own, it demos using variants
  * to change what orders are permitted.
+ * 
+ * ---
+ *	
+ * Changelog:
+ *	1.1:	Bug with Build Anywhere variants using the unit destroy index fixed
  */
 class BuildAnywhereVariant extends ClassicVariant {
 	public $id=5;
@@ -11,6 +16,8 @@ class BuildAnywhereVariant extends ClassicVariant {
 	public $fullName='Classic - Build anywhere';
 	public $description='The same as the standard map, except you can build on all supply centers you own.';
 	//public $author='Avalon Hill';
+	
+	public $codeVersion= '1.1';
 
 	//public $countries=array('England', 'France', 'Italy', 'Germany', 'Austria', 'Turkey', 'Russia');
 	//public $variantClasses=array();
