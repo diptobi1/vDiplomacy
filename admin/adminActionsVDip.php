@@ -16,7 +16,7 @@ class adminActionsVDip extends adminActions
 			),
 			'potModifier' => array(
 				'name' => 'Change the vDip-value of the game.',
-				'description' => 'Changes the vDip-points-value of the game by dividing the vDip-points of the game with the modifier. A necative vDip-score is set to 0.',
+				'description' => 'Changes the vDip-points-value of the game by dividing the vDip-points of the game with the modifier and enabling loss prevention, i.e. a negative vDip-score in direct player comparison is set to 0. <br>Special values: modifier = 0 (standard, no modifier, no loss-prevention), modifier = 1 (loss-prevention only). <br>Since loss-prevention is applied in direct player comparison, loss-prevention without a modifier will result in higher gains for all players apart from winner than without prevention.',
 				'params' => array('gameID'=>'Game ID', 'modifier'=>'Modifier for the point distribution')
 			),
 			'changeTargetSCs' => array(
@@ -309,7 +309,7 @@ class adminActionsVDip extends adminActions
 		if ($gamePhase == 'Finished')
 			return "Can't set modifier on finished game.";
 		
-		if ($modifier < 1 || $modifier > 10)
+		if ( $modifier != 0 && ($modifier < 1 || $modifier > 10) )
 			return 'Unreasonable modifier. No changes made...';
 			
 		list($old_modifier)=$DB->sql_row("SELECT potModifier FROM wD_Games WHERE id = ".$gameID);
