@@ -113,7 +113,7 @@ if( isset($_REQUEST['resendUsername']) and $User->type['Guest'] )
 			<form action="./logon.php?resendUsername=2" method="post">
 				<ul class="formlist">
 				<li class="formlisttitle">'.l_t('eMail').'</li>
-				<li class="formlistfield"><input type="text" tabindex="1" maxlength=30 size=15 name="resendEMail"></li>
+				<li class="formlistfield"><input type="text" tabindex="1" size=15 name="resendEMail"></li>
 				<li class="formlistdesc">'.l_t('The eMail address of the account which you forgot the username.').'</li>
 				<li><input type="submit" class="form-submit" value="'.l_t('Recover username').'"></li>
 				</ul>
