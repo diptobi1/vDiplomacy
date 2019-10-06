@@ -83,9 +83,9 @@ $globalFaq = array(
 	"You can check your submitted moves on the map" => 
 		"In the board-view there is an option to turn on a preview of your orders (<img src=\"images/historyicons/Preview.png\" alt=\" \">).
 		This visualize your orders as saved on the server. If you update your orders don't forget to hit \"Save\" for a reload.",
-	"Pot modifiers" =>
+	"Pot modifiers / Loss-prevention" =>
 		"Mods can change the effect of a given game to your vDip-raing. Usually because your game got screwed by some cheaters.
-		You can't loose rating-points in these games, and the overall changes are half than usuall.",
+		You can't loose rating-points in these games, and the overall rating changes might reduced.",
 		
 "Reliability-rating" => "Sub-section",
 	"What's this numbers behind my name?" =>

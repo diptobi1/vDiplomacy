@@ -41,6 +41,7 @@
 	1.0.20: Added map history (code already used in RatWars and TenSixtySix)
 	1.0.21: Added working order archive
     1.0.22: updated FoW code (less information for participating admins)
+	1.0.23: Fixed unintended preview behavior when saving orders
 
 */
 
@@ -54,7 +55,7 @@ class ClassicFogVariant extends WDVariant {
 	public $description= 'This is the classic map, but players can only see a limited part of the map';
 	public $adapter    = 'Oliver Auth';
 	public $version    = '1.0';
-	public $codeVersion= '1.0.22';
+	public $codeVersion= '1.0.23';
 
 	public $countries=array('England', 'France', 'Italy', 'Germany', 'Austria', 'Turkey', 'Russia');
 	

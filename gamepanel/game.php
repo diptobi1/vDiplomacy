@@ -245,9 +245,15 @@ class panelGame extends Game
 		else
 			$leftBottom .= '<i><a class="light" href="features.php#4_4">'.l_t('Unrated').'</a></i>';
 
-		if ($this->potModifier > 1)
-			$leftBottom .= ' / ('.libHTML::vpoints().'<a href="features.php#2_11"> = <b>1/'.$this->potModifier.'</b></a>)';
+		if ($this->potModifier >= 1){
+			$leftBottom .= ' / <i>('.libHTML::vpoints().' <a class="light" href="features.php#2_11"> loss-prevention';
 			
+			if ($this->potModifier > 1)
+				$leftBottom .= ' 1/'.$this->potModifier.'-scoring';
+					
+			$leftBottom .= '</a>)</i>';
+		}
+		
 		$leftBottom .= ' - ';
 		$leftBottom .= $date;
 

@@ -38,7 +38,7 @@ function toggleMoves(verify, gameID, currentTurn) {
 	loadMap(verify, gameID, currentTurn, turn)
 }
 // Toggle the display of the Move arrows.
-function togglePreview(verify, gameID, currentTurn) {
+function togglePreview_fog(verify, gameID, currentTurn) {
 	turn = currentTurn
 	if (preview == '') {
 		preview = '&preview&noCache=' + Math.floor((Math.random()*10000)+1); ;

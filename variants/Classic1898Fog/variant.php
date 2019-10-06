@@ -23,6 +23,7 @@
 	1.0:    initial release
 	1.0.1:  updated FoW code
 	1.0.2:  updated FoW code (less information for participating admins)
+	1.0.3: Fixed unintended preview behavior when saving orders
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -36,7 +37,7 @@ class Classic1898FogVariant extends WDVariant {
 	public $author='Randy Davis';
 	public $adapter='Yuriy Hryniv aka Flame';
 	public $version    = '1.0';
-	public $codeVersion= '1.0.2';
+	public $codeVersion= '1.0.3';
 
 	public $countries=array('England', 'France', 'Italy', 'Germany', 'Austria', 'Turkey', 'Russia');
 	

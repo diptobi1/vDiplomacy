@@ -460,7 +460,7 @@ $territoryRawData=array(
 	array('Bolivar (blv)', 'Land', 'No', 0, 805, 684, 805, 684),
 	array('Beni (bni)', 'Land', 'No', 0, 811, 815, 811, 815),
 	array('Bogota (bog)', 'Land', 'Yes', 9, 756, 715, 756, 715),
-	array('Basilia (bra)', 'Land', 'Yes', 0, 935, 831, 935, 831),
+	array('Brasilia (bra)', 'Land', 'Yes', 0, 935, 831, 935, 831),
 	array('Barranquilla (brn)', 'Coast', 'Yes', 9, 734, 642, 734, 642),
 	array('Buenos-Aries (bue)', 'Coast', 'Yes', 2, 877, 1042, 877, 1042),
 	array('Chile Basin (chb)', 'Sea', 'No', 0, 665, 941, 665, 941),
@@ -1928,7 +1928,7 @@ $bordersRawData=array(
 	array('Atacama (ata)','Sucre (suc)','No','Yes'),
 	array('Atacama (ata)','Valparaiso (val)','Yes','Yes'),
 	array('Bahia (bah)','Belo Horizonte (blh)','Yes','Yes'),
-	array('Bahia (bah)','Basilia (bra)','No','Yes'),
+	array('Bahia (bah)','Brasilia (bra)','No','Yes'),
 	array('Bahia (bah)','Fortaleza (for)','No','Yes'),
 	array('Bahia (bah)','Minas Gerais (mng)','No','Yes'),
 	array('Bahia (bah)','Maranhao (mrn)','No','Yes'),
@@ -1963,9 +1963,9 @@ $bordersRawData=array(
 	array('Bogota (bog)','Loreto (lor)','No','Yes'),
 	array('Bogota (bog)','Medellin (med)','No','Yes'),
 	array('Bogota (bog)','Santander (stn)','No','Yes'),
-	array('Basilia (bra)','Goias (goi)','No','Yes'),
-	array('Basilia (bra)','Minas Gerais (mng)','No','Yes'),
-	array('Basilia (bra)','Tocantins (tct)','No','Yes'),
+	array('Brasilia (bra)','Goias (goi)','No','Yes'),
+	array('Brasilia (bra)','Minas Gerais (mng)','No','Yes'),
+	array('Brasilia (bra)','Tocantins (tct)','No','Yes'),
 	array('Barranquilla (brn)','Golfo De Venezuela (gov)','Yes','No'),
 	array('Barranquilla (brn)','Maracaibo (mcb)','Yes','Yes'),
 	array('Barranquilla (brn)','Medellin (med)','No','Yes'),
@@ -2106,5 +2106,7 @@ if (!file_exists('variants/'.$this->name.'/cache/sampleMap.png'))
 	copy ('variants/'.$this->name.'/resources/sampleMap.png','variants/'.$this->name.'/cache/sampleMap.png');
 
 ?>
+
+
 
 

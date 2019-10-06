@@ -32,6 +32,7 @@
 	1.2  : only one class in ProcessGame to avoid problems with the banPlayer or uncrashGames code
 	1.3  : convoy fix code removed as no longer needed
 	1.4  : Chat-history adjusted to the new webdip code
+	1.4.1: Fixed spelling
 	
 */
 
@@ -46,7 +47,7 @@ class WWIVVariant extends WDVariant {
 	public $author     = 'Tom Mulledy';
 	public $adapter    = 'Carey Jensen / Oliver Auth';
 	public $version    = '1';
-	public $codeVersion= '1.4';
+	public $codeVersion= '1.4.1';
 	public $homepage   = 'http://www.dipwiki.com/index.php?title=World_War_IV';
 	
 	public $countries=array('Amazon-Empire', 'Argentina', 'Australia', 'Brazil', 'California', 'Canada', 'Catholica', 'Central-Asia', 'Colombia', 'Congo', 'Cuba', 'Egypt', 'Germany', 'Illinois', 'Inca-Empire', 'India', 'Indonesia', 'Iran', 'Japan', 'Kenya', 'Manchuria', 'Mexico', 'Nigeria', 'Oceania', 'Philippines', 'Quebec', 'Russia', 'Sichuan-Empire', 'Song-Empire', 'South-Africa', 'Texas', 'Thailand', 'Turkey', 'United-Kingdom', 'United-States');
