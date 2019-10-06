@@ -53,7 +53,11 @@ class TenSixtySixVariant_panelGameBoard extends panelGameBoard
 		$map = str_replace("loadMap(","loadMap('".$verify."',",$map);
 		$map = str_replace("loadMapStep(","loadMapStep('".$verify."',",$map);
 		$map = str_replace("toggleMoves(","toggleMoves('".$verify."',",$map);
-		$map = str_replace("togglePreview(","togglePreview('".$verify."',",$map);
+		
+		// toggle Preview is also called in javascript/orders/form.js when the orders are saved. 
+		// -> An extra function needs to be defined instead of just replacing the arguments in the map UI
+		#$map = str_replace("togglePreview(","togglePreview('".$verify."',",$map);
+		libHTML::$footerScript[] = "togglePreview=function(gameID, currentTurn){ return togglePreview_fog('".$verify."', gameID, currentTurn); }";
 		
 		return $map;
 	}

@@ -225,8 +225,8 @@ class libRating
 		$Ch2 = round(($Rr2 - $Re2) * $mV * $gV,2);
 		
 		// No negative-modifiers in case of cheating...
-		if ($Game->potModifier > 1 && $Ch1 < 0) $Ch1 = 0;
-		if ($Game->potModifier > 1 && $Ch2 < 0) $Ch2 = 0;
+		if ($Game->potModifier >= 1 && $Ch1 < 0) $Ch1 = 0;
+		if ($Game->potModifier >= 1 && $Ch2 < 0) $Ch2 = 0;
 		
 		// Save the results in the match-arrays
 		$Member1['matches'][$Member2['userID']] = array (

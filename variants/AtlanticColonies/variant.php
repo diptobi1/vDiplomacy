@@ -11,7 +11,7 @@ class AtlanticColoniesVariant extends WDVariant {
 	public $author     = 'Safari';
 	public $adapter    = 'Safari';
 	public $version    = '1';
-	public $codeVersion= '1.0.7';
+	public $codeVersion= '1.0.8';
 
 	public $countries=array('France', 'Spain', 'England', 'Portugal' );
 

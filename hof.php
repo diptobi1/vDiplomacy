@@ -165,7 +165,7 @@ elseif(isset($_REQUEST['gameID']))
 						<TH class="cellb" align="right">Dif</TH>
 						<TH class="cellb" align="right">mV</TH>
 						<TH class="cellb" align="right">gV'.($Game->potModifier > 1 ? '/'.$Game->potModifier : '').'</TH>
-						<TH class="cellb" align="right">Ch</TH>						
+						<TH class="cellb" align="right">Ch'.($Game->potModifier >= 1 ? '(loss prevention)':'').'</TH>						
 					</THEAD>';
 		 
 		foreach ($Member['matches'] as $userID => $results)

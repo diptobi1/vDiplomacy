@@ -27,6 +27,7 @@
 	1.1.3: Added working order archive
 	1.2  : Added missing FoW files (member list revealed SC count etc) 
 	1.2.1: updated FoW code (less information for participating admins)
+	1.2.2: Fixed unintended preview behavior when saving orders
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -40,7 +41,7 @@ class RatWarsVariant extends WDVariant {
 	public $author     ='kaner406';
 	public $adapter    ='kaner406 / Oliver Auth';
 	public $version    ='1';
-	public $codeVersion='1.2.1';	
+	public $codeVersion='1.2.2';	
 	
 	public $countries=array('Dead Rabbits','Plug Uglies','Shirt Tails','Hell-Cats');	
 
