@@ -33,7 +33,7 @@ if ($edit == true)
 	if (isset($_REQUEST['addCountry']))
 		$_REQUEST['country'][]='';
 	
-	if (isset($_REQUEST['deleteCountry']))
+	if ((isset($_REQUEST['deleteCountry'])) && (count($_REQUEST['country']) > 2))
 		array_pop($_REQUEST['country']);
 	
 	if (isset($_REQUEST['submitBase']) || (isset($_REQUEST['country'])) || (isset($_REQUEST['EditToDo'])) )
@@ -184,9 +184,10 @@ if ($variantID != 0)
 			print '<input type="hidden" name="country['.($id + 1).']" value="'.$name. '">';
 		print '<input type="hidden" name="tab" value="Base">
 			<input type="hidden" name="variantID" value="'.$variantID.'">
-			<input type="submit" class="form-submit" name="addCountry" value="add Country" /> / 
-			<input type="submit" class="form-submit" name="deleteCountry" value="delete Country" />
-			</form>
+			<input type="submit" class="form-submit" name="addCountry" value="add Country" />';
+		if (count($Variant->countries) > 2)
+			print ' / <input type="submit" class="form-submit" name="deleteCountry" value="delete Country" />';
+		print '</form>
 			<div class="hr"></div>';
 	}
 	
