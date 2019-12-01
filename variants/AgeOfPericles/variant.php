@@ -25,9 +25,10 @@
 	1.0:   initial version
 	1.0.1: small map-fixes...
 	1.0.5: new starting date...
-	1.0.6: NAmecahnge: Perikles -> Pericles
+	1.0.6: Namechange: Perikles -> Pericles
 	1.0.7: Fixed border
 	1.0.8: Small graphical update (Corinth has a canal)
+	1.0.9: Missing largemap-name added
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -41,7 +42,7 @@ class AgeOfPericlesVariant extends WDVariant {
 	public $author     = 'Mister X & Michael Golbe';
 	public $adapter    = 'Oliver Auth';
 	public $version    = '1.1';
-	public $codeVersion= '1.0.8';
+	public $codeVersion= '1.0.9';
 	public $homepage   = 'http://www.dipwiki.com/?title=Pericles';
 
 	public $countries=array('Aetolia','Arcolia','Attica','Boeotia','Elia','Laconia','Messenia');
