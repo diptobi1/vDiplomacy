@@ -282,7 +282,6 @@ $bordersRawData=array(
 	array('Saskatchewan','Winnipeg','No','Yes'),
 	array('Winnipeg','Ontario','No','Yes'),
 	array('Winnipeg','Ottawa','No','Yes'),
-	array('Ontario','Ontario','Yes','Yes'),
 	array('Ontario','Ottawa','No','Yes'),
 	array('Ontario','Toronto','No','Yes'),
 	array('Ontario','Montreal','No','Yes'),
