@@ -48,12 +48,17 @@ print '</TABLE>';
 
 if ($User->id == 5)
 {
-	if (isset($_REQUEST['newVariantName']) && isset($_REQUEST['newVariantID']) && isset($_REQUEST['newVariantYear']))
+	if (isset($_REQUEST['newVariantName']))
 	{
-		$newID  =(int)$_REQUEST['newVariantID'];
-		$newYear=(int)$_REQUEST['newVariantYear'];
-		$newName=preg_replace('/[^a-zA-Z0-9]/', '', $_REQUEST['newVariantName']);
-
+		$newID =  (isset($_REQUEST['newVariantID'])   ? (int)$_REQUEST['newVariantID']   : 0);
+		$newYear= (isset($_REQUEST['newVariantYear']) ? (int)$_REQUEST['newVariantYear'] : 1);
+		$newName=preg_replace('/[^a-zA-Z0-9_]/', '', $_REQUEST['newVariantName']);
+		
+		if ($newID == 0)
+			foreach (range(1,1000) as $newID)
+				if (!(isset(Config::$variants[$newID])))
+					break;
+					
 		require_once('dev/newVariantDefaults.php');
 		
 		mkdir('variants/'.$newName);
@@ -69,8 +74,8 @@ if ($User->id == 5)
 		file_put_contents ('variants/'.$newName.'/classes/adjudicatorPreGame.php', $adjucatorPreGameTxt);
 		file_put_contents ('variants/'.$newName.'/resources/style.css', $styleTxt);
 		file_put_contents ('variants/'.$newName.'/variant.php', $variantTxt);
-		
-		print '<div class="hr"></div>Variant <b>'.$newName.'</b> with ID:'.$newID.' created.';
+
+		print '<div class="hr"></div>Variant <b>'.$newName.'</b> with ID:'.$newID.' created. Starting Year set to '.$newYear.'.';
 	}
 
 	print '<div class="hr"></div>
