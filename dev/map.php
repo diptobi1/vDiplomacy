@@ -174,8 +174,12 @@ function write_changes() {
     if ($set_link != '') {
         $toTerrID = substr($set_link, 2);
         $move = substr($set_link, 0, 2);
-        $DB->sql_put('DELETE FROM wD_CoastalBorders WHERE toTerrID=' . $toTerrID . ' AND fromTerrID=' . $terrID . '   AND mapID=' . $mapID);
-        $DB->sql_put('DELETE FROM wD_CoastalBorders WHERE toTerrID=' . $terrID . '   AND fromTerrID=' . $toTerrID . ' AND mapID=' . $mapID);
+		list($check_last_link) = $DB->sql_row('SELECT COUNT(*) FROM wD_CoastalBorders WHERE mapID=' . $mapID);
+		if (($move != 'nn') OR ($check_last_link > 2) )
+		{
+			$DB->sql_put('DELETE FROM wD_CoastalBorders WHERE toTerrID=' . $toTerrID . ' AND fromTerrID=' . $terrID . '   AND mapID=' . $mapID);
+			$DB->sql_put('DELETE FROM wD_CoastalBorders WHERE toTerrID=' . $terrID . '   AND fromTerrID=' . $toTerrID . ' AND mapID=' . $mapID);
+		}
         if ($move != 'nn') {
             if ($move == 'yn') {
                 $move = '"Yes","No"';
