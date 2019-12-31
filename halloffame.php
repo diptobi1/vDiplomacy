@@ -67,7 +67,7 @@ while ( list($id, $username, $points) = $DB->tabl_row($crashed) )
 			<td class="hof"> '.number_format($points).' '.libHTML::vpoints().' - #'.$i.' </td>';
 	if ($User->username == $username)
 	{
-		print '<td class="hof"><a href="profile.php?userID='.$id.'" style="color:red;">'.$username.'</a></td> ';
+		print '<td class="hof"><a class="hof-self" href="profile.php?userID='.$id.'">'.$username.'</a></td> ';
 		$showMe = 0;
 	}
 	else
@@ -128,7 +128,7 @@ while ( list($id, $username, $points) = $DB->tabl_row($crashed) )
 			<td class="hof"> '.number_format($points).' '.libHTML::vpoints().' - #'.$i.' </td>';
 	if ($User->username == $username)
 	{
-		print '<td class="hof"><a href="profile.php?userID='.$id.'" style="color:red;">'.$username.'</a></td> ';
+		print '<td class="hof"><a class="hof-self" href="profile.php?userID='.$id.'">'.$username.'</a></td> ';
 		$showMe = 0;
 	}
 	else

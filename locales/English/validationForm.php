@@ -76,6 +76,6 @@ defined('IN_CODE') or die('This script can not be run by itself.');
 <div class="hr"></div>
 
 <p class="notice">
-	<input type="submit" class="form-submit" value="This is my first and only account, please validate me">
+	<input type="submit" class="green-Submit" value="This is my first and only account, please validate me">
 </p>
 </form>

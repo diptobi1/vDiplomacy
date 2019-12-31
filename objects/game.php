@@ -319,7 +319,11 @@ class Game
 	 */
 	public $potModifier;
 	
-	
+	/**
+	 * Is the game made of up members only, 1 member and bot(s), or mixed.
+	 */
+	public $playerTypes;
+
 	/**
 	 * @param int/array $gameData The game ID of the game to load, or the array of its database row
 	 * @param string[optional] $lockMode The database locking phase to use; no locking by default
@@ -536,7 +540,8 @@ class Game
 			g.fixStart,
 			g.blockVotes,
 			g.potModifier,
-			g.missingPlayerPolicy
+			g.missingPlayerPolicy,
+			g.playerTypes
 			FROM wD_Games g
 			WHERE g.id=".$this->id.' '.$this->lockMode);
 
