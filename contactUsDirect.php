@@ -4,6 +4,9 @@
  * @package Base
  */
 
+// do not use this feature for vdip
+die();
+
 require_once('header.php');
 require_once(l_r('gamesearch/search.php'));
 require_once(l_r('pager/pagergame.php'));

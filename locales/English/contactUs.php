@@ -21,7 +21,7 @@
         <h4>Where to send</h4>
         <ul>
             <li>
-                Post a message in the <a href="modforum.php">ModForum</a>. Do message the moderators privately.<br />
+                Post a message in the <a href="modforum.php">ModForum</a>. Do not message the moderators privately.<br />
                 An Owner can be contacted at <a href="mailto:<?php print Config::$adminEMail; ?>" class="light"><?php print Config::$adminEMail; ?></a>, if you want to appeal an admin or mod decision.</a>
             </li>
         </ul>
