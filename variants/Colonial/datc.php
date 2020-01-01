@@ -9,33 +9,38 @@ $testCaseData = array(
 	array('SUEZ.A1','TEST CASE, SUEZ PERMISSION WITH UNIT IN EGYPT',
 		array(
 			array(1,'Army',66,'Hold',NULL,NULL,'No','Success','Yes'),
-			array(1,'Fleet',126,'Support hold',101,NULL,'No','Success','Yes')
+			array(1,'Fleet',126,'Support hold',101,NULL,'No','Success','Yes'),
+			array(7,'Fleet',101,'Hold',NULL,NULL,'No','Success','Yes')
 		)
 	),
 	array('SUEZ.A2','TEST CASE, NO SUEZ PERMISSION WITHOUT UNIT IN EGYPT',
 		array(
 			// INVALID
-			//array(1,'Fleet',126,'Support hold',101,NULL,'No','Hold','No')
+			//array(1,'Fleet',126,'Support hold',101,NULL,'No','Hold','No'),
+			//array(7,'Fleet',101,'Hold',NULL,NULL,'No','Success','Yes')
 		)
 	),
 	array('SUEZ.A3','TEST CASE, NO SUEZ PERMISSION WITH FOREIGN UNIT IN EGYPT',
 		array(
 			// INVALID 
 			//array(7,'Army',66,'Hold',NULL,NULL,'No','Success','Yes'),
-			//array(1,'Fleet',126,'Support hold',101,NULL,'No','Hold','No')
+			//array(1,'Fleet',126,'Support hold',101,NULL,'No','Hold','No'),
+			//array(7,'Fleet',101,'Hold',NULL,NULL,'No','Success','Yes')
 		)
 	),
 	array('SUEZ.A4','TEST CASE, SUEZ PERMISSION EVEN VALID IF UNIT LEAVES EGYPT',
 		array(
 			array(1,'Army',66,'Move',25,NULL,'No','Success','Yes'),
-			array(1,'Fleet',126,'Support hold',101,NULL,'No','Success','Yes')
+			array(1,'Fleet',126,'Support hold',101,NULL,'No','Success','Yes'),
+			array(7,'Fleet',101,'Hold',NULL,NULL,'No','Success','Yes')
 		)
 	),
 	array('SUEZ.A5','TEST CASE, SUEZ PERMISSION NOT VALID IF UNIT JUST ENTERS EGYPT',
 		array(
 			// INVALID 
 			//array(1,'Army',25,'Move',66,NULL,'No','Success','Yes'),
-			//array(1,'Fleet',126,'Support hold',101,NULL,'No','Hold','No')
+			//array(1,'Fleet',126,'Support hold',101,NULL,'No','Hold','No'),
+			//array(7,'Fleet',101,'Hold',NULL,NULL,'No','Success','Yes')
 		)
 	),
 	array('SUEZ.A6','TEST CASE, SUEZ PERMISSION IF EGYPTIAN UNIT IS DISLODGED',
@@ -64,12 +69,14 @@ $testCaseData = array(
 		array(
 			array(1,'Fleet',66,'Hold',NULL,NULL,'No','Success','Yes'),
 			array(1,'Fleet',126,'Support hold',99,NULL,'No','Success','Yes'),
-			array(7,'Fleet',101,'Move',99,NULL,'No','Hold','Yes')
+			array(7,'Fleet',101,'Move',99,NULL,'No','Hold','Yes'),
+			array(7,'Fleet',99,'Move',70,NULL,'No','Success','Yes')
 		)
 	),
 	array('SUEZ.C1','TEST CASE, SUPPORT MOVE FOR SUEZ MOVE VALID',
 		array(
-			array(1,'Fleet',25,'Support move',101,99,'No','Success','Yes')
+			array(1,'Fleet',25,'Support move',101,99,'No','Success','Yes'),
+			array(7,'Fleet',99,'Hold',NULL,NULL,'No','Success','Yes')
 		)
 	),
 	array('SUEZ.C2','TEST CASE, HEAD-TO-HEAD THROUGH SUEZ WITH SUPPORT',
@@ -86,7 +93,8 @@ $testCaseData = array(
 		array(
 			array(1,'Fleet',66,'Hold',NULL,NULL,'No','Success','Yes'),
 			array(1,'Fleet',126,'Support hold',101,NULL,'No','Success','Yes'),
-			array(7,'Fleet',101,'Support hold',99,NULL,'No','Hold','No')
+			array(7,'Fleet',101,'Support hold',99,NULL,'No','Hold','No'),
+			array(7,'Fleet',99,'Hold',NULL,NULL,'No','Success','Yes')
 		)
 	),
 	array('SUEZ.D2','TEST CASE, NO SUPPORT MOVE THROUGH SUEZ CANAL',

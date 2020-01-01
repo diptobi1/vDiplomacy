@@ -50,6 +50,7 @@
 	2.2: Rules revision: Adjusted rules for TSR to be more intuitive in corner cases
 		+ several stuff overworked (fixed TSR with test cases, overworked map output, overworked rules)
 	2.2.1: Fixed Suez being incorrectly counted as unit
+	2.2.2: Updated js code and fixed datc test for stricter order interface
 	
 */
 
@@ -64,7 +65,7 @@ class ColonialVariant extends WDVariant {
 	public $author='Peter Hawes';
 	public $adapter='Oliver Auth, Tobias Florin (Trans-Siberian Railroad, Suez Canal)';
 	public $version='2.2';
-	public $codeVersion='2.2.1';
+	public $codeVersion='2.2.2';
 	public $homepage='http://www.dipwiki.com/index.php?title=Colonial';
 
 	public $countries=array('Britain','China','France','Holland','Japan','Russia','Turkey');
