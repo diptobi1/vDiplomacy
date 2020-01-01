@@ -33,7 +33,8 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 </div>
 </div>
 <div class="content content-follow-on">
-	<p><a href="botgamecreate.php">Play A Game Against Bots</a></p>
+	<!-- No bot games on vdip -->
+	<!-- <p><a href="botgamecreate.php">Play A Game Against Bots</a></p> -->
 
 	<div class = "gameCreateShow">
 		<form method="post">
@@ -47,7 +48,7 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 			<div id="betModal" class="modal">
 				<!-- Modal content -->
 				<div class="modal-content">
-					<span class="close5">&times;</span>
+					<span id="closeBetModal" class="close1">&times;</span>
 					<p><strong>Bet:</strong> </br>
 						The bet required to join this game. This is the amount of points that all players, including you,
 						must put into the game's "pot" (<a href="points.php" class="light">read more</a>).<br />
@@ -82,8 +83,8 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 						if (this.value == 'NaN' ) this.value = <?php print $defaultPoints; ?>;
 						if (this.value < 2) this.value = 2;
 						if (this.value > <?php print $User->points; ?>) this.value = <?php print $User->points; ?>;"
-					/> / 
-					<input type="button" value="Play unrated game."
+					/>
+					<input type="button" class="form-submit" value="Play unrated game."
 						onclick="$('bet').value = '0';
 								$('betinput').hide(); $('potType').hide(); $('bet_unrated').show();">
 			</div>
@@ -95,7 +96,7 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 			<div id="phaseLengthModal" class="modal">
 				<!-- Modal content -->
 				<div class="modal-content">
-					<span class="close4">&times;</span>
+					<span id="closePhaseLengthModal" class="close1">&times;</span>
 					<p><strong>Phase Length: </strong></br>
 						How long each phase of the game will last in hours. Longer phase hours means a slow game with more time to talk. 
 						Shorter phases require players be available to check the game frequently.
@@ -143,7 +144,7 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 				}
 				?>
 				</select>
-				<select id="fixStart" name="newGame[fixStart]">
+				<select class = "gameCreate" id="fixStart" name="newGame[fixStart]">
 					<option value="No" selected>Start as soon as enough players have joined.</option>';
 					<option value="Yes">Wait for the given starting time and day.</option>';
 				</select>
@@ -154,7 +155,7 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 			<div id="messagingModal" class="modal">
 				<!-- Modal content -->
 				<div class="modal-content">
-					<span class="close7">&times;</span>
+					<span id="closeMessagingModal" class="close1">&times;</span>
 					<p><strong>Game Messaging:</strong> </br>
 						The type of messaging allowed in a game.</br></br>
 						All: Global and Private Messaging allowed. </br></br>
@@ -177,24 +178,12 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 			<div id="variantModal" class="modal">
 				<!-- Modal content -->
 				<div class="modal-content">
-					<span class="close3">&times;</span>
+					<span id="closeVariantModal" class="close1">&times;</span>
 					<p><strong>Variant:</strong> </br>
 						Type of Diplomacy game from a selection of maps and alternate rule settings available. Click any of the variant names to view the details on the variants page.
 					</p>
 				</div>
 			</div>
-			<select id="variant" class = "gameCreate" name="newGame[variantID]" onchange="setBotFill()">
-			<?php
-			$first=true;
-			foreach(Config::$variants as $variantID=>$variantName)
-			{
-				$Variant = libVariant::loadFromVariantName($variantName);
-				if($first) { print '<option name="newGame[variantID]" selected value="'.$variantID.'">'.$variantName.'</option>'; }
-				else { print '<option name="newGame[variantID]" value="'.$variantID.'">'.$variantName.'</option>'; }			
-				$first=false;
-			}
-			print '</select>';
-			?>
 			<script type="text/javascript">
 				function setExtOptions(i){
 					document.getElementById('countryID').options.length=0;
@@ -221,9 +210,9 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 								print "document.getElementById('countryID').options[".$i."]=new Option ('".$Variant->countries[($i -1)]."', '".$i."');";
 							print "\n";
 							if (count($Variant->countries) > 7)
-								print "document.getElementById('excusedMissedTurns').value=2; document.getElementById('delayDeadlineMaxTurn').value=3;";
+								print "document.getElementById('NMR').value=2; document.getElementById('delayDeadlineMaxTurn').value=3;";
 							else
-								print "document.getElementById('excusedMissedTurns').value=1; document.getElementById('delayDeadlineMaxTurn').value=99;";
+								print "document.getElementById('NMR').value=1; document.getElementById('delayDeadlineMaxTurn').value=99;";
 							print "break;\n";		
 						}	
 						ksort($checkboxes);	
@@ -233,11 +222,11 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 			</script>
 
 			<table><tr>
-				<td	align="left" width="0%">
-					<select name="newGame[variantID]" onChange="setExtOptions(this.value)">
+				<td	align="left" width="50%">
+					<select id="variant" class = "gameCreate" name="newGame[variantID]" onChange="setBotFill(); setExtOptions(this.value)">
 					<?php print implode($checkboxes); ?>
 					</select> </td>
-				<td align="left" width="100%">
+				<td align="left" width="50%">
 					<div id="desc" style="border-left: 1px solid #aaa; padding: 5px;"></div></td>
 			</tr></table>
 				
@@ -248,7 +237,7 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 			<div id="botModal" class="modal">
 				<!-- Modal content -->
 				<div class="modal-content">
-					<span class="close8">&times;</span>
+					<span id="closeBotModal" class="close1">&times;</span>
 					<p><strong>Fill with Bots:</strong> </br>
 						If the game has at least 2 human players it will 
 						fill with bots if there are empty spaces at the designated start time instead of being cancelled. This type 
@@ -262,57 +251,47 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 			</div>
 			
 			<strong>Country assignment:</strong>
-			<img id = "modBtnBot" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
-			<div id="botModal" class="modal">
+			<img id = "modBtnCountryAssignment" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
+			<div id="countryAssignmentModal" class="modal">
 				<!-- Modal content -->
 				<div class="modal-content">
-					<span class="close8">&times;</span>
+					<span id="closeCountryAssignmentModal" class="close1">&times;</span>
 					<p><strong>Country assignment:</strong> </br>
-						Random distribution of each country, or players pick their country (gamecreator gets the selected country).<br /><br />
-						<strong>Default:</strong> Random
+						Random distribution of each country, or players pick their country (gamecreator gets the selected country).
 					</p>
 				</div>
 			</div>
-			<select id="countryID" name="newGame[countryID]">
+			<select id="countryID" class = "gameCreate" name="newGame[countryID]">
 			</select>
 			
-			<script type="text/javascript">
-			setExtOptions(<?php print $first;?>);
-			</script>
-			
 			</br></br>
-			<strong>Scoring:(<a href="points.php#DSS">See scoring types here</a>)</strong>
-			<img id = "modBtnScoring" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
-			<div id="scoringModal" class="modal">
-				<!-- Modal content -->
-				<div class="modal-content">
-					<span class="close2">&times;</span>
-					<p><strong>Scoring:</strong> </br>
-						
-						<strong>TODO</strong>
-						This setting determines how points are split up if/when the game draws. <br/><br/>
-						In Draw-Size Scoring, the pot is split equally between the remaining players when the game draws (this setting used to be called WTA). 
-						<br/><br/>
-						In Sum-of-Squares scoring, the pot is divided depending on how many centers you control when the game draws.
-						<br/><br/>
-						In both Draw-Size Scoring and Sum-of-Squares, any solo winner receieves the whole pot.
-						<br/><br/>
-						Unranked games have no effect on your points at the end of the game; your bet is refunded whether you won, drew or lost.
-					</p>
+			<div id="potType">
+				<strong>Scoring: (<a href="points.php#DSS">See scoring types here</a>)</strong>
+				<img id = "modBtnScoring" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
+				<div id="scoringModal" class="modal">
+					<!-- Modal content -->
+					<div class="modal-content">
+						<span id="closeScoringModal" class="close1">&times;</span>
+						<p><strong>Scoring:</strong> </br>
+
+							Should the winnings be split up according to who has the most supply centers, or should the winner
+							get everything (<a href="points.php#ppscwta" class="light">read more</a>).<br /><br />
+						</p>
+					</div>
 				</div>
+				<select class = "gameCreate" name="newGame[potType]">
+					<option name="newGame[potType]" value="Winner-takes-all" selected>Winner-takes-all (WTA)</option>
+					<option name="newGame[potType]" value="Points-per-supply-center">Points-per-supply-center (PPSC)</option>
+					<!--<option name="newGame[potType]" value="Unranked">Unranked</option>-->
+				</select></br></br>
 			</div>
-			<select class = "gameCreate" name="newGame[potType]">
-				<option name="newGame[potType]" value="Winner-takes-all" selected>Winner-takes-all (WTA)</option>
-				<option name="newGame[potType]" value="Points-per-supply-center">Points-per-supply-center (PPSC)</option>
-				<option name="newGame[potType]" value="Unranked">Unranked</option>
-			</select></br></br>
 
 			<strong>Anonymous players: </strong>
 			<img id = "modBtnAnon" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
 			<div id="anonModal" class="modal">
 				<!-- Modal content -->
 				<div class="modal-content">
-					<span class="close6">&times;</span>
+					<span id="closeAnonModal" class="close1">&times;</span>
 					<p><strong>Anonymous players: </strong></br>
 						Decide if player names should be shown or hidden.</br></br> *Please note that games with no messaging are always anonymous regardless of what is set here to prevent cheating.
 					</p>
@@ -332,18 +311,18 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 			</p>
 
 			<strong>No-Processing days:</strong>
-			<img id = "modBtnAnon" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
-			<div id="anonModal" class="modal">
+			<img id = "modBtnProcDays" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
+			<div id="procDaysModal" class="modal">
 				<!-- Modal content -->
 				<div class="modal-content">
-					<span class="close6">&times;</span>
+					<span id="closeProcDaysModal" class="close1">&times;</span>
 					<p><strong>No-Processing days: </strong></br>
 						If you do not want this game to process on specific days of the week, then check the appropriate day or days to restrict processing. <br />
 						If a current phase falls on any of the selected days it will be extended by 24 hours until a day that is available for processing. However if all players 'ready' their orders the game will process as usual regardless of whether or not the extended 24 hours has been reached. <br />
 						Days are processed according to standard CET time.
 					</p>
 				</div>
-			</div>
+			</div></br>
 			<input type="checkbox" name="newGame[noProcess][]" value="1">Mon
 			<input type="checkbox" name="newGame[noProcess][]" value="2">Tue
 			<input type="checkbox" name="newGame[noProcess][]" value="3">Wed
@@ -354,11 +333,11 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 			
 			</br></br>
 			<strong>Rating requirements:</strong>
-			<img id = "modBtnAnon" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
-			<div id="anonModal" class="modal">
+			<img id = "modBtnRating" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
+			<div id="ratingModal" class="modal">
 				<!-- Modal content -->
 				<div class="modal-content">
-					<span class="close6">&times;</span>
+					<span id="closeRatingModal" class="close1">&times;</span>
 					<p><strong>Rating requirements: </strong></br>
 						You can set some requirements that the players for your game need to fulfill.		
 						<ul>
@@ -389,10 +368,9 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 					}
 				}
 			</script>
-			ReliabilityRating: R
+			</br> ReliabilityRating:
 			<span id="ReliabilityText" >
-				<input id="ReliabilityInput" type="text" name="newGame[minimumReliabilityRating]" size="2" value="0"
-					style="text-align:right;"
+				<input id="ReliabilityInput" class = "gameCreate" type="text" name="newGame[minimumReliabilityRating]" size="2" value="0"
 					onChange="
 						this.value = parseInt(this.value);
 						if (this.value == 'NaN' ) this.value = 0;
@@ -400,10 +378,9 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 						if (this.value > 100 ) this.value = 100;
 						changeReliabilitySelect(this.value)" 
 					onkeypress="if (event.keyCode==13) this.blur(); return event.keyCode!=13;">
-				or better.
 			</span>
 			<br>
-			Min Phases: <select id="minPhases" name="newGame[minPhases]">
+			Min Phases: <select id="minPhases" class = "gameCreate" name="newGame[minPhases]">
 				<option value=0 selected>none</option>
 				<option value=50>50+</option>
 				<option value=100>100+</option>
@@ -413,11 +390,11 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 
 			</br></br>
 			<strong>Excused missed turns per player:</strong>
-			<img id = "modBtnDelays" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
+			<img id = "modBtnDelay" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
 			<div id="delayModal" class="modal">
 				<!-- Modal content -->
 				<div class="modal-content">
-					<span class="close1">&times;</span>
+					<span id="closeDelayModal" class="close1">&times;</span>
 					<p><strong>Excused missed turns per player:</strong></br>
 						The number of excused missed turns before a player is removed from the game and can be replaced. 
 						If a player is missing orders at a deadline, the deadline will reset and the player will be 
@@ -435,19 +412,20 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 			
 			</br></br>
 			<strong>Missed-turn extension:</strong>
-			<div id="delayModal" class="modal">
+			<img id = "modBtnDelayExtension" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
+			<div id="delayExtensionModal" class="modal">
 				<!-- Modal content -->
 				<div class="modal-content">
-					<span class="close1">&times;</span>
+					<span id="closeDelayExtensionModal" class="close1">&times;</span>
 					<p><strong>Missed-turn extension:</strong></br>
 						Change this value to alter how missed orders are considered in the processing schedule.
-						If you select 'never' or 'n turns', the game phase will be never be extended or just for the
+						If you select 'never' or 'n turns', the game phase will never be extended or just for the
 						first n turns. After that the game will always process at deadline, even if a player has missed 
 						to enter orders and has excuses left.
 					</p>
 				</div>
 			</div>
-			<select id="delayDeadlineMaxTurn" name="newGame[delayDeadlineMaxTurn]">
+			<select id="delayDeadlineMaxTurn" class = "gameCreate" name="newGame[delayDeadlineMaxTurn]">
 				<option value=0>never</option>
 				<option value=1>1 turn</option>
 				<option value=2>2 turns</option>
@@ -457,12 +435,17 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 				<option value=99 selected>always</option>
 			</select>
 			
+			<script type="text/javascript">
+			setExtOptions(<?php print $first;?>);
+			</script>
+			
 			<br/><br/>
 			<strong>Alternate winning conditions:</strong>
-			<div id="delayModal" class="modal">
+			<img id = "modBtnAltEnd" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
+			<div id="altEndModal" class="modal">
 				<!-- Modal content -->
 				<div class="modal-content">
-					<span class="close1">&times;</span>
+					<span id="closeAltEndModal" class="close1">&times;</span>
 					<p><strong>Alternate winning conditions:</strong></br>
 						This setting lets you limit how many turns are played and/or how many SCs need to be conquered before a winner is declared.
 						Please check the variant-description for infomation about the average turns or the default SCs for a win.<br />
@@ -470,24 +453,26 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 						If 2 or more player have the same SCs at the end of the game, the game checks for the turn before, and so on.
 						If player's SC counts are the same throughout the whole game the winner is decided at random.
 						<br />A value of "0" (the default) ends the game as usual, as soon as one player reach the default target SCs.
-						<br /><br /><strong>Default:</strong> 0 (no fixed game duration / default number of SCs needed)
 					</p>
 				</div>
 			</div>
-			<b>Target SCs: </b><input type="text" name="newGame[targetSCs]" size="4" value="0"
+			</br>
+			Target SCs (0 = default): 
+			<input class = "gameCreate" type="text" name="newGame[targetSCs]" size="4" value="0"
 				onkeypress="if (event.keyCode==13) this.blur(); return event.keyCode!=13"
 				onChange="
 					this.value = parseInt(this.value);
 					if (this.value == 'NaN' ) this.value = 0;"
-			/> (0 = default)<br>
-			<b>Max. turns: </b><input type="text" name="newGame[maxTurns]" size="4" value="0"
+			/> 
+			Max. turns (4 < maxTurns < 200): 
+			<input class = "gameCreate" type="text" name="newGame[maxTurns]" size="4" value="0"
 				onkeypress="if (event.keyCode==13) this.blur(); return event.keyCode!=13"
 				onChange="
 					this.value = parseInt(this.value);
 					if (this.value == 'NaN' ) this.value = 0;
 					if (this.value < 4 && this.value != 0) this.value = 4;
 					if (this.value > 200) this.value = 200;"
-			/> (4 < maxTurns < 200)
+			/> 
 
 			<p>
 				<img src="images/icons/lock.png" alt="Private" /> <strong>Add Invite Code (optional):</strong></br>
@@ -496,10 +481,11 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 			</p>
 			
 			<strong>Moderated game:</strong>
-			<div id="delayModal" class="modal">
+			<img id = "modBtnModerated" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
+			<div id="moderatedModal" class="modal">
 				<!-- Modal content -->
 				<div class="modal-content">
-					<span class="close1">&times;</span>
+					<span id="closeModeratedModal" class="close1">&times;</span>
 					<p><strong>Moderated game:</strong></br>
 						If set to yes you are given extra moderator-powers to manage this game.<br /><br />
 						You can force extends, pauses and have many other options running the game.<br />
@@ -507,28 +493,37 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 						You need to join this game once it's created if you want to play a country.<br />
 						If you want to enable the players to choose their countries select any country in the "Country assignment" list. You will still need to join this game once it's created.<br /><br />
 						You need to have at least <b>25</b> non-live games with more than 2 players completed and a reliability-rating of <b>R97</b> or better to moderate a game.
-						<br /><br />
-						<strong>Default:</strong> No, there is no moderator for this game.
 					</p>
 				</div>
 			</div>
-			<input type="radio" name="newGame[moderated]" 
-				onclick="$('GDoptions').hide();	$('PWReq').hide(); $('PWOpt').show();"
-				value="No" checked>No
-			<input type="radio" name="newGame[moderated]" value="Yes" 
-				onclick="$('GDoptions').show(); $('PWReq').show(); $('PWOpt').hide();"
-				<?php if (!$User->DirectorLicense()) print "disabled"; ?> >Yes
-
-
+			<select class = "gameCreate" name="newGame[moderated]"
+					onchange="
+						if (value == 'Yes'){
+							$('GDoptions').show();
+						} else {
+							$('GDoptions').hide();
+							
+						}">
+				<option name="newGame[moderated]" value="No" selected>No</option>
+				<option name="newGame[moderated]" value="Yes" <?php if (!$User->DirectorLicense()) print "disabled"; ?>>Yes</option>
+			</select>
+			</br></br>
+			
 			<span id="GDoptions" style="<?php print libHTML::$hideStyle; ?>">
-				<li class="formlisttitle">
-					Game description (required for moderated games):
-				</li>
-				<li class="formlistfield">
-					<TEXTAREA name="newGame[description]" ROWS="4"></TEXTAREA>
-				<li class="formlistdesc">
-					Please enter a brief description about your game and custom rules here.<br />
-				</li>
+				
+				<strong>Game description (required for moderated games):</strong>
+				<img id = "modBtnGameDescr" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
+				<div id="gameDescrModal" class="modal">
+					<!-- Modal content -->
+					<div class="modal-content">
+						<span id="closeGameDescrModal" class="close1">&times;</span>
+						<p><strong>Game description:</strong></br>
+							Please enter a brief description about your game and custom rules here.
+						</p>
+					</div>
+				</div>
+				<TEXTAREA name="newGame[description]" ROWS="4"></TEXTAREA>
+				</br></br>
 			</span>
 
 			<p class="notice">
@@ -539,66 +534,98 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 	</div>
 
 <script>
+var modalNames = ['bet','phaseLength','messaging','variant','bot','countryAssignment','scoring','anon','procDays','rating','delay','delayExtension','altEnd','moderated','gameDescr']
+
 // Get the modal
-var modal1 = document.getElementById('delayModal');
-var modal2 = document.getElementById('scoringModal');
-var modal3 = document.getElementById('variantModal');
-var modal4 = document.getElementById('phaseLengthModal');
-var modal5 = document.getElementById('betModal');
-var modal6 = document.getElementById('anonModal');
-var modal7 = document.getElementById('messagingModal');
-var modal8 = document.getElementById('botModal');
+var modals = modalNames.map(function(modalName){
+	return document.getElementById(modalName+'Modal');
+});
+//var modal1 = document.getElementById('delayModal');
+//var modal2 = document.getElementById('scoringModal');
+//var modal3 = document.getElementById('variantModal');
+//var modal4 = document.getElementById('phaseLengthModal');
+//var modal5 = document.getElementById('betModal');
+//var modal6 = document.getElementById('anonModal');
+//var modal7 = document.getElementById('messagingModal');
+//var modal8 = document.getElementById('botModal');
+
+// helper function to capitalize the first letter of a string
+function capitalize(str){
+	return str.charAt(0).toUpperCase() + str.substring(1);
+}
 
 // Get the button that opens the modal
-var btn1 = document.getElementById("modBtnDelays");
-var btn2 = document.getElementById("modBtnScoring");
-var btn3 = document.getElementById("modBtnVariant");
-var btn4 = document.getElementById("modBtnPhaseLength");
-var btn5 = document.getElementById("modBtnBet");
-var btn6 = document.getElementById("modBtnAnon");
-var btn7 = document.getElementById("modBtnMessaging");
-var btn8 = document.getElementById("modBtnBot");
+var btns = modalNames.map(function(modalName){
+	return document.getElementById("modBtn"+capitalize(modalName));
+});
+//var btn1 = document.getElementById("modBtnDelays");
+//var btn2 = document.getElementById("modBtnScoring");
+//var btn3 = document.getElementById("modBtnVariant");
+//var btn4 = document.getElementById("modBtnPhaseLength");
+//var btn5 = document.getElementById("modBtnBet");
+//var btn6 = document.getElementById("modBtnAnon");
+//var btn7 = document.getElementById("modBtnMessaging");
+//var btn8 = document.getElementById("modBtnBot");
 
 // Get the <span> element that closes the modal
-var span1 = document.getElementsByClassName("close1")[0];
-var span2 = document.getElementsByClassName("close2")[0];
-var span3 = document.getElementsByClassName("close3")[0];
-var span4 = document.getElementsByClassName("close4")[0];
-var span5 = document.getElementsByClassName("close5")[0];
-var span6 = document.getElementsByClassName("close6")[0];
-var span7 = document.getElementsByClassName("close7")[0];
-var span8 = document.getElementsByClassName("close8")[0];
+var spans = modalNames.map(function(modalName){
+	return document.getElementById("close"+capitalize(modalName)+"Modal");
+});
+//var span1 = document.getElementsByClassName("close1")[0];
+//var span2 = document.getElementsByClassName("close2")[0];
+//var span3 = document.getElementsByClassName("close3")[0];
+//var span4 = document.getElementsByClassName("close4")[0];
+//var span5 = document.getElementsByClassName("close5")[0];
+//var span6 = document.getElementsByClassName("close6")[0];
+//var span7 = document.getElementsByClassName("close7")[0];
+//var span8 = document.getElementsByClassName("close8")[0];
 
-// When the user clicks the button, open the modal 
-btn1.onclick = function() { modal1.style.display = "block"; }
-btn2.onclick = function() { modal2.style.display = "block"; }
-btn3.onclick = function() { modal3.style.display = "block"; }
-btn4.onclick = function() { modal4.style.display = "block"; }
-btn5.onclick = function() { modal5.style.display = "block"; }
-btn6.onclick = function() { modal6.style.display = "block"; }
-btn7.onclick = function() { modal7.style.display = "block"; }
-btn8.onclick = function() { modal8.style.display = "block"; }
+// When the user clicks the button, open the modal
+// When the user clicks on <span> (x), close the modal
+modals.zip(btns, spans, function(t){
+	var modal = t[0];
+	var btn = t[1];
+	var span = t[2];
+	
+	btn.onclick = function() { modal.style.display = "block"; };
+	span.onclick = function() { modal.style.display = "none"; };
+});
+//btn1.onclick = function() { modal1.style.display = "block"; }
+//btn2.onclick = function() { modal2.style.display = "block"; }
+//btn3.onclick = function() { modal3.style.display = "block"; }
+//btn4.onclick = function() { modal4.style.display = "block"; }
+//btn5.onclick = function() { modal5.style.display = "block"; }
+//btn6.onclick = function() { modal6.style.display = "block"; }
+//btn7.onclick = function() { modal7.style.display = "block"; }
+//btn8.onclick = function() { modal8.style.display = "block"; }
 
 // When the user clicks on <span> (x), close the modal
-span1.onclick = function() { modal1.style.display = "none"; }
-span2.onclick = function() { modal2.style.display = "none"; }
-span3.onclick = function() { modal3.style.display = "none"; }
-span4.onclick = function() { modal4.style.display = "none"; }
-span5.onclick = function() { modal5.style.display = "none"; }
-span6.onclick = function() { modal6.style.display = "none"; }
-span7.onclick = function() { modal7.style.display = "none"; }
-span8.onclick = function() { modal8.style.display = "none"; }
+//span1.onclick = function() { modal1.style.display = "none"; }
+//span2.onclick = function() { modal2.style.display = "none"; }
+//span3.onclick = function() { modal3.style.display = "none"; }
+//span4.onclick = function() { modal4.style.display = "none"; }
+//span5.onclick = function() { modal5.style.display = "none"; }
+//span6.onclick = function() { modal6.style.display = "none"; }
+//span7.onclick = function() { modal7.style.display = "none"; }
+//span8.onclick = function() { modal8.style.display = "none"; }
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
-	if (event.target == modal1) { modal1.style.display = "none"; }
-	if (event.target == modal2) { modal2.style.display = "none"; }
-	if (event.target == modal3) { modal3.style.display = "none"; }
-	if (event.target == modal4) { modal4.style.display = "none"; }
-	if (event.target == modal5) { modal5.style.display = "none"; }
-	if (event.target == modal6) { modal6.style.display = "none"; }
-	if (event.target == modal7) { modal7.style.display = "none"; }
-	if (event.target == modal8) { modal8.style.display = "none"; }
+	var target = modals.detect(function(modal){
+		return event.target == modal; 
+	});
+			
+	if(!Object.isUndefined(target))
+		target.style.display = "none";
+	
+//	if (event.target == modal1) { modal1.style.display = "none"; }
+//	if (event.target == modal2) { modal2.style.display = "none"; }
+//	if (event.target == modal3) { modal3.style.display = "none"; }
+//	if (event.target == modal4) { modal4.style.display = "none"; }
+//	if (event.target == modal5) { modal5.style.display = "none"; }
+//	if (event.target == modal6) { modal6.style.display = "none"; }
+//	if (event.target == modal7) { modal7.style.display = "none"; }
+//	if (event.target == modal8) { modal8.style.display = "none"; }
 }
 
 function setBotFill(){
