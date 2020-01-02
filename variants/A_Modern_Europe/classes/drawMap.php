@@ -122,7 +122,7 @@ class NeutralScBox_drawMap extends ZoomMap_drawMap
 		 212 => array( 16,  464, 1538,  464, 1538), // Seville
 		 213 => array( 16,  635, 1486,  635, 1486), // Valencia
 		 214 => array( 20,  470, 1579,  470, 1579), // Gibraltar
-		 215 => array( 12,  504,  795,  504,  795), // Madeira
+		 215 => array( 12, 	141, 1741,  141, 1741), // Madeira
 		 216 => array(  8,  933, 1409,  933, 1409), // Sardinia
 		 217 => array(  8, 1005, 1270, 1005, 1270), // Bologna
 		 218 => array(  8, 1020, 1232, 1020, 1232), // Venice
@@ -210,7 +210,46 @@ class NeutralScBox_drawMap extends ZoomMap_drawMap
 
 }
 
-class A_Modern_EuropeVariant_drawMap extends NeutralScBox_drawMap {
+class ResetPaletteVariant_drawMap extends NeutralScBox_drawMap
+{
+	public $countColor=0;
+	public $setColors=false;
+
+	protected function loadColors()
+	{
+		if ($this->setColors==true)
+			$this->colors = array(
+				'border'=>array(0,0,0),
+				'standoff'=>array(200,20,20)
+			);
+		parent::loadColors();
+	}
+	
+	protected function loadOrderArrows()
+	{
+		if ($this->setColors==true)
+			parent::loadOrderArrows();
+	}
+	
+	// After 200 territories reset the palette, so there is enough color for the units left.
+	public function colorTerritory($terrID, $countryID)
+	{
+		$this->countColor++;
+		if ($this->countColor == 230)
+		{
+			$im = imagecreate($this->map['width'],$this->map['height']);
+			imagecopy($im, $this->map['image'], 0, 0, 0, 0, $this->map['width'],$this->map['height']);
+			imagedestroy($this->map['image']);
+			$this->map['image']=$im;
+			$this->setColors=true;
+			$this->loadColors();
+			$this->loadOrderArrows();
+		}
+		parent::colorTerritory($terrID, $countryID);
+	}
+}
+
+class A_Modern_EuropeVariant_drawMap extends ResetPaletteVariant_drawMap {
 
 	protected $countryColors = array(
 		0 => array(226, 198, 158), // Neutral
