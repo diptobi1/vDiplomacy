@@ -23,6 +23,10 @@
  * @subpackage Forms
  */
 
+// do not use this feature for vdip
+print("Not implemented");
+die();
+
 require_once('header.php');
 
 global $User, $Misc, $DB;
