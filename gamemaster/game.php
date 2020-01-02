@@ -1122,7 +1122,7 @@ class processGame extends Game
 		if ($this->pot > 0)
 		{
 			include_once("lib/rating.php");
-			libRating::updateRatings($this, true);
+			libRating::updateRatings($this);
 		}
 		
 	}
@@ -1318,7 +1318,7 @@ class processGame extends Game
 		if ($this->pot > 0)
 		{
 			include_once("lib/rating.php");
-			libRating::updateRatings($this, true);
+			libRating::updateRatings($this);
 		}
 
 		$DB->sql_put("DELETE FROM wD_Orders WHERE gameID = ".$this->id);
