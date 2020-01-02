@@ -99,7 +99,7 @@ class adminActionsVDip extends adminActions
 		
 		$DB->sql_put("UPDATE wD_Games SET maxTurns = ".$maxTurns." WHERE id=".$gameID);
 
-		return 'The max. turns for the game was changed to: '.$targetSCs;
+		return 'The max. turns for the game was changed to: '.$maxTurns;
 	}
 	public function extendPhase(array $params)
 	{
