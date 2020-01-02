@@ -223,7 +223,7 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 
 			<table><tr>
 				<td	align="left" width="50%">
-					<select id="variant" class = "gameCreate" name="newGame[variantID]" onChange="setBotFill(); setExtOptions(this.value)">
+					<select id="variant" class = "gameCreate" name="newGame[variantID]" onChange="/*setBotFill(); */setExtOptions(this.value)">
 					<?php print implode($checkboxes); ?>
 					</select> </td>
 				<td align="left" width="50%">
@@ -231,12 +231,12 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 			</tr></table>
 				
 			</br></br>
-			<div id="botFill" style="display:none">
+			<!--<div id="botFill" style="display:none">
 			<strong>Fill Empty Spots with Bots: </strong>
 			<img id = "modBtnBot" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
 			<div id="botModal" class="modal">
 				<!-- Modal content -->
-				<div class="modal-content">
+				<!--<div class="modal-content">
 					<span id="closeBotModal" class="close1">&times;</span>
 					<p><strong>Fill with Bots:</strong> </br>
 						If the game has at least 2 human players it will 
@@ -248,7 +248,7 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 			</div>
 			<input type="checkbox" id="botBox" class="gameCreate" name="newGame[botFill]" value="Yes">
 			</br></br>
-			</div>
+			</div>-->
 			
 			<strong>Country assignment:</strong>
 			<img id = "modBtnCountryAssignment" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
