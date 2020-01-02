@@ -570,7 +570,16 @@ class processGame extends Game
 		global $DB;
 		
 		$this->processTime = time() + $this->phaseMinutes*60;
+			
+		// Extend the processTime by a day if no processing is allowed.
+		while (strpos( $this->noProcess, date("w", $this->processTime)) !== FALSE)
+			$this->processTime += 86400;
+
 		$DB->sql_put("UPDATE wD_Games SET processTime = ".$this->processTime." WHERE id = ".$this->id);
+
+		// Set the "lastProcessed"-time for the chessClock
+		$this->lastProcessed = time();
+		$DB->sql_put("UPDATE wD_Games SET lastProcessed = ".$this->lastProcessed." WHERE id = ".$this->id);
 	}
 
 	/**
@@ -587,7 +596,15 @@ class processGame extends Game
 		}
 
 		$this->processTime = $newProcessTime;
+		// Extend the processTime by a day if no processing is allowed.
+		while (strpos( $this->noProcess, date("w", $this->processTime)) !== FALSE)
+			$this->processTime += 86400;
+
 		$DB->sql_put("UPDATE wD_Games SET processTime = ".$this->processTime." WHERE id = ".$this->id);
+
+		// Set the "lastProcessed"-time for the chessClock
+		$this->lastProcessed = time();
+		$DB->sql_put("UPDATE wD_Games SET lastProcessed = ".$this->lastProcessed." WHERE id = ".$this->id);
 	}
 
 	/**
@@ -794,18 +811,6 @@ class processGame extends Game
 				
 				$this->resetProcessTime();
 			}
-
-			$this->processTime = time() + $this->phaseMinutes*60;
-			
-			// Extend the processTime by a day if no processing is allowed.
-			while (strpos( $this->noProcess, date("w", $this->processTime)) !== FALSE)
-				$this->processTime += 86400;
-			
-			$DB->sql_put("UPDATE wD_Games SET processTime = ".$this->processTime." WHERE id = ".$this->id);
-			
-			// Set the "lastProcessed"-time for the chessClock
-			$this->lastProcessed = time();
-			$DB->sql_put("UPDATE wD_Games SET lastProcessed = ".$this->lastProcessed." WHERE id = ".$this->id);
 		}
 		
 		$this->Members->updateReliabilityStats();
@@ -1071,8 +1076,11 @@ class processGame extends Game
 
 		if ( $gameOver )
 		{
-			$gameOver = ", gameOver = '".$gameOver."'";
+			//errornous case
+			//$gameOver = ", gameOver = '".$gameOver."'";
 			$this->gameOver = $gameOver;
+			//right case
+			$gameOver = ", gameOver = '".$gameOver."'";
 		}
 
 		$DB->sql_put("UPDATE wD_Games SET phase='".$phase."' ".$turn.$gameOver." WHERE id=".$this->id);
