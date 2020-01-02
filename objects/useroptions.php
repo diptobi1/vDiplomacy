@@ -37,7 +37,7 @@ class UserOptions
 
 	public static $defaults = array(
         'colourblind' => 'No',
-        'darkMode' => 'No',
+        //'darkMode' => 'No',
 		'displayUpcomingLive' => 'Yes',
 		'showMoves' => 'Yes',
 		'orderSort' => 'Convoys Last'
@@ -45,7 +45,7 @@ class UserOptions
 
 	public static $titles = array(
 		'colourblind' => 'Colourblindness',
-		'darkMode' => 'Dark Theme (this setting toggle when you navigate away from this page)',
+		//'darkMode' => 'Dark Theme (this setting toggle when you navigate away from this page)',
 		'displayUpcomingLive' => 'Display upcoming live games',
 		'showMoves' => 'Show move arrows on the game map',
 		'orderSort' => 'Sort possible orders'
@@ -53,7 +53,7 @@ class UserOptions
 
 	public static $possibleValues = array(
 		'colourblind' => array('No','Protanope','Deuteranope','Tritanope'),
-		'darkMode' => array('Yes', 'No'),
+		//'darkMode' => array('Yes', 'No'),
 		'displayUpcomingLive' => array('Yes','No'),
 		'showMoves' => array('Yes','No'),
 		'orderSort' => array('No Sort','Alphabetical','Convoys Last')

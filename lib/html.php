@@ -1373,8 +1373,8 @@ class libHTML
 				this.lastModMessageIDViewed='.$User->lastModMessageIDViewed.';
 				this.timeLastSessionEnded='.$User->timeLastSessionEnded.';
 				this.token="'.md5(Config::$secret.$User->id.'Array').'";
-				this.darkMode="'.$User->options->value['darkMode'].'";
-			}
+				this.darkMode="No";' //"'.$User->options->value['darkMode'].'";
+			.'}
 			User = new UserClass();
 			var headerEvent = document.getElementsByClassName("clickable");
 
