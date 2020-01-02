@@ -733,7 +733,7 @@ class processMembers extends Members
 		//	does also avoid overwriting records of the past)
 		$DB->sql_put("UPDATE wD_Users u
 				INNER JOIN wD_Members m ON m.userID = u.id
-				SET u.yearlyPhaseCount = (SELECT count(1) as yearlyTurns FROM wD_TurnDate AS t WHERE t.userID = u.id and t.turnDateTime > (".time()." - (31536000)))
+				SET u.yearlyPhaseCount = (SELECT count(1) as yearlyTurns FROM wD_TurnDate AS t WHERE t.userID = u.id and t.turnDateTime > (".time()." - (31536000))),
 				u.phaseCount = u.phaseCount + 1
 				WHERE m.gameID = ".$this->Game->id." 
 					AND ( m.status='Playing' OR m.status='Left' )
