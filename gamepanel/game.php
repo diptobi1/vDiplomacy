@@ -273,9 +273,15 @@ class panelGame extends Game
 
 		$buf .= '<div class="titleBarRightSide">'.
 					l_t('%s excused NMR','<span class="excusedNMRs">'.$this->excusedMissedTurns.'</span>');
+					if ($this->regainExcusesDuration == 99)
+						$buf .= ' / '.l_t('no regaining');
+					else
+						$buf .= ' / '.l_t('regain after %s turn(s)','<span class="excusedNMRs">'.$this->regainExcusesDuration."</span>");
 					if ($this->delayDeadlineMaxTurn > 90)
 						$buf .= l_t(' / extend always');
-					elseif ($this->turn <= $this->delayDeadlineMaxTurn)
+					elseif ($this->delayDeadlineMaxTurn == 0)
+						$buf .= l_t(' / extend never');
+					else
 						$buf .= ' / '.l_t('extend the first %s turn(s)','<span class="excusedNMRs">'.$this->delayDeadlineMaxTurn.'</span>');
 		$buf .=				
 				'</div>';
