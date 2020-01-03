@@ -103,18 +103,18 @@ class adminActionsRestrictedVDip extends adminActionsForum
 			$DB->sql_put("DELETE r FROM wD_Ratings r
 							INNER JOIN wD_Games g ON (g.id = r.gameID)
 							WHERE r.ratingType='vDip' && 
-								g.processTime > '".$lastRating."'");
+								g.finishTime > '".$lastRating."'");
 		}
 
 		list ($lastRating) = $DB->sql_row("
-				SELECT g.processTime FROM wD_Games g
+				SELECT g.finishTime FROM wD_Games g
 					LEFT JOIN wD_Ratings r ON (g.id = r.gameID)
 				WHERE
 					r.ratingType='vDip'
 					&& g.phase = 'Finished'
-				ORDER BY g.processTime DESC LIMIT 1");
+				ORDER BY g.finishTime DESC LIMIT 1");
 		
-		$tabl = $DB->sql_tabl("SELECT id FROM wD_Games WHERE phase='Finished' AND processTime > '".$lastRating."' ORDER BY processTime ASC");
+		$tabl = $DB->sql_tabl("SELECT id FROM wD_Games WHERE phase='Finished' AND finishTime > '".$lastRating."' ORDER BY finishTime ASC");
 		$count = 0;
 		while ( (list($gameID)=$DB->tabl_row($tabl)) && ($count<5000) )
 		{
@@ -123,14 +123,14 @@ class adminActionsRestrictedVDip extends adminActionsForum
 		}
 
 		list ($lastRating) = $DB->sql_row("
-				SELECT g.processTime FROM wD_Games g
+				SELECT g.finishTime FROM wD_Games g
 					LEFT JOIN wD_Ratings r ON (g.id = r.gameID)
 				WHERE
 					r.ratingType='vDip'
 					&& g.phase = 'Finished'
-				ORDER BY g.processTime DESC LIMIT 1");
+				ORDER BY g.finishTime DESC LIMIT 1");
 
-		list($gamesCount) = $DB->sql_row("SELECT COUNT(*) FROM `wD_Games` WHERE phase = 'Finished' && processtime > '".$lastRating."'");
+		list($gamesCount) = $DB->sql_row("SELECT COUNT(*) FROM `wD_Games` WHERE phase = 'Finished' && finishTime > '".$lastRating."'");
 		if ($gamesCount == 0)
 			return 'Recalculated the ratings for '.$count.' games. No more ratings to recalculate. All done.';
 			
@@ -147,21 +147,21 @@ class adminActionsRestrictedVDip extends adminActionsForum
 		$deleteMonths = $params['month'];
 		if ($deleteMonths  == "") {
 			list ($lastRating) = $DB->sql_row("
-					SELECT g.processTime FROM wD_Games g
+					SELECT g.finishTime FROM wD_Games g
 						LEFT JOIN wD_Ratings r ON (g.id = r.gameID)
 					WHERE
 						r.ratingType='vDip'
 						&& g.phase = 'Finished'
-					ORDER BY g.processTime DESC LIMIT 1");
+					ORDER BY g.finishTime DESC LIMIT 1");
 			$lastRating = ($lastRating==""?0:$lastRating);
-			list($gamesCount) = $DB->sql_row("SELECT COUNT(*) FROM `wD_Games` WHERE phase = 'Finished' && processtime > ".$lastRating);
+			list($gamesCount) = $DB->sql_row("SELECT COUNT(*) FROM `wD_Games` WHERE phase = 'Finished' && finishTime > ".$lastRating);
 			if ($gamesCount == 0)
 				$info = 'No more games to recalculate...';
 			else
 				$info = 'I will recalculate '.$gamesCount.' more games.';
 		} else {
 			$lastRating = strtotime("-".$deleteMonths." month");
-			list($gamesCount) = $DB->sql_row("SELECT COUNT(*) FROM `wD_Games` WHERE phase = 'Finished' && processtime > ".$lastRating);
+			list($gamesCount) = $DB->sql_row("SELECT COUNT(*) FROM `wD_Games` WHERE phase = 'Finished' && finishTime > ".$lastRating);
 			$info = 'I will delete rating-data from the last '.$deleteMonths.' month and start recalculation.<br>This will recalculate '.$gamesCount.' games.';
 		}
 		return $info;

@@ -22,12 +22,9 @@ class libRating
 {
 	static public $base_VDip = 1000;
 
-	static public function updateRatings($Game, $updateTimestamp=false)
+	static public function updateRatings($Game)
 	{
 		global $DB;
-		
-		if ($updateTimestamp)
-			$DB->sql_put('UPDATE wD_Games SET processTime="'.time().'" WHERE id='.$Game->id);
 		
 		// If Game is a gameID load the 
 		if (is_numeric($Game))
@@ -134,8 +131,8 @@ class libRating
 					WHERE r.ratingType='vDip'
 						&& r.userID=".$userID."
 						&& g.phase = 'Finished'
-						".($gameID == 0 ? "" : "&& g.processTime < (SELECT processTime FROM wD_Games WHERE id='".$gameID."')")."
-					ORDER BY g.processTime DESC LIMIT 1");
+						".($gameID == 0 ? "" : "&& g.finishTime < (SELECT finishTime FROM wD_Games WHERE id='".$gameID."')")."
+					ORDER BY g.finishTime DESC LIMIT 1");
 		
 		if ($rating == 0) $rating = self::$base_VDip;
 		

@@ -190,18 +190,6 @@ class User {
 	public $tempBan;
 
 	/**
-	 * UNIX timestamp of when a mod last checked this user
-	 * @var int
-	 */
-	public $modLastCheckedOn;
-
-	/**
-	 * userID of the last mod to check this user
-	 * @var int
-	 */
-	public $modLastCheckedBy;
-
-	/**
 	 * date the user last used an emergency pause
 	 * @var int
 	 */
@@ -294,6 +282,13 @@ class User {
 	public $cssStyle;
 	
 	/**
+	 * darkMode
+	 * Choose css style theme
+	 * @var 'yes' or 'no'
+	 */
+	public $darkMode;
+
+	/**
 	 * Give this user a supplement of points
 	 *
 	 * @param $userID The user ID
@@ -306,18 +301,21 @@ class User {
 	public static function pointsSupplement($userID, $pointsWon, $bet, $gameID, $points)
 	{
 		global $DB;
-		//10,23,105
+
+		$userPassed = new User($userID);
+
 		// If the user is winning points, and there is a chance they are winning fewer than they bet,
 		// this function is needed to make sure no-one runs out of points completely, by making sure
 		// all players have at least 100 points, including active bets in active games.
 
 		$pointsInPlay = self::pointsInPlay($userID, $gameID); // Points in 'Playing'/'Left' games except $gameID
 
-		if ( 100 <= ($pointsInPlay + $pointsWon + $points))
-			return 0; // This member is doing fine, doesn't need topping up
+		if ( 100 <= ($pointsInPlay + $pointsWon + $points)) return 0;
+		
+		// Bot's don't need points.
+		if ($userPassed->type['Bot']) return 0;
 
-		$supplement = (100 - ($pointsInPlay + $pointsWon + $points)); // The maximum supplement
-		//19 = 100 - (_ + 10 + 71)
+		$supplement = (100 - ($pointsInPlay + $pointsWon + $points)); // The maximum supplement, 19 = 100 - (_ + 10 + 71)
 
 		// You can't be supplemented back more than you bet in
 		if( $supplement > $bet ) $supplement = $bet;
@@ -333,11 +331,34 @@ class User {
 
 		assert('$points >= 0');
 
-		// 'Won','Bet','Cancel','Supplement'
+		$userPassed = new User($userID);
+
+		// Always adjust banned members to 0 points. 
+		if ($userPassed->type['Banned']) 
+		{
+			$DB->sql_put("UPDATE wD_Users SET points = 0 WHERE id = ".$userID);
+			return;
+		}
+
+		// Bot's don't need points.
+		if ($userPassed->type['Bot']) 
+		{
+			if ( $transferType == 'Bet' )
+			{
+				$DB->sql_put("UPDATE wD_Games SET pot = pot + 5 WHERE id = ".$gameID);
+				$DB->sql_put("UPDATE wD_Members SET bet = 5 WHERE id = ".$memberID);
+			}
+
+			elseif ( $transferType == 'Cancel' )
+			{
+				$DB->sql_put("UPDATE wD_Games SET pot = IF(pot > 5,(pot - 5),0) WHERE id = ".$gameID);
+			}
+			return;
+		}
+		
+		// 'Won','Bet','Cancel','Supplement', Won doesn't mean they won, this could be 0, it's just the transaction type
 		if($transferType == 'Won')
 		{
-			// Won doesn't mean they won, this could be 0, it's just the transaction type
-
 			/*
 			 * It is expected that if they won less than they bet they have already been topped up the
 			 * 100-minimum-points-supplement, and are now only being paid what they won from the game.
@@ -345,14 +366,12 @@ class User {
 			 */
 
 			$DB->sql_put("UPDATE wD_Members SET pointsWon = ".$points." WHERE userID = ".$userID." AND gameID = ".$gameID);
-
 		}
 
-		if ( $transferType == 'Cancel' )
-			$DB->sql_put("DELETE FROM wD_PointsTransactions
-				WHERE userID = ".$userID." AND gameID = ".$gameID);
+		if ( $transferType == 'Cancel' ) $DB->sql_put("DELETE FROM wD_PointsTransactions WHERE userID = ".$userID." AND gameID = ".$gameID);
+
 		else
-			$DB->sql_put("INSERT INTO wD_PointsTransactions ( userID, type, points, gameID, memberID )
+			$DB->sql_put("INSERT INTO wD_PointsTransactions ( userID, type, points, gameID, memberID ) 
 				VALUES ( ".$userID.", '".$transferType."', ".$points.", ".$gameID.", ".$memberID." )");
 
 		if ( $transferType == 'Bet' )
@@ -361,13 +380,19 @@ class User {
 			$DB->sql_put("UPDATE wD_Games SET pot = pot + ".$points." WHERE id = ".$gameID);
 			$DB->sql_put("UPDATE wD_Members SET bet = ".$points." WHERE id = ".$memberID);
 		}
+
 		elseif ( $transferType == 'Cancel' )
 		{
 			$DB->sql_put("UPDATE wD_Users SET points = points + ".$points." WHERE id = ".$userID);
 			$DB->sql_put("UPDATE wD_Games SET pot = IF(pot > ".$points.",(pot - ".$points."),0) WHERE id = ".$gameID);
 		}
+
 		else
-			$DB->sql_put("UPDATE wD_Users SET points = points + ".$points." WHERE id = ".$userID);
+		{
+			// Prevent mods from trying to dock more points than a user has, throwing an exception. Just dock the user to 0.
+			if (($points < 0 ) && ($this->points + $points) < 0 ) { $DB->sql_put("UPDATE wD_Users SET points = 0 WHERE id = ".$userID); }
+			else { $DB->sql_put("UPDATE wD_Users SET points = points + ".$points." WHERE id = ".$userID); }
+		}
 	}
 
 	/**
@@ -383,10 +408,8 @@ class User {
 
 		list($id) = $DB->sql_row("SELECT id FROM wD_Users WHERE email='".$email."'");
 
-		if ( isset($id) and $id )
-			return $id;
-		else
-			return 0;
+		if ( isset($id) and $id ) return $id;
+		else return 0;
 	}
 
 	/**
@@ -402,10 +425,8 @@ class User {
 
 		list($id) = $DB->sql_row("SELECT id FROM wD_Users WHERE username='".$username."'");
 
-		if ( isset($id) and $id )
-			return $id;
-		else
-			return 0;
+		if ( isset($id) and $id ) return $id;
+		else return 0;
 	}
 
 	/**
@@ -434,7 +455,7 @@ class User {
 					'forceDesktop'=>'',
 					'scrollbars'=>'',
 					'buttonWidth'=>'',
-				'hideEmail'=>'','showEmail'=>'', 'homepage'=>'','comment'=>'');
+				'hideEmail'=>'','showEmail'=>'', 'homepage'=>'','comment'=>'', 'darkMode'=>'');
 
 		$userForm = array();
 
@@ -618,6 +639,14 @@ class User {
 			}
 		}
 
+		if(isset($userForm['darkMode']))
+		{
+			if ($userForm['darkMode'] == "Yes")
+				$SQLVars['darkMode'] = "Yes";
+			else
+				$SQLVars['darkMode'] = "No";
+		}
+
 		return $SQLVars;
 	}
 
@@ -690,14 +719,11 @@ class User {
 			u.cssStyle,
 			IF(s.userID IS NULL,0,1) as online,
 			u.deletedCDs, 
-			c.modLastCheckedOn,
-			c.modLastCheckedBy,
 			u.emergencyPauseDate, 
 			u.yearlyPhaseCount,
 			u.tempBanReason
 			FROM wD_Users u
 			LEFT JOIN wD_Sessions s ON ( u.id = s.userID )
-			LEFT JOIN wD_UserConnections c on ( u.id = c.userID )
 			WHERE ".( $username ? "u.username='".$username."'" : "u.id=".$this->id ));
 
 		if ( ! isset($row['id']) or ! $row['id'] )
@@ -717,7 +743,7 @@ class User {
 		// Convert an array of types this user has into an array of true/false indexed by type
 		$this->type = explode(',', $this->type);
 		$validTypes = array('System','Banned','User','Moderator','Guest','Admin','Donator','DonatorBronze','DonatorSilver','DonatorGold','DonatorPlatinum','ForumModerator'
-								,'DevBronze','DevSilver','DevGold', 'ModAlert');
+								,'DevBronze','DevSilver','DevGold', 'ModAlert','Bot');
 		$types = array();
 		foreach($validTypes as $type)
 		{
@@ -777,11 +803,21 @@ class User {
 
 			$type = implode(',',$types);
 		}
-
 		$buf='';
 
+		global $User;
+		
 		if( strstr($type,'ForumModerator') && $showMod==true)
-			$buf .= ' <img src="'.l_s('images/icons/mod.png').'" alt="'.l_t('Mod').'" title="'.l_t('Moderator/Admin').'" />';
+		{
+			if ($User->getTheme() == 'No' || $User->getTheme() == null)
+			{
+				$buf .= ' <img src="'.l_s('images/icons/mod.png').'" alt="'.l_t('Mod').'" title="'.l_t('Moderator/Admin').'" />';
+			}
+			else
+			{
+				$buf .= ' <img src="'.l_s('images/icons/mod3.png').'" alt="'.l_t('Mod').'" title="'.l_t('Moderator/Admin').'" />';
+			}
+		}
 		elseif(strstr($type,'Banned') )
 			$buf .= ' <img src="'.l_s('images/icons/cross.png').'" alt="X" title="'.l_t('Banned').'" />';
 
@@ -889,11 +925,6 @@ class User {
 	function timeJoinedtxt()
 	{
 		return libTime::text($this->timeJoined);
-	}
-
-	function timeModLastCheckedtxt()
-	{
-		return libTime::text($this->modLastCheckedOn);
 	}
 
 	/**
@@ -1010,6 +1041,11 @@ class User {
 	public static function tempBanUser($userID, $days, $reason, $overwrite = true)
 	{
 		global $DB;
+		
+		$banUser = new User($userID);
+		
+		if( $banUser->type['Bot'] )
+			return;
 		
 		/*
 		 * If the temp ban value should only be extended (no overwrite), check
@@ -1129,7 +1165,7 @@ class User {
 
 		$tabl = $DB->sql_tabl(
 			"SELECT COUNT(m.id), m.status FROM wD_Members m 
-			 inner join wD_Games g on g.id = m.gameID WHERE m.userID = ".$this->id." AND g.variantID <> 1 and g.gameOver <> 'No' 
+			 inner join wD_Games g on g.id = m.gameID WHERE m.userID = ".$this->id." AND g.variantID <> 1 and g.gameOver <> 'No' and g.playerTypes = 'Members'
 			 GROUP BY m.status"
 		);
 
@@ -1153,7 +1189,7 @@ class User {
 
 		$tabl = $DB->sql_tabl(
 				"SELECT COUNT(m.id), m.status FROM wD_Members m 
-				 inner join wD_Games g on g.id = m.gameID WHERE m.userID = ".$this->id." AND g.variantID = 1 and g.gameOver <> 'No' 
+				 inner join wD_Games g on g.id = m.gameID WHERE m.userID = ".$this->id." AND g.variantID = 1 and g.gameOver <> 'No' and g.playerTypes = 'Members'
 				 GROUP BY m.status"
 			);
 
@@ -1178,7 +1214,7 @@ class User {
 		$tabl = $DB->sql_tabl(
 				"SELECT COUNT(m.id), m.status FROM wD_Members m 
 				 inner join wD_Games g on g.id = m.gameID 
-				 WHERE m.userID = ".$this->id." AND g.variantID = 1 and g.gameOver <> 'No' and g.pressType = 'NoPress' 
+				 WHERE m.userID = ".$this->id." AND g.variantID = 1 and g.gameOver <> 'No' and g.pressType = 'NoPress' and g.playerTypes = 'Members'
 				 GROUP BY m.status"
 			);
 
@@ -1203,7 +1239,7 @@ class User {
 		$tabl = $DB->sql_tabl(
 				"SELECT COUNT(m.id), m.status FROM wD_Members m 
 				 inner join wD_Games g on g.id = m.gameID 
-				 WHERE m.userID = ".$this->id." AND g.variantID = 1 and g.gameOver <> 'No' and g.pressType in ('Regular', 'RulebookPress')
+				 WHERE m.userID = ".$this->id." AND g.variantID = 1 and g.gameOver <> 'No' and g.pressType in ('Regular', 'RulebookPress') and g.playerTypes = 'Members'
 				 GROUP BY m.status"
 			);
 
@@ -1228,7 +1264,7 @@ class User {
 		$tabl = $DB->sql_tabl(
 				"SELECT COUNT(m.id), m.status FROM wD_Members m 
 				 inner join wD_Games g on g.id = m.gameID 
-				 WHERE m.userID = ".$this->id." AND g.variantID = 1 and g.gameOver <> 'No' and g.potType <> 'Unranked'
+				 WHERE m.userID = ".$this->id." AND g.variantID = 1 and g.gameOver <> 'No' and g.potType <> 'Unranked' and g.playerTypes = 'Members'
 				 GROUP BY m.status"
 			);
 
@@ -1473,33 +1509,69 @@ class User {
 	public function getYearlyUnExcusedMissedTurns() 
 	{
 		global $DB;
-		list($totalMissedTurns) = $DB->sql_row("
-		SELECT COUNT(1) FROM wD_MissedTurns t  
-		WHERE t.userID = ".$this->id." AND t.modExcused = 0 and t.samePeriodExcused = 0 and t.systemExcused = 0 and t.turnDateTime > ".(time() - 31536000));
+		list($totalNonLiveMissedTurns) = $DB->sql_row("SELECT COUNT(1) FROM wD_MissedTurns t  
+		WHERE t.userID = ".$this->id." AND t.modExcused = 0 and t.liveGame = 0 and t.samePeriodExcused = 0 and t.systemExcused = 0 and t.turnDateTime > ".(time() - 31536000));
 		
-		return $totalMissedTurns;
+		return $totalNonLiveMissedTurns;
 	}
 
 	/*
-	 * Get the number of total non excused missed turns in the past 4 weeks. 
+	 * Get the number of total non excused missed turns from non live in the past 4 weeks. 
 	 */
 	public function getRecentUnExcusedMissedTurns() 
 	{
 		global $DB;
 		list($totalMissedTurns) = $DB->sql_row("SELECT COUNT(1) FROM wD_MissedTurns t  
-			WHERE t.userID = ".$this->id." AND t.modExcused = 0 and t.samePeriodExcused = 0 and t.systemExcused = 0 and t.turnDateTime > ".(time() - 2419200));
+			WHERE t.userID = ".$this->id." AND t.modExcused = 0 and t.liveGame = 0 and t.samePeriodExcused = 0 and t.systemExcused = 0 and t.turnDateTime > ".(time() - 2419200));
 		
 		return $totalMissedTurns;
 	}
 
 	/*
-	 * Get the number of missed turns in the past year. 
+	 * Get the number of non live missed turns in the past year. 
 	 */
 	public function getMissedTurns() 
 	{
 		global $DB;
 		list($totalMissedTurns) = $DB->sql_row("SELECT COUNT(1) FROM wD_MissedTurns t  
-			WHERE t.userID = ".$this->id." AND t.modExcused = 0 and t.turnDateTime > ".(time() - 2419200));
+			WHERE t.userID = ".$this->id." AND t.liveGame = 0 and t.modExcused = 0 and t.turnDateTime > ".(time() - 31536000));
+		
+		return $totalMissedTurns;
+	}
+
+	/*
+	 * Get the number of non excused live missed turns in the last month. 
+	 */
+	public function getLiveUnExcusedMissedTurns() 
+	{
+		global $DB;
+
+		list($totalLiveMissedTurns) = $DB->sql_row("SELECT COUNT(1) FROM wD_MissedTurns t  
+		WHERE t.userID = ".$this->id." AND t.modExcused = 0 and t.liveGame = 1 and t.samePeriodExcused = 0 and t.systemExcused = 0 and t.turnDateTime > ".(time() - 2419200));
+		
+		return $totalLiveMissedTurns;
+	}
+
+	/*
+	 * Get the number of total non excused missed turns from live in the past week. 
+	 */
+	public function getLiveRecentUnExcusedMissedTurns() 
+	{
+		global $DB;
+		list($totalMissedTurns) = $DB->sql_row("SELECT COUNT(1) FROM wD_MissedTurns t  
+			WHERE t.userID = ".$this->id." AND t.modExcused = 0 and t.liveGame = 1 and t.samePeriodExcused = 0 and t.systemExcused = 0 and t.turnDateTime > ".(time() - (86400 * 7)));
+		
+		return $totalMissedTurns;
+	}
+
+	/*
+	 * Get the number of live missed turns in the past month. For live games missed turns are completely forgiven after 1 month
+	 */
+	public function getLiveMissedTurns() 
+	{
+		global $DB;
+		list($totalMissedTurns) = $DB->sql_row("SELECT COUNT(1) FROM wD_MissedTurns t  
+			WHERE t.userID = ".$this->id." AND t.liveGame = 1 and t.modExcused = 0 and t.turnDateTime > ".(time() - 2419200));
 		
 		return $totalMissedTurns;
 	}
@@ -1513,6 +1585,58 @@ class User {
 		list($tempBan) = $DB->sql_row("SELECT u.tempBan FROM wD_Users u  WHERE u.id = ".$this->id);
 
 		return $tempBan > time();
+	}
+
+	/* 
+	 * Get style theme user is using, 'No' = light mode; 'Yes' = dark mode. If the user has not accessed their user settings, this will default to light mode.
+	 */
+	public function getTheme()
+	{
+		global $DB;
+
+		list($variable) = $DB->sql_row("SELECT darkMode FROM wD_UserOptions WHERE userID=".$this->id);
+		if ($variable == null) 
+		{
+			return 'No';
+		}
+		else
+		{
+			return $variable;
+		}
+	}
+
+	/*
+	 * Get the number of total bot games the member is currently playing in. 
+	 */
+	public function getBotGameCount() 
+	{
+		global $DB;
+		list($totalBotGames) = $DB->sql_row("SELECT COUNT(1) FROM wD_Games g inner join wD_Members m on m.gameID = g.id  
+			WHERE m.userID = ".$this->id." AND g.gameOver = 'No' and g.playerTypes = 'MemberVsBots'");
+		
+		return $totalBotGames;
+	}
+
+	/*
+	 * Get time the user was last checked by a mod
+	 */
+	public function modLastCheckedOn() 
+	{
+		global $DB;
+		list($modLastCheckedOn) = $DB->sql_row("SELECT c.modLastCheckedOn FROM wD_UserConnections c WHERE c.userID = ".$this->id);
+		
+		return $modLastCheckedOn;
+	}
+
+	/*
+	 * Get the mod who last checked the user
+	 */
+	public function modLastCheckedBy() 
+	{
+		global $DB;
+		list($modLastCheckedBy) = $DB->sql_row("SELECT c.modLastCheckedBy FROM wD_UserConnections c WHERE c.userID = ".$this->id);
+		
+		return $modLastCheckedBy;
 	}
 }
 ?>

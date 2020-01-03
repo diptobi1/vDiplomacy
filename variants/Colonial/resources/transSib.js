@@ -201,6 +201,8 @@ function loadTransSib() {
 			{
 				this.convoyOptions = this.ConvoyGroup.Coasts.select(this.canConvoyTo, this).pluck('id');
 				choices = snapTogether(choices, this.convoyOptions).uniq();
+			} else {
+				this.convoyOptions = []
 			}
 
 			if (!MyOrders[0].isTransSibOrderSet() && transSibTerritories.include(this.terrID) && this.type == 'Army' && this.countryID == '6')
@@ -227,38 +229,40 @@ function loadTransSib() {
 				}));
 
 			// Armies that could be convoyed into the given territory
-			if (AgainstTerritory.convoyLink)
+			if( AgainstTerritory.convoyLink )
 			{
 				/*
 				 * Resource intensive extra check, unnecessary 99% of the time. Leaving this disabled 
 				 * means when an invalid support move is selected as a fleet the choice is undone once 
 				 * it is selected and put through the check below.
 				 * 
-				 * var ConvoyArmies;
-				 
-				 if( this.convoyLink && this.type=='Fleet' && 
-				 this.ConvoyGroup.Coasts.pluck('id').member(AgainstTerritory.id) )
-				 {
-				 // Make sure ConvoyArmies contains no armies which can only reach AgainstTerritory 
-				 // via a convoy containing this fleet. 
-				 ConvoyArmies = AgainstTerritory.ConvoyGroup.Armies.select(function(ConvoyArmy) {
-				 var path=AgainstTerritory.ConvoyGroup.pathArmyToCoastWithoutFleet(ConvoyArmy.Territory, AgainstTerritory, this.Territory);
-				 if( Object.isUndefined(path) )
-				 return false;
-				 else
-				 return true;
-				 },this);
-				 }
-				 else
-				 {
-				 ConvoyArmies = AgainstTerritory.ConvoyGroup.Armies;
-				 }*/
+				 */ var ConvoyArmies;
 
-				this.convoyOptions = AgainstTerritory.ConvoyGroup.Armies.pluck('Territory').pluck('id');
+				if( this.convoyLink && this.type=='Fleet' && 
+					this.ConvoyGroup.Coasts.pluck('id').member(AgainstTerritory.id) )
+				{
+					// Make sure ConvoyArmies contains no armies which can only reach AgainstTerritory 
+					// via a convoy containing this fleet. 
+					ConvoyArmies = AgainstTerritory.ConvoyGroup.Armies.select(function(ConvoyArmy) {
+						var path=AgainstTerritory.ConvoyGroup.pathArmyToCoastWithoutFleet(ConvoyArmy.Territory, AgainstTerritory, this.Territory);
+						if( Object.isUndefined(path) )
+							return false;
+						else
+							return true;
+					},this);
+				}
+				else
+				{
+					ConvoyArmies = AgainstTerritory.ConvoyGroup.Armies;
+				}//*/
 
-				PossibleUnits = snapTogether(PossibleUnits, AgainstTerritory.ConvoyGroup.Armies);
+				this.convoyOptions=AgainstTerritory.ConvoyGroup.Armies.pluck('Territory').pluck('id');
+
+				PossibleUnits=snapTogether(PossibleUnits,ConvoyArmies);
+			} else {
+				this.convoyOptions = []
 			}
-
+				
 			// Return names, excluding the current territory
 			return PossibleUnits.pluck('Territory').pluck('coastParent').pluck('id').uniq().reject(
 					function (n) {

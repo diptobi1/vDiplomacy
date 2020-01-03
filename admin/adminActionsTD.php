@@ -135,6 +135,128 @@ class adminActionsTD extends adminActionsForms
 			
 		return 'The current phase for the game was extended by '.$extend.' day(s).';
 	}
+	
+	public function countryReallocate(array $params)
+	{
+		global $DB;
+
+		$gameID=$this->fixedGameID;
+
+		$Variant=libVariant::loadFromGameID($gameID);
+		$Game = $Variant->Game($gameID);
+
+		if( strlen($params['reallocations'])==0 )
+		{
+			$c=array();
+			foreach($Variant->countries as $index=>$country)
+			{
+				$index++;
+				$countryLetter=strtoupper(substr($country,0,1));
+				$c[$countryLetter] = '#'.$index.": ".$country;
+			}
+			$ids=array_keys($c);
+
+			return implode('<br />',$c)."<br />".l_t("e.g. \"%s\"\" would change nothing",implode(',',$ids));
+		}
+
+		$reallocations=explode(',',$params['reallocations']);
+
+		if ( $Game->pressType != 'NoPress' )
+			throw new Exception(l_t("Only games with no messages allowed can have their countries reordered, ".
+				"otherwise information may already have been communicated while believing countries were already allocated."));
+
+		if ( $Game->phase == 'Pre-game' )
+			throw new Exception(l_t("This game hasn't yet started; countries can only be reallocated after they have been allocated already."));
+
+		if ( $Game->phase == 'Finished' )
+			throw new Exception(l_t("This game has finished, countries can't be reallocated."));
+
+		if( count($reallocations) != count($Variant->countries) )
+			throw new Exception(l_t("The number of inputted reallocations (%s) aren't equal to the number of countries (%s).",count($reallocations),count($Variant->countries)));
+
+		if( !is_numeric(implode('', $reallocations)) )
+		{
+			$countryIDsByLetter=array();
+			foreach($Variant->countries as $countryID=>$countryName)
+			{
+				$countryID++;
+				$countryLetter=strtoupper(substr($countryName,0,1));
+				if( isset($countryIDsByLetter[$countryLetter]) )
+					throw new Exception(l_t("For the given variant two countries have the same start letter: '%s (one is '%s'), you must give countryIDs instead of letters.",$countryLetter,$countryName));
+
+				$countryIDsByLetter[$countryLetter]=$countryID;
+			}
+
+			if( count(explode('=',$reallocations[0]))==2 )
+			{
+				$newCountryIDsByOldCountryID=array();
+				foreach($reallocations as $r)
+				{
+					list($userID,$countryLetter)=explode('=', $r);
+					$countryID=$countryIDsByLetter[$countryLetter];
+
+					$oldCountryID=false;
+					list($oldCountryID)=$DB->sql_row("SELECT countryID FROM wD_Members WHERE userID=".$userID." AND gameID = ".$Game->id);
+					if( !$oldCountryID )
+						throw new Exception(l_t("User %s not found in this game.",$userID));
+
+					$newCountryIDsByOldCountryID[$oldCountryID]=$countryID;
+				}
+			}
+			else
+			{
+				$newCountryIDsByOldCountryID=array();
+				for($oldCountryID=1; $oldCountryID<=count($reallocations); $oldCountryID++)
+				{
+					$countryLetter=$reallocations[$oldCountryID-1];
+
+					if( !isset($countryIDsByLetter[$countryLetter]) )
+						throw new Exception(l_t("No country name starts with letter '%s'",$countryLetter));
+
+					$newCountryIDsByOldCountryID[$oldCountryID]=$countryIDsByLetter[$countryLetter];
+				}
+			}
+		}
+		else
+		{
+			$newCountryIDsByOldCountryID=array();
+			for($oldCountryID=1; $oldCountryID<=count($reallocations); $oldCountryID++)
+			{
+				$newCountryID=$reallocations[$oldCountryID-1];
+				$newCountryIDsByOldCountryID[$oldCountryID]=(int)$newCountryID;
+			}
+		}
+
+		$changes=array();
+		$newUserIDByNewCountryID=array();
+		$changeBack=array();
+		foreach($newCountryIDsByOldCountryID as $oldCountryID=>$newCountryID)
+		{
+			list($userID)=$DB->sql_row("SELECT userID FROM wD_Members WHERE gameID=".$Game->id." AND countryID=".$oldCountryID." FOR UPDATE");
+			$newUserIDByNewCountryID[$newCountryID]=$userID;
+
+			$changes[] = l_t("Changed %s (#%s) to %s (#%s).",$Variant->countries[$oldCountryID-1],$oldCountryID,$Variant->countries[$newCountryID-1],$newCountryID);
+			$changeBack[$newCountryID]=$oldCountryID;
+		}
+
+		$changeBackStr=array();
+		for($i=1; $i<=count($Variant->countries); $i++)
+			$changeBackStr[] = $changeBack[$i];
+		$changeBackStr=implode(',', $changeBackStr);
+
+		// Foreach member set the new owners' userID
+		// The member isn't given a new countryID, instead the user in control of the countryID is moved into the other countryID:
+		// userID is what gets changed, not countryID (if it's not done this way all sorts of problems e.g. supplyCenterNo crop up)
+		$DB->sql_put("BEGIN");
+		foreach($newUserIDByNewCountryID as $newCountryID=>$userID)
+			$DB->sql_put("UPDATE wD_Members SET userID=".$userID." WHERE gameID=".$Game->id." AND countryID=".$newCountryID);
+
+		$DB->sql_put("COMMIT");
+
+		return l_t('In this game these countries were successfully swapped:').'<br />'.implode(',<br />', $changes).'.<br />
+			'.l_t('These changes can be reversed with "%s"',$changeBackStr);
+	}
+
 	public function alterMessaging(array $params)
 	{
 		global $DB;
@@ -155,6 +277,7 @@ class adminActionsTD extends adminActionsForms
 
 		return l_t('Game changed to pressType=%s.',$newSettingName);
 	}
+
 	public function changePhaseLength(array $params)
 	{
 		global $DB;
@@ -185,6 +308,7 @@ class adminActionsTD extends adminActionsForms
 		return l_t('Process time changed from %s to %s. Next process time is %s.',
 			libTime::timeLengthText($oldPhaseMinutes*60),libTime::timeLengthText($Game->phaseMinutes*60),libTime::text($Game->processTime));
 	}
+
 	public function setProcessTimeToPhaseConfirm(array $params)
 	{
 		global $DB;
@@ -198,6 +322,7 @@ class adminActionsTD extends adminActionsForms
 
 		return l_t('Are you sure you want to reset the phase process time of this game to process in %s hours?',($Game->phaseMinutes/60));
 	}
+
 	public function setProcessTimeToPhase(array $params)
 	{
 		global $DB;
@@ -210,28 +335,22 @@ class adminActionsTD extends adminActionsForms
 		if( $Game->processStatus != 'Not-processing' || $Game->phase == 'Finished' )
 			return l_t('This game is paused/crashed/finished.');
 
-		$DB->sql_put(
-			"UPDATE wD_Games
-			SET processTime = ".time()." + phaseMinutes * 60
-			WHERE id = ".$Game->id
-		);
+		$DB->sql_put("UPDATE wD_Games SET processTime = ".time()." + phaseMinutes * 60 WHERE id = ".$Game->id);
 
 		return l_t('Process time reset successfully');
 	}
+
 	public function makePublic(array $params)
 	{
 		global $DB;
 
 		$gameID = intval($this->fixedGameID);
 
-		$DB->sql_put(
-			"UPDATE wD_Games
-			SET password = NULL
-			WHERE id = ".$gameID
-		);
+		$DB->sql_put("UPDATE wD_Games SET password = NULL WHERE id = ".$gameID);
 
 		return l_t('Password removed');
 	}
+
 	public function makePrivate(array $params)
 	{
 		global $DB;
@@ -239,14 +358,11 @@ class adminActionsTD extends adminActionsForms
 		$gameID = intval($this->fixedGameID);
 		$password=$params['password'];
 
-		$DB->sql_put(
-			"UPDATE wD_Games
-			SET password = UNHEX('".md5($password)."')
-			WHERE id = ".$gameID
-		);
+		$DB->sql_put( "UPDATE wD_Games SET password = UNHEX('".md5($password)."') WHERE id = ".$gameID);
 
 		return l_t('Password set to "%s"',$password);
 	}
+
 	public function setProcessTimeToNow(array $params)
 	{
 		global $DB;
@@ -259,14 +375,11 @@ class adminActionsTD extends adminActionsForms
 		if( $Game->processStatus != 'Not-processing' || $Game->phase == 'Finished' )
 			return l_t('This game is paused/crashed/finished.');
 
-		$DB->sql_put(
-			"UPDATE wD_Games
-			SET processTime = ".time()."
-			WHERE id = ".$Game->id
-		);
+		$DB->sql_put("UPDATE wD_Games SET processTime = ".time()." WHERE id = ".$Game->id);
 
 		return 'Process time set to now successfully';
 	}
+
 	public function setProcessTimeToNowConfirm(array $params)
 	{
 		global $DB;
@@ -278,6 +391,7 @@ class adminActionsTD extends adminActionsForms
 
 		return l_t('Are you sure you want to start processing this game now?');
 	}
+
 	public function drawGameConfirm(array $params)
 	{
 		global $DB;
@@ -457,6 +571,7 @@ class adminActionsTD extends adminActionsForms
 
 		return l_t('This game is now '.( $Game->processStatus == 'Paused' ? 'paused':'unpaused').'.');
 	}
+
 	public function cdUserConfirm(array $params)
 	{
 		global $DB;
@@ -472,6 +587,7 @@ class adminActionsTD extends adminActionsForms
 
 		return l_t('Are you sure you want to put this user into civil-disorder'.(isset($Game)?', in this game':', in all his games').'?');
 	}
+
 	public function cdUser(array $params)
 	{
 		global $DB;
@@ -492,6 +608,7 @@ class adminActionsTD extends adminActionsForms
 
 		return l_t('This user put into civil-disorder in this game');
 	}
+
 	public function excusedMissedTurnsIncreaseAll(array $params)
 	{
 		global $DB;

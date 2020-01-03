@@ -75,31 +75,33 @@ class processGame extends Game
 	function applyVotes()
 	{
 		assert('$this->phase != "Finished"');
-
-		$votes = $this->Members->votesPassed();
-
-		$this->gamelog(l_t('Applying votes'));
-
-		// Only act on one vote at a time ..
-		if ( in_array('Draw', $votes) )
+		if($this->phase != "Pre-game")
 		{
-			$this->setDrawn();
-		}
-		elseif ( in_array('Cancel', $votes) )
-		{
-			$this->setCancelled();
-		}
-		elseif( in_array('Pause', $votes) )
-		{
-			$this->togglePause();
+			$votes = $this->Members->votesPassed();
+
+			$this->gamelog(l_t('Applying votes'));
+
+			// Only act on one vote at a time.
+			if ( in_array('Draw', $votes) )
+			{
+				$this->setDrawn();
+			}
+			elseif ( in_array('Cancel', $votes) )
+			{
+				$this->setCancelled();
+			}
+			elseif( in_array('Pause', $votes) )
+			{
+				$this->togglePause();
+			}
+			elseif( in_array('Concede', $votes) )
+			{
+				$this->setConcede();
+			}
 		}
 		elseif( in_array('Extend', $votes) && $this->processStatus != 'Paused')
 		{
 			$this->extendPhase();
-		}
-		elseif( in_array('Concede', $votes) )
-		{
-			$this->setConcede();
 		}
 	}
 
@@ -304,6 +306,7 @@ class processGame extends Game
 		,$description
 		,$noProcess
 		,$fixStart
+		,$playerTypes
 		)
 	{
 		global $DB;
@@ -317,14 +320,17 @@ class processGame extends Game
 		$name = substr($name,0,50);
 		$unique = false;
 		$i = 1;
+
 		while ( ! $unique )
 		{
 			list($count) = $DB->sql_row("SELECT COUNT(id) FROM wD_Games WHERE name='".$name.($i > 1 ? '-'.$i : '')."'");
+
 			if ( $count == 0 )
 			{
 				$unique = true;
 			}
-			else{
+			else
+			{
 				$i++;
 				$name = substr($name,0,50-strlen('-'.$i));
 			}
@@ -376,7 +382,8 @@ class processGame extends Game
 						description = '".$description."',
 						noProcess = '".$noProcess."',
 						fixStart = '".$fixStart."',
-						rlPolicy = '".($anon == 'Yes' ? 'Strict' : 'None' )."'");
+						rlPolicy = '".($anon == 'Yes' ? 'Strict' : 'None' )."',
+						playerTypes = '".$playerTypes."'");
 
 		$gameID = $DB->last_inserted();
 		
@@ -523,7 +530,7 @@ class processGame extends Game
 			if ($this->phaseMinutes > 60)
 			{
 				// Insert a Missed Turn for anyone who missed the turn, accounting for systemExcused and samePeriodExcused
-				$DB->sql_put("INSERT INTO wD_MissedTurns (gameID, userID, countryID, turn, bet, SCCount, forcedByMod, systemExcused, modExcused, turnDateTime, modExcusedReason, samePeriodExcused)
+				$DB->sql_put("INSERT INTO wD_MissedTurns (gameID, userID, countryID, turn, bet, SCCount, forcedByMod, systemExcused, modExcused, turnDateTime, modExcusedReason, samePeriodExcused, liveGame)
 						SELECT m.gameID, m.userID, m.countryID, ".$this->turn." as turn, m.bet, m.supplyCenterNo, 0, CASE WHEN excusedMissedTurns > 0 THEN 1 ELSE 0 END, 0,".time().",'', 
 						CASE WHEN (
 							SELECT COUNT(1) 
@@ -533,7 +540,8 @@ class processGame extends Game
 								AND systemExcused = 0 
 								AND modExcused = 0 
 								AND samePeriodExcused = 0
-						) > 0 THEN 1 ELSE 0 END 
+						) > 0 THEN 1 ELSE 0 END, 
+						0
 						FROM wD_Members m
 						WHERE m.id IN ( ".implode(',',$nmrs).")");
 			}
@@ -541,8 +549,8 @@ class processGame extends Game
 			else
 			{
 				// Insert a Missed Turn for anyone who missed the turn, accounting for systemExcused and samePeriodExcused
-				$DB->sql_put("INSERT INTO wD_MissedTurns (gameID, userID, countryID, turn, bet, SCCount, forcedByMod, systemExcused, modExcused, turnDateTime, modExcusedReason, samePeriodExcused)
-						SELECT m.gameID, m.userID, m.countryID, ".$this->turn." as turn, m.bet, m.supplyCenterNo, 0, CASE WHEN excusedMissedTurns > 0 THEN 1 ELSE 0 END, 0,".time().",'', 0
+				$DB->sql_put("INSERT INTO wD_MissedTurns (gameID, userID, countryID, turn, bet, SCCount, forcedByMod, systemExcused, modExcused, turnDateTime, modExcusedReason, samePeriodExcused, liveGame)
+						SELECT m.gameID, m.userID, m.countryID, ".$this->turn." as turn, m.bet, m.supplyCenterNo, 0, CASE WHEN excusedMissedTurns > 0 THEN 1 ELSE 0 END, 0,".time().",'', 0, 1
 						FROM wD_Members m
 						WHERE m.id IN ( ".implode(',',$nmrs).")");
 			}
@@ -562,7 +570,41 @@ class processGame extends Game
 		global $DB;
 		
 		$this->processTime = time() + $this->phaseMinutes*60;
+			
+		// Extend the processTime by a day if no processing is allowed.
+		while (strpos( $this->noProcess, date("w", $this->processTime)) !== FALSE)
+			$this->processTime += 86400;
+
 		$DB->sql_put("UPDATE wD_Games SET processTime = ".$this->processTime." WHERE id = ".$this->id);
+
+		// Set the "lastProcessed"-time for the chessClock
+		$this->lastProcessed = time();
+		$DB->sql_put("UPDATE wD_Games SET lastProcessed = ".$this->lastProcessed." WHERE id = ".$this->id);
+	}
+
+	/**
+	 * Resets the phase timer to one phase time or 24 hours, which is shorter.
+	 */
+	protected function resetProcessTimeForMissedTurns() 
+	{
+		global $DB;
+	
+		$newProcessTime = time() + 1440*60;
+		if ($this->phaseMinutes < 1440)
+		{
+			$newProcessTime = time() + $this->phaseMinutes*60;
+		}
+
+		$this->processTime = $newProcessTime;
+		// Extend the processTime by a day if no processing is allowed.
+		while (strpos( $this->noProcess, date("w", $this->processTime)) !== FALSE)
+			$this->processTime += 86400;
+
+		$DB->sql_put("UPDATE wD_Games SET processTime = ".$this->processTime." WHERE id = ".$this->id);
+
+		// Set the "lastProcessed"-time for the chessClock
+		$this->lastProcessed = time();
+		$DB->sql_put("UPDATE wD_Games SET lastProcessed = ".$this->lastProcessed." WHERE id = ".$this->id);
 	}
 
 	/**
@@ -653,7 +695,7 @@ class processGame extends Game
 			$extendMessage = 'Game was extended due to at least 1 member failing to enter orders and having an excused missed turn available. This has un-readied all orders.';
 			
 			$this->Members->unreadyMembers();
-			$this->resetProcessTime();
+			$this->resetProcessTimeForMissedTurns();
 			$this->Members->notifyGameExtended();
 			
 			libGameMessage::send('Global','GameMaster', $extendMessage);
@@ -769,22 +811,28 @@ class processGame extends Game
 				
 				$this->resetProcessTime();
 			}
-
-			$this->processTime = time() + $this->phaseMinutes*60;
-			
-			// Extend the processTime by a day if no processing is allowed.
-			while (strpos( $this->noProcess, date("w", $this->processTime)) !== FALSE)
-				$this->processTime += 86400;
-			
-			$DB->sql_put("UPDATE wD_Games SET processTime = ".$this->processTime." WHERE id = ".$this->id);
-			
-			// Set the "lastProcessed"-time for the chessClock
-			$this->lastProcessed = time();
-			$DB->sql_put("UPDATE wD_Games SET lastProcessed = ".$this->lastProcessed." WHERE id = ".$this->id);
 		}
 		
 		$this->Members->updateReliabilityStats();
 		
+		//Anytime the phase changes checks for force draws if only bots are left.
+		if ($this->playerTypes <> 'Members' && $this->phase <> 'Finished' && $this->phase <> 'Pre-game')
+		{
+			$playerCount = count($this->Members->ByStatus['Playing']);
+			$botCount = 0;
+			foreach($this->Members->ByStatus['Playing'] as $Member)
+			{
+				$userPassed = new User($Member->userID);
+				if($userPassed->type['Bot']) 
+				{
+					$botCount += 1;
+				}
+			}
+			if ($playerCount == $botCount) 
+			{
+				$this->setDrawn();
+			}
+		}
 		// Check if any votes now passed (because of countries send in CD....)
 		if ($this->phase != "Finished") $this->applyVotes();
 		
@@ -1028,8 +1076,8 @@ class processGame extends Game
 
 		if ( $gameOver )
 		{
-			$gameOver = ", gameOver = '".$gameOver."'";
 			$this->gameOver = $gameOver;
+			$gameOver = ", gameOver = '".$gameOver."'";
 		}
 
 		$DB->sql_put("UPDATE wD_Games SET phase='".$phase."' ".$turn.$gameOver." WHERE id=".$this->id);
@@ -1055,7 +1103,9 @@ class processGame extends Game
 		 * 'Playing'/'Left' -> 'Won'/'Survived'/'Resigned'
 		 * ('Defeated' status members are already set by now)
 		 */
-
+		global $DB;
+		$DB->sql_put("UPDATE wD_Games SET finishTime=".time()." WHERE id=".$this->id);
+		 
 		// Return any switched countries...
 		include_once("lib/countryswitch.php");
 		libSwitch::clearAllSwitches($this);
@@ -1069,7 +1119,7 @@ class processGame extends Game
 		if ($this->pot > 0)
 		{
 			include_once("lib/rating.php");
-			libRating::updateRatings($this, true);
+			libRating::updateRatings($this);
 		}
 		
 	}
@@ -1237,6 +1287,7 @@ class processGame extends Game
 	public function setDrawn()
 	{
 		global $DB;
+		$DB->sql_put("UPDATE wD_Games SET finishTime=".time()." WHERE id=".$this->id);
 
 		// Unpause the game so that the processTime data isn't finalized as NULL
 		if( $this->processStatus == 'Paused' )
@@ -1264,7 +1315,7 @@ class processGame extends Game
 		if ($this->pot > 0)
 		{
 			include_once("lib/rating.php");
-			libRating::updateRatings($this, true);
+			libRating::updateRatings($this);
 		}
 
 		$DB->sql_put("DELETE FROM wD_Orders WHERE gameID = ".$this->id);
@@ -1308,33 +1359,34 @@ class processGame extends Game
 	{
 		global $DB;
 
-		// Unpause the game so that the processTime data isn't finalized as NULL
-		if( $this->processStatus == 'Paused' )
-			$this->togglePause();
-
-		$this->archiveTerrStatus();
-
-		if ( $this->phase == 'Diplomacy' and $this->turn > 0 )
+		// Ensure backend that a concede cannot be applied for the wrong variant type. 
+		if ( (empty(Config::$concedeVariants)) || (in_array($this->variantID, Config::$concedeVariants)) )
 		{
-			$DB->sql_put("INSERT INTO wD_MovesArchive
-				( gameID, turn, terrID, countryID, unitType, success, dislodged, type, toTerrID, fromTerrID, viaConvoy )
-				SELECT gameID, turn+1, terrID, countryID, unitType, success, dislodged, type, toTerrID, fromTerrID, viaConvoy
-				FROM wD_MovesArchive WHERE gameID = ".$this->id." AND turn = ".($this->turn-1));
+			// Unpause the game so that the processTime data isn't finalized as NULL
+			if( $this->processStatus == 'Paused' ) { $this->togglePause(); }
+
+			$this->archiveTerrStatus();
+			
+			if ( $this->phase == 'Diplomacy' and $this->turn > 0 )
+			{
+				$DB->sql_put("INSERT INTO wD_MovesArchive
+					( gameID, turn, terrID, countryID, unitType, success, dislodged, type, toTerrID, fromTerrID, viaConvoy )
+					SELECT gameID, turn+1, terrID, countryID, unitType, success, dislodged, type, toTerrID, fromTerrID, viaConvoy
+					FROM wD_MovesArchive WHERE gameID = ".$this->id." AND turn = ".($this->turn-1));
+			}
+			
+			$this->Members->setConcede();
+			foreach($this->Members->ByStatus['Playing'] as $Member)
+				$Winner = $Member;
+			$this->setWon($Winner);
+
+			$DB->sql_put("DELETE FROM wD_Orders WHERE gameID = ".$this->id);
+			$DB->sql_put("DELETE FROM wD_Units WHERE gameID = ".$this->id);
+			$DB->sql_put("DELETE FROM wD_TerrStatus WHERE gameID = ".$this->id);
+
+			Game::wipeCache($this->id,$this->turn);
 		}
-
-		// Sets the Members statuses to Drawn as needed, gives refunds, sends messages
-		$this->Members->setConcede();
-		foreach($this->Members->ByStatus['Playing'] as $Member)
-			$Winner = $Member;
-		$this->setWon($Winner);
-
-		$DB->sql_put("DELETE FROM wD_Orders WHERE gameID = ".$this->id);
-		$DB->sql_put("DELETE FROM wD_Units WHERE gameID = ".$this->id);
-		$DB->sql_put("DELETE FROM wD_TerrStatus WHERE gameID = ".$this->id);
-
-		Game::wipeCache($this->id,$this->turn);
 	}
-	
 }
 
 ?>
