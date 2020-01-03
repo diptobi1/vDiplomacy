@@ -71,8 +71,8 @@ class libRating
 			$tSCc += $Game->Members->ByUserID[$userID]->supplyCenterNoAdjusted;
 		}
 		
-		foreach (array ('Won', 'Drawn', 'Survived', 'Resigned', 'Defeated') as $status)
-			foreach ($Game->Members->ByStatus[$status] AS $Member)
+		foreach (array ('Won', 'Drawn', 'Survived', 'Resigned', 'Defeated') as $status) {
+			foreach ($Game->Members->ByStatus[$status] AS $Member){
 				$Members[$Member->userID] = array (
 					'userID'  => $Member->userID,
 					'name'    => $Member->username,
@@ -85,6 +85,45 @@ class libRating
 					'SCq'     => (($tSCc == 0) ? 0 : $Member->supplyCenterNoAdjusted / $tSCc),
 					'matches' => array()
 				);
+				
+				// calculate an initial chance to win this game based on the bet calculations but decoupled from the pot
+				// Step 1: Detect if position was taken-over
+				$res = $DB->sql_row("SELECT turn, SCCount FROM wD_CivilDisorders
+					WHERE gameID = ".$Game->id."
+						AND countryID = ".$Member->countryID."
+						AND userID <> ".$Member->userID."
+					ORDER BY turn DESC LIMIT 1
+					");
+				
+				// Step 2: Determine chances at take over
+				if( list($turnTakenOver, $scCount)=$res ){
+					// there was a take over
+					// -> get SC counts at time of take over
+					// as for the bet the relative pay-in is SC_at_takeover/(sum of SCs of playing members)
+					
+					// get SC count at take-over (possible changes prior to retreat 
+					// cannot be retrieved, but are considered negligable)
+					list( $totalSCcount ) = $DB->sql_row("SELECT COUNT(*) 
+						FROM wD_terrStatusArchive ts
+						LEFT JOIN wD_Territories t ON ts.terrID = t.id
+						WHERE ts.turn = ".$turnTakenOver."
+							AND ts.countryID <> 0
+							AND t.supply = 'Yes'
+							AND t.coast <> 'Child'
+							AND ts.gameID = ".$Game->id."
+							AND t.mapID = ".$Game->Variant->mapID."
+							");
+					
+					$chance = $scCount/$totalSCcount;
+				} else {
+					// member since beginning -> initially equal chances
+					$chance = 1/count($Game->Members->ByID);
+				}
+				
+				$Members[$Member->userID]["tookOver"] = !($res == false);
+				$Members[$Member->userID]["chance"] = $chance;
+			}
+		}
 		
 		$tabl = $DB->sql_tabl(
 			"SELECT message FROM wD_GameMessages 
@@ -106,7 +145,9 @@ class libRating
 				'SCc'     => 0,
 				'SCr'     => 0,
 				'SCq'     => 0,
-				'matches' => array()
+				'matches' => array(),
+				'tookOver'=> false, // no loss prevention for CDs
+				'chance' => 1/count($Game->Members->ByID)
 			);
 		}
 		return ($Members);
@@ -137,6 +178,24 @@ class libRating
 		if ($rating == 0) $rating = self::$base_VDip;
 		
 		return $rating;
+	}
+	
+	/**
+	 * Return the rating changes from a given (finished) game.
+	 */
+	static public function getVDipChange($userID, $gameID)
+	{
+		global $DB;
+		
+		$ratingBeforeGame = self::getVDipRating($userID, $gameID);
+		
+		list ($ratingAfterGame) = $DB->sql_row("
+					SELECT r.rating	FROM wD_Ratings r
+					WHERE r.ratingType='vDip'
+						&& r.userID=".$userID."
+						&& r.gameID=".$gameID);
+		
+		return array("before"=>$ratingBeforeGame, "after"=>$ratingAfterGame, "change"=>$ratingAfterGame - $ratingBeforeGame);
 	}
  
 	static public function calcVDipMatch($Game, &$Member1, &$Member2)
@@ -186,11 +245,14 @@ class libRating
 		$mV  = abs($SCq1 - $SCq2); 
 
 		// Value the importance of take-overs. (If a player bet only the half the whole match is worth only half.
-		if (($Member1['bet'] + $Member2['bet']) == 0)
-			$mV=0;
-		else
-			$mV = $mV * (1 - abs($Member1['bet'] - $Member2['bet']) / max($Member1['bet'], $Member2['bet']));		
+//		if (($Member1['bet'] + $Member2['bet']) == 0)
+//			$mV=0;
+//		else
+//			$mV = $mV * (1 - abs($Member1['bet'] - $Member2['bet']) / max($Member1['bet'], $Member2['bet']));	
 		
+		// Value take-overs (if initial chances for players differ a lot, value the result less).
+		$mV *= (1 - abs($Member1['chance'] - $Member2['chance']) / max($Member1['chance'], $Member2['chance']));
+
 		// Set K-factor to 100
 		$K = 100;
 		
@@ -217,13 +279,19 @@ class libRating
 			}
 		}
 		
+		if($Game->pot == 0){
+			// Ignore unrated games
+			$gV = 0;
+		}
+		
 		// Calculate Points-change
 		$Ch1 = round(($Rr1 - $Re1) * $mV * $gV,2);
 		$Ch2 = round(($Rr2 - $Re2) * $mV * $gV,2);
 		
 		// No negative-modifiers in case of cheating...
-		if ($Game->potModifier >= 1 && $Ch1 < 0) $Ch1 = 0;
-		if ($Game->potModifier >= 1 && $Ch2 < 0) $Ch2 = 0;
+		// and loss prevention for take overs
+		if (($Game->potModifier >= 1 || $Member1["tookOver"]) && $Ch1 < 0) $Ch1 = 0;
+		if (($Game->potModifier >= 1 || $Member2["tookOver"]) && $Ch2 < 0) $Ch2 = 0;
 		
 		// Save the results in the match-arrays
 		$Member1['matches'][$Member2['userID']] = array (
