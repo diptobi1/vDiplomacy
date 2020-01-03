@@ -168,12 +168,12 @@ elseif(isset($_REQUEST['gameID']))
 						<TH class="cellb" align="right">Dif</TH>
 						<TH class="cellb" align="right">mV</TH>
 						<TH class="cellb" align="right">gV'.($Game->potModifier > 1 ? '/'.$Game->potModifier : '').'</TH>
-						<TH class="cellb" align="right">Ch'.($Game->potModifier >= 1 ? '(loss prevention)':'').'</TH>						
+						<TH class="cellb" align="right">Ch'.(($Game->potModifier >= 1 || $Member['tookOver'])  ? ' (loss prevention)':'').'</TH>						
 					</THEAD>';
 		 
 		foreach ($Member['matches'] as $userID => $results)
 		{
-			if ($results['mV'] != 0)
+			if ( true || $results['mV'] != 0 ) //always display all results
 			{
 				if     ( $results['Ch'] < 0) $col = '990002'; 
 				elseif ( $results['Ch'] > 0) $col = '009902';
@@ -211,11 +211,11 @@ elseif(isset($_REQUEST['gameID']))
 	'<span>
 		<strong>Legend:</strong>
 		<ul>
-			<li> <strong>Re</strong>: Expected result (0%: Defeat against winner, 100%: Win against defeated) </li>
+			<li> <strong>Re</strong>: Expected result (0%: Weaker performance, 100%: Stronger performance) </li>
 			<li> <strong>Rr</strong>: Real result </li>
 			<li> <strong>mV</strong>: Match value (weight reflecting the relative SC difference in won PPSC games; reflects different winning expectations in case of take-overs)</li>
 			<li> <strong>gV</strong>: Game value (0-100; higher for larger variants; includes modifier that may be applied by moderators; for alternate winning conditions: reduced if original SC count of variant not reached by winner)</li>
-			<li> <strong>Ch</strong>: Change of rating: (Rr - Re) * mV * gV</li>
+			<li> <strong>Ch</strong>: Change of rating: (Rr - Re) * mV * gV (loss prevention, i.e. no negative changes, in case of take-over or if applied by moderators)</li>
 		</ul>
 	</span>';
 
