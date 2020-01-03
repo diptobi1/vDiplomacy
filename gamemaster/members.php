@@ -782,6 +782,8 @@ class processMembers extends Members
 	/**
 	 * Handle NMRs and check, if further sanctions due to unexcused NMRs have 
 	 * to be imposed.
+	 * 
+	 * vDip: Do also check if members can earn back an excuse.
 	 */
 	function handleNMRs() 
 	{
@@ -793,7 +795,10 @@ class processMembers extends Members
 
 		foreach( $this->ByStatus['Playing'] as $Member )
 		{
- 			if( $Member->missedPhases == 0 ) { continue; } // no NMR
+ 			if( $Member->missedPhases == 0 ) { 
+				$Member->checkExcuseEarnBack();
+				continue; // no NMR
+			} 
 			 
 			$this->activeNMRs = true; // there is at least one active NMR
 			
