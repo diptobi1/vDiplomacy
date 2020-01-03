@@ -1076,10 +1076,7 @@ class processGame extends Game
 
 		if ( $gameOver )
 		{
-			//errornous case
-			//$gameOver = ", gameOver = '".$gameOver."'";
 			$this->gameOver = $gameOver;
-			//right case
 			$gameOver = ", gameOver = '".$gameOver."'";
 		}
 

@@ -791,8 +791,10 @@ print '<p><ul class="formlist">';
 if ( $UserProfile->type['Moderator'] ||  $UserProfile->type['ForumModerator'] || $UserProfile->type['Admin'] )
 {
 	print '<li><strong>'.l_t('Mod/Admin team').'</strong></li>';
-	print '<li>'.l_t('The best way to get moderator assistance is using our built in <a href="contactUs.php">help page</a>. Please do not message
-	moderators directly for help.').'</li>';
+	print '<li>'.l_t('The best way to get moderator assistance is to contact a moderator at the <a href="modforum.php"> modforum</a>. Please do not message
+	moderators directly for help.')
+			/*l_t('The best way to get moderator assistance is using our built in <a href="contactUs.php">help page</a>. Please do not message
+	moderators directly for help.')*/.'</li>';
 	print '<li>&nbsp;</li>';
 }
 
