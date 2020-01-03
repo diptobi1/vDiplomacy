@@ -138,6 +138,24 @@ class libRating
 		
 		return $rating;
 	}
+	
+	/**
+	 * Return the rating changes from a given (finished) game.
+	 */
+	static public function getVDipChange($userID, $gameID)
+	{
+		global $DB;
+		
+		$ratingBeforeGame = self::getVDipRating($userID, $gameID);
+		
+		list ($ratingAfterGame) = $DB->sql_row("
+					SELECT r.rating	FROM wD_Ratings r
+					WHERE r.ratingType='vDip'
+						&& r.userID=".$userID."
+						&& r.gameID=".$gameID);
+		
+		return array("before"=>$ratingBeforeGame, "after"=>$ratingAfterGame, "change"=>$ratingAfterGame - $ratingBeforeGame);
+	}
  
 	static public function calcVDipMatch($Game, &$Member1, &$Member2)
 	{
