@@ -257,6 +257,11 @@ class Game
 	 * The number of allowed NMRs per player before they are set in Civil Disorder.
 	 */
 	public $excusedMissedTurns;
+	
+	/**
+	 * The number of consecutive turns without a miss needed to regain an excuse.
+	 */
+	public $regainExcusesDuration;
 
 	/**
 	 * Some settings to force a CD on early NMRs
@@ -529,6 +534,7 @@ class Game
 			g.maxTurns,
 			g.targetSCs,
 			g.minPhases,
+			g.regainExcusesDuration,
 			g.delayDeadlineMaxTurn,
 			g.rlPolicy,
 			g.chessTime,

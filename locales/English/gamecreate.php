@@ -411,6 +411,37 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 			</select>
 			
 			</br></br>
+			<strong>Regain excuses:</strong>
+			<img id = "modBtnRegainDuration" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
+			<div id="regainDurationModal" class="modal">
+				<!-- Modal content -->
+				<div class="modal-content">
+					<span id="closeRegainDurationModal" class="close1">&times;</span>
+					<p><strong>Regain excuses:</strong></br>
+						Change this value to decide if it should be possible for
+						a player to regain excuses previously lost. If a player
+						plays without a miss for 'n' consecutive turns, an excuse can
+						be regained. But a player can never gain more excuses as 
+						initially set.</br>
+						
+						Setting the rate to a low value means that members of the
+						game can miss many turns without being booted out of the 
+						game if those misses are spreaded enough to regain excuses. </br>
+						
+						It is recommended to select 'never' only for small games where
+						the initial amount of excuses might be enough.
+					</p>
+				</div>
+			</div>
+			<select id="regainExcusesDuration" class = "gameCreate" name="newGame[regainExcusesDuration]">
+				<option value=1>After 1 turn</option>
+				<option value=2>After 2 turns</option>
+				<option value=5 selected>After 5 turns</option>
+				<option value=10>After 10 turns</option>
+				<option value=99>Never</option>
+			</select>
+			
+			</br></br>
 			<strong>Missed-turn extension:</strong>
 			<img id = "modBtnDelayExtension" height="16" width="16" src="images/icons/help.png" alt="Help" title="Help" />
 			<div id="delayExtensionModal" class="modal">
@@ -534,7 +565,7 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 	</div>
 
 <script>
-var modalNames = ['bet','phaseLength','messaging','variant','bot','countryAssignment','scoring','anon','procDays','rating','delay','delayExtension','altEnd','moderated','gameDescr']
+var modalNames = ['bet','phaseLength','messaging','variant'/*,'bot'*/,'countryAssignment','scoring','anon','procDays','rating','delay','regainDuration', 'delayExtension','altEnd','moderated','gameDescr']
 
 // Get the modal
 var modals = modalNames.map(function(modalName){
