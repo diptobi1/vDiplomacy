@@ -194,9 +194,15 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 						$first='';
 						foreach(Config::$variants as $variantID=>$variantName)
 						{
-							if (isset(Config::$blockedVariants) && in_array($variantID,Config::$blockedVariants))
-								continue;
-
+							
+							// Don't show blocked variants (but devs can create a game of their own variant.
+							$skip = ((isset(Config::$blockedVariants) && in_array($variantID,Config::$blockedVariants)) ? true : false);
+							if (isset(Config::$devs))
+								if (array_key_exists($User->username, Config::$devs)) 
+									if (in_array(Config::$variants[$variantID], Config::$devs[$User->username]))
+										$skip = false;
+							if ($skip) continue;
+							
 							$Variant = libVariant::loadFromVariantName($variantName);
 							$checkboxes[$Variant->fullName] = '<option value="'.$variantID.'"'.(($first=='')?' selected':'').'>'.$Variant->fullName.'</option>';
 							if($first=='') {
