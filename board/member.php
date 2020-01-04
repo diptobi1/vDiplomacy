@@ -93,11 +93,14 @@ class userMember extends panelMember
 		}
 		// End of vDip patch */
 		
+		// vDip-Patch: Make sure to not delete take-Over information of older CDs 
+		// (only a non-taken-over Civil Disorder can be retaken)
 		$DB->sql_put("DELETE FROM wD_CivilDisorders
 					WHERE gameID = ".$this->gameID."
 					AND userID = ".$this->userID."
-					AND countryID = ".$this->countryID
-				);
+					AND countryID = ".$this->countryID."
+					AND takenByUserID IS NULL
+				");
 				
 		$this->orderStatus->Ready=false;
 

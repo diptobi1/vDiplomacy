@@ -643,6 +643,14 @@ class processMembers extends Members
 				throw new Exception(l_t("You do not have enough points to take over that countryID."));
 
 			$CD->setTakenOver(); // Refund its points if required, and send it a message
+			
+			// vDip: Record CD as taken over by new user
+			$DB->sql_put("UPDATE wD_CivilDisorders
+					SET takenByUserID = ".$User->id.", takenAtTime = ".time()."
+					WHERE gameID = ".$CD->gameID."
+						AND userID = ".$CD->userID."
+						AND countryID = ".$CD->countryID."
+			");
 
 			// Start updating the member record and object
 			list($orderCount) = $DB->sql_row("SELECT COUNT(id) FROM wD_Orders
