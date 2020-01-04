@@ -138,18 +138,18 @@ elseif(isset($_REQUEST['gameID']))
 	 
 	foreach ($Members as $userID => $Member)
 	{
-		if     ( $Member['Ch'] < 0) $col = '990002'; 
-		elseif ( $Member['Ch'] > 0) $col = '009902';
+		if     ( $Member['change'] < 0) $col = '990002'; 
+		elseif ( $Member['change'] > 0) $col = '009902';
 		else                        $col = '000000';
 		
 		print '
 			<tr class="replyalternate'.($alternate ? '1' : '2' ).'">
 				<TD class="cellg"><a href="hof.php?userID='.$userID.'">'.$Member['name'].'</a></TD>
-				<TD class="cellg">'.$Member['rating'].' -> '.($Member['rating'] + $Member['Ch']).'</TD>
+				<TD class="cellg">'.$Member['rating'].' -> '.($Member['rating'] + round($Member['change'])).(($Member['Ch']<0 && $Member['change']==0)  ? ' (loss-prevention)':'').'</TD>
 				<TD class="cellg">'.$Member['status'].(($Member['SCr'] > 0 && $Member['status'] != 'Resigned') ? ' ('.$Member['SCr'].' SC)' : '').'</TD>
 				<TD class="cellg" align="right">'.$Member['Re'].'%</TD>
 				<TD class="cellg" align="right">'.$Member['Rr'].'%</TD>
-				<TD class="cellg" align="right"><font color="#'.$col.'"><B>'.$Member['Ch'].'</B></font></TD>
+				<TD class="cellg" align="right"><font color="#'.$col.'"><B>'.round($Member['change']).'</B></font></TD>
 			</TR>';
 		
 		$alternate = !$alternate;
@@ -168,7 +168,7 @@ elseif(isset($_REQUEST['gameID']))
 						<TH class="cellb" align="right">Dif</TH>
 						<TH class="cellb" align="right">mV</TH>
 						<TH class="cellb" align="right">gV'.($Game->potModifier > 1 ? '/'.$Game->potModifier : '').'</TH>
-						<TH class="cellb" align="right">Ch'.(($Game->potModifier >= 1 || $Member['tookOver'])  ? ' (loss prevention)':'').'</TH>						
+						<TH class="cellb" align="right">Ch</TH>						
 					</THEAD>';
 		 
 		foreach ($Member['matches'] as $userID => $results)
@@ -196,13 +196,13 @@ elseif(isset($_REQUEST['gameID']))
 				$alternate = !$alternate;
 			}
 		}
-		if     ( round($Member['change']) < 0) $col = '990002'; 
-		elseif ( round($Member['change']) > 0) $col = '009902';
+		if     ( round($Member['Ch']) < 0) $col = '990002'; 
+		elseif ( round($Member['Ch']) > 0) $col = '009902';
 		else                                   $col = '000000';
 		print '	<TFOOT>
 					<TR>
 						<TD colspan=6></TD>
-					<td class="replyalternate'.($alternate ? '1' : '2' ).' cellg" align="right"><font color="#'.$col.'"><b>'.round($Member['change']).'</b></font></TD>
+					<td class="replyalternate'.($alternate ? '1' : '2' ).' cellg" align="right"><font color="#'.$col.'"><b>'.round($Member['Ch']).'</b></font></TD>
 					</TR>
 				</TFOOT></TABLE><BR>';
 	}
