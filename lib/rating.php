@@ -159,6 +159,13 @@ class libRating
 		for ($i=0; $i<(count($Members) - 1) ; $i++)
 			for ($j=$i+1; $j<count($Members); $j++)
 				self::calcVDipMatch($Game, $Members[$keys[$i]], $Members[$keys[$j]]);
+			
+		// No negative-modifiers in case of cheating...
+		// and loss prevention for take overs
+		foreach($Members as &$Member){
+			if (($Game->potModifier >= 1 || $Member["tookOver"]) && $Member['change'] < 0) $Member['change'] = 0;
+		}
+		
 		return ($Members);
 	}
 		
@@ -287,11 +294,6 @@ class libRating
 		// Calculate Points-change
 		$Ch1 = round(($Rr1 - $Re1) * $mV * $gV,2);
 		$Ch2 = round(($Rr2 - $Re2) * $mV * $gV,2);
-		
-		// No negative-modifiers in case of cheating...
-		// and loss prevention for take overs
-		if (($Game->potModifier >= 1 || $Member1["tookOver"]) && $Ch1 < 0) $Ch1 = 0;
-		if (($Game->potModifier >= 1 || $Member2["tookOver"]) && $Ch2 < 0) $Ch2 = 0;
 		
 		// Save the results in the match-arrays
 		$Member1['matches'][$Member2['userID']] = array (
