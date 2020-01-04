@@ -577,13 +577,16 @@ class processMembers extends Members
 		require_once(l_r('lib/reliability.php'));		 
 		if ( $this->Game->minPhases > $User->phaseCount)
 			throw new Exception("You did not play enough phases to join this game. (Required:".$this->Game->minPhases." / You:".$User->phaseCount.")");
-		if ( $User->tempBan > time() )
-			throw new Exception("You are blocked from joining new games.");
 
 		// Handle RL-relations
 		require_once ("lib/relations.php");			
 		if ($message = libRelations::checkRelationsGame($User, $this->Game))
 			throw new Exception($message);
+		
+		// Check for reliability-rating:		
+ 		require_once(l_r('lib/reliability.php'));		 		
+ 		if ( count($this->Game->Variant->countries)>2 && $this->Game->phase == 'Pre-game' && libReliability::isAtGameLimit($User))
+			throw new Exception('You are blocked from joining new games due to game limits.');
 
 		// Check if there is a block against a player
 		list($muted) = $DB->sql_row("SELECT count(*) FROM wD_Members AS m
@@ -896,37 +899,66 @@ class processMembers extends Members
 				 * 7: 14-day
 				 * 8: 30-days
 				 * 9 or more: infinite (1 year)
+				 * 
+				 * vDip:
+				 * Sanctions defined in lib/reliability.php
 				 */
 				$memberMsg.=" ".l_t("You missed %s ".(($yearlyCount == 1)?"deadline":"deadlines"). " without an excuse during this year.",$yearlyCount);
 				
-				if( $yearlyCount <= 3 )
+				$User = new User($Member->userID);
+				$integrity = $User->getIntegrityRating();
+				require_once('lib/reliability.php');
+				
+				if( $integrity-libReliability::$maxRatingForSanction > 0)
 				{
-					$Member->send('No','No',$memberMsg." ".l_t("%s more ". ((4-$yearlyCount == 1)?"miss":"misses"). " will impose a temporary ban on you.", 4-$yearlyCount));
+					$Member->send('No','No',$memberMsg." ".l_t("%s more ". (($integrity-libReliability::$maxRatingForSanction == 1)?"miss":"misses"). " will impose a temporary ban and game limit on you.", $integrity-libReliability::$maxRatingForSanction));
 				} 
-
-				elseif( $yearlyCount >= 9)
-				{
-					User::tempBanUser($Member->userID, 365, 'System', FALSE);
-					$Member->send('No','No',$memberMsg." ".l_t("Due to your unreliable behavior you will be prevented from joining games for a year. "
-					. "Contact the Mods to lift the ban."));
-				} 
-
 				else 
 				{
-					$days = 0;
-					switch($yearlyCount)
-					{
-						case 4: $days = 1; break;
-						case 5: $days = 3; break;
-						case 6: $days = 7; break;
-						case 7: $days = 14; break;
-						case 8: $days = 30; break;
-					}
+					// get sanction
+					$sanction = libReliability::getCurrentSanction($User);
 					
-					User::tempBanUser($Member->userID, $days,'System', FALSE);
-					$Member->send('No','No',$memberMsg." ".l_t("You are temporarily banned from joining, rejoining, or making games for %s "
-							. (($days==1)?"day":"days")	. ". Be more reliable!", $days));	
+					$days = $sanction['tempBan'];
+					$gLi = $sanction['gameLimit'];
+							
+					if($days > 0)
+					{
+						User::tempBanUser($Member->userID, $days,'System', FALSE);
+						$memberMsg .= " ".l_t("You are temporarily banned from joining, rejoining, or making games for %s "
+							. (($days==1)?"day":"days").".", $days);
+					}
+					if($gLi < 50)
+					{
+						$memberMsg .= " ".l_t("You received a game limit of up to %s ".(($gLi==1)?"game":"games").".", $gLi);
+					}
+					$memberMsg .= " ".l_t("Be more reliable!");
+					
+					$Member->send('No','No',$memberMsg);	
 				}
+
+//				elseif( $yearlyCount >= 9)
+//				{
+//					User::tempBanUser($Member->userID, 365, 'System', FALSE);
+//					$Member->send('No','No',$memberMsg." ".l_t("Due to your unreliable behavior you will be prevented from joining games for a year. "
+//					. "Contact the Mods to lift the ban."));
+//				} 
+//
+//				else 
+//				{
+//					$days = 0;
+//					switch($yearlyCount)
+//					{
+//						case 4: $days = 1; break;
+//						case 5: $days = 3; break;
+//						case 6: $days = 7; break;
+//						case 7: $days = 14; break;
+//						case 8: $days = 30; break;
+//					}
+//					
+//					User::tempBanUser($Member->userID, $days,'System', FALSE);
+//					$Member->send('No','No',$memberMsg." ".l_t("You are temporarily banned from joining, rejoining, or making games for %s "
+//							. (($days==1)?"day":"days")	. ". Be more reliable!", $days));	
+//				}
 					
 			}
 		}

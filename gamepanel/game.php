@@ -559,20 +559,10 @@ class panelGame extends Game
 					}
 					
 				}
-
-				if (($User->reliabilityRating >= $this->minimumReliabilityRating) && ($User->phaseCount >= $this->minPhases))
-				{
 				
-					$buf .= '<form style="display: inline;" onsubmit="return confirm(\''.$question.'\');" method="post" action="board.php?gameID='.$this->id.'">
-						<input type="hidden" name="formTicket" value="'.libHTML::formTicket().'" />';
-					$buf .= l_t('Minimum Reliability Rating: <span class="%s">%s%%</span>.',
-						($User->reliabilityRating < $this->minimumReliabilityRating ? 'Austria' :'Italy'), 
-						($this->minimumReliabilityRating));
-				}
-				
-				if ($User->reliabilityRating >= $this->minimumReliabilityRating) 
+				if ($User->reliabilityRating >= $this->minimumReliabilityRating && ($User->phaseCount >= $this->minPhases)) 
 				{
-					if (!($User->userIsTempBanned()))
+					if (!($User->userIsTempBanned() || (count($this->Variant->countries)>2 && libReliability::isAtGameLimit($User))))
 					{
 						$buf .= '<form onsubmit="return confirm(\''.$question.'\');" method="post" action="board.php?gameID='.$this->id.'"><div>
 							<input type="hidden" name="formTicket" value="'.libHTML::formTicket().'" />';
@@ -604,6 +594,10 @@ class panelGame extends Game
 				if ($User->userIsTempBanned())
 				{
 					$buf .= '<span style="font-size:75%;">(Due to a temporary ban you cannot join games.)</span>';
+				}
+				elseif(count($this->Variant->countries)>2 && libReliability::isAtGameLimit($User))
+				{
+					$buf .= '<span style="font-size:75%;">(Due to <a href="reliability.php">game limits</a> you cannot join games.)</span>';
 				}
 				elseif ($User->reliabilityRating < $this->minimumReliabilityRating)
 				{
