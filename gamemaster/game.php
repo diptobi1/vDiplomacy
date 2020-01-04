@@ -685,7 +685,7 @@ class processGame extends Game
 
 			$this->setDrawn();
 		}
-		elseif( $this->Members->withActiveNMRs() && $this->turn <= $this->delayDeadlineMaxTurn)
+		elseif( $this->Members->withActiveNMRs() && $this->turn < $this->delayDeadlineMaxTurn)
 		{
 			require_once(l_r('lib/gamemessage.php'));
 			/*
