@@ -104,7 +104,7 @@ class libRating
 					// get SC count at take-over (possible changes prior to retreat 
 					// cannot be retrieved, but are considered negligable)
 					list( $totalSCcount ) = $DB->sql_row("SELECT COUNT(*) 
-						FROM wD_terrStatusArchive ts
+						FROM wD_TerrStatusArchive ts
 						LEFT JOIN wD_Territories t ON ts.terrID = t.id
 						WHERE ts.turn = ".$turnTakenOver."
 							AND ts.countryID <> 0
