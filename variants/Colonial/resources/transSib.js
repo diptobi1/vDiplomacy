@@ -25,6 +25,8 @@ function loadTransSib() {
 						}, o);
 						if (!o.isChanged || transSibLoading)
 							o.setSelectsGreen();
+						
+						o.checkComplete();
 					}
 				});
 	};
@@ -42,6 +44,8 @@ function loadTransSib() {
 						}).fromTerrID);
 						o.reHTML('fromTerrID');
 						o.setSelectsGreen();
+						
+						o.checkComplete();
 					}
 				});
 	};
