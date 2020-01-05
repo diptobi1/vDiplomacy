@@ -71,36 +71,37 @@ if(!(isset($_REQUEST['variantID'])))
 					<TH style="border: 1px solid #000">Games finished</TH>
 					<TH style="border: 1px solid #000">avg. Turns</TH>
 					<TH style="border: 1px solid #000">Rating*</TH>
-					<TH style="border: 1px solid #000">Hot**</TH>
+					<TH style="border: 1px solid #000">Active**</TH>
 				</THEAD>
 				<TFOOT>
-					<tr style="border: 1px solid #666"><td colspan=6><b>**Rating</b> = ("players" x "games played") - <b>**Hot</b> = Number of active games</td></tr>
+					<tr style="border: 1px solid #666"><td colspan=6><b>**Rating</b> = ("players" x "games played") - <b>**Active</b> = Number of active games</td></tr>
 				</TFOOT>';
 			
 	foreach( $variantsOn as $variantName )
 	{
-		$Variant = libVariant::loadFromVariantName($variantName);
+
+		list($variantID, $countryCount, $fullName) = $DB->sql_row('SELECT variantID, countryCount,fullName FROM wD_VariantInfo WHERE name="'.$variantName.'"');
 		
-		if (isset(Config::$hiddenVariants) && in_array($Variant->id,Config::$hiddenVariants) && $User->type['Guest'])
+		if (isset(Config::$hiddenVariants) && in_array($variantID,Config::$hiddenVariants) && $User->type['Guest'])
 			continue;
 		
 		// Don't show blocked variants (usually in development):
-		if (isset(Config::$blockedVariants) && in_array($Variant->id,Config::$blockedVariants))
+		if (isset(Config::$blockedVariants) && in_array($variantID,Config::$blockedVariants))
 			continue;
 			
-		list($players)=$DB->sql_row(
-			'SELECT COUNT(*) FROM wD_Members m
-				INNER JOIN wD_Games g ON (g.id = m.gameID) 
-			WHERE g.variantID='.$Variant->id.' AND g.phase = "Finished"');
-		list($turns,$games) = $DB->sql_row('SELECT SUM(turn), COUNT(*) FROM wD_Games WHERE variantID='.$Variant->id.' AND phase = "Finished"');
-		list($hot) = $DB->sql_row('SELECT COUNT(*) FROM wD_Games WHERE variantID='.$Variant->id.' AND phase != "Finished" AND phase != "Pre-game"');
-		print '<TR><TD style="border: 1px solid #666">'.$Variant->link().'</TD>';
-		print '<TD style="border: 1px solid #666">'.($games==0?count($Variant->countries):round($players/$games,2)) .' players</TD>';
-		print '<TD style="border: 1px solid #666" align="center">'.((file_exists('variants/'.$Variant->name.'/interactiveMap')) ? '<img src="images/icons/tick.png"' : '-').'</TD>';
-		print '<TD style="border: 1px solid #666">'.$games.' game'.($games!=1?'s':'').'</TD>';
-		print '<TD style="border: 1px solid #666">'.($games==0?'0.00':number_format($turns/$games,2)).' turns</TD>';
-		print '<TD style="border: 1px solid #666">'.$players.'</TD>';
-		print '<TD style="border: 1px solid #666">'.$hot.'</TD></TR>';
+		list($players)=$DB->sql_row('SELECT COUNT(*) FROM wD_Members m INNER JOIN wD_Games g ON (g.id = m.gameID) WHERE g.variantID='.$variantID.' AND g.phase = "Finished"');
+		list($turns,$games) = $DB->sql_row('SELECT SUM(turn), COUNT(*) FROM wD_Games WHERE variantID='.$variantID.' AND phase = "Finished"');
+		list($active) = $DB->sql_row('SELECT COUNT(*) FROM wD_Games WHERE variantID='.$variantID.' AND phase != "Finished" AND phase != "Pre-game"');
+
+		print '<TR>
+				<TD style="border: 1px solid #666"><A CLASS="light" href="variants.php?variantID='.$variantID.'">'.l_t($fullName).'</A></TD>
+				<TD style="border: 1px solid #666">'.($games==0?$countryCount:round($players/$games,2)) .' players</TD>
+				<TD style="border: 1px solid #666" align="center">'.((file_exists('variants/'.$variantName.'/interactiveMap')) ? '<img src="images/icons/tick.png"' : '-').'</TD>
+				<TD style="border: 1px solid #666">'.$games.' game'.($games!=1?'s':'').'</TD>
+				<TD style="border: 1px solid #666">'.($games==0?'0.00':number_format($turns/$games,2)).' turns</TD>
+				<TD style="border: 1px solid #666">'.$players.'</TD>
+				<TD style="border: 1px solid #666">'.$active.'</TD>
+			</TR>';
 	}
 	print '</TABLE>';
 
