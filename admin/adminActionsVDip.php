@@ -60,6 +60,21 @@ class adminActionsVDip extends adminActions
 				'description' => 'Manually grand or remove the license to create moderated games.',
 				'params' => array('userID'=>'User ID','newLicense'=>'change license to (Yes, No or NULL)'),
 			),
+			'changeExcusedMissedTurns' => array(
+				'name' => 'Excused Missed Turns - Change Excuse Maximum',
+				'description' => 'Change the maximum of excuses the game members can gain due to reliable play',
+				'params' => array('gameID'=>'Game ID', 'excusedMissedTurns'=>'New excuse maximum (>= 0)')
+			),
+			'changeRegainExcusesDuration' => array(
+				'name' => 'Excused Missed Turns - Change Excuse-Regain Duration',
+				'description' => 'Change the number of phases after that a reliable player regains a new excuse.',
+				'params' => array('gameID'=>'Game ID', 'regainExcusesDuration'=>'New duration (>0; values>10 => no regaining)')
+			),
+			'changeDelayDeadlineMaxTurn' => array(
+				'name' => 'Excused Missed Turns - Change Max Turn for Delays',
+				'description' => 'Change the number of turns after which misses will not cause delays.',
+				'params' => array('gameID'=>'Game ID', 'delayDeadlineMaxTurn'=>'New max turn (<=0 => no delays; >=99 => delay always)')
+			),
 		);
 		
 		adminActions::$actions = array_merge(adminActions::$actions, $vDipActions);
@@ -317,7 +332,55 @@ class adminActionsVDip extends adminActions
 		
 		return 'This game vDip-modifier changed from '.$old_modifier.' to '.$modifier.'.';
 	
-	}	
+	}
+
+	public function changeExcusedMissedTurns(array $params)
+	{
+		global $DB;
+		$gameID = (int)$params['gameID'];
+		$excusedMissedTurns = (int)$params['excusedMissedTurns'];
+		
+		if ($excusedMissedTurns < 0)
+			return "Cannot set excused missed turns to a negative value.";
 	
+		
+		$DB->sql_put("UPDATE wD_games SET excusedMissedTurns = '".$excusedMissedTurns."' WHERE id = ".$gameID);
+		
+		return "Excused missed turns have successfully been updated to ".$excusedMissedTurns;
+	}
+	
+	public function changeRegainExcusesDuration(array $params)
+	{
+		global $DB;
+		$gameID = (int)$params['gameID'];
+		$regainExcusesDuration = (int)$params['regainExcusesDuration'];
+		
+		if ($regainExcusesDuration <= 0)
+			return "Cannot set regain duration to a non-positive value.";
+	
+		if ($regainExcusesDuration > 10) 
+			$regainExcusesDuration = 99;
+		
+		$DB->sql_put("UPDATE wD_games SET regainExcusesDuration = '".$regainExcusesDuration."' WHERE id = ".$gameID);
+		
+		return "Excuse regain duration have successfully been updated to ".(($regainExcusesDuration==99)?"'no regaining'":$regainExcusesDuration);
+	}
+	
+	public function changeDelayDeadlineMaxTurn(array $params)
+	{
+		global $DB;
+		$gameID = (int)$params['gameID'];
+		$delayDeadlineMaxTurn = (int)$params['delayDeadlineMaxTurn'];
+		
+		if ($delayDeadlineMaxTurn < 0) 
+			$delayDeadlineMaxTurn = 0;
+		
+		if ($delayDeadlineMaxTurn > 99) 
+			$delayDeadlineMaxTurn = 99;
+		
+		$DB->sql_put("UPDATE wD_games SET delayDeadlineMaxTurn = '".$delayDeadlineMaxTurn."' WHERE id = ".$gameID);
+		
+		return "Excuse regain duration have successfully been updated to ".(($delayDeadlineMaxTurn==0)?"'no delays'":(($delayDeadlineMaxTurn==99)?"'delay always'":$delayDeadlineMaxTurn));
+	}
 }
 ?>

@@ -51,6 +51,7 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 						,'countryID'
 						,'minPhases'
 						,'maxTurns'
+						,'regainExcusesDuration'
 						,'delayDeadlineMaxTurn'
 						,'targetSCs'
 						,'moderated'
@@ -123,17 +124,17 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 		$input['anon'] = ( (strtolower($input['anon']) == 'yes') ? 'Yes' : 'No' );
 		
 		// Force 1 vs 1 variants to be unranked to prevent point farming. 
-		if ( $input['variantID'] == 15 )
-		{
-			$input['bet'] = 5; 
-			$input['potType'] = 'Unranked';
-		}
-		
-		if ( $input['variantID'] == 23 )
-		{
-			$input['bet'] = 5; 
-			$input['potType'] = 'Unranked';
-		}
+//		if ( $input['variantID'] == 15 )
+//		{
+//			$input['bet'] = 5; 
+//			$input['potType'] = 'Unranked';
+//		}
+//		
+//		if ( $input['variantID'] == 23 )
+//		{
+//			$input['bet'] = 5; 
+//			$input['potType'] = 'Unranked';
+//		}
 
 		// Only classic, no press can support fill with bots. 
 		if ( ($input['variantID'] != 1) || ($input['pressType'] != 'NoPress') )
@@ -214,6 +215,11 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 		$input['targetSCs'] = (int)$input['targetSCs'];		
 		$input['countryID'] = (int)$input['countryID'];
 		
+		$input['regainExcusesDuration'] = (int)$input['regainExcusesDuration'];
+		if ( $input['regainExcusesDuration'] <  1 ) 
+			throw new Exception(l_t("The duration to regain excuses is to small. Minimum is one turn without a miss."));
+		if ( $input['regainExcusesDuration'] > 10 ) $input['regainExcusesDuration'] = 99;
+		
 		$input['delayDeadlineMaxTurn'] = (int)$input['delayDeadlineMaxTurn'];
 		if ( $input['delayDeadlineMaxTurn'] <  0 ) $input['delayDeadlineMaxTurn'] = 0;
 		if ( $input['delayDeadlineMaxTurn'] > 99 ) $input['delayDeadlineMaxTurn'] = 99;
@@ -267,6 +273,7 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 			$input['maxTurns'],
 			$input['targetSCs'],
 			$input['minPhases'],
+			$input['regainExcusesDuration'],
 			$input['delayDeadlineMaxTurn']
 			,$input['moderator']
 			,$input['chooseYourCountry']
@@ -275,6 +282,17 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 			,$input['fixStart']
 			,$playerTypes
 		);
+		
+		/**		
+ 		 * Check for reliability, bevore a user can create a new game...		
+ 		 */		
+ 		require_once(l_r('lib/reliability.php'));		 		
+ 		if( (count($Game->Variant->countries)>2) && ($message = libReliability::isAtGameLimit($User)) )		
+ 		{		
+ 			processGame::eraseGame($Game->id);		
+ 			libHTML::notice('You are blocked from creating new games.', $message);		
+ 		}		
+ 		// END RELIABILITY-PATCH
 
 		// Prevent temp banned players from making new games.
 		if ($User->userIsTempBanned())
@@ -328,6 +346,9 @@ else
 
 if( isset($input) && isset($input['points']) ) { $formPoints = $input['points']; }
 else { $formPoints = $defaultPoints; }
+
+require_once('lib/reliability.php');		
+libReliability::printCDNotice($User);
 
 require_once(l_r('locales/English/gamecreate.php'));
 

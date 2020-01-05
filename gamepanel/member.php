@@ -301,6 +301,34 @@ class panelMember extends Member
 			'<em>'.$this->supplyCenterNo.'</em>',
 			'<em class="'.$unitStyle.'">'.$this->unitNo.'</em>').'</span>';
 	}
+	
+	/**
+	 * The amount vDip rating points gained or lost in a game (only displayed after
+	 * game finished).
+	 */
+	function memberVPointsWon()
+	{
+		require_once(l_r('lib/rating.php'));
+		
+		if( $this->Game->phase != "Finished" ) return;
+		
+		if ($this->Game->pot == 0 ) return;
+		
+		$rating = libRating::getVDipChange($this->userID, $this->gameID);
+		
+		$buf = "";//libHTML::vpoints().": ";
+
+		$buf .= $rating["before"].libHTML::vpoints()." -> ".$rating["after"].libHTML::vpoints();
+		
+		$buf .= ' (<a href="hof.php?gameID='.$this->gameID.'" style="text-decoration:none"><em';
+		if ( $rating["change"] > 0 )
+			$buf .= ' class="good"';
+		elseif ( $rating["change"] < 0)
+			$buf .= ' class="bad"';
+
+		$buf .= '>'.sprintf("%+d",$rating["change"]).libHTML::vpoints().'</em></a>)';
+		return $buf;
+	}
 
 	/**
 	 * The amount of points bet, info on current value/amount won. Colored depending on success/failure.
@@ -450,8 +478,12 @@ class panelMember extends Member
 		if ( $this->status != 'Playing')
 			$buf .= '<span class="memberStatus"><em>'.l_t($this->status).'</em>. </span>';
 
-		if ( $this->Game instanceof panelGameBoard || $this->status == 'Defeated' )
+		if ( $this->Game instanceof panelGameBoard || $this->status == 'Defeated' ) {
 			$buf .= '<span class="memberPointsCount">'.$this->memberBetWon().'</span><br />';
+			$str = $this->memberVPointsWon();
+			if($str != "")
+				$buf .= '<span class="memberVpointsCount">'.$this->memberVPointsWon().'</span><br />';
+		}
 
 		if ($this->status != 'Defeated')
 			$buf .= '<span class="memberUnitCount">'.$this->memberUnitSCCount().'</span>';

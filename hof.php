@@ -75,7 +75,7 @@ if(isset($_REQUEST['userID']))
 		WHERE r.ratingType='vDip'
 			&& r.userID=".$userID."
 			&& g.phase = 'Finished'
-		ORDER BY g.processTime ASC");
+		ORDER BY g.finishTime ASC");
 
 		
 	$rating_old = 1000;
@@ -84,8 +84,8 @@ if(isset($_REQUEST['userID']))
 		print '
 			<tr class="replyalternate'.($alternate ? '1' : '2' ).'">
 				<TD class="cellg"><a href="hof.php?gameID='.$gameID.'">'.$gameID.'</a></TD>
-				<TD class="cellg"><a href="board.php?gameID='.$gameID.'">'.$gameName.'</TD>
-				<TD class="cellg"><a href="variants.php?variantID='.$variantID.'">'.Config::$variants[$variantID].'</TD>
+				<TD class="cellg"><a href="board.php?gameID='.$gameID.'">'.$gameName.'</a></TD>
+				<TD class="cellg"><a href="variants.php?variantID='.$variantID.'">'.Config::$variants[$variantID].'</a></TD>
 				<TD class="cellg">'.$status.'</TD>
 				<TD class="cellg">'.($rating - $rating_old).'</TD>
 				<TD class="cellg">'.$rating.'</TD>
@@ -107,7 +107,10 @@ elseif(isset($_REQUEST['gameID']))
 	$Members = libRating::loadVDipMembers($Game);
 	$Members = libRating::calcVDipRating($Game, $Members);
 	
-	print $Game->titleBar();
+	// print game title bar and make game name link to game
+	print str_replace('<span class="gameName">'.$Game->titleBarName().'</span>',
+			'<a href="board.php?gameID='.$gameID.'" style="text-decoration:none"><span class="gameName">'.$Game->titleBarName().'</span></a>',
+			$Game->titleBar());
 	
 	print '<br><TABLE class="sortable">
 				<THEAD>
@@ -135,18 +138,18 @@ elseif(isset($_REQUEST['gameID']))
 	 
 	foreach ($Members as $userID => $Member)
 	{
-		if     ( $Member['Ch'] < 0) $col = '990002'; 
-		elseif ( $Member['Ch'] > 0) $col = '009902';
+		if     ( $Member['change'] < 0) $col = '990002'; 
+		elseif ( $Member['change'] > 0) $col = '009902';
 		else                        $col = '000000';
 		
 		print '
 			<tr class="replyalternate'.($alternate ? '1' : '2' ).'">
-				<TD class="cellg">'.$Member['name'].'</TD>
-				<TD class="cellg">'.$Member['rating'].' -> '.($Member['rating'] + $Member['Ch']).'</TD>
+				<TD class="cellg"><a href="hof.php?userID='.$userID.'">'.$Member['name'].'</a></TD>
+				<TD class="cellg">'.$Member['rating'].' -> '.($Member['rating'] + round($Member['change'])).(($Member['Ch']<0 && $Member['change']==0)  ? ' (loss-prevention)':'').'</TD>
 				<TD class="cellg">'.$Member['status'].(($Member['SCr'] > 0 && $Member['status'] != 'Resigned') ? ' ('.$Member['SCr'].' SC)' : '').'</TD>
 				<TD class="cellg" align="right">'.$Member['Re'].'%</TD>
 				<TD class="cellg" align="right">'.$Member['Rr'].'%</TD>
-				<TD class="cellg" align="right"><font color="#'.$col.'"><B>'.$Member['Ch'].'</B></font></TD>
+				<TD class="cellg" align="right"><font color="#'.$col.'"><B>'.round($Member['change']).'</B></font></TD>
 			</TR>';
 		
 		$alternate = !$alternate;
@@ -165,12 +168,12 @@ elseif(isset($_REQUEST['gameID']))
 						<TH class="cellb" align="right">Dif</TH>
 						<TH class="cellb" align="right">mV</TH>
 						<TH class="cellb" align="right">gV'.($Game->potModifier > 1 ? '/'.$Game->potModifier : '').'</TH>
-						<TH class="cellb" align="right">Ch'.($Game->potModifier >= 1 ? '(loss prevention)':'').'</TH>						
+						<TH class="cellb" align="right">Ch</TH>						
 					</THEAD>';
 		 
 		foreach ($Member['matches'] as $userID => $results)
 		{
-			if ($results['mV'] != 0)
+			if ( true || $results['mV'] != 0 ) //always display all results
 			{
 				if     ( $results['Ch'] < 0) $col = '990002'; 
 				elseif ( $results['Ch'] > 0) $col = '009902';
@@ -193,16 +196,28 @@ elseif(isset($_REQUEST['gameID']))
 				$alternate = !$alternate;
 			}
 		}
-		if     ( round($Member['change']) < 0) $col = '990002'; 
-		elseif ( round($Member['change']) > 0) $col = '009902';
+		if     ( round($Member['Ch']) < 0) $col = '990002'; 
+		elseif ( round($Member['Ch']) > 0) $col = '009902';
 		else                                   $col = '000000';
 		print '	<TFOOT>
 					<TR>
 						<TD colspan=6></TD>
-					<td class="replyalternate'.($alternate ? '1' : '2' ).' cellg" align="right"><font color="#'.$col.'"><b>'.round($Member['change']).'</b></font></TD>
+					<td class="replyalternate'.($alternate ? '1' : '2' ).' cellg" align="right"><font color="#'.$col.'"><b>'.round($Member['Ch']).'</b></font></TD>
 					</TR>
 				</TFOOT></TABLE><BR>';
 	}
+	
+	print 
+	'<span>
+		<strong>Legend:</strong>
+		<ul>
+			<li> <strong>Re</strong>: Expected result (0%: Weaker performance, 100%: Stronger performance) </li>
+			<li> <strong>Rr</strong>: Real result </li>
+			<li> <strong>mV</strong>: Match value (weight reflecting the relative SC difference in won PPSC games; reflects different winning expectations in case of take-overs)</li>
+			<li> <strong>gV</strong>: Game value (0-100; higher for larger variants; includes modifier that may be applied by moderators; for alternate winning conditions: reduced if original SC count of variant not reached by winner)</li>
+			<li> <strong>Ch</strong>: Change of rating: (Rr - Re) * mV * gV (loss prevention, i.e. no negative changes, in case of take-over or if applied by moderators)</li>
+		</ul>
+	</span>';
 
 }
 else
@@ -217,9 +232,9 @@ else
 		SELECT r.userID, u.username, r.rating FROM wD_Ratings r
 			LEFT JOIN wD_Users u ON (u.id = r.userID)
 			LEFT JOIN wD_Games g ON (g.id = r.gameID)
-			JOIN (SELECT MAX(g2.processTime) AS last, r2.userID AS uid FROM wD_Ratings r2
+			JOIN (SELECT MAX(g2.finishTime) AS last, r2.userID AS uid FROM wD_Ratings r2
 				LEFT JOIN wD_Games g2 ON (g2.id = r2.gameID ) GROUP BY r2.userID) AS tab2 ON 
-				(uid = r.userID && last = g.processTime)			
+				(uid = r.userID && last = g.finishTime)			
 		WHERE r.ratingType='vDip'
 			&& u.type <> 'Banned'
 		ORDER BY r.rating DESC LIMIT 100");

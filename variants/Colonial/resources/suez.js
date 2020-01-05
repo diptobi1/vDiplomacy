@@ -20,6 +20,8 @@ function loadSuez() {
 						}, o);
 						if (!o.isChanged || suezLoading)
 							o.setSelectsGreen();
+						
+						o.checkComplete();
 					}
 				});
 	};
@@ -34,6 +36,8 @@ function loadSuez() {
 						//o.updateValue('fromTerrID',ordersData.find(function(order){return order.id == o.id;}).fromTerrID);
 						o.reHTML('fromTerrID');
 						o.setSelectsGreen();
+						
+						o.checkComplete();
 					}
 				});
 	};
@@ -253,5 +257,7 @@ function loadSuez() {
 		}, suezOrder);
 		suezOrder.reHTML('orderEnd');
 		suezOrder.setSelectsGreen();
+		
+		suezOrder.checkComplete();
 	}
 }

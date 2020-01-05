@@ -275,6 +275,13 @@ class User {
 	public $integrityBalance;
 	
 	/**
+	 * integrityRating
+	 * The difference between unexcused NMRs and take-overs within the last year
+	 * @var int
+	 */
+	public $integrityRating;
+	
+	/**
 	 * cssStyle
 	 * Display the site in webdip or vDip style...
 	 * @var 'vDip' or 'webDip'
@@ -1585,6 +1592,33 @@ class User {
 		list($tempBan) = $DB->sql_row("SELECT u.tempBan FROM wD_Users u  WHERE u.id = ".$this->id);
 
 		return $tempBan > time();
+	}
+	
+	/*
+	 * Get the number of CDs taken over by this user in the last year.
+	 */
+	public function getCDtakeOvers()
+	{
+		global $DB;
+		list( $cdTakenCount ) = $DB->sql_row("SELECT COUNT(1) FROM wD_CivilDisorders
+			WHERE takenByUserID = ".$this->id." AND takenAtTime > ".(time() - 31536000));
+				
+		return $cdTakenCount;
+	}
+	
+	/*
+	 * Calculate the integrity rating:
+	 * 
+	 * CD-take-overs - unexcusedMissedTurns within the last year.
+	 */
+	public function getIntegrityRating()
+	{
+		if(!isset($this->integrityRating)) 
+		{
+			$this->integrityRating = $this->getCDtakeOvers() - $this->getYearlyUnExcusedMissedTurns();
+		}	
+			
+		return $this->integrityRating;
 	}
 
 	/* 

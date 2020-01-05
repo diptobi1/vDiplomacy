@@ -94,7 +94,7 @@ else
 				unset($Game->Members->ByUserID[$User->id]);
 		}
 		
-		if ( $Game->Members->isJoined() )
+		if ( $Game->Members->isJoined() && !$Game->Members->isTempBanned() )
 		{
 		
 			// We are a member, load the extra code that we might need

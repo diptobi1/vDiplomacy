@@ -520,6 +520,45 @@ class processMember extends Member
 		
 		$this->send('No','No',l_t("You have missed a deadline and lost an excuse (%s left). "."Be more reliable!",$this->excusedMissedTurns));
 	}
+	
+	/**
+	 * vDip-feature:
+	 * If a regainExcusesDuration is set as game option, members can earn back 
+	 * excuses if they did not miss n consecutive deadlines.
+	 */
+	function checkExcuseEarnBack() 
+	{
+		global $DB;	
+		
+		if( $this->Game->regainExcusesDuration == 99 ) return; // no excuse regaining set
+		if( $this->excusedMissedTurns >= $this->Game->excusedMissedTurns ) return; // cannot regain missed turn since at max
+		
+		// get the time of the last miss by this member
+		list( $timeLastMiss ) = $DB->sql_row("SELECT turnDateTime FROM wD_MissedTurns
+			WHERE gameID = ".$this->gameID."
+				AND userID = ".$this->userID."
+				AND countryID = ".$this->countryID."
+				ORDER BY turnDateTime DESC LIMIT 1");
+		
+		if( !$timeLastMiss ) return; // no miss so far
+		
+		// get the turns since the last miss
+		list( $turnsSinceLastMiss ) = $DB->sql_row("SELECT COUNT(*) FROM wD_TurnDate
+			WHERE gameID = ".$this->gameID."
+				AND userID = ".$this->userID."
+				AND countryID = ".$this->countryID."
+				AND turnDateTime > ".$timeLastMiss);
+		
+		// check if user can earn back excuse
+		if ( $turnsSinceLastMiss > 0 && ($turnsSinceLastMiss % $this->Game->regainExcusesDuration) == 0 )
+		{
+			$this->excusedMissedTurns++;
+			
+			$DB->sql_put("UPDATE wD_Members m SET m.excusedMissedTurns = ".$this->excusedMissedTurns." WHERE m.id = ".$this->id);
+		
+			$this->send('No','No',l_t("You have earned an excuse back due to reliable play for %s turns.",$this->Game->regainExcusesDuration));
+		}	
+	}
 }
 
 ?>

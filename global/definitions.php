@@ -25,7 +25,7 @@
 defined('IN_CODE') or die('This script can not be run by itself.');
 
 define("VERSION", 161);
-define("VDIPVERSION", 66);
+define("VDIPVERSION", 69);
 
 // Some integer values which are named for clarity.
 

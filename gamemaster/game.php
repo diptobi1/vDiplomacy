@@ -300,6 +300,7 @@ class processGame extends Game
 		,$maxTurns 
 		,$targetSCs 
 		,$minPhases
+		,$regainExcusesDuration
 		,$delayDeadlineMaxTurn
 		,$moderator
 		,$chooseYourCountry
@@ -376,6 +377,7 @@ class processGame extends Game
 						maxTurns = ".$maxTurns.", 
 						targetSCs = ".$targetSCs.", 
 						minPhases = ".$minPhases.", 
+						regainExcusesDuration = ".$regainExcusesDuration.",
 						delayDeadlineMaxTurn = ".$delayDeadlineMaxTurn.", 
 						directorUserID = ".$moderator.",
 						chooseYourCountry = '".$chooseYourCountry."',
@@ -683,7 +685,7 @@ class processGame extends Game
 
 			$this->setDrawn();
 		}
-		elseif( $this->Members->withActiveNMRs() && $this->turn <= $this->delayDeadlineMaxTurn)
+		elseif( $this->Members->withActiveNMRs() && $this->turn < $this->delayDeadlineMaxTurn)
 		{
 			require_once(l_r('lib/gamemessage.php'));
 			/*

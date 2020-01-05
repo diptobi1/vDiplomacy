@@ -548,7 +548,7 @@ class libHTML
 				print '<div class="content-notice">
 					<p class="notice"><br>You are blocked from joining, rejoining, or creating new games by the moderators for '.libTime::remainingText($User->tempBan).
 					 ' for the following reason:</br> '.$User->tempBanReason.' </br>
-					Contact the moderators at '.Config::$modEMail.' for help. If you attempt to get around this temp ban 
+					Contact the moderators at the <a href="modforum.php">modforum</a> for help. If you attempt to get around this temp ban 
 					by making a new account your accounts will be banned with no chance for appeal.<br><br></p>
 				</div>';
 			}
@@ -556,7 +556,7 @@ class libHTML
 			{
 				print '<div class="content-notice">
 					<p class="notice"><br>You are blocked from joining, rejoining, or creating new games for a year because you were too unreliable. 
-					Contact the moderators at '.Config::$modEMail.' for help. If you attempt to get around this temp ban 
+					Contact the moderators at <a href="modforum.php">modforum</a> for help. If you attempt to get around this temp ban 
 					by making a new account your accounts will be banned with no chance for appeal.<br><br></p>
 				</div>';
 			}
@@ -564,7 +564,7 @@ class libHTML
 			{
 				print '<div class="content-notice">
 						<p class="notice"><br>You are blocked from joining, rejoining, or creating new games for '.libTime::remainingText($User->tempBan).
-						' because you were too unreliable. Contact the moderators at '.Config::$modEMail.' if you need help.<br><br></p>
+						' because you were too unreliable. Contact the moderators at <a href="modforum.php">modforum</a> if you need help.<br><br></p>
 					</div>';
 			}
 		}

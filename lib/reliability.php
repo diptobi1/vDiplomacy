@@ -20,48 +20,52 @@
 
 class libReliability
 {
-
 	/**
-	 * Get a user's or members integrity rating.	 
-	 * This is cdTakenCount + integrityBalance - (nmrCount * 0.2 + cdCount * 0.6);
-	 * @return integrityRating
+	 * The sanctions applied with a certain integrity rating.
+	 * Sanctions apply if rating is key of array or below.
+	 * 
+	 * integrityRating => array() of sanctions
 	 */
-	static function integrityRating($User)
+	static public $sanctions = array(
+		-4 => array('tempBan'=> 1, 'gameLimit'=>5),
+		-5 => array('tempBan'=> 3, 'gameLimit'=>4),
+		-6 => array('tempBan'=> 3, 'gameLimit'=>3),
+		-7 => array('tempBan'=> 7, 'gameLimit'=>2),
+		-8 => array('tempBan'=> 7, 'gameLimit'=>1)
+	);
+	
+	static public $maxRatingForSanction = -4;
+	
+	static public function getCurrentSanction($User)
 	{
-		if ($User->gameCount == 0) return 0;
-		return $User->cdTakenCount + $User->integrityBalance - (($User->nmrCount * 0.2) + ($User->cdCount * 0.6));
+		$integrity = $User->getIntegrityRating();
+		// detect current $sanctions
+		$userSanction = array('tempBan'=>0, 'gameLimit'=>999);
+		foreach(self::$sanctions as $limit=>$sanction){
+			if($integrity <= $limit){
+				if(isset($sanction['tempBan']))
+					$userSanction['tempBan'] = $sanction['tempBan'];
+				if(isset($sanction['gameLimit']))
+					$userSanction['gameLimit'] = $sanction['gameLimit'];
+			} else {
+				break; // no sanctions for current integrity left
+			}
+		}
+		
+		return $userSanction;
 	}
 	
-	/**
-	 * Get a user's Grade... 
-	 * @return grade as string... (or Rookie if < 99 phases played)
-	 */
-	static public function getGrade($User)
-	{
-		if ($User->phaseCount > 99 && $User->gameCount > 2)
-			return "R".round($User->reliabilityRating);
-		else
-			return 'Rookie';
-	}
-
 	static public function gameLimits($User)
 	{
-		// If a user has a timed ban he can't join a game
-		if ($User->tempBan > time()) return 0;
-
 		$gLp = $gLi = 999;
 		
 		if ($User->phaseCount < 100) {$gLp = 7;}
 		if ($User->phaseCount < 50)  {$gLp = 4;}
 		if ($User->phaseCount < 20)  {$gLp = 2;}
 		
-		$integrity = self::integrityRating($User);
-		if ($integrity <= -1) { $gLi =  6; }
-		if ($integrity <= -2) { $gLi =  5; }
-		if ($integrity <= -3) { $gLi =  3; }
-		if ($integrity <= -4) { $gLi =  1; }
+		$userSanction = self::getCurrentSanction($User);
 		
-		return min($gLp,$gLi);		
+		return min($gLp,$userSanction['gameLimit']);		
 	}
 	
 	/**
@@ -73,10 +77,19 @@ class libReliability
 		global $DB;
 
 		$gL = self::gameLimits($User);
-		if ($gL > 100) return 100;
+		if ($gL > 100) return 999;
 			
-		$mG = 100;
-		list($totalGames) = $DB->sql_row("SELECT COUNT(*) FROM wD_Members m, wD_Games g WHERE m.userID=".$User->id." and m.status!='Defeated' and m.gameID=g.id and g.phase!='Finished' and m.bet!=1");
+		// count all games substracting 2-player variants
+		$tabl = $DB->sql_tabl("SELECT variantID FROM wD_Members m, wD_Games g WHERE m.userID=".$User->id." and m.status!='Defeated' and m.gameID=g.id and g.phase!='Finished'");
+		
+		require_once('lib/variant.php');
+		$totalGames = 0;
+		while( list($variantID) = $DB->tabl_row($tabl) )
+		{
+			$Variant = libVariant::loadFromVariantID($variantID);
+			if( count($Variant->countries) != 2 ) $totalGames++;
+		}
+		
 		$mG = $gL - $totalGames;
 		if ($mG < 0) { $mG = 0; }
 		
@@ -88,7 +101,7 @@ class libReliability
 	 */
 	static public function printCDNotice($User)
 	{
-		if ( self::maxGames($User) < 50 && !($User->tempBan > time()) )
+		if ( self::maxGames($User) < 50 )
 			print '<p class="notice">Game-Restrictions in effect.</p>
 				<p class="notice">You can join or create '.self::maxGames($User).' additional games.<br>
 				Read more about this <a href="reliability.php">here</a>.<br><br></p>';
@@ -98,11 +111,9 @@ class libReliability
 	 * Check if the users reliability is high enough to join/create more games
 	 * @return true or error message	 
 	 */
-	static public function isReliable($User)
+	static public function isAtGameLimit($User)
 	{
 		global $DB;
-		
-		if ($User->tempBan > time()) return 'You are not allowed to join or creaty any more games at the moment.';
 		
 		// A player can't join new games, as long as he has active CountrySwiches.
 		list($openSwitches)=$DB->sql_row('SELECT COUNT(*) FROM wD_CountrySwitch WHERE (status = "Send" OR status = "Active") AND fromID='.$User->id);
@@ -113,19 +124,19 @@ class libReliability
 		
 		if ($maxGames == 0)
 		{
-			if ( self::gameLimits($User) == 2 ) 
+			if ( self::gameLimits($User) == 2 && $User->phaseCount < 20) 
 				return "<p>You're taking on too many games at once for a new member.<br>
 					Please relax and enjoy the games that you are currently in before joining/creating a new one.<br>
 					You need to play at least <strong>20 phases</strong>, before you can join more than 2 games.<br>
 					2-player variants are not affected by this restriction.</p>
 					<p>Read more about this <a href='reliability.php'>here</a>.</p>";
-			if ( self::gameLimits($User) == 4 ) 
+			if ( self::gameLimits($User) == 4 && $User->phaseCount < 50) 
 				return "<p>You're taking on too many games at once for a new member.<br>
 					Please relax and enjoy the games that you are currently in before joining/creating a new one.<br>
 					You need to play at least <strong>50 phases</strong>, before you can join more than 4 games.<br>
 					2-player variants are not affected by this restriction.</p>
 					<p>Read more about this <a href='reliability.php'>here</a>.</p>";
-			if ( self::gameLimits($User) == 7 ) 
+			if ( self::gameLimits($User) == 7 && $User->phaseCount < 100) 
 				return "<p>You're taking on too many games at once for a new member.<br>
 					Please relax and enjoy the games that you are currently in before joining/creating a new one.<br>
 					You need to play at least <strong>100 phases</strong>, before you can join more than 7 games.<br>
@@ -135,6 +146,8 @@ class libReliability
 			return "<p>You cannot join or create a new game, because you seem to be having trouble keeping up with the orders in the ones you already have.</p>
 				<p>Read more about this <a href='reliability.php'>here</a>.</p>";
 		}
+		
+		return false;
 	}
 
 }

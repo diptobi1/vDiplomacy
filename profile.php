@@ -248,19 +248,22 @@ if ( isset($_REQUEST['detail']) )
 				</p></div>';
 				print '<div class = "profile_title">What happens if my rating is low?</div>';
 				print '<div class = "profile_content">';
+				require_once('lib/reliability.php');
+				$ratingLimits = array_keys(libReliability::$sanctions);
 				print '<p>
-				Many games are made with a minimum rating requirement so this may impact the quality of games you can enter. If you have more then 3 non-live un-excused missed turns in a year
-				you will begin getting temporarily banned from making new games, joining existing games, or rejoining your own games. </br>
+				Many games are made with a minimum rating requirement so this may impact the quality of games you can enter. If you have more then '.-(libReliability::$maxRatingForSanction+1).' non-live un-excused missed turns in a year
+				you will begin getting temporarily banned from making new games, joining existing games, or rejoining your own games for a short time and barred from joining too new many games for
+				a longer time.</br>
 				</br>
-				 <li>1-3 un-excused delays: warnings</li>
-				 <li>4 un-excused delays: 1-day temp ban</li>
-				 <li>5 un-excused delays: 3-day temp ban</li>
-				 <li>6 un-excused delays: 7-day temp ban</li>
-				 <li>7 un-excused delays: 14-day temp ban</li>
-				 <li>8 un-excused delays: 30-days temp ban</li>
-				 <li>9 or more un-excused delays: infinite, must contact mods for removal</li>
-				 Live game excused turns are penalized independently for temporary bans. 1-2 un-excused missed turns in live games will be a warning, and the 3rd, and any after that will 
-				 result in a 24 hour temp ban. The 2 warnings reset every 28 days resulting in significantly more yearly warnings for live game players then the noraml system. 
+				<ul>';
+				print '<li>1-'.-(libReliability::$maxRatingForSanction+1).' un-excused delays: warnings</li>';
+				foreach(libReliability::$sanctions as $limit=>$sanction){
+					print '<li>'.-$limit.(($limit == end($ratingLimits))?' or more':'').' un-excused delays: '.$sanction['tempBan'].'-day temp ban and up to '.$sanction['gameLimit'].' game'.(($sanction['gameLimit']==1)?'':'s').'</li>';
+				}
+				print '</ul>
+				You can compensate the unexcused misses and therefore lift the sanctions by retaking open positions. Read more about it <a href="reliability.php">here</a>.</br>
+				Live game excused turns are penalized independently for temporary bans. 1-2 un-excused missed turns in live games will be a warning, and the 3rd, and any after that will 
+				result in a 24 hour temp ban. The 2 warnings reset every 28 days resulting in significantly more yearly warnings for live game players then the noraml system. 
 				</p></div>';
 
 				$missedTurns = $UserProfile->getMissedTurns();
@@ -306,8 +309,30 @@ if ( isset($_REQUEST['detail']) )
 				}
 
 				print'<h4>Total:</h4>
-				<Strong>Reliability Rating:</Strong> '.max(($basePercentage - $recentPenalty - $yearlyPenalty - $liveShortPenalty - $liveLongPenalty),0) .'
-				</p>';
+				<Strong>Reliability Rating:</Strong> '.max(($basePercentage - $recentPenalty - $yearlyPenalty - $liveShortPenalty - $liveLongPenalty),0);
+						
+				print '<h4>Game limits</h4>
+				<Strong>Yearly Unexcused Missed Turns:</Strong> '.$allUnExcusedMissedTurns.'</br>';
+				if($allUnExcusedMissedTurns>0)
+					print '<Strong>Compensated by Take-Overs Within the Last Year:</Strong> '.$User->getCDtakeOvers().'</br>';
+				if($UserProfile->getIntegrityRating() <= libReliability::$maxRatingForSanction && libReliability::gameLimits($UserProfile))
+				{
+					print '<Strong>Game limit:</Strong> '.libReliability::gameLimits($UserProfile);
+				} 
+				else 
+				{
+					if(libReliability::gameLimits($UserProfile)<50)
+					{
+						print '</br><Strong>Played phases: </Strong>'.$UserProfile->phaseCount.'</br>';
+						print '<Strong>Game limit:</Strong> '.libReliability::gameLimits($UserProfile).' (for new members with less then 100 played for phases; <a href="reliability.php">more information</a>)';
+					}
+					else
+					{
+						print '<Strong>=> No game limits apply</Strong>';
+					}
+				}				
+				print '</p>';
+					
 
 				print '<h4>Missed Turns:</h4>
 				<p>Red = Unexcused</p>';
@@ -690,42 +715,42 @@ if( $total )
 		print '</li>';
 		print '</div>';
 	}
-
-	print '</br>';
-	if( $User->type['Moderator'] || $User->id == $UserProfile->id )
-	{
-		print '<li><strong>'.l_t('Phases played:').'</strong> '.$UserProfile->phaseCount.'</li></br>';
-	}
-
-
-	if( $User->type['Moderator'] || $User->id == $UserProfile->id )
-	{
-		print '<li><strong>'.l_t('Reliability:').' (<a href="profile.php?detail=civilDisorders&userID='.$UserProfile->id.'">'.l_t('Reliability Explained').'</a>) </strong>';
-	}
-	else
-	{
-		print '<li><strong>'.l_t('Reliability:').'</strong>';
-	}
-
-	if ( $User->type['Moderator'] || $User->id == $UserProfile->id )
-	{
-		$recentMissedTurns = $UserProfile->getRecentUnExcusedMissedTurns();
-		$allMissedTurns = $UserProfile->getYearlyUnExcusedMissedTurns();
-		If ($recentMissedTurns > 0)
-		{
-			print '<li class="rr-profile-info"> Recent Un-excused Delays: ' . $recentMissedTurns.'</font></li>';
-			print '<li class="rr-profile-info"> Recent Delay RR Penalty: ' . ($recentMissedTurns*6).'%</font></li>';
-			print '<li class="rr-profile-info"> Yearly Delay RR Penalty: ' . ($allMissedTurns*5).'%</font></li>';
-		}
-		print '<li style="font-size:13px">'.l_t('Phases played in the last year:').' <strong>'.$UserProfile->yearlyPhaseCount.'</strong></li>';
-		print '<li style="font-size:13px">'.l_t('Un-excused delays/phases:').' <strong>'.$allMissedTurns.'/'.$UserProfile->yearlyPhaseCount.'</strong></li>';
-	}
-	print '<li style="font-size:13px">'.l_t('Reliability rating:').' <strong>'.($UserProfile->reliabilityRating).'%</strong>';
-
-	print '</li>';
-
-	print '</li>';
 }
+
+print '</br>';
+if( $User->type['Moderator'] || $User->id == $UserProfile->id )
+{
+	print '<li><strong>'.l_t('Phases played:').'</strong> '.$UserProfile->phaseCount.'</li></br>';
+}
+
+
+if( $User->type['Moderator'] || $User->id == $UserProfile->id )
+{
+	print '<li><strong>'.l_t('Reliability:').' (<a href="profile.php?detail=civilDisorders&userID='.$UserProfile->id.'">'.l_t('Reliability Explained').'</a>) </strong>';
+}
+else
+{
+	print '<li><strong>'.l_t('Reliability:').'</strong>';
+}
+
+if ( $User->type['Moderator'] || $User->id == $UserProfile->id )
+{
+	$recentMissedTurns = $UserProfile->getRecentUnExcusedMissedTurns();
+	$allMissedTurns = $UserProfile->getYearlyUnExcusedMissedTurns();
+	If ($recentMissedTurns > 0)
+	{
+		print '<li class="rr-profile-info"> Recent Un-excused Delays: ' . $recentMissedTurns.'</font></li>';
+		print '<li class="rr-profile-info"> Recent Delay RR Penalty: ' . ($recentMissedTurns*6).'%</font></li>';
+		print '<li class="rr-profile-info"> Yearly Delay RR Penalty: ' . ($allMissedTurns*5).'%</font></li>';
+	}
+	print '<li style="font-size:13px">'.l_t('Phases played in the last year:').' <strong>'.$UserProfile->yearlyPhaseCount.'</strong></li>';
+	print '<li style="font-size:13px">'.l_t('Un-excused delays/phases:').' <strong>'.$allMissedTurns.'/'.$UserProfile->yearlyPhaseCount.'</strong></li>';
+}
+print '<li style="font-size:13px">'.l_t('Reliability rating:').' <strong>'.($UserProfile->reliabilityRating).'%</strong>';
+
+print '</li>';
+
+print '</li>';
 
 
 if ( $User->type['Moderator'])  // Print who is on a players blocklist, and who is blocking this player. (only for mods)

@@ -245,6 +245,8 @@ class Member
 	 */
 	function pointsValueInTakeover() 
 	{
+		return 0;
+		
 		if ($this->pointsValue() == 0) return 0;
 		$bet = ceil($this->pointsValue() / 2);
 		if ($bet == 0) $bet=1;
