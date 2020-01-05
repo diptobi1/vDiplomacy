@@ -79,6 +79,14 @@ class adminActionsRestrictedVDip extends adminActionsForum
 				'description' => 'Save all relevant data of a given game.',
 				'params' => array('gameID'=>'Game ID'),
 			),
+			'createEMailValidationCode' => array(
+				'name' => 'Create e-mail validation code',
+				'description' => 'Create a validation code (e-mail token) for an e-mail address in case a
+					user has trouble to receive the automated validation message.</br>
+					Must be pasted to the correct URL (e.g. SERVER_NAME/register.php for registration, SERVER_NAME/usercp.php for settings).</br>
+					Send this validation code only to the e-mail address you used for generation of the code!',
+				'params' => array('eMail'=>'E-mail address')
+			)
 			
 		);
 		
@@ -418,5 +426,27 @@ class adminActionsRestrictedVDip extends adminActionsForum
 		if (count($files) < 3) rmdir($dirname); 
 	}
 	
+	public function createEMailValidationCode(array $params)
+	{
+		require_once('lib/auth.php');
+		require_once('objects/user.php');
+		
+		$email = $params['eMail'];
+		
+		// Check that email is valid
+
+		if( User::findEmail($email) )
+			return l_t("The e-mail address '%s' is already in use.",$email);
+
+		if ( !libAuth::validate_email($email) )
+			return l_t("The e-mail address '%s' seems to be invalid.",$email);
+		
+		$URL = '[URL]';
+
+		// %7C = | , but some webmail clients think that | is the end of the link
+		$emailToken = substr(md5(Config::$secret.$email),0,5).'%7C'.urlencode($email);
+
+		return $URL.'?emailToken='.$emailToken;
+	}	
 }
 ?>
