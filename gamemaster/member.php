@@ -531,7 +531,7 @@ class processMember extends Member
 		global $DB;	
 		
 		if( $this->Game->regainExcusesDuration == 99 ) return; // no excuse regaining set
-		if( $this->excusedMissedTurns == $this->Game->excusedMissedTurns ) return; // cannot regain missed turn since at max
+		if( $this->excusedMissedTurns >= $this->Game->excusedMissedTurns ) return; // cannot regain missed turn since at max
 		
 		// get the time of the last miss by this member
 		list( $timeLastMiss ) = $DB->sql_row("SELECT turnDateTime FROM wD_MissedTurns
