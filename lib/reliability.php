@@ -40,7 +40,7 @@ class libReliability
 	{
 		$integrity = $User->getIntegrityRating();
 		// detect current $sanctions
-		$userSanction = array('tempBan'=>0, 'gameLimit'=>99);
+		$userSanction = array('tempBan'=>0, 'gameLimit'=>999);
 		foreach(self::$sanctions as $limit=>$sanction){
 			if($integrity <= $limit){
 				if(isset($sanction['tempBan']))
@@ -77,10 +77,19 @@ class libReliability
 		global $DB;
 
 		$gL = self::gameLimits($User);
-		if ($gL > 100) return 100;
+		if ($gL > 100) return 999;
 			
-		$mG = 100;
-		list($totalGames) = $DB->sql_row("SELECT COUNT(*) FROM wD_Members m, wD_Games g WHERE m.userID=".$User->id." and m.status!='Defeated' and m.gameID=g.id and g.phase!='Finished' and m.bet!=1");
+		// count all games substracting 2-player variants
+		$tabl = $DB->sql_tabl("SELECT variantID FROM wD_Members m, wD_Games g WHERE m.userID=".$User->id." and m.status!='Defeated' and m.gameID=g.id and g.phase!='Finished'");
+		
+		require_once('lib/variant.php');
+		$totalGames = 0;
+		while( list($variantID) = $DB->tabl_row($tabl) )
+		{
+			$Variant = libVariant::loadFromVariantID($variantID);
+			if( count($Variant->countries) != 2 ) $totalGames++;
+		}
+		
 		$mG = $gL - $totalGames;
 		if ($mG < 0) { $mG = 0; }
 		

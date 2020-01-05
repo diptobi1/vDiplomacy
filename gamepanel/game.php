@@ -277,7 +277,7 @@ class panelGame extends Game
 						$buf .= ' / '.l_t('no regaining');
 					else
 						$buf .= ' / '.l_t('regain after %s turn(s)','<span class="excusedNMRs">'.$this->regainExcusesDuration."</span>");
-					if ($this->delayDeadlineMaxTurn > 90)
+					if ($this->delayDeadlineMaxTurn >= 99)
 						$buf .= l_t(' / extend always');
 					elseif ($this->delayDeadlineMaxTurn == 0)
 						$buf .= l_t(' / extend never');
@@ -304,7 +304,7 @@ class panelGame extends Game
 		elseif( $this->pressType=='RulebookPress')
 			$alternatives[]='<a href="press.php#rulebook">'.l_t('Rulebook press').'</a>';
 		elseif( $this->pressType=='PublicPressOnly' )
-			$alternatives[]='<a href="press.php#publicPress">'.l_t('Public messaging only');
+			$alternatives[]='<a href="press.php#publicPress">'.l_t('Public messaging only').'</a>';
 		
 		if($this->playerTypes=='Mixed')
 			$alternatives[]=l_t('Fill with Bots');
@@ -562,7 +562,7 @@ class panelGame extends Game
 				
 				if ($User->reliabilityRating >= $this->minimumReliabilityRating && ($User->phaseCount >= $this->minPhases)) 
 				{
-					if (!($User->userIsTempBanned() || (count($this->Variant->countries)>2 && libReliability::isAtGameLimit($User))))
+					if (!($User->userIsTempBanned() || ($this->phase == "Pre-game" && count($this->Variant->countries)>2 && libReliability::isAtGameLimit($User))))
 					{
 						$buf .= '<form onsubmit="return confirm(\''.$question.'\');" method="post" action="board.php?gameID='.$this->id.'"><div>
 							<input type="hidden" name="formTicket" value="'.libHTML::formTicket().'" />';
@@ -595,7 +595,7 @@ class panelGame extends Game
 				{
 					$buf .= '<span style="font-size:75%;">(Due to a temporary ban you cannot join games.)</span>';
 				}
-				elseif(count($this->Variant->countries)>2 && libReliability::isAtGameLimit($User))
+				elseif($this->phase == "Pre-game" && count($this->Variant->countries)>2 && libReliability::isAtGameLimit($User))
 				{
 					$buf .= '<span style="font-size:75%;">(Due to <a href="reliability.php">game limits</a> you cannot join games.)</span>';
 				}
