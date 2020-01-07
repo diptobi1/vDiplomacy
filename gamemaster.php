@@ -173,6 +173,38 @@ else
 	//libGameMaster::updateCDNMRCounts();
 }
 
+// Check for ModEmail:
+$mbox = imap_open(Config::$modEMailServerIMAP, Config::$modEMailLogin, Config::$modEMailPassword);
+$headers = imap_search($mbox, 'UNSEEN');
+if ($headers != false)
+{
+	$lastDate = $Misc->vDipLastMail;
+    foreach ($headers as $val)
+	{
+        $overview =  imap_fetch_overview ( $mbox , $val );
+		$subject = $overview[0]->subject;
+		$from  = $overview[0]->from;
+		$date  = $overview[0]->udate;
+		
+		if ($date > $Misc->vDipLastMail)
+		{
+			require_once('modforum/libMessage.php');
+
+			$newmessage = ModForumMessage::send(0, 2,
+						'There is a new Mail in the mod-team-inbox.<br>You can check it here: <a href="'.Config::$modEMailServerHTTP.'">Webmail</a>.<br>login="'.Config::$modEMailLogin.'", password="'.Config::$modEMailPassword.'"',
+						$subject.' (From: '.$from.')',
+						'ThreadStart');
+						
+			$lastDate = max ($date, $lastDate);
+			print 'There is a new Mail '.$date.' in the mod-team-inbox.<br>'.
+						$subject.' (From: '.$from.')'."<br />\n";
+		}
+    }
+	$Misc->vDipLastMail = $lastDate;
+	$Misc->write();
+}
+imap_close($mbox);
+
 print '</div>';
 libHTML::footer();
 

@@ -124,6 +124,10 @@ class Config
 	 * @var string
 	 */
 	public static $modEMail='moderators@yourdiplomacyserver.com';
+	public static $modEMailServerIMAP='{mail.yourdiplomacyserver.com:143}INBOX'; // Link to the server in PHP-imap_open - format
+	public static $modEMailServerHTTP='https://mail.yourdiplomacyserver.com'; // URL-Link to the server
+	public static $modEMailLogin='moderators@yourdiplomacyserver.com';
+	public static $modEMailPassword='super-secret';
 
 	/**
 	 * An array of variants available on the server (for future releases, not yet enabled)
