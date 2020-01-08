@@ -65,12 +65,6 @@ class Config
 	public static $database_name='webdiplomacy';
 
 	/**
-	 * EasyDevInstall
-	 * If set to an install.php it will create the database and a adminaccount automatically
-	 */
-	public static $easyDevInstall = 'install_dev.php';
-
-	/**
 	 * This is used to salt hashes for passwords, if it gets out it's not the end of the world.
 	 *
 	 * *This should be long ( ~30 charecters), random, contain lots of weird charecters, etc*
