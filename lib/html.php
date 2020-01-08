@@ -1267,9 +1267,9 @@ class libHTML
 		$stats=array(
 			'<a href="gamemaster.php" class="light">'.l_t('Last process').'</a>'=>($Misc->LastProcessTime?libTime::text($Misc->LastProcessTime):l_t('Never')),
 			'<a href="admincp.php?tab=Control%20Panel%20Logs" class="light">'.l_t('Last mod action').'</a>'=>($Misc->LastModAction?libTime::text($Misc->LastModAction):l_t('Never')),
-			'<a href="admincp.php?tab=Status%20lists" class="light">'.l_t('Error logs').'</a>'=>$Misc->ErrorLogs,
+			'<a href="admincp.php?tab=Status%20Info" class="light">'.l_t('Error logs').'</a>'=>$Misc->ErrorLogs,
 			l_t('Paused games')=>$Misc->GamesPaused,
-			'<a href="admincp.php?tab=Status%20lists" class="light">'.l_t('Crashed games').'</a>'=>$Misc->GamesCrashed,
+			'<a href="admincp.php?tab=Status%20Info" class="light">'.l_t('Crashed games').'</a>'=>$Misc->GamesCrashed,
 		);
 
 		$first=true;
