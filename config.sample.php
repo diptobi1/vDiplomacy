@@ -136,8 +136,8 @@ class Config
 	public static $modEMail='moderators@yourdiplomacyserver.com';
 	public static $modEMailServerIMAP='{mail.your-server.de:143}INBOX'; // Link to the server in PHP-imap_open - format
 	public static $modEMailServerHTTP='https://webmail.your-server.de'; // URL-Link to the server
-	public static $modEMailLogin='mod-team@vDiplomacy.com';
-	public static $modEMailPassword='TW5MBl834Ba3b37n';
+	public static $modEMailLogin='';
+	public static $modEMailPassword='';
    
 	/**
 	 * If you use the piwik-webanalyser define his path here. If not comment this out.
