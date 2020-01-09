@@ -62,7 +62,6 @@ CREATE TABLE `wD_CountrySwitch` (
 
 /* vDip 11 */
 ALTER TABLE `wD_Users` ADD `lastModMessageIDViewed` int(10) unsigned NOT NULL DEFAULT '0';
-UPDATE wD_Users SET lastModMessageIDViewed=(SELECT MAX(id) FROM wD_ModForumMessages);
 
 /* vDip 12 */
 ALTER TABLE `wD_Games` ADD `specialCDcount` SMALLINT( 5 ) UNSIGNED NOT NULL DEFAULT '1';
@@ -87,10 +86,8 @@ ALTER TABLE `wD_ModeratorNotes` CHANGE `linkIDType` `linkIDType` ENUM( 'Game', '
 /* vDip 16 */
 ALTER TABLE `wD_Games` ADD `rlPolicy` enum('None','Strict','Friends') CHARACTER SET utf8 NOT NULL DEFAULT 'None';
 ALTER TABLE `wD_Backup_Games` ADD `rlPolicy` enum('None','Strict','Friends') CHARACTER SET utf8 NOT NULL DEFAULT 'None';
-UPDATE wD_Games SET rlPolicy = 'Strict' WHERE anon = 'Yes' AND phase = 'Pre-game';
 
 /* vDip 17 */
-UPDATE wD_Users SET rlGroup = '0' WHERE rlGroup = NULL;
 ALTER TABLE `wD_Users` CHANGE `rlGroup` `rlGroup` MEDIUMINT( 8 ) NOT NULL default '0';
 
 /* vDip 18 */
@@ -166,6 +163,7 @@ CREATE TABLE `wD_vDipMisc` (
   `value` int(10) unsigned NOT NULL,
   PRIMARY KEY (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+INSERT INTO `wD_vDipMisc` VALUES ('Version',32);
 
 /* vDip 33 */
 ALTER TABLE `wD_Users` ADD `pointNClick` enum('Yes','No') CHARACTER SET utf8 NOT NULL DEFAULT 'No';
@@ -189,11 +187,6 @@ CREATE TABLE `wD_ForceReply` (
   PRIMARY KEY (`id`,`toUserID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-INSERT INTO wD_ForceReply (id, toUserID, forceReply )
-	SELECT m.id, m.toUserID, m.forceReply
-	FROM wD_ModForumMessages m
-WHERE m.toUserID != 0;
-
 ALTER TABLE `wD_ModForumMessages` DROP `toUserID`;	
 ALTER TABLE `wD_ModForumMessages` DROP `forceReply`;	
 
@@ -202,8 +195,6 @@ ALTER TABLE `wD_Users` ADD `terrGrey` enum('all','selected','off') CHARACTER SET
 ALTER TABLE `wD_Users` ADD `greyOut` SMALLINT( 5 ) UNSIGNED NOT NULL DEFAULT '50';
 ALTER TABLE `wD_Users` ADD `scrollbars` enum('Yes','No') CHARACTER SET utf8 NOT NULL DEFAULT 'No';
 ALTER TABLE `wD_Users` CHANGE `pointNClick` `pointNClick` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 NOT NULL DEFAULT 'Yes';
-
-UPDATE `wD_Users` SET `pointNClick` = 'Yes' WHERE `pointNClick` = 'No';
 
 /* vDip 39 */
 ALTER TABLE `wD_Users` ADD `gamesPlayed` int(11) NOT NULL default '0';
@@ -216,7 +207,6 @@ ALTER TABLE `wD_Backup_Games` ADD `minNoNMR` SMALLINT( 5 ) UNSIGNED NOT NULL DEF
 
 /* vDip 41 */
 ALTER TABLE `wD_Users`  ADD `CDtakeover` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
-UPDATE wD_Users SET CDtakeover = gamesLeft;
 ALTER TABLE `wD_Users` DROP COLUMN `leftBalanced`;
 ALTER TABLE `wD_Games` DROP COLUMN `maxLeft`;
 ALTER TABLE `wD_Backup_Games` DROP COLUMN `maxLeft`;
@@ -421,9 +411,6 @@ ALTER TABLE `wD_ForceReply` ADD `readIP`  int(10) unsigned NOT NULL;
 ALTER TABLE `wD_ForceReply` ADD `readTime` int(10) unsigned NOT NULL;
 ALTER TABLE `wD_ForceReply` ADD `replyIP` int(10) unsigned NOT NULL;
 
-UPDATE wD_ForceReply SET status='Read' WHERE forceReply='Done';
-UPDATE wD_ForceReply fr LEFT JOIN `wD_ModForumMessages` m ON (m.toID = fr.id && fr.toUserID=fromUserID) SET fr.status='Replied' WHERE fr.forceReply='Done';
-
 /* vDip 45 */
 ALTER TABLE `wD_Games` ADD `description` text NOT NULL;
 ALTER TABLE `wD_Backup_Games` ADD `description` text NOT NULL;
@@ -446,7 +433,6 @@ ALTER TABLE `wD_MovesArchive` ADD `orderID` int(10) unsigned NOT NULL FIRST;;
 ALTER TABLE `wD_Backup_MovesArchive` ADD `orderID` int(10) unsigned NOT NULL FIRST;;
 
 /* vDip 50 */
-ALTER TABLE `wD_Users` ADD `tempBan` int(10) unsigned;
 
 /* vDip 51 */
 ALTER TABLE `wD_Members` ADD `ccMatch` tinyint(3) unsigned NOT NULL;
@@ -456,18 +442,9 @@ ALTER TABLE `wD_Backup_Members` ADD `ipMatch` tinyint(3) unsigned NOT NULL;
 
 /* vDip 52 */
 ALTER TABLE wD_Users ADD vpoints mediumint(8) unsigned NOT NULL DEFAULT '1000';
-UPDATE wD_Users u 
-	SET u.vpoints = (SELECT r.rating FROM wD_Ratings r
-		LEFT JOIN wD_Games g ON (g.id = r.gameID)
-			JOIN (SELECT MAX(g2.processTime) AS last, r2.userID AS uid FROM wD_Ratings r2
-				LEFT JOIN wD_Games g2 ON (g2.id = r2.gameID ) GROUP BY r2.userID) AS tab2 ON 
-				(uid = r.userID && last = g.processTime)			
-	WHERE r.ratingType='vDip' AND r.userID = u.id);
-		
+
 /* vDip 53 */
 ALTER TABLE wD_Users ADD integrityBalance mediumint(8) unsigned NOT NULL DEFAULT '0';
-DELETE FROM wD_CivilDisorders WHERE SCCount = 0;
-UPDATE wD_CivilDisorders cd LEFT JOIN wD_Games g ON (cd.gameID = g.id) SET cd.forcedByMod = 1 WHERE g.phaseMinutes < 60 
 
 /* vDip 54 */
 ALTER TABLE `wD_Games` DROP COLUMN `minNoCD`;
@@ -476,8 +453,6 @@ ALTER TABLE `wD_Backup_Games` DROP COLUMN `minNoCD`;
 ALTER TABLE `wD_Backup_Games` DROP COLUMN `minNoNMR`;
 
 /* vDip 55 */
-UPDATE wD_Games SET minimumReliabilityRating = minRating;
-UPDATE wD_Backup_Games SET minimumReliabilityRating = minRating;
 ALTER TABLE `wD_Games` DROP COLUMN `minRating`;
 ALTER TABLE `wD_Backup_Games` DROP COLUMN `minRating`;
 
