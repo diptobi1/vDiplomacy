@@ -349,7 +349,7 @@ function check_edit() {
     } elseif ($edit == 'newon') {
         $edit = 'on';
         if (file_exists($inst_file)) {
-            copy($inst_file, $inst_dir . 'cache/install-save-' . date("d-m-y -- H-i-s") . '.php');
+            copy($inst_file, $inst_dir . 'cache/'.date("ymd-His").'-install.php');
             rename($inst_file, $inst_dir . 'cache/install-backup.php');
         } else {
             print '<li class="formlisttitle">ATTENTION: Map Data for variant "' . $Variant->name . '" already in editor. ';
@@ -439,36 +439,17 @@ function check_edit() {
 
 function display_interface() {
 
-    global $DB, $Variant, $variantID, $mapID, $terrID, $mode, $mapsize, $mapmode, $edit, $User;
-
-    // Generate an array with all variants available:
-    $all_variants = array();
-    foreach (Config::$variants as $id => $name)
-	{
-		if (isset(Config::$hiddenVariants) && in_array($id,Config::$hiddenVariants) && $User->type['Guest'])
-			continue;
-        $all_variants[$id] = $name;
-	}
-	
-    if ($variantID == 0)
-        $all_variants[0] = ' Choose a variant...';
-    asort($all_variants);
+    global $selectVariantForm, $DB, $Variant, $variantID, $mapID, $terrID, $mode, $mapsize, $mapmode, $edit, $User;
 
     //MapID
-    print '<li class="formlisttitle">Variant: ';
-    if (($edit == 'off') || ($variantID == 0)) {
-        $terr_save = $terrID;
-        $terrID = 0;
-        print display_select_form('variantID', $all_variants, $variantID);
-        $terrID = $terr_save;
-    } else
-        print $Variant->name . ' (locked)';
+	print '<b>Variant: '.$selectVariantForm.'</b>';
 
     // Print main menues:
     if ($variantID != 0) {
+	    print '<div class="hr"></div><li class="formlisttitle">';
         if ($edit != 'data') {
             // Mapsize
-            print ' - Mapsize: ';
+            print 'Mapsize: ';
             print display_select_form('mapsize', array('small' => 'Smallmap', 'large' => 'Largemap'), $mapsize);
             print display_select_form('mapmode', array('all' => 'All', 'zoom' => 'Zoom'), $mapmode);
 

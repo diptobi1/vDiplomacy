@@ -74,32 +74,19 @@ if (($action == 'upload' || $action == 'filesave') && $file=='variant.php')
  * Show the variant-files with some edit/upload/delete  possibilities for variant developers
  */
  
-print '<li class="formlisttitle">Variant: 
-			<form style="display: inline" method="get" name="set_map">
-			<input type="hidden" name="tab" value="Files" />
-				<select name="variantID" onchange="this.form.submit();">';
-				
-if ($variantID == 0)
-	print '<option value="0" selected>Choose a variant...</option>';
+print '<b>Variant: '.$selectVariantForm.'</b>';
 
-asort(Config::$variants);
+if ($variantID != 0)
+{
 
-foreach ( Config::$variants as $id=>$name )
-	print '<option value="'.$id.'"'.($id == $variantID ? ' selected':'').'>'.$name.'</option>';
-
-print '</select></form>'.
-		($variantID != 0 ? 
-			'<form style="display: inline" action="dev/files_helper.php" method="POST">
+	print '<form style="display: inline" action="dev/files_helper.php" method="POST">
 				<input type="hidden" name="variantID" value="'.$variantID.'" />
 				<input type="hidden" name="tab" value="Files" />
 				<input type="hidden" name="action" value="download" />
 				<input type="submit" value="Download as zip" />
-			</form>' : '' ).
-	'</li>';
-
-if ($variantID != 0)
-{
-	
+			</form>
+		<div class="hr"></div>';
+		
 	$variantbase = "variants/" . Config::$variants[$variantID];
 
 	$edit = false;
