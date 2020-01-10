@@ -79,7 +79,7 @@ Go to the Admin CP via the menu, find the "Toggle Maintenance Mode" action and
 run it, preventing others from using the server up while you're testing it.
 
 => Test
-Once that's set up you should go to Help->DATC. With Maintenance mode on it will 
+Once that's set up you should go to Help->"More Info"->DATC. With Maintenance mode on it will 
 show a screen which can run through the DATC tests, which provides an easy way to 
 test that the installation was successful. Click Batch-test and it'll run through
 all the tests one by one. If maps are being generated successfully then everything
