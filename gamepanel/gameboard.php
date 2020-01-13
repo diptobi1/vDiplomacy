@@ -487,7 +487,7 @@ class panelGameBoard extends panelGame
 		}
 		</script>';
 
-		$buf .= '<div style="clear:both"></div><div class="hr"></div>';
+		$buf .= '<div style="clear:both"></div></div><div class="hr"></div>';
 
 			
 		return $buf;
