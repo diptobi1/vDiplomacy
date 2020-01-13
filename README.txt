@@ -1,5 +1,6 @@
-webDiplomacy readme, for webmasters
+vDiplomacy readme, for webmasters
 ----------------------------------------
+=> Note to developers
 => Note to players
 => requirements
 => Installing
@@ -9,22 +10,28 @@ webDiplomacy readme, for webmasters
 => Developing
 => Help
 
+Note to developers
+------------------
+This is a fork of the webdiplomacy software. It has a similar set of features but lots of variants.
+Note, the webDiplomacy code is usually much better tested.
 
 Note to players
 ---------------
-webDiplomacy doesn't have an install wizard which checks and installs everything for you, the 
-code is made available mainly for developers who want to create unique webDiplomacy servers 
+vDiplomacy doesn't have an install wizard which checks and installs everything for you, the 
+code is made available mainly for developers who want to create unique vDiplomacy servers 
 (e.g. with unique translations or rule variants), or work on the official code.
 If your only experience of PHP and MySQL is installing phpBB, say, you may have trouble with 
 this software.
 
 If you just want to play with friends try to find an existing webDiplomacy server and set up 
-a private game there. (http://webdiplomacy.net/ is the official server.)
+a private game there.
+-> http://webdiplomacy.net/ is the official webDiplomacy server
+-> http://vdiplomacy.net/ is the official vDiplomacy server
 
 
 requirements
 ------------
-- PHP 5.2+
+- PHP 5.2+ (and < 7.2)
 - MySQL 5, with support for MyISAM, InnoDB, and memory tables
 - The GD 2 PHP extension, with FreeType support
 - Ability to send e-mail from the server (Access to an SMTP server or sendmail)
@@ -40,10 +47,9 @@ requirements
 Installing
 ----------
 => Database scripts
-Run install/install.sql to set up the initial data-set, you can run this in 
-phpMyAdmin's "Import" tab, if you don't have shell access. Currently, you will also need
-to run all database update scripts, found in install/1.00-1.01/update.sql through to 
-install/1.34-1.35/update.sql.
+1. Run install/FullInstall.sql to set up the initial data-set, you can run this in 
+   phpMyAdmin's "Import" tab, if you don't have shell access.
+2. Run install/FullInstall-vDip.sql adjust the original webDip database to the initial vDip-code.
 
 Note that webDiplomacy is incompatible with MySQL's strict mode, so if STRICT_ALL_TABLES 
 or STRICT_TRANS_TABLES are set in the sql_mode, then you will have errors when
@@ -54,6 +60,10 @@ does not contain either strict mode.
 Edit config.sample.php to work with your setup, being very careful to read the warnings 
 about security issues. The salts/secrets, errorlog/orderlog directories, can all
 leave your server wide open if you don't set them right. Rename to config.php when ready.
+ATTENTION:
+Don't activete all variants at once. It takes a lot of time to create the SQL and cache-data
+for a variant. Just uncomment one variant after another and load the variant-page to avoid
+server-timeouts.
 
 => Log-on
 Once you've set config.php up you can use the random gameMasterSecret you entered
@@ -69,7 +79,7 @@ Go to the Admin CP via the menu, find the "Toggle Maintenance Mode" action and
 run it, preventing others from using the server up while you're testing it.
 
 => Test
-Once that's set up you should go to Help->DATC. With Maintenance mode on it will 
+Once that's set up you should go to Help->"More Info"->DATC. With Maintenance mode on it will 
 show a screen which can run through the DATC tests, which provides an easy way to 
 test that the installation was successful. Click Batch-test and it'll run through
 all the tests one by one. If maps are being generated successfully then everything

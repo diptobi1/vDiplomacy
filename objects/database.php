@@ -88,11 +88,8 @@ class Database {
 			trigger_error(l_t("Couldn't connect to the MySQL server, if this problem persists please inform the admin."));
 		if( ! mysqli_select_db($this->link,Config::$database_name) )
 		{
-			if (file_exists ('install/'.Config::$easyDevInstall))
-				require('install/'.Config::$easyDevInstall);
-			else
-				trigger_error(l_t("Connected to the MySQL server, but couldn't access the specified database. ".
-				"If this problem persists please inform the admin."));
+			trigger_error(l_t("Connected to the MySQL server, but couldn't access the specified database. ".
+			"If this problem persists please inform the admin."));
 		}
 		
 			/*

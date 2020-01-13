@@ -74,6 +74,11 @@ class adminActionsRestrictedVDip extends adminActionsForum
 				'description' => 'Give bronze developer marker',
 				'params' => array('userID'=>'User ID'),
 			),
+			'changeEMail' => array(
+				'name' => 'Change eMail',
+				'description' => 'Change the eMail of a user',
+				'params' => array('userID'=>'User ID', 'newMail'=>'New eMail'),
+			),
 			'exportGameData' => array(
 				'name' => 'Export game data',
 				'description' => 'Save all relevant data of a given game.',
@@ -365,7 +370,6 @@ class adminActionsRestrictedVDip extends adminActionsForum
 		return 'Do you want to clear all cache data for the '.$Variant->name.'-variant ('.$runningGamesCount.' games)?';
 	}
 	
-	
 	public function allReady(array $params)
 	{
 		global $DB;
@@ -379,6 +383,26 @@ class adminActionsRestrictedVDip extends adminActionsForum
 	{
 		$gameID = (int)$params['gameID'];
 		return 'Are you sure you want to change the orderstatus of all countries to "Ready"';
+	}
+
+	public function changeEMail(array $params)
+	{
+		global $DB;
+		$changeEMailUser = new User((int)$params['userID']);
+		$newMail = $DB->msg_escape($params['newMail']);
+		
+		$DB->sql_put("UPDATE wD_Users SET email = '".$newMail."' WHERE id = ".$changeEMailUser->id);		
+
+		return 'Changed the eMail from "'.$changeEMailUser->email.'" to "'.$newMail.'"?';
+	}
+	public function changeEMailconfirm(array $params)
+	{
+		
+		$changeEMailUser = new User((int)$params['userID']);
+		$newMail = $params['newMail'];
+
+		return 'Are you sure you want to change the eMail from "'.$changeEMailUser->email.'" to "'.$newMail.'"?';
+		
 	}
 	
 	public function delcache(array $params)
