@@ -258,7 +258,10 @@ class libRating
 //			$mV = $mV * (1 - abs($Member1['bet'] - $Member2['bet']) / max($Member1['bet'], $Member2['bet']));	
 		
 		// Value take-overs (if initial chances for players differ a lot, value the result less).
-		$mV *= (1 - abs($Member1['chance'] - $Member2['chance']) / max($Member1['chance'], $Member2['chance']));
+		if(max($Member1['chance'], $Member2['chance']) == 0)
+			$mV = 0;
+		else
+			$mV *= (1 - abs($Member1['chance'] - $Member2['chance']) / max($Member1['chance'], $Member2['chance']));
 
 		// Set K-factor to 100
 		$K = 100;
