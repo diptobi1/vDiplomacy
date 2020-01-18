@@ -98,10 +98,10 @@ class processGame extends Game
 			{
 				$this->setConcede();
 			}
-		}
-		elseif( in_array('Extend', $votes) && $this->processStatus != 'Paused')
-		{
-			$this->extendPhase();
+			elseif( in_array('Extend', $votes) && $this->processStatus != 'Paused')
+			{
+				$this->extendPhase();
+			}
 		}
 	}
 
