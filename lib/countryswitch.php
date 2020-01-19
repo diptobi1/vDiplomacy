@@ -161,11 +161,8 @@ class libSwitch
 
 			// Check for additional requirements:
 			list($minPhases, $minimumReliabilityRating) = $DB->sql_row("SELECT minPhases, minimumReliabilityRating FROM wD_Games WHERE id = ".$gameID);
-			
-			require_once(l_r('lib/reliability.php'));		       		 				if ( $Game->minPhases > $SendUser->phaseCount)
-			if ( count($Variant->countries)>2 && $message = libReliability::isAtGameLimit($SendUser))		
-				$error = 'The User you selected can not join new games at the moment.';		
- 			elseif ( $Game->minPhases > $SendUser->phaseCount)
+				
+ 			if ( $minPhases > $SendUser->phaseCount)
 				return l_t("The User you selected did not play enough phases to join this game.");
 			if ( $minimumReliabilityRating > $SendUser->reliabilityRating )
 				return l_t("The reliability of User you selected is not high enough to join this game.");
