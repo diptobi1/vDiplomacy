@@ -314,7 +314,7 @@ if ( isset($_REQUEST['detail']) )
 				print '<h4>Game limits</h4>
 				<Strong>Yearly Unexcused Missed Turns:</Strong> '.$allUnExcusedMissedTurns.'</br>';
 				if($allUnExcusedMissedTurns>0)
-					print '<Strong>Compensated by Take-Overs Within the Last Year:</Strong> '.$User->getCDtakeOvers().'</br>';
+					print '<Strong>Compensated by Take-Overs Within the Last Year:</Strong> '.$UserProfile->getCDtakeOvers().'</br>';
 				if($UserProfile->getIntegrityRating() <= libReliability::$maxRatingForSanction && libReliability::gameLimits($UserProfile))
 				{
 					print '<Strong>Game limit:</Strong> '.libReliability::gameLimits($UserProfile);
