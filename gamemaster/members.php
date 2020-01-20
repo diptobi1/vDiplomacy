@@ -585,7 +585,7 @@ class processMembers extends Members
 		
 		// Check for reliability-rating:		
  		require_once(l_r('lib/reliability.php'));		 		
- 		if ( count($this->Game->Variant->countries)>2 && $this->Game->phase == 'Pre-game' && libReliability::isAtGameLimit($User))
+ 		if ( $this->Game->phase == 'Pre-game' && libReliability::userGameLimitRestriction($User, $this->Game))
 			throw new Exception('You are blocked from joining new games due to game limits.');
 
 		// Check if there is a block against a player

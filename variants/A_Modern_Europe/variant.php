@@ -22,6 +22,7 @@
 	Changelog:
 	1.0: initial version
 	1.0.1: Minor bugfixes.
+	1.0.2: Interactive map bugfixes
 */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -35,7 +36,7 @@ class A_Modern_EuropeVariant extends WDVariant {
 	public $author      ='Jared Kish (Kurt)';
 	public $adapter     ='Jared Kish (Kurt) and Oliver Auth';
 	public $version     ='1.0';
-	public $codeVersion ='1.0.1';
+	public $codeVersion ='1.0.2';
 	public $homepage    ='';
 
 	public $countries=array('Czechia','Finland','France','Georgia','Germany','Greece','Ireland','Italy','Lithuania','Netherlands','Poland','Portugal','Romania','Russia','Serbia','Spain','Sweden','Turkey','Ukraine','United Kingdom');

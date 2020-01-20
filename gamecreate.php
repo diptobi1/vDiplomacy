@@ -287,10 +287,10 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
  		 * Check for reliability, bevore a user can create a new game...		
  		 */		
  		require_once(l_r('lib/reliability.php'));		 		
- 		if( (count($Game->Variant->countries)>2) && ($message = libReliability::isAtGameLimit($User)) )		
+ 		if(libReliability::userGameLimitRestriction($User, $Game) )		
  		{		
  			processGame::eraseGame($Game->id);		
- 			libHTML::notice('You are blocked from creating new games.', $message);		
+ 			libHTML::notice('You are blocked from creating new games.', libReliability::isAtGameLimit($User));		
  		}		
  		// END RELIABILITY-PATCH
 

@@ -22,6 +22,7 @@
 	Changelog:
 	1.0:   initial version
 	1.0.2: Coast-Childs have no SC
+	1.0.4: Interactive map bugfixes
 	
 */
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -36,7 +37,7 @@ class AustrianSuccessionVariant extends WDVariant {
 	public $adapter    ='Safari';
 	public $homepage   ='http://www.diplomail.ru';
 	public $version    ='1';
-	public $codeVersion='1.0.3';
+	public $codeVersion='1.0.4';
 
 	public $countries=array('Austria', 'Bavaria', 'England', 'France', 'Ottoman Empire', 'Piedmont-Sardinia', 'Prussia', 'Russia', 'Spain');
 

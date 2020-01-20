@@ -79,8 +79,8 @@ class libReliability
 		$gL = self::gameLimits($User);
 		if ($gL > 100) return 999;
 			
-		// count all games substracting 2-player variants
-		$tabl = $DB->sql_tabl("SELECT variantID FROM wD_Members m, wD_Games g WHERE m.userID=".$User->id." and m.status!='Defeated' and m.gameID=g.id and g.phase!='Finished'");
+		// count all games substracting 2-player variants and private games
+		$tabl = $DB->sql_tabl("SELECT variantID FROM wD_Members m, wD_Games g WHERE m.userID=".$User->id." and m.status!='Defeated' and m.gameID=g.id and g.phase!='Finished' and g.password IS NULL");
 		
 		require_once('lib/variant.php');
 		$totalGames = 0;
@@ -128,19 +128,19 @@ class libReliability
 				return "<p>You're taking on too many games at once for a new member.<br>
 					Please relax and enjoy the games that you are currently in before joining/creating a new one.<br>
 					You need to play at least <strong>20 phases</strong>, before you can join more than 2 games.<br>
-					2-player variants are not affected by this restriction.</p>
+					2-player variants and private games are not affected by this restriction.</p>
 					<p>Read more about this <a href='reliability.php'>here</a>.</p>";
 			if ( self::gameLimits($User) == 4 && $User->phaseCount < 50) 
 				return "<p>You're taking on too many games at once for a new member.<br>
 					Please relax and enjoy the games that you are currently in before joining/creating a new one.<br>
 					You need to play at least <strong>50 phases</strong>, before you can join more than 4 games.<br>
-					2-player variants are not affected by this restriction.</p>
+					2-player variants and private games  are not affected by this restriction.</p>
 					<p>Read more about this <a href='reliability.php'>here</a>.</p>";
 			if ( self::gameLimits($User) == 7 && $User->phaseCount < 100) 
 				return "<p>You're taking on too many games at once for a new member.<br>
 					Please relax and enjoy the games that you are currently in before joining/creating a new one.<br>
 					You need to play at least <strong>100 phases</strong>, before you can join more than 7 games.<br>
-					2-player variants are not affected by this restriction.</p>
+					2-player variants and private games  are not affected by this restriction.</p>
 					<p>Read more about this <a href='reliability.php'>here</a>.</p>";
 					
 			return "<p>You cannot join or create a new game, because you seem to be having trouble keeping up with the orders in the ones you already have.</p>
@@ -148,6 +148,18 @@ class libReliability
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Check if a given user is prevented from joining a game due to game limits.
+	 * 
+	 * Users are prevented from joining new games if at game limit.
+	 * 2-player variants and private games excluded.
+	 */
+	static public function userGameLimitRestriction($User, $Game){
+		
+		return !$Game->private && count($Game->Variant->countries)>2 && libReliability::isAtGameLimit($User);
+				
 	}
 
 }

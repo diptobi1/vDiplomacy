@@ -478,7 +478,7 @@ class panelMember extends Member
 		if ( $this->status != 'Playing')
 			$buf .= '<span class="memberStatus"><em>'.l_t($this->status).'</em>. </span>';
 
-		if ( $this->Game instanceof panelGameBoard || $this->status == 'Defeated' ) {
+		if ( $this->Game instanceof panelGameBoard ) {
 			$buf .= '<span class="memberPointsCount">'.$this->memberBetWon().'</span><br />';
 			$str = $this->memberVPointsWon();
 			if($str != "")

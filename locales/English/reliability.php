@@ -15,7 +15,7 @@ if ($User->phaseCount < 100 &&  $User->getIntegrityRating() > libReliability::$m
 	New members of this site have some light restrictions on how many games they can join or create at once.
 	You need to play at least <strong>20 phases</strong>, before you can join more than 2 games, 
 	<strong>50 phases</strong>, before you can join more than 4 games and at least <strong>100 phases</strong>,
-	before you can join more than 7 games at once. 2-player variants are not affected by this restriction.
+	before you can join more than 7 games at once. 2-player variants and private games are not affected by this restriction.
 	</p>
 	
 	<p class="intro">
@@ -63,7 +63,7 @@ integrity is not negatively impacted.
 <p class="intro">
 If you have too many unexcused missed turns within a year you will be temporary banned for a short period 
 and you will be restricted in the
-number of games you can play. This is to ensure that all players
+number of games you can play (2-player variants and private games excluded). This is to ensure that all players
 take care not to take on more games then they can keep up with, and to ensure that players who do not respect their
 fellow members are not given the chance to ruin multiple games.
 </p>

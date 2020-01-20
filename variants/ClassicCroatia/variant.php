@@ -16,6 +16,8 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with vDiplomacy.  If not, see <http://www.gnu.org/licenses/>.
+
+	1.1.1:	Interactive map bugfixes
  */
 
 defined('IN_CODE') or die('This script can not be run by itself.');
@@ -29,7 +31,7 @@ class ClassicCroatiaVariant extends WDVariant {
 	public $author      ='Unknown';
 	public $adapter     ='Enriador & Oliver Auth';
 	public $version     ='1';
-	public $codeVersion ='1.1';
+	public $codeVersion ='1.1.1';
 
 	public $countries=array('England', 'France', 'Italy', 'Germany', 'Austria', 'Turkey', 'Russia');
 
