@@ -184,9 +184,9 @@ if (Config::$modEMailLogin != '' && Config::$modEMailPassword != '')
 		foreach ($headers as $val)
 		{
 			$overview =  imap_fetch_overview ( $mbox , $val );
-			$subject = $overview[0]->subject;
-			$from  = $overview[0]->from;
-			$date  = $overview[0]->udate;
+			$subject = $DB->escape($overview[0]->subject);
+			$from  = $DB->escape($overview[0]->from);
+			$date  = $DB->escape($overview[0]->udate);
 			
 			if ($date > $Misc->vDipLastMail)
 			{

@@ -465,11 +465,18 @@ class panelGame extends Game
 	 */
 	function archiveBar()
 	{
-		return '<strong>'.l_t('Archive:').'</strong> '.
-			'<a href="board.php?gameID='.$this->id.'&amp;viewArchive=Orders">'.l_t('Orders').'</a>
-			- <a href="board.php?gameID='.$this->id.'&amp;viewArchive=Maps">'.l_t('Maps').'</a>
-			- <a href="board.php?gameID='.$this->id.'&amp;viewArchive=Messages">'.l_t('Messages').'</a>';
-//			- <a href="board.php?gameID='.$this->id.'&amp;viewArchive=Reports">Reports</a>';
+		if( $this->phase == 'Finished' )
+			return '<strong>'.l_t('Archive:').'</strong> '.
+				'<a href="board.php?gameID='.$this->id.'&amp;viewArchive=Orders">'.l_t('Orders').'</a>
+				- <a href="board.php?gameID='.$this->id.'&amp;viewArchive=Maps">'.l_t('Maps').'</a>
+				- <a href="board.php?gameID='.$this->id.'&amp;viewArchive=Messages">'.l_t('Messages').'</a>
+				- <a href="board.php?gameID='.$this->id.'&amp;viewArchive=Graph">'.l_t('Graph').'</a>';
+		else	
+			return '<strong>'.l_t('Archive:').'</strong> '.
+				'<a href="board.php?gameID='.$this->id.'&amp;viewArchive=Orders">'.l_t('Orders').'</a>
+				- <a href="board.php?gameID='.$this->id.'&amp;viewArchive=Maps">'.l_t('Maps').'</a>
+				- <a href="board.php?gameID='.$this->id.'&amp;viewArchive=Messages">'.l_t('Messages').'</a>';
+	//			- <a href="board.php?gameID='.$this->id.'&amp;viewArchive=Reports">Reports</a>';
 	}
 
 	/**
