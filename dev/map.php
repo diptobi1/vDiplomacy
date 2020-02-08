@@ -52,7 +52,7 @@ switch($edit) {
 	case 'install':
 	case 'del_terr':
 	case 'calc_links':
-	case 'data': break;
+	case 'save': break;
 	default: $edit = 'newoff';
 }
 
@@ -338,11 +338,9 @@ function check_edit() {
             fwrite($fp, $str, strlen($str));
         }
         if (!(file_exists($inst_file))) {
-            print '<li class="formlisttitle">ATTENTION: Map Data for variant "' . $Variant->name . '" already in editor. ';
-            print display_button_form('edit', 'del_cache', 'Delete changes');
-            print ' or ';
-            print display_button_form('edit', 'on', 'Keep');
-            print '?<hr>';
+            print '<li class="formlisttitle">ATTENTION: Map Data for variant "' . $Variant->name . '" already in editor. Always save after you leave the editor. </li>';
+            print display_button_form('edit', 'on', 'Continue to edit.');
+            print '<hr>';
             libHTML::footer();
             exit;
         }
@@ -352,11 +350,11 @@ function check_edit() {
             copy($inst_file, $inst_dir . 'cache/'.date("ymd-His").'-install.php');
             rename($inst_file, $inst_dir . 'cache/install-backup.php');
         } else {
-            print '<li class="formlisttitle">ATTENTION: Map Data for variant "' . $Variant->name . '" already in editor. ';
-            print display_button_form('edit', 'del_cache', 'Delete changes');
-            print ' or ';
-            print display_button_form('edit', 'on', 'Keep');
-            print '?<hr>';
+            print 'ATTENTION: Map Data for variant "' . $Variant->name . '" already in editor.</li>';
+            print display_button_form('edit', 'del_cache', 'Discard changes and exit.');
+            print ' - ';
+            print display_button_form('edit', 'on', 'Back to edit.');
+            print '<hr>';
             libHTML::footer();
             exit;
         }
@@ -437,269 +435,262 @@ function check_edit() {
     }
 }
 
-function display_interface() {
+function display_interface()
+{
 
     global $selectVariantForm, $DB, $Variant, $variantID, $mapID, $terrID, $mode, $mapsize, $mapmode, $edit, $User;
 
     //MapID
-	print '<b>Variant: '.$selectVariantForm.'</b>';
+	print '<b>Variant: '.$selectVariantForm.'</b> <div class="hr"></div>';
 
     // Print main menues:
-    if ($variantID != 0) {
-	    print '<div class="hr"></div><li class="formlisttitle">';
-        if ($edit != 'data') {
-            // Mapsize
-            print 'Mapsize: ';
-            print display_select_form('mapsize', array('small' => 'Smallmap', 'large' => 'Largemap'), $mapsize);
-            print display_select_form('mapmode', array('all' => 'All', 'zoom' => 'Zoom'), $mapmode);
-
-            // Mode
-            print ' - Mode: ';
-            print display_select_form('mode', array('all' => 'All', 'units' => 'Territories', 'links' => 'Borders','none' => 'Init'), $mode);
-
-            // Edit
-            print ' - Edit: ';
-            if ($edit == 'off')
-                print display_select_form('edit', array('off' => 'Off', 'newon' => 'On'), $edit);
-            else
-                print display_select_form('edit', array('del_cache' => 'Off', 'on' => 'On', 'data' => 'Data'), $edit);
-            print '</li>';
-
-            //TerrID
-            $all_terr = array();
-            $tabl = $DB->sql_tabl('SELECT id,name FROM wD_Territories WHERE mapID=' . $mapID);
-            $all_terr['0'] = '(all/new)';
-            while (list($id, $name) = $DB->tabl_row($tabl))
-                $all_terr[$id] = $name;
-            asort($all_terr);
-            // A bit complex code to skip "empty" terrID's during development (eg. after deleting an territory).
-            $all_id = array_keys($all_terr);   // get all ID's
-            sort($all_id);                     // sort them
-            $last = array_push($all_id, '0', '1'); // push the "0" and the "1" at the end
-            $all_id[0] = "--";                   // replace the "0" with fake data
-            $ind = array_search($terrID, $all_id); // search for the index postiton
-            $all_id[0] = '0';                    // overwrite the fake "0" with the last one to make a circle
-            print '<li class="formlisttitle">Terr-ID: ';
-            if ($ind > 0)
-                print display_button_form('terrID', $all_id[$ind - 1], '-');
-            print display_text_form('terrID', $terrID, 1);
-            print display_button_form('terrID', $all_id[$ind + 1], '+');
-            print ' ';
-            print display_select_form('terrID', $all_terr, $terrID);
-            if (($edit == 'on') && ($mode == 'units')) {
-                if ($terrID == 0) {
-                    print ' - New Territory: ';
-                    print display_text_form('name', '', 30);
-                } else {
-                    print ' - Change Name: ';
-                    print display_text_form('name', $all_terr[$terrID], 25);
-                    print ' - ';
-                    print display_button_form('edit', 'del_terr', '-=> Delete <=-');
-                }
-            }
-            print '</li>';
-        }
-    }
-
-    // Territory information
-    if ( ($variantID != 0) && ($terrID != '0') && ($edit != 'data')) {
-
-        // Get values from database
-        list($type, $supply, $countryID, $x, $y, $sx, $sy) = $DB->sql_row('SELECT type,supply,countryID,mapX,mapY,smallMapX,smallMapY FROM wD_Territories WHERE mapID=' . $mapID . ' AND id=' . $terrID);
-
-        //Landtype + Supply-Centers + initial occupation
-        print '<li class="formlisttitle">Type: ';
-		if ($edit != 'on')
-			print '<span style="font-weight: normal;">'.$type.'</span>';
-		else
-			print display_select_form('type', array('Land' => 'Land', 'Coast' => 'Coast', 'Sea' => 'Sea'), $type);
-			
-        print ' - Supply: ';
-		if ($edit != 'on')
-			print '<span style="font-weight: normal;">'.$supply.'</span>';
-		else
-			print display_select_form('sc', array('Yes' => 'Yes', 'No' => 'No'), $supply);
-			
-        print ' - Initial country: ';
-        array_unshift($Variant->countries, "Neutral");
-        if ($countryID >= count($Variant->countries))
-            $Variant->countries[$countryID] = 'Special ID: ' . $countryID;
-			
-		if ($edit != 'on')
-			print '<span style="font-weight: normal;">'.$Variant->countries[$countryID].'</span>';
-		else
-			print display_select_form('countryID', $Variant->countries, $countryID). ' ID: ' . display_text_form('countryID', $countryID, 1);
+    if ($variantID != 0 && $edit != 'save')
+	{
+		print '<li class="formlisttitle">';
 		
-        print '</li>';
+		// Mapsize
+		print 'Mapsize: ';
+		print display_select_form('mapsize', array('small' => 'Smallmap', 'large' => 'Largemap'), $mapsize);
+		print display_select_form('mapmode', array('all' => 'All', 'zoom' => 'Zoom'), $mapmode);
 
-        // Coordinates:
-		if ($mode == 'units')
-		{
-			print '<li class="formlisttitle">';
-			if ($mapsize == 'large') {
-				print 'MapX: ';
-				if ($edit != 'on')
-					print '<span style="font-weight: normal;">'.$x.'</span>';
-				else
-				{
-					print display_button_form('map_x', ($x - 5), '-5');
-					print display_button_form('map_x', ($x - 1), '-1');
-					print display_text_form('map_x', $x);
-					print display_button_form('map_x', ($x + 1), '+1');
-					print display_button_form('map_x', ($x + 5), '+5');
-				}
-				print ' - MapY: ';
-				if ($edit != 'on')
-					print '<span style="font-weight: normal;">'.$y.'</span>';
-				else
-				{
-					print display_button_form('map_y', ($y - 5), '-5');
-					print display_button_form('map_y', ($y - 1), '-1');
-					print display_text_form('map_y', $y);
-					print display_button_form('map_y', ($y + 1), '+1');
-					print display_button_form('map_y', ($y + 5), '+5');
-					print ' - Calculate: ';
-					print display_button_form('calcxy', 'terr', 'territory');
-					print display_button_form('calcxy', 'all', 'all unset');
-				}
+		// Mode
+		print ' - Mode: ';
+		print display_select_form('mode', array('all' => 'All', 'units' => 'Territories', 'links' => 'Borders','none' => 'Init'), $mode);
+
+		// Edit
+		print ' - Edit: ';
+		if ($edit == 'off')
+			print display_select_form('edit', array('off' => 'Off', 'newon' => 'On'), $edit);
+		else
+			print display_select_form('edit', array('on' => 'On', 'save' => 'Exit / Save'), $edit);
+		print '</li>';
+
+		//TerrID
+		$all_terr = array();
+		$tabl = $DB->sql_tabl('SELECT id,name FROM wD_Territories WHERE mapID=' . $mapID);
+		$all_terr['0'] = '(all/new)';
+		while (list($id, $name) = $DB->tabl_row($tabl))
+			$all_terr[$id] = $name;
+		asort($all_terr);
+		// A bit complex code to skip "empty" terrID's during development (eg. after deleting an territory).
+		$all_id = array_keys($all_terr);   // get all ID's
+		sort($all_id);                     // sort them
+		$last = array_push($all_id, '0', '1'); // push the "0" and the "1" at the end
+		$all_id[0] = "--";                   // replace the "0" with fake data
+		$ind = array_search($terrID, $all_id); // search for the index postiton
+		$all_id[0] = '0';                    // overwrite the fake "0" with the last one to make a circle
+		print '<li class="formlisttitle">Terr-ID: ';
+		if ($ind > 0)
+			print display_button_form('terrID', $all_id[$ind - 1], '-');
+		print display_text_form('terrID', $terrID, 1);
+		print display_button_form('terrID', $all_id[$ind + 1], '+');
+		print ' ';
+		print display_select_form('terrID', $all_terr, $terrID);
+		if (($edit == 'on') && ($mode == 'units')) {
+			if ($terrID == 0) {
+				print ' - New Territory: ';
+				print display_text_form('name', '', 30);
 			} else {
-				print 'SmallMapX: ';
-				if ($edit != 'on')
-					print '<span style="font-weight: normal;">'.$sx.'</span>';
-				else
-				{
-					print display_button_form('map_x', ($sx - 1), '-');
-					print display_text_form('map_x', $sx);
-					print display_button_form('map_x', ($sx + 1), '+');
-				}
-				print ' - SmallMapY: ';
-				if ($edit != 'on')
-					print '<span style="font-weight: normal;">'.$sy.'</span>';
-				else
-				{
-					print display_button_form('map_y', ($sy - 1), '-');
-					print display_text_form('map_y', $sy);
-					print display_button_form('map_y', ($sy + 1), '+');
-				}
+				print ' - Change Name: ';
+				print display_text_form('name', $all_terr[$terrID], 25);
+				print ' - ';
+				print display_button_form('edit', 'del_terr', '-=> Delete <=-');
 			}
-			print '</li>';
 		}
-    }
+		print '</li>';
 
-    // Link-list
-    if (($variantID != 0) && ($mode == 'links'|| $mode == 'all') && $edit != 'data') {
-        if ($terrID != '0') {
-            $tabl = $DB->sql_tabl('SELECT a.id,a.name, armysPass, fleetsPass FROM wD_CoastalBorders c
-				INNER JOIN wD_Territories a ON ( toTerrID=a.id ) WHERE c.fromTerrID=' . $terrID . ' AND a.mapID=' . $mapID . ' AND c.mapID=' . $mapID . ' ORDER BY a.name ASC');
+		// Territory information
+		if ($terrID != '0')
+		{
+			// Get values from database
+			list($type, $supply, $countryID, $x, $y, $sx, $sy) = $DB->sql_row('SELECT type,supply,countryID,mapX,mapY,smallMapX,smallMapY FROM wD_Territories WHERE mapID=' . $mapID . ' AND id=' . $terrID);
+
+			//Landtype + Supply-Centers + initial occupation
+			print '<li class="formlisttitle">Type: ';
+			if ($edit != 'on')
+				print '<span style="font-weight: normal;">'.$type.'</span>';
+			else
+				print display_select_form('type', array('Land' => 'Land', 'Coast' => 'Coast', 'Sea' => 'Sea'), $type);
 				
-			print '<li class="formlisttitle">Links:</li><table>';
-            while (list($toTerrID, $toTerrName, $armysPass, $fleetsPass) = $DB->tabl_row($tabl)) {
-                if (($fleetsPass == 'Yes') && ($armysPass == 'No')) {
-                    $def = 'yn' . $toTerrID;
-					$deftxt = 'Fleets only';
-                }
-                if (($fleetsPass == 'No') && ($armysPass == 'Yes')) {
-                    $def = 'ny' . $toTerrID;
-					$deftxt = 'Armys only';
-                }
-                if (($fleetsPass == 'Yes') && ($armysPass == 'Yes')) {
-                    $def = 'yy' . $toTerrID;
-					$deftxt = 'Fleets and Armys';
-                }
+			print ' - Supply: ';
+			if ($edit != 'on')
+				print '<span style="font-weight: normal;">'.$supply.'</span>';
+			else
+				print display_select_form('sc', array('Yes' => 'Yes', 'No' => 'No'), $supply);
 				
-				unset($all_terr[$toTerrID]);
+			print ' - Initial country: ';
+			array_unshift($Variant->countries, "Neutral");
+			if ($countryID >= count($Variant->countries))
+				$Variant->countries[$countryID] = 'Special ID: ' . $countryID;
 				
-				if ($edit != 'on')
-					print "<TR><TD style='padding:0;'>" . display_button_form('terrID', $toTerrID, $toTerrName) . " </TD>
-					<TD style='padding:0; width:100%'><b>=> </b> ".$deftxt.'</TD></TR>';
-				else
-					print "<TR><TD style='padding:0;'>" . display_button_form('terrID', $toTerrID, $toTerrName) .
-							" </TD><TD style='padding:0; width:100%'>=> " .display_select_form('set_link', array(
-								'yn' . $toTerrID => 'Fleets only',
-								'ny' . $toTerrID => 'Armys only',
-								'yy' . $toTerrID => 'Fleets and Armys',
-								'nn' . $toTerrID => '(delete link)'), $def) . '</TD></TR>';
-            }
-			print '</table>';
+			if ($edit != 'on')
+				print '<span style="font-weight: normal;">'.$Variant->countries[$countryID].'</span>';
+			else
+				print display_select_form('countryID', $Variant->countries, $countryID). ' ID: ' . display_text_form('countryID', $countryID, 1);
 			
-			if ($edit == 'on')
+			print '</li>';
+
+			// Coordinates:
+			if ($mode == 'units')
 			{
-				print '<li class="formlisttitle">Add Link: ';
-				$all_terr['9999']='(delete all links)';
-				print display_select_form('new_link', $all_terr, '');
+				print '<li class="formlisttitle">';
+				if ($mapsize == 'large') {
+					print 'MapX: ';
+					if ($edit != 'on')
+						print '<span style="font-weight: normal;">'.$x.'</span>';
+					else
+					{
+						print display_button_form('map_x', ($x - 5), '-5');
+						print display_button_form('map_x', ($x - 1), '-1');
+						print display_text_form('map_x', $x);
+						print display_button_form('map_x', ($x + 1), '+1');
+						print display_button_form('map_x', ($x + 5), '+5');
+					}
+					print ' - MapY: ';
+					if ($edit != 'on')
+						print '<span style="font-weight: normal;">'.$y.'</span>';
+					else
+					{
+						print display_button_form('map_y', ($y - 5), '-5');
+						print display_button_form('map_y', ($y - 1), '-1');
+						print display_text_form('map_y', $y);
+						print display_button_form('map_y', ($y + 1), '+1');
+						print display_button_form('map_y', ($y + 5), '+5');
+						print ' - Calculate: ';
+						print display_button_form('calcxy', 'terr', 'territory');
+						print display_button_form('calcxy', 'all', 'all unset');
+					}
+				} else {
+					print 'SmallMapX: ';
+					if ($edit != 'on')
+						print '<span style="font-weight: normal;">'.$sx.'</span>';
+					else
+					{
+						print display_button_form('map_x', ($sx - 1), '-');
+						print display_text_form('map_x', $sx);
+						print display_button_form('map_x', ($sx + 1), '+');
+					}
+					print ' - SmallMapY: ';
+					if ($edit != 'on')
+						print '<span style="font-weight: normal;">'.$sy.'</span>';
+					else
+					{
+						print display_button_form('map_y', ($sy - 1), '-');
+						print display_text_form('map_y', $sy);
+						print display_button_form('map_y', ($sy + 1), '+');
+					}
+				}
 				print '</li>';
 			}
-        } elseif ($edit == 'on') {
-            print '<li class="formlisttitle">Expermental: ';
-            print display_button_form('edit', 'calc_links', '(re-)calculate all borderlinks!');
-            print '</li>';
-        }
-    }
+		}
 
-    // Display Map:
-	print '</div>';
-    if (($variantID != 0) && $edit != 'data') {
-        $zoomstr = '';
-        if ($mapmode == 'zoom' && ($terrID > 0)) {
-            $sql = 'SELECT ' . ($mapsize == 'small' ? 'small' : '') . 'MapX, ' . ($mapsize == 'small' ? 'small' : '') . 'MapY
+		// Link-list
+		if ($mode == 'links'|| $mode == 'all')
+		{
+			if ($terrID != '0') {
+				$tabl = $DB->sql_tabl('SELECT a.id,a.name, armysPass, fleetsPass FROM wD_CoastalBorders c
+					INNER JOIN wD_Territories a ON ( toTerrID=a.id ) WHERE c.fromTerrID=' . $terrID . ' AND a.mapID=' . $mapID . ' AND c.mapID=' . $mapID . ' ORDER BY a.name ASC');
+					
+				print '<li class="formlisttitle">Links:</li><table>';
+				while (list($toTerrID, $toTerrName, $armysPass, $fleetsPass) = $DB->tabl_row($tabl)) {
+					if (($fleetsPass == 'Yes') && ($armysPass == 'No')) {
+						$def = 'yn' . $toTerrID;
+						$deftxt = 'Fleets only';
+					}
+					if (($fleetsPass == 'No') && ($armysPass == 'Yes')) {
+						$def = 'ny' . $toTerrID;
+						$deftxt = 'Armys only';
+					}
+					if (($fleetsPass == 'Yes') && ($armysPass == 'Yes')) {
+						$def = 'yy' . $toTerrID;
+						$deftxt = 'Fleets and Armys';
+					}
+					
+					unset($all_terr[$toTerrID]);
+					
+					if ($edit != 'on')
+						print "<TR><TD style='padding:0;'>" . display_button_form('terrID', $toTerrID, $toTerrName) . " </TD>
+						<TD style='padding:0; width:100%'><b>=> </b> ".$deftxt.'</TD></TR>';
+					else
+						print "<TR><TD style='padding:0;'>" . display_button_form('terrID', $toTerrID, $toTerrName) .
+								" </TD><TD style='padding:0; width:100%'>=> " .display_select_form('set_link', array(
+									'yn' . $toTerrID => 'Fleets only',
+									'ny' . $toTerrID => 'Armys only',
+									'yy' . $toTerrID => 'Fleets and Armys',
+									'nn' . $toTerrID => '(delete link)'), $def) . '</TD></TR>';
+				}
+				print '</table>';
+				
+				if ($edit == 'on')
+				{
+					print '<li class="formlisttitle">Add Link: ';
+					$all_terr['9999']='(delete all links)';
+					print display_select_form('new_link', $all_terr, '');
+					print '</li>';
+				}
+			} elseif ($edit == 'on') {
+				print '<li class="formlisttitle">Expermental: ';
+				print display_button_form('edit', 'calc_links', '(re-)calculate all borderlinks!');
+				print '</li>';
+			}
+		}
+
+		// Display Map:
+		print '</div>';
+		$zoomstr = '';
+		if ($mapmode == 'zoom' && ($terrID > 0))
+		{
+			$sql = 'SELECT ' . ($mapsize == 'small' ? 'small' : '') . 'MapX, ' . ($mapsize == 'small' ? 'small' : '') . 'MapY
 						FROM wD_Territories WHERE mapID=' . $mapID . ' AND id=' . $terrID;
-            list($x, $y) = $DB->sql_row($sql);
-            if ($x > 0 && $y > 0) {
-                $imgSrc = 'variants/' . $Variant->name . '/resources/' . ($mapsize == 'small' ? 'small' : '') . 'map.png';
+			list($x, $y) = $DB->sql_row($sql);
+			if ($x > 0 && $y > 0) {
+				$imgSrc = 'variants/' . $Variant->name . '/resources/' . ($mapsize == 'small' ? 'small' : '') . 'map.png';
 				
 				// If there is no smallmap we will only use the largemap...
 				if (!(file_exists ($imgSrc)))
-	                $imgSrc = 'variants/' . $Variant->name . '/resources/map.png';
+					$imgSrc = 'variants/' . $Variant->name . '/resources/map.png';
 
-                list($width, $height) = getimagesize($imgSrc);
+				list($width, $height) = getimagesize($imgSrc);
 
-                if (($x < 300) || ($width < 600))
-                    $x = 0;
-                elseif ($x > ($width - 300))
-                    $x = $width - 600;
-                else
-                    $x=$x - 300;
+				if (($x < 300) || ($width < 600))
+					$x = 0;
+				elseif ($x > ($width - 300))
+					$x = $width - 600;
+				else
+					$x=$x - 300;
 
-                if (($y < 150) || ($height < 300))
-                    $y = 0;
-                elseif ($y > ($height - 150))
-                    $y = $height - 300;
-                else
-                    $y=$y - 150;
-                $zoomstr = "&mapmode=zoom&zoom_x=" . $x . "&zoom_y=" . $y;
-            }
-        }
-        if (($mode == 'units') && ($terrID != '0') && ($edit == 'on')) {
-            print '<form action="" method=get>';
-            print add_form_defaults();
-            if ($zoomstr != '') {
-                print '<input type="hidden" name="zoom_x" value="' . $x . '">';
-                print '<input type="hidden" name="zoom_y" value="' . $y . '">';
-            }
-            print '<input style=cursor:crosshair type="image" name=';
-            print 'map onError="if ((this.src.match(/X/g)||[]).length < 5) this.src=this.src + \'X\'; else this.src = \'images/icons/alert.png\';" src="dev/map_draw.php?terrID=' . $terrID . '&variantID=' . $variantID . '&mode=' . $mode . '&mapsize=' . $mapsize . $zoomstr . '&nocache=' . (rand(1, 9999)) . '" >';
-            print '</form>';
-        } else {
-             print '<img onError="if ((this.src.match(/X/g)||[]).length < 5) this.src=this.src + \'X\'; else this.src = \'images/icons/alert.png\';" src="dev/map_draw.php?terrID=' . $terrID . '&variantID=' . $variantID . '&mode=' . $mode . '&mapsize=' . $mapsize . $zoomstr . '&nocache=' . (rand(1, 9999)) . '" >';
-       }
+				if (($y < 150) || ($height < 300))
+					$y = 0;
+				elseif ($y > ($height - 150))
+					$y = $height - 300;
+				else
+					$y=$y - 150;
+				$zoomstr = "&mapmode=zoom&zoom_x=" . $x . "&zoom_y=" . $y;
+			}
+		}
+		if (($mode == 'units') && ($terrID != '0') && ($edit == 'on')) {
+			print '<form action="" method=get>';
+			print add_form_defaults();
+			if ($zoomstr != '') {
+				print '<input type="hidden" name="zoom_x" value="' . $x . '">';
+				print '<input type="hidden" name="zoom_y" value="' . $y . '">';
+			}
+			print '<input style=cursor:crosshair type="image" name=';
+			print 'map onError="if ((this.src.match(/X/g)||[]).length < 5) this.src=this.src + \'X\'; else this.src = \'images/icons/alert.png\';" src="dev/map_draw.php?terrID=' . $terrID . '&variantID=' . $variantID . '&mode=' . $mode . '&mapsize=' . $mapsize . $zoomstr . '&nocache=' . (rand(1, 9999)) . '" >';
+			print '</form>';
+		} else {
+			 print '<img onError="if ((this.src.match(/X/g)||[]).length < 5) this.src=this.src + \'X\'; else this.src = \'images/icons/alert.png\';" src="dev/map_draw.php?terrID=' . $terrID . '&variantID=' . $variantID . '&mode=' . $mode . '&mapsize=' . $mapsize . $zoomstr . '&nocache=' . (rand(1, 9999)) . '" >';
+	   }
 		print '<div align="center"> If you can\'t see the map <b><a href="dev/map_draw.php?terrID=' . $terrID . '&variantID=' . $variantID . '&mode=' . $mode . '&mapsize=' . $mapsize . $zoomstr . '&nocache=' . (rand(1, 9999)) . '&draw'.'">click here</a></b> to view the error message.</div>';
-    }
+	}
 
     // Show Data
-    if ($edit == 'data') {
-        print " Code-Version: " . $Variant->codeVersion;
-        print '</li>';
-        print display_button_form('edit', 'install', 'write install.php and exit edit-mode');
-        print ' - ';
-        print display_button_form('edit', 'on', 'back to edit');
-        print ' - ';
-        print display_button_form('edit', 'del_cache', 'discard and exit edit-mode');
-
-        $installPHP = generate_install();
-        $php = implode("\n", $installPHP);
-        $html = nl2br($php);
-        print '<hr><code>' . $html . '</code><hr>';
-    }
+    if ($edit == 'save')
+  		print '<li class="formlisttitle">Save your current data to install.php?</li>'.
+					display_button_form('edit', 'install', 'Write install.php and exit.').' - '.
+					display_button_form('edit', 'on', 'Back to edit.').' - '.
+					display_button_form('edit', 'del_cache', 'Discard changes and exit.').
+				'</li>';
 }
 
 function add_form_defaults() {
