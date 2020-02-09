@@ -41,19 +41,11 @@ for($i=1;$i<$Game->turn+1;$i=$i+2)
 	$scCountsByTurn[$i]=$scCountsByCountryID;
 }
 
-$SCTotalCountry=array();
 foreach( $scCountsByTurn as $turn=>$scCountsByCountryID)
 {
 	$turnSCTotal=0;
 	foreach($scCountsByCountryID as $countryID=>$scCount)
-	{
 		$turnSCTotal+=$scCount;
-		
-		if isset($SCTotalCountry[$countryID])
-			$SCTotalCountry[$countryID] += $scCount;
-		else
-			$SCTotalCountry[$countryID] = $scCount;
-	}
 
 	if( $turnSCTotal==0 )
 	{
@@ -76,7 +68,6 @@ foreach( $scCountsByTurn as $turn=>$scCountsByCountryID)
 			$scCountsByTurn[$turn][$countryID] += ($percentLeft / count($scCountsByCountryID));
 }
 
-
 $scRatiosByTurn=$scCountsByTurn;
 unset($scCountsByTurn);
 
@@ -85,17 +76,15 @@ if( $Game->phase != 'Finished' ){
 	return;
 }
 
-
 if( count($scRatiosByTurn)<2 ) {
 	print l_t('Too few moves to plot.');
 	return;
 }
 
 print '<table border=0 cellspacing=0 cellpadding=0>
-
-	<tr>
-		<td class="mapshadow" bgcolor="#D8D8D8" width="100%" style="padding: 0px;">
-		<div class="variant'.$Variant->name.' boardGraph" style="width:auto">';
+		<tr>
+			<td class="mapshadow" bgcolor="#D8D8D8" width="100%" style="padding: 0px;">
+			<div class="variant'.$Variant->name.' boardGraph" style="width:auto">';
 
 foreach ($scRatiosByTurn as $turn=>$scRatiosByCountryID)
 {
