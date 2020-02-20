@@ -344,7 +344,7 @@ class adminActionsVDip extends adminActions
 			return "Cannot set excused missed turns to a negative value.";
 	
 		
-		$DB->sql_put("UPDATE wD_games SET excusedMissedTurns = '".$excusedMissedTurns."' WHERE id = ".$gameID);
+		$DB->sql_put("UPDATE wD_Games SET excusedMissedTurns = '".$excusedMissedTurns."' WHERE id = ".$gameID);
 		
 		return "Excused missed turns have successfully been updated to ".$excusedMissedTurns;
 	}
@@ -361,7 +361,7 @@ class adminActionsVDip extends adminActions
 		if ($regainExcusesDuration > 10) 
 			$regainExcusesDuration = 99;
 		
-		$DB->sql_put("UPDATE wD_games SET regainExcusesDuration = '".$regainExcusesDuration."' WHERE id = ".$gameID);
+		$DB->sql_put("UPDATE wD_Games SET regainExcusesDuration = '".$regainExcusesDuration."' WHERE id = ".$gameID);
 		
 		return "Excuse regain duration have successfully been updated to ".(($regainExcusesDuration==99)?"'no regaining'":$regainExcusesDuration);
 	}
@@ -378,7 +378,7 @@ class adminActionsVDip extends adminActions
 		if ($delayDeadlineMaxTurn > 99) 
 			$delayDeadlineMaxTurn = 99;
 		
-		$DB->sql_put("UPDATE wD_games SET delayDeadlineMaxTurn = '".$delayDeadlineMaxTurn."' WHERE id = ".$gameID);
+		$DB->sql_put("UPDATE wD_Games SET delayDeadlineMaxTurn = '".$delayDeadlineMaxTurn."' WHERE id = ".$gameID);
 		
 		return "Excuse regain duration have successfully been updated to ".(($delayDeadlineMaxTurn==0)?"'no delays'":(($delayDeadlineMaxTurn==99)?"'delay always'":$delayDeadlineMaxTurn));
 	}
