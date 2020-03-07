@@ -245,18 +245,18 @@ while (list($id, $name, $description, $status, $minRR, $year, $totalRounds, $for
     if ($directorID > 0 )
     {
         list($directorUsername) = $DB->sql_row("Select username from wD_Users where id =".$directorID);
-        print '<strong>Director:</strong> <a href="profile.php?userID='.$directorID.'">'.$directorUsername.'</a>';
+        print '<strong>Director:</strong> <a href="profile.php?userID='.$directorID.'">'.$directorUsername.'</a></br> ';
     }
     if ($coDirectorID > 0 )
     {
         list($coDirectorUsername) = $DB->sql_row("Select username from wD_Users where id =".$coDirectorID);
-        print '</br> <strong>Co-Director:</strong> <a href="profile.php?userID='.$coDirectorID.'">'.$coDirectorUsername.'</a></br>';
+        print '<strong>Co-Director:</strong> <a href="profile.php?userID='.$coDirectorID.'">'.$coDirectorUsername.'</a></br>';
     }
 
-    if ($forumThreadLink != '') { print '</br> <strong>Forum thread:</strong> <a href="'.$forumThreadLink.'">here</a>'; }
-    if ($externalLink != '') { print '</br> <strong>External site:</strong> <a href="'.$externalLink.'">here</a></br></br>'; }
+    if ($forumThreadLink != '') { print '<strong>Forum thread:</strong> <a href="'.$forumThreadLink.'">here</a></br> '; }
+    if ($externalLink != '') { print '<strong>External site:</strong> <a href="'.$externalLink.'">here</a></br></br>'; }
 
-    print'<strong>Description:</strong></br>'.$description.'
+    print'</br> <strong>Description:</strong></br>'.$description.'
     </br></br>
     <strong>Start year:</strong> '.$year.' </br></br>
     <strong>Rounds: </strong> '.$totalRounds.'
