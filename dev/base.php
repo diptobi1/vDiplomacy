@@ -51,9 +51,15 @@ if ($edit == true)
 		$homepage    = (isset($_REQUEST['homepage'])    ? substr(preg_replace('/[^a-zA-Z0-9\:\/\-\=\(\)\& \?\.,]/','', $_REQUEST['homepage']),0,150)    : '');
 		
 		if (isset($_REQUEST['country']))
+		{
 			foreach ($_REQUEST['country'] as $id => $name)
 				$_REQUEST['country'][$id] = substr(preg_replace('/[^a-zA-Z0-9- ]/','',$name),0,20);
-
+			// delete the old pregame-unit-assigning
+			$newName = Config::$variants[$variantID]; $newID=$variantID; $newYear=0;
+			require_once('dev/newVariantDefaults.php');
+			file_put_contents ('variants/'.Config::$variants[$variantID].'/classes/adjudicatorPreGame.php', $adjucatorPreGameTxt);		
+		}
+		
 		if (isset($_REQUEST['EditToDo']))
 		{
 			$toDo=$_REQUEST['EditToDo'];

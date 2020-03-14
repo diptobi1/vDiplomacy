@@ -37,6 +37,9 @@ if (isset(Config::$devs) && $variantID != 0)
 if ( isset($_REQUEST['viewErrorLog']) && $edit == true)
 {
 	$log=(int)$_REQUEST['viewErrorLog'];
+	if ($log == 0) 
+		$log = libDevError::errorTimes()[0];
+	
 	if( !($data=file_get_contents(Config::errorlogDirectory().'/dev/'.$log.'.txt')) )
 		trigger_error(l_t("Couldn't open file %s.txt",$log));
 	header('Content-type:text/plain');

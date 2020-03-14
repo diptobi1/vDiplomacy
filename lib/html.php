@@ -1077,6 +1077,8 @@ class libHTML
 										<a href="dev.php?tab=MapResize&variantID='.$variantID.'">MapResize</a>
 										<a href="dev.php?tab=Converter&variantID='.$variantID.'">Converter</a>
 										<a href="dev.php?tab=Admin&variantID='.$variantID.'">Admin</a>
+										<div class="hr"></div>
+										<a href="variants.php" title="Active webDiplomacy variants">Variants</a>
 									</div>
 								</div>';
 						}

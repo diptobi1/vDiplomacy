@@ -135,7 +135,11 @@ if ($variantID != 0)
 				
 		if (($action == 'filesave') && (file_exists ($variantbase.$basedir.$file)))
 		{
-			rename($variantbase.$basedir.$file, $variantbase."/cache/".date("ymd-His")."-edit-".$file);
+			if (file_exists ($variantbase.$basedir.$file.' (wait for verify)'))
+				copy($variantbase.$basedir.$file.' (wait for verify)', $variantbase."/cache/".date("ymd-His")."-edit-".$file);
+			elseif (file_exists ($variantbase.$basedir.$file))
+				copy($variantbase.$basedir.$file, $variantbase."/cache/".date("ymd-His")."-edit-".$file);
+				
 			if (stripos($file, '(wait for verify)') === false)
 				if (!stripos($file, 'php') === false)
 					$file .= ' (wait for verify)';
@@ -166,10 +170,10 @@ if ($variantID != 0)
 			{
 				if ($file != '')
 				{
-					if (file_exists ($variantbase.$basedir.$file))
-						rename($variantbase.$basedir.$file, $variantbase."/cache/".date("ymd-His")."-upl-".$file);
 					if (file_exists ($variantbase.$basedir.$file.' (wait for verify)'))
-						rename($variantbase.$basedir.$file.' (wait for verify)', $variantbase."/cache/".date("ymd-His")."-upl-".$file);
+						copy($variantbase.$basedir.$file.' (wait for verify)', $variantbase."/cache/".date("ymd-His")."-upl-".$file);
+					elseif (file_exists ($variantbase.$basedir.$file))
+						copy($variantbase.$basedir.$file, $variantbase."/cache/".date("ymd-His")."-upl-".$file);
 					if (!stripos($file, 'php') === false)
 						$file .= ' (wait for verify)';
 					if($basedir == '/interactiveMap/' && !file_exists($variantbase.$basedir)) mkdir($variantbase.'/interactiveMap', 0755);
@@ -229,7 +233,7 @@ if ($variantID != 0)
 		
 		foreach ($files as $file) {
 			// Call the php and html files with a wrapper to display the content...
-			if (substr($file, -3) == 'php' || substr($file, -4) == 'html' || substr($file, -4) == 'htm')
+			if (substr($file, -3) == 'php' || substr($file, -4) == 'html' || substr($file, -3) == 'htm' || substr($file, -7) == 'verify)')
 				print('<td><a href="dev/files_helper.php?&variantID='.$variantID.'&action=view&file='.$file.'&basedir='.$dirname.'">'.$dirname.$file.'</a></td>');
 			else
 				print("<td><a href=\"$variantbase$dirname$file\">$dirname$file</a></td>");

@@ -78,7 +78,8 @@ switch($sc) {
 }
 
 // new name
-$name = isset($_REQUEST['name']) ? $DB->escape($_REQUEST['name']) : '';
+//$name = isset($_REQUEST['name']) ? str_replace ( "'" , '&#39;', $DB->escape($_REQUEST['name'])) : '';
+$name = isset($_REQUEST['name']) ? htmlspecialchars($DB->escape($_REQUEST['name'],true), ENT_QUOTES) : '';
 
 // new countryID
 $countryID = isset($_REQUEST['countryID']) ? (int)$_REQUEST['countryID'] : '-1';
@@ -200,7 +201,7 @@ function write_changes() {
 		{
             $DB->sql_put('DELETE FROM wD_CoastalBorders WHERE mapID='.$mapID.' AND (fromTerrID='.$terrID.' OR toTerrID='.$terrID.')');
 		}
-		else
+		elseif ($new_link != $terrID)
 		{
 			$toTerrID = $new_link;
 			list($toType) = $DB->sql_row('SELECT type FROM wD_Territories WHERE id=' . $toTerrID . ' AND mapID=' . $mapID);
@@ -216,10 +217,11 @@ function write_changes() {
 			$DB->sql_put($sql . $toTerrID . ',' . $terrID . ')');
 		}
     }
-    if ($del_terr != '') {
-        $DB->sql_put('DELETE FROM wD_CoastalBorders WHERE   toTerrID=' . $del_terr . ' AND mapID=' . $mapID);
-        $DB->sql_put('DELETE FROM wD_CoastalBorders WHERE fromTerrID=' . $del_terr . ' AND mapID=' . $mapID);
-        $DB->sql_put('DELETE FROM wD_Territories    WHERE         id=' . $del_terr . ' AND mapID=' . $mapID);
+    if ($del_terr != '')
+	{
+		$DB->sql_put('DELETE FROM wD_CoastalBorders WHERE   toTerrID=' . $del_terr . ' AND mapID=' . $mapID);
+		$DB->sql_put('DELETE FROM wD_CoastalBorders WHERE fromTerrID=' . $del_terr . ' AND mapID=' . $mapID);
+		$DB->sql_put('DELETE FROM wD_Territories    WHERE         id=' . $del_terr . ' AND mapID=' . $mapID);
         $terrID = 0;
     }
     if ($calcxy != '') {
@@ -371,6 +373,52 @@ function check_edit() {
         libHTML::footer();
         exit;
     } elseif ($edit == 'install') {
+		$noInstall = array();
+		
+		// Check for 2 territories
+		list($check_last_terr) = $DB->sql_row('SELECT COUNT(*) FROM wD_Territories WHERE mapID=' . $mapID);
+		if ($check_last_terr < 2)
+			$noInstall[] = 'There needs to be at least 2 territories on your map.';
+		
+		// check for 1 SC
+		list($check_last_sc) = $DB->sql_row('SELECT COUNT(*) FROM wD_Territories WHERE supply="Yes" AND mapID=' . $mapID);
+		if ($check_last_sc < 1)
+			$noInstall[] = 'There needs to be at least 1 supplycenter on your map.';
+		
+		// check for 1 countryID
+		list($check_last_country) = $DB->sql_row('SELECT COUNT(*) FROM wD_Territories WHERE countryID != 0 AND mapID=' . $mapID);
+		if ($check_last_country < 1)
+			$noInstall[] = 'There needs to be at least 1 countryID on your map.';
+		
+		// check for 1 border
+		list($check_last_link) = $DB->sql_row('SELECT COUNT(*) FROM wD_CoastalBorders WHERE mapID=' . $mapID);
+		if ($check_last_link < 1)
+			$noInstall[] = 'There needs to be at least 1 border/link on your map.';
+
+		// check for coasts without main-territory
+		$tabl = $DB->sql_tabl("SELECT id, name FROM wD_Territories WHERE name LIKE '% Coast)%' AND mapID=" . $mapID);
+		while ( list($id, $name) = $DB->tabl_row($tabl) )
+		{
+			$mainTerrName=substr($name, 0, strpos($name," ("));
+			list($check_mainTerritoryID) = $DB->sql_row(
+				"SELECT id FROM wD_Territories WHERE name = '".$mainTerrName."' AND mapID=" . $mapID);
+			if ($check_mainTerritoryID == 0)
+				$noInstall[] = 'There needs to be a main-territory for "'.$name.'" (id='.$id.').';
+			if ($check_mainTerritoryID > $id)
+				$noInstall[] = 'Problem with "'.$name.'". The id for the main-territory ('.$check_mainTerritoryID.') is greater than the territoryID ('.$id.').';
+		}
+		
+		if (count($noInstall) > 0) {
+			print '<li class="formlisttitle">ATTENTION: Unable to write install.php.</li>';
+			foreach ($noInstall as $errorText)
+				print '<li class="formlisttitle">'.$errorText.'</li>';
+			$edit = 'on';
+			print '<li class="formlisttitle">';
+			print display_button_form('edit', 'on', 'Back to edit-mode.');
+			print '<hr>';
+			libHTML::footer();
+			exit;
+		}
         $handle = fopen($inst_dir . 'install-new.php', 'w');
         foreach (generate_install () as $line) {
             $line .= "\n";
@@ -398,10 +446,18 @@ function check_edit() {
         libHTML::footer();
         exit;
     } elseif ($edit == 'del_terr') {
-        print '<li class="formlisttitle">ATTENTION:Deletion of a territory will rearange all IDs. This will screw all games using your variant.
-			<br>Use this function only if your are in development of a new variant, or if there are no games going on at the moment.
-			</li><li class="formlisttitle">If there are older games of your variant in the database the cached maps will be allright, but the orderhistory will be screwed too.
-			</li><li class="formlisttitle">';
+        print '
+			<li class="formlisttitle">
+				ATTENTION:Deletion of a territory will rearange all IDs. This will screw all games using your variant.<br>
+				Use this function only if your are in development of a new variant, or if there are no games going on at the moment.
+			</li>
+			<li class="formlisttitle">
+				If there are older games of your variant in the database the cached maps will be allright, but the orderhistory will be screwed too.
+			</li>
+			<li class="formlisttitle">
+				Your install-file needs at least <b>2 territories, 1 supplycenter and one border-link</b>.
+			</li>
+			<li class="formlisttitle">';
         $edit = 'on';
         print display_button_form('del_terr', $terrID, 'Yes I\'m sure, delete territory.');
         print ' - ';
@@ -681,7 +737,7 @@ function display_interface()
 		} else {
 			 print '<img onError="if ((this.src.match(/X/g)||[]).length < 5) this.src=this.src + \'X\'; else this.src = \'images/icons/alert.png\';" src="dev/map_draw.php?terrID=' . $terrID . '&variantID=' . $variantID . '&mode=' . $mode . '&mapsize=' . $mapsize . $zoomstr . '&nocache=' . (rand(1, 9999)) . '" >';
 	   }
-		print '<div align="center"> If you can\'t see the map <b><a href="dev/map_draw.php?terrID=' . $terrID . '&variantID=' . $variantID . '&mode=' . $mode . '&mapsize=' . $mapsize . $zoomstr . '&nocache=' . (rand(1, 9999)) . '&draw'.'">click here</a></b> to view the error message.</div>';
+		print '<div align="center"> If you can\'t see the map <b><a href="dev.php?viewErrorLog">click here</a></b> to view the error message.</div>';
 	}
 
     // Show Data
@@ -770,6 +826,11 @@ function generate_install() {
     while (list($name, $type, $supply, $countryID, $mapX, $mapY, $smallMapX, $smallMapY) = $DB->tabl_row($tabl)) {
         $name = $DB->escape($name);
         $name = str_replace('\\', '\\\\\\', $name);
+		if (strpos($name,' Coast)') !== false)
+		{
+			$supply = 'No';
+			$type = 'Coast';
+		}
         $installPHP[] = "&nbsp;array('$name', '$type', '$supply', $countryID, $mapX, $mapY, $smallMapX, $smallMapY),";
     }
 
