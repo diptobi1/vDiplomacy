@@ -85,8 +85,11 @@ if (isset(Config::$devs))
 	{
 		foreach ($devVariantsArray as $activeVariantName)
 		{
-			$activeVariantID = array_search ($activeVariantName, $allVariants);
-			$allVariants[$activeVariantID] = '=> '.$allVariants[$activeVariantID].' ('.$devName.')';
+			$activeVariantID = array_search ($activeVariantName, Config::$variants);
+			if (strpos($allVariants[$activeVariantID],'=>') !== false)
+				$allVariants[$activeVariantID] .= ' / ('.$devName.')';
+			else
+				$allVariants[$activeVariantID] = '=> '.Config::$variants[$activeVariantID].' ('.$devName.')';
 		}
 	}
 }

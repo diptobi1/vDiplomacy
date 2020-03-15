@@ -82,6 +82,9 @@ if(!(isset($_REQUEST['variantID'])))
 
 		list($variantID, $countryCount, $fullName) = $DB->sql_row('SELECT variantID, countryCount,fullName FROM wD_VariantInfo WHERE name="'.$variantName.'"');
 		
+		// don't show variants without a wD_VariantInfo (usually in development)
+		if ($variantID == '') continue;
+			
 		if (isset(Config::$hiddenVariants) && in_array($variantID,Config::$hiddenVariants) && $User->type['Guest'])
 			continue;
 		

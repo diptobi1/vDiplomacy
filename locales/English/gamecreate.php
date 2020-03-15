@@ -105,13 +105,6 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 			</div>
 			<select class = "gameCreate" name="newGame[phaseMinutes]"  onChange="
 			document.getElementById('wait').selectedIndex = this.selectedIndex; 
-			if (this.selectedIndex < 5) {
-				$('fixStart').value= 'Yes';
-				$('fixStart').disabled= true;
-			} else { 
-				$('fixStart').value= 'No';
-				$('fixStart').disabled= false;
-			}
 			if (this.selectedIndex == 29) $('phaseHoursText').show(); else $('phaseHoursText').hide();">
 			<?php
 				$phaseList = array(5,7, 10, 15, 20, 30, 60, 120, 240, 360, 480, 600, 720, 840, 960, 1080, 1200, 1320,
