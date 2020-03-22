@@ -843,8 +843,8 @@ if (!isset(Config::$customForumURL))
 	list($liked) = $DB->sql_row("SELECT COUNT(*) FROM wD_ForumMessages fm
 		INNER JOIN wD_LikePost lp ON lp.likeMessageID = fm.id
 		WHERE fm.fromUserID=".$UserProfile->id);
-	$likes = ($likes ? '<strong>'.l_t('Likes:').'</strong> '.$likes : '');
-	$liked = ($liked ? '<strong>'.l_t('Liked:').'</strong> '.$liked : '');
+	$likes = ($likes ? '<strong>'.l_t('Likes given:').'</strong> '.$likes : '');
+	$liked = ($liked ? '<strong>'.l_t('Likes received:').'</strong> '.$liked : '');
 
 	print '<li><strong>'.l_t('Forum posts:').'</strong> '.$posts.'<br />';
 
