@@ -89,32 +89,21 @@ if ( isset($_COOKIE['imageToken']) && isset($_REQUEST['imageText']) && isset($_R
 
 		// Prelim checks look okay, lets send the e-mail
 		$Mailer->Send(array($email=>$email), l_t('Your new vDiplomacy account'),
-l_t("Hello and welcome!")."<br><br>
+			l_t("Hello and welcome!")."<br><br>
 
-".l_t("Thanks for validating your e-mail address; just use this link to create your new vDiplomacy account:")."<br>
-".libAuth::email_validateURL($email)."<br><br>
+			".l_t("Thanks for validating your e-mail address; just use this link to create your new vDiplomacy account:")."<br>
+			".libAuth::email_validateURL($email)."<br><br>
 
 			".l_t("There are two main rules to keep in mind:")."<br>
 			".l_t("1. You may only have one account.")."<br>
 			".l_t("2. You need to have an invitation code on any game you play with people you know from outside the site to keep games fair.")."<br>
-			".l_t("The rest of the rules can be found here: http://www.webdiplomacy.net/rules.php")."<br><br>
+			".l_t("The rest of the rules can be found here: http://".$_SERVER['SERVER_NAME']."/rules.php")."<br><br>
 
-			".l_t("Join the webDiplomacy community on Discord at https://discord.gg/dPm4QnY")."<br><br>
+			".l_t("If you forgot your password, use the lost password finder here: http://".$_SERVER['SERVER_NAME']."/logon.php?forgotPassword=1")."<br><br>
+			".l_t("If you have any further problems contact the server's admin at %s.",Config::$adminEMail)."<br><br>
 
-".l_t("You may only have one account, second accounts are not allowed under any circumstances, and will be banned. This may also lead to your first account also being banned.  If you forget your password, use the lost password finder here: http://www.vdiplomacy.net/logon.php?forgotPassword=1. If you are still unable to log in, contact the mods.")."<br><br>
-
-".l_t("2. No Meta-gaming")."<br><br>
-
-".l_t("You cannot play a public game with players that you know outside of the site. In doing so, you create an unfair environment for other players by giving yourself the opportunity to form alliances for reasons outside the game. This includes playing public games with family, friends, relatives, coworkers, or even joining a game with any player of a previous game with a predetermined intent to ally with or attack certain players.")."<br><br>
-
-".l_t("Because Diplomacy is a social game, we always encourage playing with friends. However, you should always do so in a private, password-protected game and make sure that every player knows about any real life connections before the game begins.")."<br><br>
-
-".l_t("The rest of the rules can be found here: http://www.vdiplomacy.net/rules.php")."<br><br>
-".l_t("If you have any further problems contact the server's admin at %s.",Config::$adminEMail)."<br><br>
-
-".l_t("Enjoy your new account!")."<br>
-"
-			);
+			".l_t("Enjoy your new account!")."<br>"
+		);
 
 		$page = 'emailSent';
 	}
