@@ -16,7 +16,7 @@ class adminActionsVDip extends adminActions
 			),
 			'potModifier' => array(
 				'name' => 'Change the vDip-value of the game.',
-				'description' => 'Changes the vDip-points-value of the game by dividing the vDip-points of the game with the modifier and enabling loss prevention, i.e. a negative vDip-score in direct player comparison is set to 0. <br>Special values: modifier = 0 (standard, no modifier, no loss-prevention), modifier = 1 (loss-prevention only). <br>Since loss-prevention is applied in direct player comparison, loss-prevention without a modifier will result in higher gains for all players apart from winner than without prevention.',
+				'description' => 'Changes the vDip-points-value of the game by dividing the vDip-points of the game with the modifier and enabling loss prevention, i.e. a negative vDip-score in direct player comparison is set to 0. <br>Special values: modifier = 0 (standard, no modifier, no loss-prevention), modifier = 1 (loss-prevention only).',
 				'params' => array('gameID'=>'Game ID', 'modifier'=>'Modifier for the point distribution')
 			),
 			'changeTargetSCs' => array(
@@ -344,7 +344,7 @@ class adminActionsVDip extends adminActions
 			return "Cannot set excused missed turns to a negative value.";
 	
 		
-		$DB->sql_put("UPDATE wD_games SET excusedMissedTurns = '".$excusedMissedTurns."' WHERE id = ".$gameID);
+		$DB->sql_put("UPDATE wD_Games SET excusedMissedTurns = '".$excusedMissedTurns."' WHERE id = ".$gameID);
 		
 		return "Excused missed turns have successfully been updated to ".$excusedMissedTurns;
 	}
@@ -361,7 +361,7 @@ class adminActionsVDip extends adminActions
 		if ($regainExcusesDuration > 10) 
 			$regainExcusesDuration = 99;
 		
-		$DB->sql_put("UPDATE wD_games SET regainExcusesDuration = '".$regainExcusesDuration."' WHERE id = ".$gameID);
+		$DB->sql_put("UPDATE wD_Games SET regainExcusesDuration = '".$regainExcusesDuration."' WHERE id = ".$gameID);
 		
 		return "Excuse regain duration have successfully been updated to ".(($regainExcusesDuration==99)?"'no regaining'":$regainExcusesDuration);
 	}
@@ -378,7 +378,7 @@ class adminActionsVDip extends adminActions
 		if ($delayDeadlineMaxTurn > 99) 
 			$delayDeadlineMaxTurn = 99;
 		
-		$DB->sql_put("UPDATE wD_games SET delayDeadlineMaxTurn = '".$delayDeadlineMaxTurn."' WHERE id = ".$gameID);
+		$DB->sql_put("UPDATE wD_Games SET delayDeadlineMaxTurn = '".$delayDeadlineMaxTurn."' WHERE id = ".$gameID);
 		
 		return "Excuse regain duration have successfully been updated to ".(($delayDeadlineMaxTurn==0)?"'no delays'":(($delayDeadlineMaxTurn==99)?"'delay always'":$delayDeadlineMaxTurn));
 	}

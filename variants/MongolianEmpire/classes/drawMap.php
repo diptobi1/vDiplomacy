@@ -2,7 +2,69 @@
 
 defined('IN_CODE') or die('This script can not be run by itself.');
 
-class MongolianEmpireVariant_drawMap extends drawMap {
+/*
+ * Create seperate maps for territory coloring and other drawins to overcome 
+ * 256 color cap.
+ */
+class MultiLayerMap_drawMap extends drawMap
+{
+	
+	// Store the territories in seperated image so they do not fill the color palettes
+	protected $terrMap = array();
+
+	// Load the territory images
+	protected function loadImages()
+	{
+		ini_set('memory_limit',"350M");
+		ini_set('max_execution_time', 300);
+		parent::loadImages();
+		$this->terrMap = $this->map;
+		// use a blank image as base image for units and order arrows etc
+		$this->map['image'] = imagecreate($this->map['width'], $this->map['height']);
+		$this->setTransparancy($this->map);
+	}
+	
+	// The territories that get colored on the corresponding image
+	public function colorTerritory($terrID, $countryID)
+	{
+		$this->colorTerritoryOnImg ($terrID, $countryID, $this->terrMap['image']);
+	}
+	
+	protected function colorTerritoryOnImg($terrID, $countryID, &$img){
+		$mapsave=$this->map['image'];
+		$this->map['image']=$img;
+		parent::colorTerritory($terrID, $countryID);
+		$img=$this->map['image'];
+		$this->map['image']=$mapsave;
+	}
+
+	// Combine the all maps.
+	public function mergeMaps()
+	{
+		$w = $this->map['width'];
+		$h = $this->map['height'];
+		$im = imagecreate($this->map['width'], $this->map['height']);
+		imagecopyresampled($im, $this->terrMap['image'], 0, 0, 0, 0, $w, $h, $w, $h);
+		imagecopyresampled($im, $this->map['image'], 0, 0, 0, 0, $w, $h, $w, $h);
+		imagetruecolortopalette($im, true, 256);
+		$this->map['image']=$im;
+	}
+	
+	public function write($filename)
+	{
+		$this->mergeMaps();
+		parent::write($filename);
+	}
+	
+	public function writeToBrowser()
+	{
+		$this->mergeMaps();
+		parent::writeToBrowser();
+	}
+
+}
+
+class MongolianEmpireVariant_drawMap extends MultiLayerMap_drawMap {
 
 	/**
 	 * An array of colors for different countries, indexed by countryID
