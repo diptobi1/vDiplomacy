@@ -16,7 +16,7 @@ class adminActionsVDip extends adminActions
 			),
 			'potModifier' => array(
 				'name' => 'Change the vDip-value of the game.',
-				'description' => 'Changes the vDip-points-value of the game by dividing the vDip-points of the game with the modifier and enabling loss prevention, i.e. a negative vDip-score in direct player comparison is set to 0. <br>Special values: modifier = 0 (standard, no modifier, no loss-prevention), modifier = 1 (loss-prevention only). <br>Since loss-prevention is applied in direct player comparison, loss-prevention without a modifier will result in higher gains for all players apart from winner than without prevention.',
+				'description' => 'Changes the vDip-points-value of the game by dividing the vDip-points of the game with the modifier and enabling loss prevention, i.e. a negative vDip-score in direct player comparison is set to 0. <br>Special values: modifier = 0 (standard, no modifier, no loss-prevention), modifier = 1 (loss-prevention only).',
 				'params' => array('gameID'=>'Game ID', 'modifier'=>'Modifier for the point distribution')
 			),
 			'changeTargetSCs' => array(
