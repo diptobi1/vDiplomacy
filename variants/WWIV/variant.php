@@ -45,7 +45,7 @@ class WWIVVariant extends WDVariant {
 	public $name       = 'WWIV';
 	public $fullName   = 'World War IV';
 	public $description= 'A variant with an enormous map for 35 players over the whole globe.';
-	public $author     = 'Tom Mulledy';
+	public $author     = 'Tom Reinecker';
 	public $adapter    = 'Carey Jensen / Oliver Auth';
 	public $version    = '1';
 	public $codeVersion= '1.5';
