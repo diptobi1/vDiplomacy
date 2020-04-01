@@ -270,6 +270,8 @@ class adjudicatorPreGame
 		$this->assignTerritories(); 
 		$this->assignUnits();
 		$this->assignUnitOccupations();
+		// Initialize the game's start time at this point.
+		$Game->initializeStartTime();
 	}
 }
 

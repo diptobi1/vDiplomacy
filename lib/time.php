@@ -112,18 +112,20 @@ class libTime
                         return $month.' month'.($month>1?'s':'');
                 }
                 elseif ( $days > 0 )
-                 {
-                        // D, H
-                        $minutes += round($seconds/60); // Add a minute if the seconds almost give a minute
-                        $seconds = 0;
+				{
+					$day_word = "day". ($days>1 ? 's' : '');
+				
+					// D, H
+					$minutes += round($seconds/60); // Add a minute if the seconds almost give a minute
+					$seconds = 0;
 
-                        $hours += round($minutes/60); // Add an hour if the minutes almost gives an hour
-                        $minutes = 0;
+					$hours += round($minutes/60); // Add an hour if the minutes almost gives an hour
+					$minutes = 0;
 
-                        if ( $hours > 0 )
-                                return l_t('%s day'.($days>1?'s':'').', %s hour'.($hours>1?'s':''),$days,$hours);
-                        else
-                                return l_t('%s day'.($days>1?'s':''), $days);
+					if ( $hours > 0 )
+						return l_t('%s '.$day_word.', %s hours',$days,$hours);
+					else
+						return l_t('%s '.$day_word, $days);
                 }
                 elseif ( $hours > 0 )
                 {

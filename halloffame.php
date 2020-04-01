@@ -62,7 +62,6 @@ print "</tr>";
 $showMe = 1;
 while ( list($id, $username, $points) = $DB->tabl_row($crashed) )
 {
-
 	print ' <tr class="hof">
 			<td class="hof"> '.number_format($points).' '.libHTML::vpoints().' - #'.$i.' </td>';
 	if ($User->username == $username)
@@ -123,7 +122,6 @@ print "</tr>";
 $showMe = 1;
 while ( list($id, $username, $points) = $DB->tabl_row($crashed) )
 {
-
 	print ' <tr class="hof">
 			<td class="hof"> '.number_format($points).' '.libHTML::vpoints().' - #'.$i.' </td>';
 	if ($User->username == $username)

@@ -894,3 +894,32 @@ UPDATE `wD_Misc` SET `value` = '161' WHERE `name` = 'Version';
 
 ALTER TABLE `wD_Games` ADD COLUMN `playerTypes` enum('Members', 'Mixed', 'MemberVsBots') DEFAULT 'Members' NOT NULL;
 ALTER TABLE `wD_Backup_Games` ADD COLUMN `playerTypes` enum('Members', 'Mixed', 'MemberVsBots') DEFAULT 'Members' NOT NULL;
+
+ALTER TABLE `wD_Games`
+ADD COLUMN `nextPhaseMinutes` int(10) UNSIGNED DEFAULT 0 NOT NULL AFTER `phaseMinutes`,
+ADD COLUMN `phaseSwitchPeriod` int(10) DEFAULT -1 AFTER `nextPhaseMinutes`,
+ADD COLUMN `startTime` int(10) UNSIGNED DEFAULT NULL;
+
+UPDATE `wD_Games`
+SET `nextPhaseMinutes` = `phaseMinutes`
+WHERE `nextPhaseMinutes` = 0;
+
+ALTER TABLE `wD_Backup_Games`
+ADD COLUMN `nextPhaseMinutes` int(10) UNSIGNED DEFAULT 0 NOT NULL AFTER `phaseMinutes`,
+ADD COLUMN `phaseSwitchPeriod` int(10) DEFAULT -1 AFTER `nextPhaseMinutes`,
+ADD COLUMN `startTime` int(10) UNSIGNED DEFAULT NULL;
+
+UPDATE `wD_Backup_Games`
+SET `nextPhaseMinutes` = `phaseMinutes`
+WHERE `nextPhaseMinutes` = 0;
+
+CREATE TABLE `wD_UsernameHistory` (
+  `userID` mediumint(8) NOT NULL,
+  `oldUsername` varchar(30) NOT NULL,
+  `newUsername` varchar(30) NOT NULL,
+  `date` int(10) unsigned NOT NULL,
+  `reason` varchar(50) NOT NULL,
+  `changedBy` varchar(30) NOT NULL
+);
+
+UPDATE `wD_Misc` SET `value` = '163' WHERE `name` = 'Version';

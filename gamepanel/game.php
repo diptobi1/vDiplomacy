@@ -182,7 +182,6 @@ class panelGame extends Game
 		}
 	}
 
-
 	/**
 	 * Icons for the game, e.g. private padlock and featured star
 	 * @return string
@@ -203,6 +202,43 @@ class panelGame extends Game
 
 		return $buf;
 	}
+	
+	function phaseSwitchInfo()
+	{
+		$buf = '';
+			
+		if ($this->phase == 'Finished' or $this->phaseSwitchPeriod <= 0)
+		{
+			return $buf;
+		}
+			
+		if ($this->startTime > 0) 
+		{
+
+			$timeWhenSwitch = (($this->phaseSwitchPeriod * 60) + $this->startTime);
+
+			if ($this->processTime >= $timeWhenSwitch) 
+			{
+				$buf .= l_t('<div>Phase switch: <strong>End Of Phase</strong></div>', $timeWhenSwitch);
+			} 
+			else 
+			{
+				$timeWhenSwitch = libTime::remainingText($timeWhenSwitch);
+				$buf .= l_t('<div>Phase switch: <strong>%s</strong>', $timeWhenSwitch) . ' (' . libTime::detailedText($timeWhenSwitch) . ')</div>';
+			}
+		}
+
+		else 
+		{
+			$timeTillNextPhase = libTime::timeLengthText($this->phaseSwitchPeriod * 60);
+			
+			$buf .= l_t('<div>Phase switch: <span><strong>%s</strong> after game start.</span></div>', $timeTillNextPhase);	
+		}
+		
+		$buf .= l_t('<div>Next phase length: <span><strong>%s</strong> /phase.</span></div>', libTime::timeLengthText($this->nextPhaseMinutes * 60));
+								
+		return $buf;
+	}
 
 	/**
 	 * The title bar, giving the vital game related data
@@ -213,15 +249,15 @@ class panelGame extends Game
 	{
 		$rightTop = '
 			<div class="titleBarRightSide">
-				<span class="gameTimeRemaining">'.$this->gameTimeRemaining().'</span>
-			</div>
-			';
+				<div>
+				<span class="gameTimeRemaining">'.$this->gameTimeRemaining().'</span></div>'.
+			'</div>';
 
-		$rightBottom = '<div class="titleBarRightSide">
-				<span class="gameHoursPerPhase">
-					'.$this->gameHoursPerPhase().'
-				</span>
-			</div>';
+		$rightMiddle = '<div class="titleBarRightSide">'.
+				'<div>'.
+					'<span class="gameHoursPerPhase">'.$this->gameHoursPerPhase().'</span>'.$this->phaseSwitchInfo().
+				'</div>';
+			
 			
 		$date='<span class="gameDate">'.$this->datetxt().'</span>, <span class="gamePhase">';
 		
@@ -233,11 +269,22 @@ class panelGame extends Game
 		else
 			$date .= l_t($this->phase).'</span>';
 
+				
+		$rightMiddle .= '</div>';
+		
+		$rightBottom = '<div class="titleBarRightSide">'.
+					l_t('%s excused missed turn','<span class="excusedNMRs">'.$this->excusedMissedTurns.'</span>
+					').
+				'</div>';
+
+		$date=' - <span class="gameDate">'.$this->datetxt().'</span>, <span class="gamePhase">'.l_t($this->phase).'</span>';
+
 		$leftTop = '<div class="titleBarLeftSide">
 				'.$this->gameIcons().
 				'<span class="gameName">'.$this->titleBarName().'</span>';
 
-		$leftBottom = '<div class="titleBarLeftSide">';
+		$leftBottom = '<div class="titleBarLeftSide"><div>
+				'.l_t('Pot:').' <span class="gamePot">'.$this->pot.' '.libHTML::points().'</span>';
 
 		
 		if ($this->pot > 0 || ($this->pot == 0 && count($this->Members->ByID) == 0 && $this->minimumBet != 0) )
@@ -256,6 +303,9 @@ class panelGame extends Game
 		
 		$leftBottom .= ' - ';
 		$leftBottom .= $date;
+		$leftBottom .= $date.'</div>';
+		
+		$leftBottom .= '<div>'.$this->gameVariants().'</div>';
 
 		$leftTop .= '</div>';
 		$leftBottom .= '</div>';
@@ -264,30 +314,12 @@ class panelGame extends Game
 			'.$rightTop.'
 			'.$leftTop.'
 			<div style="clear:both"></div>
-			'.$rightBottom.'
+			'.$rightMiddle.'
 			'.$leftBottom.'
 			<div style="clear:both"></div>
-			';
-
-		$buf .= $this->gameVariants();
-
-		$buf .= '<div class="titleBarRightSide">'.
-					l_t('%s excused NMR','<span class="excusedNMRs">'.$this->excusedMissedTurns.'</span>');
-					if ($this->regainExcusesDuration == 99)
-						$buf .= ' / '.l_t('no regaining');
-					else
-						$buf .= ' / '.l_t('regain after %s turn(s)','<span class="excusedNMRs">'.$this->regainExcusesDuration."</span>");
-					if ($this->delayDeadlineMaxTurn >= 99)
-						$buf .= l_t(' / extend always');
-					elseif ($this->delayDeadlineMaxTurn == 0)
-						$buf .= l_t(' / extend never');
-					else
-						$buf .= ' / '.l_t('extend the first %s turn(s)','<span class="excusedNMRs">'.$this->delayDeadlineMaxTurn.'</span>');
-		$buf .=				
-				'</div>';
-
-		$buf .= '<div style="clear:both"></div>';
-
+			'.$rightBottom.'
+			<div style="clear:both"></div>';
+		
 		return $buf;
 	}
 
@@ -353,23 +385,7 @@ class panelGame extends Game
 	function gameHoursPerPhase()
 	{
 		$buf = l_t('<strong>%s</strong> /phase',libTime::timeLengthText($this->phaseMinutes*60));
-			// <span class="gameTimeHoursPerPhaseText">(';
-
-		// if ( $this->isLiveGame() )
-		// 	$buf .= l_t('live');
-		// elseif ( $this->phaseMinutes < 6*60 )
-		// 	$buf .= l_t('very fast');
-		// elseif ( $this->phaseMinutes < 16*60 )
-		// 	$buf .= l_t('fast');
-		// elseif ( $this->phaseMinutes < 36*60 )
-		// 	$buf .= l_t('normal');
-		// elseif ( $this->phaseMinutes < 3*24*60 )
-		// 	$buf .= l_t('slow');
-		// else
-		// 	$buf .= l_t('very slow');
-
 		return $buf ;
-		// .')</span>';
 	}
 
 	/**
@@ -700,6 +716,5 @@ class panelGame extends Game
 		return $buf;
 	}
 }
-
 
 ?>

@@ -81,14 +81,14 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 
 		list($countryCount) = $DB->sql_row("SELECT countryCount FROM wD_VariantInfo WHERE variantID=".$input['variantID']);
 		
-		if ($input['countryID'] < 0 or $input['countryID'] > 7)
+		if ($input['countryID'] < 0 or $input['countryID'] > $countryCount)
 		{
 			throw new Exception(l_t("%s is an invalid country ID.",(string)$input['countryID']));
 		}
 
 		// Create Game record & object
 		require_once(l_r('gamemaster/game.php'));
-		$Game = processGame::create($input['variantID'],$input['name'],'',5,'Unranked',4320,60,'No','Regular','Normal','draw-votes-public',0,4,'MemberVsBots');
+		$Game = processGame::create($input['variantID'],$input['name'],'',5,'Unranked',4320, 4320, -1, 60,'No','Regular','Normal','draw-votes-public',0,4,'MemberVsBots');
 
 		// Prevent temp banned players from making new games.
 		if ($User->userIsTempBanned())
@@ -99,10 +99,12 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 
 		// Create first Member record & object
 		processMember::create($User->id, 5, $input['countryID']);
+
 		//Add Bots
 		$botNum = $countryCount - 1;
 		$tabl = $DB->sql_tabl("SELECT id FROM wD_Users WHERE type LIKE '%bot%' LIMIT ".$botNum);
 		$currCountry = 1;
+
 		while (list($botID) = $DB->tabl_row($tabl))
 		{
 			if($currCountry == $input['countryID'])
@@ -173,7 +175,6 @@ print '<div class="content-bare content-board-header content-title-header">
 			{
 				if (in_array($variantID, Config::$apiConfig['variantIDs']))
 				{
-					
 					$Variant = libVariant::loadFromVariantName($variantName);
 					$checkboxes[$Variant->fullName] = '<option value="'.$variantID.'"'.(($first=='')?' selected':'').'>'.$Variant->fullName.'</option>';
 					if($first=='')
@@ -212,8 +213,6 @@ print '<div class="content-bare content-board-header content-title-header">
 			<?php
 			print '</form>
 	</div>';
-
-
 
 print '</div>';
 libHTML::footer();
