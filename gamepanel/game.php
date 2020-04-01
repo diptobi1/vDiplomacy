@@ -273,8 +273,18 @@ class panelGame extends Game
 		$rightMiddle .= '</div>';
 		
 		$rightBottom = '<div class="titleBarRightSide">'.
-					l_t('%s excused missed turn','<span class="excusedNMRs">'.$this->excusedMissedTurns.'</span>
-					').
+					l_t('%s excused NMR','<span class="excusedNMRs">'.$this->excusedMissedTurns.'</span>');
+					if ($this->regainExcusesDuration == 99)
+						$rightBottom .= ' / '.l_t('no regaining');
+					else
+						$rightBottom .= ' / '.l_t('regain after %s turn(s)','<span class="excusedNMRs">'.$this->regainExcusesDuration."</span>");
+					if ($this->delayDeadlineMaxTurn >= 99)
+						$rightBottom .= l_t(' / extend always');
+					elseif ($this->delayDeadlineMaxTurn == 0)
+						$rightBottom .= l_t(' / extend never');
+					else
+						$rightBottom .= ' / '.l_t('extend the first %s turn(s)','<span class="excusedNMRs">'.$this->delayDeadlineMaxTurn.'</span>');
+		$rightBottom .=				
 				'</div>';
 
 		$date=' - <span class="gameDate">'.$this->datetxt().'</span>, <span class="gamePhase">'.l_t($this->phase).'</span>';
@@ -283,8 +293,7 @@ class panelGame extends Game
 				'.$this->gameIcons().
 				'<span class="gameName">'.$this->titleBarName().'</span>';
 
-		$leftBottom = '<div class="titleBarLeftSide"><div>
-				'.l_t('Pot:').' <span class="gamePot">'.$this->pot.' '.libHTML::points().'</span>';
+		$leftBottom = '<div class="titleBarLeftSide"><div>';
 
 		
 		if ($this->pot > 0 || ($this->pot == 0 && count($this->Members->ByID) == 0 && $this->minimumBet != 0) )
@@ -302,7 +311,6 @@ class panelGame extends Game
 		}
 		
 		$leftBottom .= ' - ';
-		$leftBottom .= $date;
 		$leftBottom .= $date.'</div>';
 		
 		$leftBottom .= '<div>'.$this->gameVariants().'</div>';
