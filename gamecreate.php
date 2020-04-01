@@ -148,19 +148,9 @@ if( isset($_REQUEST['newGame']) and is_array($_REQUEST['newGame']) )
 		
 		$input['anon'] = ( (strtolower($input['anon']) == 'yes') ? 'Yes' : 'No' );
 		
-		// Force 1 vs 1 variants to be unranked to prevent point farming. 
-		if ( $input['variantID'] == 15 or  $input['variantID'] == 23)
-		{
-			$input['bet'] = 5; 
-			$input['potType'] = 'Unranked';
-		}
-//		if ( $input['variantID'] == 15 )
-//		{
-//			$input['bet'] = 5; 
-//			$input['potType'] = 'Unranked';
-//		}
-//		
-//		if ( $input['variantID'] == 23 )
+// Handled differently at vdip
+//		// Force 1 vs 1 variants to be unranked to prevent point farming. 
+//		if ( $input['variantID'] == 15 or  $input['variantID'] == 23)
 //		{
 //			$input['bet'] = 5; 
 //			$input['potType'] = 'Unranked';
