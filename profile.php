@@ -776,6 +776,9 @@ if( $User->type['Moderator'] )
 	list($previousUsernames) = $DB->sql_row(
 		"SELECT GROUP_CONCAT(DISTINCT oldUsername SEPARATOR ', ') FROM wD_UsernameHistory WHERE userID = ".$UserProfile->id
 	);
+	list($previousEmails) = $DB->sql_row(
+		"SELECT GROUP_CONCAT(DISTINCT oldEmail SEPARATOR ', ') FROM wD_EmailHistory WHERE userID = ".$UserProfile->id
+	);
 
 	if($UserProfile->modLastCheckedOn() > 0 && $lastCheckedBy > 0)
 	{
@@ -795,6 +798,11 @@ if( $User->type['Moderator'] )
 	if (!empty($previousUsernames))
 	{
 		print '<p class="profileCommentURL">Previous Usernames: '.$previousUsernames.'</p>';
+	}
+
+	if (!empty($previousEmails))
+	{
+		print '<p class="profileCommentURL">Previous Emails: '.$previousEmails.'</p>';
 	}
 
 	if($UserProfile->qualifiesForEmergency() )
