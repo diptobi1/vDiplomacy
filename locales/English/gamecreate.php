@@ -132,17 +132,16 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 				<strong>Time Until Phase Swap</strong></br>
 				<select class = "gameCreate" id="selectPhaseSwitchPeriod" name="newGame[phaseSwitchPeriod]">
 				<?php
-				$phaseList2 = array(-1, 10, 15, 20, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360);
-					foreach ($phaseList2 as $i) 
+					$phaseList = array(-1, 10, 15, 20, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360);
+					foreach ($phaseList as $i) 
 					{
-						if ($i != -1){
-							$opt = libTime::timeLengthText($i*60);
-
-							print '<option value="'.$i.'"'.($i==-1 ? ' selected' : '').'>'.$opt.'</option>';
+						if ($i != -1)
+						{
+							print '<option value="'.$i.'"'.($i==-1 ? ' selected' : '').'>'.libTime::timeLengthText($i*60).'</option>';
 						}
-						else {
-							$opt = "No phase switch";
-							print '<option value="'.$i.'"'.($i==-1 ? ' selected' : '').'>'.$opt.'</option>';
+						else 
+						{
+							print '<option value="'.$i.'"'.($i==-1 ? ' selected' : '').'> No phase switch</option>';
 						}
 					}
 				?>
@@ -153,12 +152,10 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 				<strong>Phase Length After Swap</strong></br>
 				<select class = "gameCreate" id="selectNextPhaseMinutes" name="newGame[nextPhaseMinutes]">
 				<?php
-				$phaseList3 = array(1440, 1440+60, 2160, 2880, 2880+60*2, 4320, 5760, 7200, 8640, 10080, 14400);
-					foreach ($phaseList3 as $i) 
+					$phaseList = array(1440, 1440+60, 2160, 2880, 2880+60*2, 4320, 5760, 7200, 8640, 10080, 14400);
+					foreach ($phaseList as $i) 
 					{
-						$opt = libTime::timeLengthText($i*60);
-
-						print '<option value="'.$i.'"'.($i==1440 ? ' selected' : '').'>'.$opt.'</option>';
+						print '<option value="'.$i.'"'.($i==1440 ? ' selected' : '').'>'.libTime::timeLengthText($i*60).'</option>';
 					}
 				?>
 				</select>
@@ -169,10 +166,12 @@ Start a new game; you decide the name, how long it runs, and how much it's worth
 				<strong>Time to Fill Game: (5 min - 14 days)</strong></br>
 				<select class = "gameCreate" id="wait" name="newGame[joinPeriod]">
 				<?php
-				foreach ($phaseList as $i) {
-					$opt = libTime::timeLengthText($i*60);
-					print '<option value="'.$i.'"'.($i==1440 ? ' selected' : '').'>'.$opt.'</option>';
-				}
+					$phaseList = array(5,7, 10, 15, 20, 30, 60, 120, 240, 360, 480, 600, 720, 840, 960, 1080, 1200, 1320,
+					1440, 1440+60, 2160, 2880, 2880+60*2, 4320, 5760, 7200, 8640, 10080, 14400, 20160);
+					foreach ($phaseList as $i) 
+					{
+						print '<option value="'.$i.'"'.($i==10080 ? ' selected' : '').'>'.libTime::timeLengthText($i*60).'</option>';
+					}
 				?>
 				</select>
 				<select class = "gameCreate" id="fixStart" name="newGame[fixStart]">

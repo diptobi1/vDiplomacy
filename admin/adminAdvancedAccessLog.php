@@ -69,14 +69,18 @@ if ((is_int($days)) && ($days > 0) && ($days < 1001))
 {
     $sTime = time() - $days * (86400); // 60*60*24 to get seconds per day, save 3 calcs on each user checked.
 
-    if ($chReCheckAll == 'unchecked') {
-        if ($chShowPrevious == 'checked') {
+    if ($chReCheckAll == 'unchecked') 
+    {
+        if ($chShowPrevious == 'checked') 
+        {
             $sql = "SELECT u.id, u.username, u.email, u.timeJoined, c.countMatchedIPUsers, c.countMatchedCookieUsers, c.matchesLastUpdatedOn
                     FROM wD_Users u
                     LEFT JOIN wD_UserConnections c on c.userID = u.id
                     WHERE u.timeJoined > ". $sTime ." and c.matchesLastUpdatedOn is not null and u.type not like 'banned'
                     ORDER BY u.id DESC";
-        } else{
+        } 
+        else
+        {
             $sql = "SELECT u.id, u.username, u.email, u.timeJoined, c.countMatchedIPUsers, c.countMatchedCookieUsers, c.matchesLastUpdatedOn
                     FROM wD_Users u
                     LEFT JOIN wD_UserConnections c on c.userID = u.id
@@ -103,12 +107,15 @@ if ((is_int($days)) && ($days > 0) && ($days < 1001))
         }
     }
 
-    if ($chReCheckAll == 'checked') {
+    if ($chReCheckAll == 'checked') 
+    {
         $sql = 'SELECT u.id, u.username, u.email, u.timeJoined
                 FROM wD_Users u
                 WHERE u.timeJoined > '. $sTime .' and u.type not like "banned"
                 ORDER BY u.id DESC';
-    } else {
+    } 
+    else 
+    {
         $sql = 'SELECT u.id, u.username, u.email, u.timeJoined
                 FROM wD_Users u
                 LEFT JOIN wD_UserConnections c on c.userID = u.id
@@ -142,7 +149,8 @@ if ((is_int($days)) && ($days > 0) && ($days < 1001))
             $IPs[]=$IP;
         }
 
-        if (count($IPs) > 0) {
+        if (count($IPs) > 0) 
+        {
             list($IPcount) = $DB->sql_row("
                 SELECT COUNT(*) FROM (SELECT userID FROM wD_AccessLog WHERE ip IN ( ".implode(',',$IPs)." ) AND userID <> ".$userID." GROUP BY userID) AS IPmatch");
         }
@@ -193,7 +201,8 @@ if ((is_int($days)) && ($days > 0) && ($days < 1001))
     
     foreach ($UsersData as $values)
     {   
-        if (($checkIPs=='checked' and $values->IPCount > 0) or ($chCookies=='checked' and $values->CookieCount > 0)) {
+        if (($checkIPs=='checked' and $values->IPCount > 0) or ($chCookies=='checked' and $values->CookieCount > 0)) 
+        {
             print '<TR><TD class= "modTools"><a href="profile.php?userID='.$values->userID.'">'.$values->username.'</a></TD>';
             print '<TD class= "modTools">'.$values->email.'</TD>';
             print '<TD class= "modTools">'.gmstrftime("%d %b / %I:%M %p",$values->timeJoined).'</TD>';
