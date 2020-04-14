@@ -149,7 +149,7 @@ $territoryRawData=array(
 	array('Taiwan', 'Coast', 'Yes', 0, 346, 1132, 172, 567),
 	array('Sumatra', 'Coast', 'Yes', 7, 92, 924, 49, 455),
 	array('Malaya', 'Coast', 'Yes', 0, 135, 937, 88, 455),
-	array('Siam', 'Land', 'Yes', 6, 255, 904, 130, 450),
+	array('Siam', 'Coast', 'Yes', 6, 255, 904, 130, 450),
 	array('Siam (West Coast)', 'Coast', 'No', 6, 214, 901, 110, 450),
 	array('Siam (East Coast)', 'Coast', 'No', 6, 207, 934, 102, 464),
 	array('#13 Angkor', 'Coast', 'Yes', 6, 239, 978, 119, 495),

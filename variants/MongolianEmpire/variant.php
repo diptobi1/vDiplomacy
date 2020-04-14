@@ -11,7 +11,7 @@ class MongolianEmpireVariant extends WDVariant {
 	public $author='kaner406, Ninjanrd';
 	public $adapter='Yuri Hryniv aka Flame';
 	public $version='2';
-	public $codeVersion='1.6.2';
+	public $codeVersion='1.6.3';
 	public $homepage='https://www.webdiplomacy.ru';
 
 	public $countries=array('Chagatai Khanate','Crusader States','Delhi Sultanate','Golden Horde','Ilkhanate','Khmer Empire','Sirivijaya','The Caliphate','The Great Khans','Tibet','Yuan Dynasty');
