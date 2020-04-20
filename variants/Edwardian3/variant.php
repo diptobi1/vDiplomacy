@@ -35,7 +35,7 @@ class Edwardian3Variant extends WDVariant {
 	public $author      ='VaeVictis';
 	public $adapter     ='Enriador & Oliver Auth';
 	public $version     ='1';
-	public $codeVersion ='1.0.6';
+	public $codeVersion ='1.0.7';
 	public $homepage    ='https://www.playdiplomacy.com/forum/viewtopic.php?f=413&t=57961&sid=1cd859259c37734e1f56b588735d3bec';
 
 	public $countries=array('Austria-Hungary','Britain','France','Germany','Italy','Russia','Turkey');

@@ -158,7 +158,6 @@ $bordersRawData=array(
 	array('Yorkshire','North Sea','Yes','No'),
 	array('Norway','Sweden','Yes','Yes'),
 	array('Norway','Finnmark','Yes','Yes'),
-	array('Norway','Barents Sea','Yes','No'),
 	array('Norway','Norwegian Sea','Yes','No'),
 	array('Norway','North Sea','Yes','No'),
 	array('Norway','Skagerrak','Yes','No'),
