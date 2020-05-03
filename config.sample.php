@@ -287,6 +287,7 @@ class Config
 //		135=>'Hexagon',
 //		136=>'A_Modern_Europe',
 //		138=>'MongolianEmpire',
+//		141=>'Scottish_Clan_Wars',
 //		155=>'Europa_Renovatio',
 //		171=>'WorldAtWar1937',
 //		171=>'WorldAtWar1937',
