@@ -129,6 +129,14 @@ if ($mode == 'units' || $mode == 'all') {
 $drawMap->addTerritoryNames();
 $drawMap->write(libVariant::cacheDir($Variant->name) . '/mappertool.png');
 
+$img = imagecreatefrompng (libVariant::cacheDir($Variant->name) . '/mappertool.png');
+if (imageistruecolor($img))
+{
+	$drawMap->caption("ATTENTION: Image must be indexed/palette PNG.");
+	$drawMap->write(libVariant::cacheDir($Variant->name) . '/mappertool.png');
+}
+imagedestroy($img);
+
 if ($mapmode == 'zoom')
 {
 	$imgSrc = 'variants/' . $Variant->name . '/cache/mappertool.png';
