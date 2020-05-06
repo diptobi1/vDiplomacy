@@ -286,6 +286,7 @@ class Config
 //		134=>'Classic1898Fog',
 //		135=>'Hexagon',
 //		136=>'A_Modern_Europe',
+//		137=>'TiglathPileser',
 //		138=>'MongolianEmpire',
 //		141=>'Scottish_Clan_Wars',
 //		155=>'Europa_Renovatio',
