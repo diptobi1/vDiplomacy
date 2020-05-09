@@ -289,6 +289,7 @@ class Config
 //		137=>'TiglathPileser',
 //		138=>'MongolianEmpire',
 //		141=>'Scottish_Clan_Wars',
+//		145=>'WesternEurope1300',
 //		155=>'Europa_Renovatio',
 //		171=>'WorldAtWar1937',
 //		171=>'WorldAtWar1937',
