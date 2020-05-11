@@ -31,11 +31,12 @@ if ($headers != false)
 		$subject = $DB->escape(quoted_printable_decode($overview[0]->subject));
 		$from    = $DB->escape(quoted_printable_decode($overview[0]->from));
 		$date    = $DB->escape(quoted_printable_decode($overview[0]->udate));
-
 		$body    = $DB->escape(quoted_printable_decode(imap_fetchbody($imap,$val,1.1))); 
-        if ($body == '') $body = $DB->escape(quoted_printable_decode(imap_fetchbody($imap,$val,1))); 
-		$body = str_replace('\r\n','<br />',$body);
+        
+		if ($body == '') $body = $DB->escape(quoted_printable_decode(imap_fetchbody($imap,$val,1))); 
+		$body = preg_replace(array('/<[^>]+>/i', '/<[^>]+$/i'),array(' ', ' '), $body);
 		if (strlen($body) > 490) $body = substr($body,0,490).'...';
+		$body = str_replace('\r\n','<br />',$body);
 		
 		if ($date > $Misc->vDipLastMail)
 		{
