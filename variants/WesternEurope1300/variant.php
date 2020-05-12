@@ -33,8 +33,8 @@ class WesternEurope1300Variant extends WDVariant {
 	public $description ='5-player variant option to Hundred';
 	public $author      ='Matthew Medeiros';
 	public $adapter     ='Fake Al & Oliver Auth';
-	public $version     ='1.0';
-	public $codeVersion ='1.0';
+	public $version     ='1';
+	public $codeVersion ='1.1';
 	public $homepage    ='http://www.dipwiki.com/index.php?title=DipWiki';
 
 	public $countries=array('France','England','Castile','Aragon','Burgundy');

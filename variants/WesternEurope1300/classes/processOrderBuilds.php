@@ -39,6 +39,3 @@ class WesternEurope1300Variant_processOrderBuilds extends processOrderBuilds
 	}
 
 }
-
-class BronzeAgeDiplomacyCrusades1201Variant_userOrderBuilds extends BuildAnywhere_userOrderBuilds {}
-?>
