@@ -6,14 +6,14 @@ class MoveFlags_drawMap extends drawMap
 {
 	public function countryFlag($terrID, $countryID)
 	{
-		
+
 		$flagBlackback = $this->color(array(0, 0, 0));
 		$flagColor = $this->color($this->countryColors[$countryID]);
 
 		list($x, $y) = $this->territoryPositions[$terrID];
 
 		$coordinates = array(
-			'top-left' => array( 
+			'top-left' => array(
 						 'x'=>$x-intval($this->fleet['width']/2+1),
 						 'y'=>$y-intval($this->fleet['height']/2+1)
 						 ),
@@ -58,9 +58,9 @@ class WesternEurope1300Variant_drawMap extends MoveFlags_drawMap {
 			'standoff'=>'images/icons/cross.png'
 		);
 	}
-	
+
 	// No need to set transparency. Icans have transparent background
-	protected function setTransparancies() {}	
-	
+	protected function setTransparancies() {}
+
 }
 ?>
